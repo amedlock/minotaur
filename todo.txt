@@ -1,0 +1,58 @@
+# Tarmin remake 
+
+* BUG: damage should register/death on weapon impact .. slight delay
+
+? add usable stat boost books
+? original mazes option (4 different 5x5 maps were combined each level, 16 total + mirroring )
+? slowly reveal map
+? hidden doors
+? enemy doors
+! bombs!
+! BUG: monster always attacks first
+
+
+X correct monster weapons/damage/hp - work in progress
+X retro graphics option
+X win page
+X compass
+X add an actual map of the mazes
+X eye mural
+X add win condition
+X add minotaur
+X add sounds
+X possible resurrection ( >500 gold? ) - TEST
+X key shouldnt vanish on use
+X Bows/scrolls/books break
+X monster ambush
+X retreating
+X always one flour and one quiver min per level
+X BUG: container colors are wrong (level 1 blue)
+X experience
+X correct item and monster placement per depth
+X armor stats apply
+X proper treasure for containers
+X proper monsters, items, weapons for level
+X proper action for potions
+X add armor
+X Base armor
+X player death
+X containers: key use opens , using potion 
+X combat (mostly done)
+X stats , hud display
+X death animation
+X display money
+X food and arrows work correctly
+X combat animations
+X Resting and gates now work
+X add glance left and right
+X redo corners, single pass after walls
+X larger maze (12x12)
+X inventory, weapon, armor, etc
+X monsters
+X working gate and exits
+X multiple mazes 
+X doors need to close after player moves
+X stairs down model
+X gates
+
+

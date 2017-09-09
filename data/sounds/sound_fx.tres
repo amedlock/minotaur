@@ -1,0 +1,48 @@
+[gd_resource type="SampleLibrary" load_steps=7 format=1]
+
+[ext_resource path="res://data/sounds/descend.wav" type="Sample" id=1]
+[ext_resource path="res://data/sounds/fireball.wav" type="Sample" id=2]
+[ext_resource path="res://data/sounds/hit.wav" type="Sample" id=3]
+[ext_resource path="res://data/sounds/lightning.wav" type="Sample" id=4]
+[ext_resource path="res://data/sounds/magic.wav" type="Sample" id=5]
+[ext_resource path="res://data/sounds/win2.wav" type="Sample" id=6]
+
+[resource]
+
+samples/descend = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 0,
+"sample": ExtResource( 1 )
+}
+samples/fireball = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 0,
+"sample": ExtResource( 2 )
+}
+samples/hit = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 0,
+"sample": ExtResource( 3 )
+}
+samples/lightning = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 0,
+"sample": ExtResource( 4 )
+}
+samples/magic = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 0,
+"sample": ExtResource( 5 )
+}
+samples/win = {
+"db": 0.0,
+"pitch": 1.0,
+"priority": 0,
+"sample": ExtResource( 6 )
+}
+

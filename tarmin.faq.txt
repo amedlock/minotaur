@@ -1,0 +1,790 @@
+Game Copyrighted by: TSR Hobbies, 1982 &amp; Mattel, Inc., 1982
+
+FAQ By Curtis M. (Alias: Zhuge Liang at GameFAQs)
+
+Table of Contents:
+
+1. Overview
+   a. Level Types
+   b. Determining Your Character's Stats
+2. Levels of Difficulty
+3. The Dungeon &amp; Basics
+4. Monsters
+   a. War Monsters
+   b. Spiritual Monsters
+   c. Mixture Monsters &amp; Minotaur
+   d. Special Enemies
+5. Weapons
+   a. War Affinity Weapons
+   b. Spiritual Affinity Weapons
+6. Containers
+   a. Bombs
+   b. Types of Containers
+7. Armor &amp; Rings
+   a. Armor (War Protection)
+   b. Rings (Spiritual Protection)
+8. Special Items &amp; Potions
+   a. Small Potions
+   b. Large Potions
+   c. War Enhancement Books
+   d. Spiritual Enhancement Books
+   e. Special Books
+9. Generalized Strategies &amp; Other Important Facts
+   a. Glance Command
+   b. Pre-emptive Attacks &amp; Planning
+   c. When to Retreat
+   d. How to Effectively "Retrace"
+   e. Test Your Strength, First
+   f. Searching For Special Books
+   g. War/Spiritual Enhancement Books: What to do with them.
+   h. Shielded Foes
+   i. Warp Gates
+   j. At The Bottom of the Ladder...
+   k. Reincarnation
+   l. Containers: Protecting your valuebles from bombs.
+10. Legal Stuff
+
+*Note: For viewing assistance, "&gt;&gt;"'s have been put in front of every point 
+sublisted in the Table of Contents.
+
+-------------------------------------------------------------------------
+
+1. Overview:
+
+This game is one of the RPG genre, where you control a warrior in pursuit of 
+the famed "Treasure Of Tarmin", which has been taken by the evil "Minotaur" 
+into a deep series of catacombs. Your goal is to survive your way to the 
+depths of the dungeon where he dwells. There are several levels of difficulty 
+for this game, which I will review shortly. I must first explain the main map 
+display.
+
+Press the disc, to start a game. This opens the map. You'll hear the ladder 
+noise, and the screen will change to the 3-D action screen. To see the map 
+again, press either of the side buttons on the top end of the controller. On 
+the map, there will be 3 different color rectangles all arranged in a 
+descending arrangement. The color is noteworthy, as it determines what sort of 
+items, and foes you'll enconter on your way down the maze:
+
+&gt;&gt;a. Level Types:
+
+1. Brown (Or for some, tan) - This indicates a mixture of foes. Spiritual and 
+War-Like enemies are found on these levels, as well as a mixture of items.
+2. Green - War levels. You will encounter only War-Like enemies on these 
+levels. These include: Skeletons , Cloaked Skeletons , Giants , Wraiths, and 
+Ghouls.
+3. Blue - Spiritual levels. You will encounter only Spiritual Enemies on these 
+levels. These include: Dwarfs, Scorpions, Ants, Snakes, Alligators, Dragons, 
+Wraiths, and Ghouls.
+
+&gt;&gt;b. How to Determine Your Character's Strength:
+
+In the game, your strengths are listed like this, in the lower right hand 
+corner:
+
+12/6
+0/0
+6/0
+
+All numbers on the left side indicate your War strength. Attacks from arrows, 
+spears, knives, crossbows, bows, and axes all deal with these numbers. The 
+topmost number on this side is how much HP you have in War. This number will 
+increase every once and a while after vanquishing a foe and pressing the 
+"rest" button on the keypad. The maximum value you can have is 199 HP in War. 
+The middle number indicates your armor strength. This will increase as you 
+pick up different sorts of armor or rings throughout the maze. The maximum 
+rating in War you have have for armor is 119. The bottom number indicates the 
+strength of the weapon you are holding in the War category. The strongest War 
+weapon is the Platinum (White) Crossbow. It has a rating of 99. Please note 
+that if you are holding a Spiritual weapon, this number will always be 0, and 
+the converse is also true. 
+
+All numbers on the right side indicate your Spiritual strength. Attacks from 
+lightning bolts (large or small), or fireballs (large or small) both deal with 
+these numbers. Again, as with War, the top number indicates your Spiritual HP. 
+The maximum Spiritual HP you can attain is 99. The middle number is your armor 
+rating. Rings will improve your Spiritual armor rating moreso than regular 
+articles of armor, so keep that in mind as you play. The maximum Spiritual 
+armor rating is 52. The bottom number on the right indicates how strong the 
+Spiritual weapon you are holding is. The most powerful Spiritual weapon is the 
+purple fighting book or lightning bolt at a rating of 65.
+
+With that explained, you know know what type of floor you are starting in. 
+Now, its time to discuss the different levels of difficulty. There are four 
+levels of difficulty in this game. Each level starts you with a different 
+level of strength (HP, if you will), and has a different number of levels to 
+Tarmin's Treasure. Tarmin's Treasure is denoted on the map at the center of 
+the lowest level on the map with a golden chest. Just because the tresure is 
+indicated to be in the center of the lowest floor, that doesn't mean that's 
+exactly where it is.
+
+It must also be noted that you may ALWAYS go deeper than the lowest floor 
+displayed on the map. You may go down for 256 floors in this game. Once you 
+use the ladder on floor 256, you will be transported back to floor 1.
+
+------------------------------------------------------------------------
+
+2. Levels of difficulty:
+
+Press #1 key: This opens the easiest of the dungeons. There are only 2 floors 
+in this game, and your strengths begin at 18/9 (War/Spiritual). This is the 
+highest they start. New players of the game are urged to play this level as 
+the monsters hit you with a bit less intensity compared to the harder levels. 
+Your vunerability is much lower on this level. The speed, is also slow.
+
+Press #2 key: This level is a bit longer, consisting of 4 floors. Your 
+strengths in this game start at 16/8 (War/Spiritual). This level has a 
+slightly more difficult path, but its not impossible for new players to start.
+
+Press #3 key: This opens the medium level, in my opinion. This level is where 
+things begin to get more difficult for novice users. Your strength starts out 
+at 14/7 (War/Spiritual), and your vunerabilty is near full. Monsters hit you 
+harder and deal more damage in this level. You'll also likely run into some 
+bombs in packages in this game. Wraiths and Ghouls are possible to sight, as 
+well. They are the nastiest of creatures in the game aside from Minotaur 
+himself - and in some cases, they can be even harder to defeat than Minotaur 
+himself.
+
+Press [Disc]: This opens the full game. It's also the most difficult level 
+there is, as well. There are 12 floors in this game, and your strengths start 
+out exceptionally low at 12/6 (War/Spiritual). Your vunerability is full. 
+Enemies will take off serious amounts of damage (4+) until you get some sort 
+of armor to protect against them. You must be very fast with your fingers and 
+exersize extreme caution in the beginning. You will encounter most likely a 
+little bit of everything in this game.
+
+------------------------------------------------------------------------
+
+3. The Dungeon &amp; Basics:
+
+The game consists of a large dungeon, from which you cannot escape. Each floor 
+that you descend increases the foes' strength, but by the same token, 
+increases the power of items you can find. Each floor consists of an outer 
+hallway, in fact, the outer hallway is where the game always starts. No 
+enemies can EVER inhabit the outer hallway, of course, in all fairness to the 
+monsters, no items can ever be found in the outer hall, either. Each floor has 
+a certain number of entrances to the main areas of exploration. Each entrance 
+is denoted by an eyeball on the floor. If you don't see a door next to one, 
+it's a hidden door (yes, there is such a thing). Hidden doors are everywhere 
+in the game, so search for them. You'll often find some interesting things 
+behind hidden doors, such as passageways leading to other, new areas, or even 
+nice items to pick up. Once you've exhausted the exploration of a floor, you 
+may warp across to another area, on the same floor (if applicable; see section 
+9 for details concerning gates), or you may use the ladder to go down a floor. 
+Ladders are blue, you can't miss them. Most floors have 2 ladders, but there 
+are occasional levels that only have 1.
+
+Once you leave the outside hall, anything goes. Monsters can be anywhere in 
+this part of the dungeon. There are 2 very special items that you need to keep 
+an eye out for in the dungeon. Food and Arrows. Food is what those weird 
+things that look like flour bags are. When you pick up food, you gain a total 
+of 6 food. It takes 1/2 of 1 food to regain 1 point of HP, or gain 1 point of HP 
+from experience, so collect as much food as you can. Arrows are what your bows 
+and crossbows use for ammunition (I bet you didn't know that, huh? ^_~). 
+You'll gain 6 arrows every time you pick up a quiver of arrows.
+
+4. Monsters:
+
+&gt;&gt;a. War Monsters: These enemies always throw weapons that will reduce your 
+War HP. They range in difficulty from white, being the easiest, to grey being 
+the middle of the road, to orange being the toughest.
+
+Key:
+
+#. Name - notes about foe
+
+color-type of weapon-weapon rating
+
+------------------------------------------------------------------------
+
+1. Skeletons: These creatures are among the least dangerous in the game. Ones 
+with shields have more resistance.
+
+White - tan knife - 9 
+Grey - red knife - 15
+Orange - blue knife -21
+
+2. Cloaked Skeletons: There are more difficult versions of the regular 
+skeleton and normally have more HP. Ones with shields have more resistance.
+
+White - tan axe - 15
+Grey - red axe - 21
+Orange - blue axe - 27
+
+3. Giants: These are the most fearsome of the pure War enemies. They also use 
+a different color code. Yellow are the weakest, tan are the middle strength 
+ones, and orange are the nastiest. Ones with shields have more resistance and 
+throw more powerful weapons at you than ones without.
+
+Yellow (no shld) - tan spear (sml) - 21
+Yellow (shld) - red spear (sml) - 27
+Tan (no shld) - blue spear (sml) - 33
+Tan (shld) - silver spear (sml) - 42
+Orange (no shld) - gold spear (sml) - 57
+Orange (shld) - platinum spear (sml) - 75
+
+-----------------------------------------------------------------------
+
+&gt;&gt;b. Spiritual Monsters - These enemies always throw weapons that will reduce 
+your Spiritual HP. They range in difficulty from blue, being the easiest, to 
+pink, being the middle, to purple, being the nastiest.
+
+Key:
+
+#. Name - notes about foe
+
+color monster - type of weapon - weapon rating
+
+
+
+1. Ants: These are the weakest of the Spiritual family.
+
+Blue - blue fireball - 5
+Pink - grey fireball - 9
+Purple - white fireball - 13
+
+2. Dwarves: This family of monsters uses the same strength color code as the 
+Giants (See #3 in the War Monsters section) Ones with shields have more 
+resistance and sometimes attack with more powerful weapons.
+
+Yellow (no shld) - grey fireball (sml) - 9
+Yellow (shld) - grey fireball (sml) - 9
+Tan (no shld) - white fireball (sml) - 13
+Tan (shld) - pink fireball (sml) - 19
+Orange (no shld) - orange fireball (sml) - 27
+Orange (shld) - purple fireball (sml) - 43
+
+3. Scorpions: Among the more difficult of the Spiritual family, especially 
+early on.
+
+Blue - blue lighting bolt (sml) - 9
+Pink - grey lightning bolt (sml) - 13
+Purple - pink lighting bolt (sml) - 23
+
+4. Alligators: Second most fierce enemy in the Spiritual family.
+
+Blue - orange lightning bolt (sml) - 33
+Pink - purple lighting bolt (sml) - 43
+Purple - pink lightning bolt (lrg) - 45
+
+5. Dragons: Most fierce Spiritual family monster.
+
+Blue - grey fireball (lrg) - 17
+Pink - orange fireball (lrg) - 36
+Purple - purple fireball (lrg) - 49
+
+------------------------------------------------------------------------
+
+
+&gt;&gt;c. Mixture Monsters: These monsters will throw different types of weapons at 
+you, depending on what type of floor you are on. If you are on all War levels 
+they throw war weapons, if you are on all Spiritual levels they will throw 
+Spiritual. If you're on a mixture level, they often throw the type you are 
+attacking with, though not always; it seems random. Wraiths sometimes have 
+shields. A shielded Wraith is more powerful than an unshielded Wraith and 
+attacks with stronger weapons. Strength color code goes: White (Strong)--&gt; Grey 
+(Stronger) --&gt; Orange (Strongest). The only exception is Minotaur, who will 
+always appear purple.
+
+#. Name - notes about foe
+
+color monster | type of War weapon - weapon rating | type of Spiritual weapon 
+- weapon rating
+
+1. Ghouls: The weaker of the mixture monsters, though they should not be 
+underestimated; most have HP over 50. Use caution, especially with orange 
+ones.
+
+White | silver axe - 36 | pink lightning bolt (sml) - 23
+Grey | gold axe - 57 | orange lightning bolt (sml) - 33
+Orange | platinum axe - 66 | purple lightning bolt (sml) - 43
+
+
+2. Wraiths: The stronger of the mixture monsters. These foes can often have 
+over 100 HP. Some of the orange ones can exceed 170 HP. It is highly advised 
+to avoid these foes until you have high HP and high armor. Beware the orange, 
+shielded wraith; he attacks with the most powerful weapons you can obtain in 
+the game.
+
+White (no shld) | tan spear (lrg) - 27 | blue lightning bolt (lrg) - 17
+White (shld) | orange spear (lrg) - 33 | grey lightning bolt (lrg) - 23
+Grey (no shld) | blue spear (lrg) - 45 | white lightning bolt (lrg) - 29
+Grey (shld) | silver spear (lrg) - 69 | pink lightning bolt (lrg) - 45
+Orange (no shld) | gold spear (lrg) - 84 | orange lightning bolt (lrg) - 55
+Orange (shld) | platinum spear (lrg) - 99 | purple lightning bolt - 65
+
+3. Minotaur: This is the final boss. Minotaur isn't the most difficult foe in 
+the game, but he can be very challenging until you get your armor up. When you 
+defeat Minotaur, he will always leave behind the chest (in gold), containing 
+the "Treasure of Tarmin". When you pick it up, you win the game. If you want 
+to keep going, you can just leave it behind, and move on (The "open" command 
+does not open then chest and win the game, you must actually press "Pick Up" 
+to claim the treasure, so you may open doors if the treasure chest is in front 
+of one you want to go through.). Minotaur will appear for every floor you 
+descend, until you win the game. Many times, you'll see him more than once on 
+one level if you keep doing down deeper into the dungeon.
+
+Purple (shld)* | silver spear (lrg) - 69 | pink lightning bolt (lrg) - 45
+
+-------------------------------------------------------------------------
+
+&gt;&gt;d. Special Monsters: There are 3 special foes that you may encounter on your 
+way down that are most certainly worth fighting. Though it may seem unusual; 
+you can occasionally find fighting doors in your travels. Fighting doors are 
+not only strong, but they do generally have more than 50 HP. Their rewards, 
+however are worth your effort.
+
+#. Name - notes about foe
+
+color of door - type of weapon - weapon rating
+
+1. Light Blue Door: This is the weakest of the fighting doors, as far as HP is 
+concerned, but its attacks rate 2nd most powerful among the three types. For 
+defeating this fighting door, inside the room it was guarding you'll find the 
+"Go Through Wall" book. This book will let you teleport through walls and go 
+wherever you want, even when there isn't a door to use.
+
+Attacks with: purple fireball (sml) - 39
+
+2. Tan Door: This is the middle of the road door concerning HP totals. It can 
+often have 60-80 HP, depending on how deep you are in the dungeon. It's 
+attacks, however, are nothing to be feared if your Spiritual armor rating 
+exceeds 20 or so. Your reward for defeating this door is the "See Through 
+Wall" book that lets you see things through the walls. This book is very 
+valueable so that you don't find yourself running into an enemy that you 
+aren't ready to confront. Be sure to go into the room that the door was 
+guarding to claim it!
+
+Attacks with: grey fireball (sml) - 9
+
+3. Yellow Door: This is the ultimate fighting door. It compares quite closely 
+with the Orange, shielded wraith in power: HP and Attack. Only confront this 
+door once you have very high HP and armor in Spiritual. Your reward is the 
+"Platium Transform" book, which allows you to turn any armor or War weapons 
+into platinum. You may also use it to turn jewels and valueables into 
+platinum, as well. The door's HP often exceeds 150.
+
+Attacks with: purple lightning bolt (lrg) - 65
+
+
+This concludes the "Monsters" Section.
+------------------------------------------------------------------------
+
+5. Weapons
+
+&gt;&gt;a. War Affinity Weapons - All weapons can only be used one time unless 
+otherwise noted.
+
+Key: 
+Color - Strength rating
+
+
+~Bows~ * These weapons can be used over, and over, but sometimes break in the 
+midst of battle.
+
+Tan - 6
+Orange - 9
+Blue - 15
+Silver - 21
+Gold - 27
+Platinum - 33
+
+~Crossbows~ * These weapons can be used over, and over, but sometimes break in 
+the midst of battle.
+
+Tan - 18
+Orange - 24
+Blue - 30
+Silver - 36
+Gold - 42
+Platinum - 99
+
+~Spears (small)~
+
+Tan - 21
+Orange - 27
+Blue - 33
+Silver - 42
+Gold - 57
+Platinum - 75
+
+~Spears (large)~
+
+Tan - 27
+Orange - 33
+Blue - 45
+Silver - 69
+Gold - 84
+Platinum - 99
+
+~Knives~
+
+Tan - 9
+Orange - 15
+Blue - 21
+Silver - 30
+Gold - 42
+Platinum - 57
+
+~Axes~
+
+Tan - 15
+Orange - 21
+Blue - 27
+Silver - 36
+Gold - 57
+Platinum - 66
+
+
+&gt;&gt;b. Spiritual Affinity Weapons - All weapons can only be used one time unless 
+otherwise noted.
+
+Key: 
+Color - Strength rating
+
+~Scrolls~ * These weapons can be used over, and over, but sometimes break in 
+the midst of battle.
+
+Blue - 3
+Grey - 5
+White - 9
+Pink - 13
+Orange - 17
+Purple - 21
+
+~Fighting Books~ * These weapons can be used over, and over, but sometimes 
+break in the midst of battle.
+
+Blue - 11
+Grey - 15
+White - 19
+Pink - 23
+Orange - 27
+Purple - 65 - Note: The purple fighting book is rare, and usually appears if 
+you go deeper than the 12th level.
+
+~Lightning Bolts (small)~
+
+Blue - 9
+Grey - 13
+White - 17
+Pink - 23
+Orange - 33
+Purple - 43
+
+~Lightning Bolts (large)~
+
+Blue - 17
+Grey - 21
+White - 29
+Pink - 45
+Orange - 55
+Purple - 65
+
+~Fireballs (small)~
+
+Blue - 5
+Grey - 9
+White - 13
+Pink - 23
+Orange - 33
+Purple - 39
+
+~Fireballs (large)~
+
+Blue - 13
+Grey - 17
+White - 25
+Pink - 33
+Orange - 39
+Purple - 48
+
+------------------------------------------------------------
+
+6. Containers
+
+There are a variety of containers within the dungeon you are exploring. Some 
+you are able to open without a key, but with some containers, you'll need a 
+key of some type. Keys can be found in other containers, locked and unlocked 
+alike. There are three colors of keys: Tan, Orange, and Blue. A tan key will 
+only open tan containers, while an orange will open tan and orange containers. 
+A blue key will open any container. 
+
+The color of the container generally tells you, a some small degree, how 
+precious the valueable inside is. Tan containers normally don't contain as 
+nice of things as orange or blue containers. 
+
+&gt;&gt;Bombs:
+
+A note about bombs: Once you get deep into the dungeon, some containers have 
+been booby trapped with bombs. They can be found in locked and unlocked 
+containers alike, and when found, reduce your War HP. Some bombs are stronger 
+than others - and they all seem to get stronger the deeper you go into the 
+dungeon. Bombs generally begin appearing on, or after the 3rd floors 
+(Depending on which difficulty level you are playing). They can cause a wide 
+range of damage to you - from a meager 5 or 6 points of damage, up to 150 
+points of damage (deep in the dungeon). You should be aware of this, and 
+sometimes avoid opening things if your War HP is still low once you go down a 
+few levels.
+
+&gt;&gt;The Types of Containers:
+
+Sachel (small) 
+Sachel (large)
+Money Belt
+Pack - always require a key
+Box - always require a key
+Chest - always require a key 
+
+You'll find many different special items in these containers, which I have 
+outlined below:
+
+-----------------------------------------------------------    
+
+7. Special Items &amp; Potions
+
+
+&gt;&gt;a. Small Potions: Have a cross top, in appearance.
+
+Small Blue Potions: This potion acts as a refresher after a tough battle. They 
+will totally restore your HP with using any food.
+
+Small Pink Potions: This potion will enable you to find more valueable things 
+in containers for a short period of time. Note that bombs become more 
+powerful, as well, when you use this potion. Its effects diminish when you 
+hear a "whoosh" noise.
+
+Small Purple Potions: This potion will make you temporarily invisible to 
+monsters. While it's in effect, you will see not monsters anywhere throughout 
+the dungeon, with the exception of Minotaur. Be warned that when its effects 
+wear off you may find a monster standing directly in front of you and ready to 
+attack! Its effects diminish when you hear a "whoosh" noise.
+
+&gt;&gt;b. Large Potions: Have a flat top, in appearance.
+
+Large Blue Potions: This will increase your War HP by 10 for the durration of 
+the game.
+
+Large Pink Potions: This will increase your Spiritual HP by 10 for the 
+durration of the game.
+
+Large Puruple Potions: This one will swap some HP from War to Spiritual or 
+vise versa to reduce a gap between the 2 HP scores if there is one. Note that 
+sometimes they hinder your HP instead of helping. Make sure that your HP 
+scores are both realitively high before using this.
+
+&gt;&gt;c. War Enhancement Books: Have a clear cover, in appearance.
+
+Blue War Book: Using this book will turn your War HP score blue. After using 
+War weapons in battle, this book will help you accumulate HP points quicker; 
+up to a limit of 99 by pressing "rest".
+
+Pink War Book: Using this book will turn your War HP score tan. After using 
+War weapons in battle, this book will help you accumulate HP points quicker; 
+up to a limit of 149 by pressing "rest".
+
+Purple War Book: Using this book will turn your War HP score white. After 
+using War weapons in battle, this book will help you accumulate HP points 
+quicker; up to the game limit of 199 in War, by pressing "rest".
+
+&gt;&gt;d. War Enhancement Books: Have a solid cover, in appearance.
+
+Blue Spiritual Book: Using this book will turn your Spiritual HP score blue. 
+After using Spiritual weapons in battle, this book will help you accumulate HP 
+points quicker; up to a limit of 49 by pressing "rest".
+
+Pink Spiritual Book: Using this book will turn your Spiritual HP score tan. 
+After using Spiritual weapons in battle, this book will help you accumulate HP 
+points quicker; up to a limit of 69 by pressing "rest".
+
+Purple Spiritual Book: Using this book will turn your Spiritual HP score 
+white. After using Spiritual weapons in battle, this book will help you 
+accumulate HP points quicker; up to the game limit of 99 in Spiritual, by 
+pressing "rest".
+
+&gt;&gt;e. Special Books: Have an "X", on the book cover, in appearance.
+
+Blue Special Book: Using this book will allow you to transport through walls. 
+Unlimited usage, and they never break. Found in containers, and also retrieved 
+by fighing the light blue fighting doors.
+
+Pink Special Book: Using this book enables you to see through walls for a 
+limited time. Unlimited usage, and they never break. Found in containers, and 
+also attained by fighting the tan fighting door. Its effects diminish when you 
+hear a "whoosh" noise.
+
+Purple Special Book: Using this book allows you to turn all War weapons, 
+armor, and jewels to platinum. Unlimited usage, and they never break. Found in 
+containers, or you can get your hands on this one by fighting the yellow 
+fighting door.
+
+-------------------------------------------------------------------------
+
+8. Armor &amp; Rings
+
+&gt;&gt;a. Armor (War Protection)
+
+Armors are among perhaps the most important items to obtain in this game. 
+Though they are primarily for War protection, they do add a few points, 
+occasionally to Spiritual protection. There are many types of armors:
+
+Helmet
+Curiass
+Greaves
+Gauntlet
+Tower Shield
+Round Shield
+
+All of these armors come in different grades; their defense power, from 
+weakest (left) to strongest (right), are denoted below:
+
+tan &lt; orange &lt; blue &lt; silver &lt; gold &lt; platinum
+
+You'll find different types of armor all throughout the dungeons. They get 
+more and more powerful the deeper you go, but then again, so do your 
+opponents. It's important to pick these articles up and use them everytime you 
+find them. They can mean the difference between life and death.
+
+&gt;&gt;b. Rings (Spiritual Protection)
+
+Rings are also very important to get your hands on because they greatly 
+enhance your protection against Spiritual attacks. Though they are primarily 
+for Spiritual enhancement, they do also add protection to your War armor 
+rating. There are two sizes of rings: small, and large. Small rings are always 
+stronger then the large ring of the color class below them, but never as 
+strong as a large ring in its same color class. For instance, a small grey 
+ring, whose color is 1 step above blue, in power, will be slightly more 
+powerful than the large blue ring, but never stronger than the large grey 
+ring.
+
+All rings also come in different grades; their defense power, from weakest 
+(left) to strongest (right), are noted below:
+
+blue &lt; grey &lt; white &lt; pink &lt; orange &lt; purple
+
+As with regular armor, you'll find stronger rings as you travel deeper into 
+the dungeon. Be sure to use them when you find them.
+
+-------------------------------------------------------------------------
+
+9. Generalized Strategies and Other Important Facts
+
+&gt;&gt;a. Use the glance feature, and use it often. Glancing left and right can let 
+you see what's around a corner, without going around it and discovering that 
+there is a dragon waiting for you on the other side. Glancing can increase 
+your survival chances a great deal; especially on the harder difficulty 
+levels.
+
+&gt;&gt;b. When you see an enemy in the distance, prepare yourself so that you can 
+attack first. 9 times out of 10, if you can anticipate a battle from a 
+distance, you can get the pre-emptive on the foe. Getting in that first blow 
+can be really important, especially if you're weak and you need to defeat the 
+monster to keep going. 
+
+&gt;&gt;c. Know when to retreat. By knowing how much damage an enemy can cause, and 
+how strong your armor is, you can anticipate, fairly well, whether or not you 
+should press an attack, or retreat. Armor generally reduces the base damage of 
+a weapon by 70 to 130% of your armor rating. IE: If an enemy throws a weapon 
+at you with a 9 attack rating, and your armor rating is also 9, the maximum 
+damage the attack could do, under the worst possible scenario, is 3 ( 3 is 
+roughlyu 30% of 9; You round down). Or in this case, there is a fairly high 
+chance that the attack will do nothing. Knowing what enemies attack you with 
+what, can help you a lot.
+
+&gt;&gt;d. Avoid overusing the "Retrace/Retreat" button. If you're going through an 
+area with a lot of doors, and you go into a room to pick something up, then 
+retreat, and open another door directly neighboring the position you retreated 
+to, you will NOT be allowed to retreat again, if you encounter an enemy by 
+opening that door. This can present you with a serious problem; especially if 
+that monster you cannot retreat from severely outclasses you. To avoid this, 
+when you go into a room, turn around, open the door, and walk back out of the 
+room. Don't use the retrace if you plan on opening a door across the hall or 
+next to the one you just retraced from inside.
+
+&gt;&gt;e. Get to know what you can, and can't take. Try walking up to an enemy and 
+letting them attack you, while quickly pressing retreat ONCE. This will let 
+you see what their attack does to your score. Of course.. sometimes that's a 
+big risk, too.
+
+&gt;&gt;f. Search out the special books! The "See-Through" book is very helpful. 
+You'll be able to see what's hiding behind that door before you open it, or 
+where that powerful bow or fighting book is. An excellent accompaniment is the 
+"Go-Through Wall" book, which lets you go right to what you see - without 
+having to search for a way to get to it, which can be frustrating at times.
+
+&gt;&gt;g. Hold on to War or Spiritual books when you find them. In some cases, you 
+may be more interested in building one HP score, more than the other. IE: If 
+you're interested in raising your Spiritual HP and you find a War book; store 
+the War book in your pack, for later use. Sometimes you may find a Spiritual 
+book nearby, and then you can focus on building that before using the War 
+book. These books are hard to come by, so don't pass one up if you find one, 
+unless you absolutely CANNOT carry it.
+
+&gt;&gt;h. Avoid shielded foes if you are weak. Sheilded foes have a much higher 
+defense than unsheilded ones. So just don't fight them until you get stronger.
+
+&gt;&gt;i. Warp across floors by traveling through the gates. In the outside hall, 
+you'll sometimes find gates that go over to other areas on the same floor. If 
+you go through them, you'll have access to another floor with the same degree 
+of difficulty. This is useful for just build HP for the deeper levels. Gates 
+come in a variety of colors. Green gates will change Spiritual HP over to War 
+HP when you step through them, so be warned. Blue ones change War HP to 
+Spiritual HP. Tan ones leave your HP scores unchanged. Always remember to hit 
+"rest" if you travel through a green or blue gate, to complete the switch.
+
+!----Gate Example----! 
+
+If your War HP is 20 and your Spiritual HP is 10, by walking through a green 
+gate, your Spiritual HP will fall to 5, but when you hit "rest", your War HP 
+will increase to 30.
+
+Or...
+
+If your War HP is 20, and your Spiritual HP is 10, walking through a blue gate 
+will decrease your War HP to 10, and your Spiritual HP to 15.
+
+How does this work? Well... green gates reduce your Spiritual HP by half, and 
+then transfers those points, multiplied by 2, to your War HP.  Blue gates 
+reduce your War HP by half, and then add half the losses to your Spiritual HP.
+
+&gt;&gt;j. Glance left and right as SOON as you use the ladder. When you arrive on 
+the floor below, you may have an enemy immediately next to you, or in some 
+cases in front of you (in this case, TURN and walk in any direction away from 
+the foe, if you can.) Enemies that you encounter as soon as you go down the 
+ladder you cannot run from, because the game doesn't let you go the previous 
+floor ever again (...and you haven't been anywhere to retreat to yet on this 
+floor... so it can be very annoying when this happens and the enemy outclasses 
+you.)
+
+&gt;&gt;k. Reincarnation. When you are killed, but have high HP scores, you will be 
+reincarnated. What does this mean? It means you get a second (or third, or 
+however many you can stand) at playing through the dungeon. Of course, there 
+are some severe penalties. Such as the fact that you lose everything that was 
+in your pack, and all of your jewels. If you used any War or Spiritual 
+Enhancment books, their effect is also nullified. You get to keep your armor, 
+and what you had in your 2 hands. (Most often a weapon and your shield) Of 
+course, if you have any special books, and you KNOW something is going to kill 
+you, try to set one of them down, even in front of the enemy, or put one book 
+in your left hand, or do both. Anything that you set down won't be lost; it 
+will remain there, even if you get reincarnated. This is always the case.
+
+&gt;&gt;l. Containers. If you have some very valueable items in your possesion, and 
+you don't want to risk losing them to a bomb reincarnating you, you can always 
+set those items down before you go to open the package. This will ensure that 
+they will be there, even if there is a bomb, and it reincarnates you.
+
+
+10. Legal Stuff
+
+This FAQ is Copyright (c) 2002 by me, Curtis M. (Zhuge Liang at GameFAQs) ALL 
+RIGHTS RESERVED. No other sources, other than myself, and the game were used 
+to compile the information contained herein. Furthermore, no reproduction or 
+distribution, in part, or full, of this FAQ is permitted without explicit 
+written permission from myself. If you have a question about this FAQ, or 
+would like to suggest something for me to add to it, you may contact me at 
+midgar8308@hotmail.com. I'm open to comments, questions, and suggestions. 
+
+I do grant permissions to use this FAQ if you just ask, so please ASK before 
+you post this FAQ on your website or message board. I thank you in advance for 
+your honesty and respect for my work. And yes, I have given CJayC, the owner 
+and operator of GameFAQs, the right to publicly publish this FAQ, but only on 
+GameFAQs.com (duh).

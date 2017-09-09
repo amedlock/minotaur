@@ -1,0 +1,543 @@
+ADVANCED DUNGEONS & DRAGONS*
+TREASURE OF TARMIN* CARTRIDGE
+Cartridge Instructions
+(For 1 Player)
+
+*ADVANCED DUNGEONS & DRAGONS and TREASURE OF TARMIN are 
+trademarks owned by and used under license from TSR Hobbies, Inc.
+
+The DREADED MINOTAUR and his monster companions built a 
+complicated system of MAZES and DUNGEONS in the island of Tarmin 
+to hide and protect the Great Treasure of dark ages. Along with other 
+stolen riches, they took OBJECTS of SPIRITUAL POWERS and LETHAL 
+WEAPONS. Now the castle with its GHASTLY OCCUPANTS and 
+FIERCELY GUARDED TREASURES has lured you in...You begin your 
+JOURNEY wondering whether you'll ever make it to the end...
+
+OBJECT OF THE GAME
+ALONE in a deep web of endless rooms and corridors...you move on 
+with a bow, a quiver of arrows, a sack of flour, and an empty pack 
+toward DEEPER PATHWAYS...beyond which the TARMIN TREASURE 
+can be found. Yet you know the DEVOURING MINOTAUR awaits 
+you...at the end of your quest. You proceed cautiously through ILL-
+OMENED GATES and LADDERS and even HIDDEN DOORS. You bump 
+into all kinds of combat and spiritual objects, some of which give you 
+STRANGE POWERS when collected and then used. Your pack can only 
+contain up to 6 objects, your hand 2 -- but they can be swapped 
+around and used in the best possible ways. So it's up to you to 
+OUTSMART the EVIL FORCES...and GRAB the LOOT!
+
+YOUR CONTROLS
+
+KEYPAD 1: Pick Up/Drop
+KEYPAD 2: Swap Hands
+KEYPAD 3: Rotate Pack
+KEYPAD 4: Open
+KEYPAD 5: Use
+KEYPAD 6: Swap Pack
+KEYPAD 7: Attack
+KEYPAD 8: Rest
+KEYPAD 9: Use Ladder
+CLEAR: Glance Left
+KEYPAD 0: Retreat/Retrace
+ENTER: Glance Right
+
+UPPER SIDE ACTION KEYS: Castle Map
+LOWER LEFT SIDE ACTION KEY: Count Food
+LOWER RIGHT SIDE ACTION KEY: Count Arrows
+
+DISC: Move Forward/Turn Left/Turn Right
+
+NOTE: DO NOT USE THE KEYPAD AND DISC OR SIDE BUTTONS AT THE 
+SAME TIME.
+
+THE SCREEN
+The screen displays either the CASTLE MAP, showing a side view of 
+the maze beneath the castle, or the MAZE MAP, showing your point 
+of view as you move through the maze.
+
+At the bottom of both screens is a collection of objects and 
+information:
+
+At the center bottom is the MAZE LEVEL NUMBER, showing the level 
+you are on (1 to 256).
+
+Above the Level Number is the OBJECT AT YOUR FEET (Maze Map 
+only)
+
+To the left of the Level Number is the OBJECT IN LEFT HAND.
+
+To the right of the Level Number is the OBJECT IN RIGHT HAND.
+
+To the left of the Object in Left Hand is the COMPASS, represented by 
+a letter (N, W, S, E) that shows the direction you are facing (North, 
+West, South, East).
+
+Around the Compass are the items currently in your PACK. There can 
+be from none to four items in the Pack.
+
+To the right of the Object in Right Hand is the 3-WAY SCORE: three 
+sets of numbers separated by slashes. The top set is your 
+WAR/SPIRITUAL STRENGTH SCORE. The middle set is your 
+ARMOR/RING DEFENSES SCORE. The bottom set is your WAR 
+WEAPON/SPIRITUAL WEAPON SCORE.
+
+Above the 3-Way Score is your TREASURE SCORE (Castle Map only).
+
+
+YOUR COMMANDS
+
+* To LOOK at CASTLE MAP, press and hold either Upper Action 
+Button. The FLASHING WHITE DOT will tell you where you are -- 
+level and location -- in the maze system. Up to 12 levels can be seen 
+on the map. The SMALL YELLOW CHEST in the center of the lowest 
+level indicates the location of the TARMIN TREASURE...guarded by 
+the MINOTAUR. This is the first of 256 levels where the treasure can 
+be found. Each level down is filled with nastier monsters and magic 
+items...and maybe the terrible Minotaur! You CANNOT look at the 
+castle map while fighting a monster!
+
+* To MOVE FORWARD, TURN LEFT, or TURN RIGHT, press and hold 
+DISC in corresponding position.
+
+* TO COUNT number of FOOD UNITS you have, press and hold Lower 
+Left Action Button. You'll hear a series of CLICKS. Each click 
+corresponds to a food unit. You can collect up to 99 units of food by 
+picking up flour sacks of 6 to 9 units each.
+
+* To COUNT number of ARROWS you have, press and hold Lower 
+Right Action Button. You'll hear a series of CLICKS. Each click 
+corresponds to an arrow. You can collect up to 99 arrows by picking 
+up quivers of 6 to 9 arrows each.
+
+* To pick up or drop objects, press PICK UP/DROP (1). This relates to 
+your RIGHT HAND only. Your hand must be empty to pick up 
+something, otherwise this command will swap what is in your hand 
+with what is at your feet.
+
+* To swap objects from one hand to another, press SWAP HANDS (2).
+
+* To rotate objects in your pack, press ROTATE PACK (3). Up to 6 
+objects will rotate in a CLOCKWISE direction, one position at a time, 
+occupying the following clock positions: 1, 3, 5, 7, 9 and 11 o'clock.
+
+* To swap an object in your pack with an object in your right hand, 
+press SWAP PACK (6). You can only swap an object occupying the 3 
+o'clock position in your pack.
+
+* TO open an UNLOCKED CONTAINER at your feet, or a door or hidden 
+door directly in front of you, press OPEN (4). Certain walls may 
+contain a HIDDEN DOOR. If TRAPPED in a room, try this command 
+when facing a wall.
+
+* To use an object in your right hand, or possibly act upon an object 
+at your feet, press USE (5).
+
+* To attack a monster directly in front of you with the object in your 
+right hand, press ATTACK (7). You cannot attack while the objects in 
+your left and right hands are flashing (this means it's NOT your turn). 
+Monsters often attack first. Wait for your turn.
+
+* To REGAIN both your WAR STRENGTH and SPIRITUAL STRENGTH 
+after a battle, press REST (8). The amount of rest you'll get will 
+depend on the number of food units you have picked up. Each unit of 
+food can give you up to 5 units of war strength and 2 units of 
+spiritual strength.
+
+* To GO DOWN a LEVEL into a new maze using the ladder at your feet, 
+press USE LADDER (9). Once used, a ladder WON'T allow you to CLIMB 
+UP a level again. However, when you reach level 256, the deepest 
+one, a ladder will place you back up to level 1.
+
+* To see what is to your left, press GLANCE LEFT (CLEAR).
+
+* TO see what is to your right, press GLANCE RIGHT (ENTER).
+
+* To go back where you were last or retrace your last step, press 
+RETREAT/RETRACE (0). Press once to retreat and the monster will 
+take one LAST SHOT at you. If you continue pressing this command, 
+the monster will continue hitting you until you let up on the Disc.
+
+GET READY
+Start by setting the skill level:
+
+Press 3 for Easiest
+Press 2 for Easy
+Press 1 for Medium
+Press DISC for Hard
+
+START YOUR JOURNEY!
+Once a skill level has been set, the game begins immediately with a 
+brief display of the overall CASTLE MAP.
+
+The castle map comes and goes. You've been told where you are in 
+the first maze level, by the FLASHING WHITE DOT. You've seen the 
+ladders diagonally connecting the maze levels, and the TARMIN 
+TREASURE (represented by a small YELLOW CHEST) right in the 
+middle of the bottom level!
+
+Here are your INITIAL CONDITIONS, depending on your skill level 
+chosen:
+
+EASIEST
+Minimum Maze Levels: 2
+Possible Length of Game: 5 to 30 minutes
+Your Vulnerability: 1/4
+Your War/Spiritual Strength: 18/9
+Your Food: 9
+Your Arrows: 9
+
+EASY
+Minimum Maze Levels: 4
+Possible Length of Game: 1/4 to 1 hour
+Your Vulnerability: 1/2
+Your War/Spiritual Strength: 16/8
+Your Food: 8
+Your Arrows: 8
+
+MEDIUM
+Minimum Maze Levels: 8
+Possible Length of Game: 1/2 to 3 hours
+Your Vulnerability: 3/4
+Your War/Spiritual Strength: 14/7
+Your Food: 7
+Your Arrows: 7
+
+HARD
+Minimum Maze Levels: 12
+Possible Length of Game: 1.5 to 5 hours
+Your Vulnerability: FULL
+Your War/Spiritual Strength: 12/6
+Your Food: 6
+Your Arrows: 6
+
+Now you're on your own in the NW corner of the maze...heading 
+EAST...inside an outer corridor. You carry a BOW in your right hand, 
+some ARROWS in the quiver, a little FOOD in a sack, and an empty 
+pack. Neither the quiver nor the sack are seen. The pack occupies the 
+area on the screen where the COMPASS is, and is noticed only when 
+stuffed with objects. Move in the direction you want to go, by 
+pressing edge of DISC.
+
+Often, EYEBALL MURALS will appear to you. They are always in the 
+outer corridors, MARKING the ENTRANCE to the interior of a maze. 
+They come in three different colors. DARK GREEN indicates a war 
+type maze, BLUE a spiritual type maze, and TAN a mixed type maze.
+
+KNOW THE MAZE
+Check your direction with the COMPASS. Look for OBJECTS and 
+DOORS. Objects can be anything...such as weapons, containers, keys, 
+useful items or treasures. Doors are usually easy to spot. But...
+
+If TRAPPED in a DUNGEON, a HALLWAY, or a SECTION of the MAZE 
+which seems to repeat itself endlessly, look for possible HIDDEN 
+DOORS. Confront any suspicious wall as you would confront a regular 
+door and press OPEN (4). If a hidden door exists, it will open. If not, 
+turn around...step by step...and try other walls...or other pathways. 
+Beware of OTHER DOORS...endowed with weird powers...
+
+A LADDER in your way will provide a quick exit, DOWN into a DEEPER 
+LEVEL. Approach the ladder and press USE LADDER (9). A suction 
+sound will immediately transfer you! You may want to check your 
+new position on the castle map, if you're still displayed on it.
+
+Sometimes you will encounter GATES in hallways. Going through a 
+gate moves you over to an adjacent maze, but it may JUMBLE your 
+WAR/SPIRITUAL strength SCORE. And you CANNOT go back through 
+it! (REST AFTERWARD to regain some points and check your new 
+score.) Gates come in 3 colors: GREEN (makes you more war-like), 
+BLUE (makes you more spiritual), and TAN (won't change you at all).
+
+TREASURES DISAPPEAR when picked up, because you either carry 
+them in your pockets or wear them. THEIR VALUES are recorded 
+only on the castle map, in BLACK, directly above the 3-way scoring 
+display.
+
+QUIVERS and SACKS of FLOUR also DISAPPEAR when picked up. 
+You'll be carrying them on your back!
+
+Other objects, like USEFUL ITEMS, may DISAPPEAR when picked up 
+or used with your right hand. Or they may make you 
+disappear...making you INVISIBLE to all monsters but the Minotaur 
+(while also making the monsters invisible to you!) Such objects have 
+SPIRITUAL POWERS.
+
+To use a spiritual object, and it must be in your right hand or at your 
+feet, press USE (5). Use immediately -- rather than keeping it around 
+-- to build up your spiritual power, increase your score, and stand 
+better chances of SURVIVING ATTACKING MONSTERS. Check spiritual 
+points, if any, right of the slash of any of the three displayed scores.
+
+ATTACKING!
+You must have a weapon or magical item for use in your RIGHT 
+HAND to fight. If you don't, swap a weapon from your left hand or 
+pack. Or pick up a weapon that you find. Try to be prepared with a 
+shield in your left hand. If order of objects in pack needs rotating, do 
+so, and get your most effective weapon out!
+
+Remember, many weapons and items will VANISH upon their use in 
+battle. So keep several weapons in your pack to ensure victory. 
+Watch both YOUR SCORE and the MONSTER'S SCORE before and after 
+every round of attack. Work out a BATTLE STRATEGY. Some 
+monsters will knock you out with just one or two blows...if you're not 
+careful!
+
+Avoid attacking if your score looks weaker than the monster's. Press 
+RETREAT/RETRACE and move away. Chances are you can PICK UP 
+MORE WEAPONS in the hallways and dungeons and ATTACK LATER!
+
+You can only attack a monster STANDING DIRECTLY IN FRONT of you, 
+although a monster may attack you from a nearby position. 
+Sometimes he might just run smack in front of you from BEHIND a 
+DOOR that behaves strangely because of an OMINOUS SPELL. Watch 
+out for those SURPRISE ATTACKS!
+
+After the initial assault, you ALTERNATE ATTACKS. If you attack first 
+, you CANNOT attack again until the monster has thrown something 
+at you. The exchange will be brief if either you or the monster is 
+much stronger. Or it may last quite a while if there is a balance of 
+forces.
+
+The BATTLE ENDS when either you or the monster DIES...or when you 
+RETREAT. Monsters NEVER retreat. A dying monster will disappear in 
+a cloud of smoke. His score will vanish too. If you DIE, your score will 
+end up with a 0 on either side of the slash of your WAR/SPIRITUAL 
+STRENGTH scoring display. However, cheer up! If you are worthy, 
+you'll be REINCARNATED! And that means, a new opportunity for you 
+to win!
+
+SCORING
+Your 3-WAY SCORING DISPLAY on BOTH MAPS plus your SPECIAL 
+TREASURE VALUE SCORING DISPLAY on the CASTLE MAP tell you 
+how you're doing. Anything LEFT of a slash on the 3-way scoring is a 
+WAR-TYPE score, anything RIGHT of a slash is a SPIRITUAL score.
+
+At the BOTTOM is the score of the object (WAR WEAPON or 
+SPIRITUAL WEAPON) you have picked up for use in COMBAT...or 
+BUILD YOUR STRENGTH in preparation for such a combat. The score 
+will remain on the screen as long as you hold the object in your 
+RIGHT HAND. In the MIDDLE is your ARMOR/RING body DEFENSES 
+score. At the TOP is your overall STRENGTH (WAR and SPIRITUAL) 
+score. Keep it high!
+
+A similar overall STRENGTH score is kept for the monster attacking 
+you! His comes in green or blue colors. GREEN for WAR-derived 
+STRENGTH and BLUE for SPIRITUAL-derived STRENGTH. This score 
+will appear DURING a BATTLE only and on the spot on the screen 
+where normally the maze level indication appears. The score that 
+appears initially is the weakest of his two -- WAR or SPIRITUAL. 
+Thereafter, is the score that was last damaged by your weapon used.
+
+Notice that your MAXIMUM STRENGTH score (top line) under normal 
+conditions is 49/24. But using useful items such as war or spiritual 
+books or certain potions may change that! Notice also that your 
+MAXIMUM WEAPON score (bottom line) is 99/0 (if WAR type) or 
+0/65 (if SPIRITUAL). Always check the SECRETS OF THE UNIVERSE 
+tables to plan your STRATEGIES...and SURVIVE! And ultimately WIN 
+the GAME!
+
+[NOTE: In the original hand-written instructions by programmer Tom 
+Loughry, Tom suggests that the true gamer will have more fun by 
+NOT reading the SECRETS OF THE UNIVERSE section, instead learning 
+the secrets for himself while playing.]
+
+SECRETS OF THE UNIVERSE
+
+WAR WEAPON TYPES
+
+BOWS: Use 1 arrow at a time; bows may break
+KNIVES: Vanish when used in an attack
+AXES: Vanish when used in an attack
+DARTS: Vanish when used in an attack
+SPEARS: Vanish when used in an attack
+CROSSBOWS: Use 1 arrow at a time; crossbows may break
+
+WAR WEAPON COLORS & POWERS
+
+TAN (wood/leather): Regular Power
+ORANGE (rusty iron): Greater Power
+BLUE (steel): Fair Power
+GRAY (silver): Medium Power
+YELLOW (gold): High Power
+WHITE (platinum): Super Power
+
+ARMOR TYPES
+
+SMALL SHIELDS: Hold in left hand during fight
+LARGE SHIELDS: Hold in left hand during fight
+GAUNTLETS: Use to put on; best color is kept
+HAUBERKS: Use to put on; best color is kept
+HELMETS: Use to put on; best color is kept
+BREASTPLATES: Use to put on; best color is kept
+
+* Wearing a piece of armor will protect you a little from war 
+weapons thrown at you by monsters.
+
+ARMOR COLORS & POWERS: Same as WAR WEAPONS
+
+SPIRITUAL WEAPON TYPES
+
+SCROLLS: Reusable; may break
+SMALL FIREBALLS: Vanish when used in attack
+SMALL LIGHTNING BOLTS: Vanish when used in attack
+LARGE FIREBALLS: Vanish when used in attack
+LARGE LIGHTNING BOLTS: Vanish when used in attack
+BOOKS: Reusable; may break
+
+SPIRITUAL WEAPON COLORS & POWERS
+
+BLUE: Regular Power
+GRAY: Greater Power
+WHITE: Fair Power
+PINK: Medium Power
+RED: High Power
+PURPLE: Super Power
+
+RING TYPES
+
+SMALL RING: Use to put on; best color is kept
+LARGE RING:  Use to put on; best color is kept
+
+* Wearing a ring will protect you a little from spiritual weapons 
+thrown at you by monsters.
+
+RING COLORS & POWER: Same as SPIRITUAL WEAPONS
+
+CONTAINER TYPES
+
+MONEY BELTS: Contents REGULAR/Open to grab contents
+SMALL BAGS: Contents BETTER/Open to grab contents
+BOXES: Contents FAIR/Locked; use key to open and grab contents
+PACKS: Contents MEDIUM/Locked; use key to open and grab contents
+LARGE BAGS: Contents GREAT/Open to grab contents
+CHESTS: Contents SUPER/Locked; use key to open and grab contents
+
+* Containers may contain bombs, which will hurt you when they 
+blow up. There are 3 types of bombs. Nastier bombs will be found in 
+better containers. There is no way of avoiding their blast.
+
+* When opened or unlocked, containers reveal a treasure or a useful 
+item. The value of the treasure or item found depends on the type 
+and quality of the container. Better treasures are found in better 
+containers.
+
+* Use of a small potion increases the potential of all containers 
+significantly while in effect. Attacking a monster with a container 
+will make him take the container and forget about the fight.
+
+CONTAINER COLORS & POWERS
+
+TAN: Mild Quality
+ORANGE: Good Quality
+BLUE: Best Quality
+
+TREASURE TYPES
+
+COINS: 10 (silver), 30 (gold), 170 (platinum)
+NECKLACES: 20 (silver), 70 (gold), 200 (platinum)
+INGOTS: 50 (silver), 350 (gold), 450 (platinum)
+LAMPS: 100 (silver), 150 (gold), 220 (platinum)
+CHALICES: 120 (silver), 250 (gold), 400 (platinum)
+CROWNS: 300 (silver), 500 (gold), 600 (platinum)
+
+* Picking up treasures with your right hand automatically scores 
+them for you. Read their special score in black on your overall castle 
+map only. Watch each treasure being picked up disappear, since 
+you'll be carrying it in your pocket or wearing it.
+
+USEFUL ITEMS TYPES
+
+KEYS
+TAN: Unlock tan containers
+ORANGE: Unlock tan or orange containers
+BLUE: Unlock any container
+
+WAR BOOKS (VANISH ON USE)
+BLUE: Increase your experience with war weapons; turn your war 
+strength score blue when in use; raise maximum score to 99
+PINK: Increase your experience with war weapons; turn your war 
+strength score tan when in use; raise maximum score to 149
+PURPLE: Increase your experience with war weapons; turn your war 
+strength score white when in use; raise maximum score to 199
+
+SPIRITUAL BOOKS (VANISH ON USE)
+BLUE: Increase your experience with spiritual weapons; turn your 
+war strength score blue when in use; raise maximum score to 49
+PINK: Increase your experience with spiritual weapons; turn your 
+war strength score tan when in use; raise maximum score to 74
+PURPLE: Increase your experience with spiritual weapons; turn your 
+war strength score white when in use; raise maximum score to 99
+
+SMALL POTIONS (VANISH ON USE)
+BLUE: Refresh war & spiritual strength to maximum; help in fights, 
+but lose 1 turn during fights
+PINK: Help find better things in containers; magic ends with a little 
+"whoosh" noise
+PURPLE: Make you invisible to all demons except the Minotaur (while 
+making them invisible to you); magic ends with a little "whoosh" 
+noise
+
+LARGE POTIONS (VANISH ON USE)
+BLUE: Raise war strength score by 10; help in fights, but lose 1 turn 
+during fights
+PINK: Raise spiritual power score by 10; help you, but lose 1 turn
+PURPLE: Switch war & spiritual strength traits; help in fights, but lose 
+1 turn during fights
+
+SPECIAL BOOKS (NEVER VANISH)
+BLUE: Teleport books move you forward in maze rooms in spite of 
+walls, but not into monsters
+PINK: Vision books allow you to see through walls for a time
+PURPLE: Midas books turn treasures & war weapons platinum at 
+your feet
+
+* Useful items are found only in containers.
+
+BAD MONSTERS
+
+GIANT ANTS: Blue, Pink, Purple
+DWARFS: Yellow, Tan, Orange
+GIANT SCORPIONS: Blue, Pink, Purple
+DWARFS WITH SHIELDS: Yellow, Tan, Orange
+GIANT SNAKES: Blue, Pink, Purple
+ALLIGATORS: Blue, Pink, Purple
+DRAGONS: Blue, Pink, Purple
+
+* Bad monsters use spiritual weapons only.
+* Bad monsters are listed in order of increasing badness
+
+NASTY MONSTERS
+
+SKELETONS WITH SHIELDS: White, Gray, Orange
+SKELETONS WITHOUT SHIELDS: White, Gray, Orange
+CLOAKED SKELETONS WITH SHIELDS: White, Gray, Orange
+CLOAKED SKELETONS WITHOUT SHIELDS: White, Gray, Orange
+GIANTS WITH SHIELDS: Yellow, Tan, Orange
+GIANTS WITHOUT SHIELDS: Yellow, Tan, Orange
+
+* Nasty monsters use war weapons only.
+* Nasty monsters are listed in order of increasing nastiness.
+
+HORRIBLE MONSTERS
+
+GHOULS (SHORT HOODED & ROBED)
+WITH SHIELDS: White, Gray, Orange
+WITHOUT SHIELDS: White, Gray, Orange
+
+WRAITHS (TALL, HOODED & ROBED)
+WITH SHIELDS: White, Gray, Orange
+WITHOUT SHIELDS: White, Gray, Orange
+
+MINOTAUR: Purple (Guards the Tarmin treasure)
+
+* Horrible monsters use either spiritual or war weapons.
+* In harder two skill levels, horrible monsters will shatter your 
+weakest of two scores -- war strength or spiritual strength.
+* All together there are 52 types of monsters; you'll find more of the 
+nasty and horrible ones in the deepest levels...down to level 256...if 
+you care to find them!
+* To win the game you must slay the Minotaur and grab the Tarmin 
+treasure!
+--------------
+(c)1983, 1998 Intellivision Productions Inc.
+
