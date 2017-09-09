@@ -60,6 +60,8 @@ var total_levels = { 1: 3, 2:6, 3:10 }
 
 func init_maze( skill, seednum ):
 	skill_level = skill
+	print("Skill=", skill_level )
+	print("Seednum=", seednum )
 	seed( seednum )
 	for num in range(0, 100 ):
 		make_dungeon_info( skill, num+1)
@@ -109,6 +111,7 @@ func use_exit(x,y):
 		elif maze_number in [2,3]: maze_number = 6
 		elif maze_number in [5,6]: maze_number = 7
 		else: maze_number+=1
+	print("Level=", maze_number, "Depth=", current_depth() )
 	audio.play("descend")
 	builder.build_maze()
 	player.map.update_map(current_depth())
@@ -235,7 +238,6 @@ func set_cell_item( cx, cy, it ):
 	
 
 func item_at_feet():
-	if player.is_moving(): return null
 	var c = get_cell( player.loc.x, player.loc.y )
 	if c==null: return null
 	return c.item
@@ -460,7 +462,7 @@ var green_gate = preload( "res://data/gate/green_gate.scn")
 var tan_gate = preload( "res://data/gate/green_gate.scn")
 
 func add_gate_node( x, y, prefab ):
-	var p = world_pos( x, y ) + Vector3(1.5,0.3,1.5 )
+	var p = world_pos( x, y ) + Vector3(1.5,1.3,1.5 )
 	var ent = prefab.instance()
 	ent.set_translation( p )
 	maze_walls.add_child( ent )

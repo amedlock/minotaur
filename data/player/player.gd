@@ -222,9 +222,9 @@ func use_item():
 		var feet = dungeon.item_at_feet()
 		if feet and feet.needs_key and right_hand.power >= feet.power:
 			open_item( feet )
-	elif right_hand.name=="ring":
+	elif right_hand.name=="small_ring":
 		if right_hand.power in [1,3]:
-			m_armor += 5
+			m_armor += 2
 		elif right_hand.power in [2,3]:
 			m_armor += 5
 		right_hand = null
@@ -316,30 +316,16 @@ func killed ( enemy ):
 		mind_exp += enemy.monster.power 
 	
 
-func percentage( val , pct ):
-	return (val * ( 100 - pct ) ) / 100;
-
-
-func vary_amount( a, pct ):
-	var p = pct[ randi() % pct.size() ]
-	return a * ( 100 - p ) / 100
-
-func apply_armor( dmg, arm ): 
-	var prot = percentage( dmg, arm )
-	if prot==0: return dmg
-	prot = vary_amount( prot, [5, 10, 15] )
-	return max( dmg-prot, 0 )
 
 
 func damage( enemy, weap ):
-	var maxdmg = enemy.monster.max_damage
-	if skill==1: maxdmg /= 4
-	elif skill==2: maxdmg /=2
-	var dmg = vary_amount( maxdmg, [ 5, 10, 15, 20 ] )
-	var war_amt = apply_armor( dmg, war_armor() )
-	var mind_amt = apply_armor( dmg, mind_armor() )
+	var md = enemy.monster.max_damage
+	var amt = ( md / 2 ) + (randi() % ( md / 2 ))
+	var mind_amt = (amt * 3) / 4
+	amt =  max( amt - war_armor(), 0 )
+	mind_amt = max(  mind_amt - (  mind_armor() * 2 / 3 ), 0 )
 	if weap.name in ["axe", "dagger", "spear"]:
-		health = max( self.health - war_amt, 0 )
+		health = max( self.health - amt, 0 )
 	elif weap.name in ["fireball", "lightning", "small_fireball"]:
 		mind = max( self.mind - mind_amt, 0 )
 
@@ -372,7 +358,7 @@ func transport_player(g):
 		dungeon.load_prev_level()
 	reset_location()
 	if g==dungeon.GateType.Green:
-		health_max += max(health_max / 2)
+		health_max += int( health_max / 2)
 		mind_max = int(mind_max/2)
 	if g==dungeon.GateType.Blue:
 		health_max = int(health_max/2)
@@ -403,20 +389,16 @@ var attacking = false  # is the player attempting to attack?
 
 var skill = 1
 
-
 func init( skill ):
-	self.skill = skill
+	self.skill  = skill
 	gold = 0
 	armor = 0
 	m_armor = 0
 	war_exp = 0
 	mind_exp = 0
 	food = 6
-	arrows = 6 + 6 * (4 - skill)
+	arrows = 6 + (6-skill) * 3
 	resurrected = false	
-	for n in range(10): inventory[n] = null;
-	right_hand = dungeon.item_list.find_item("bow")
-	if skill==1: left_hand = dungeon.item_list.find_item("small_shield")
 	if skill==1: 
 		health = 18
 		mind = 12
@@ -431,6 +413,9 @@ func init( skill ):
 		mind = 6
 	mind_max = mind
 	health_max = health
+	right_hand = dungeon.item_list.find_item("bow")
+	if skill==1: left_hand = dungeon.item_list.find_item("small_shield")
+	
 	
 
 func war_armor(): 
