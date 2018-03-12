@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh"
+
+[deps]
+
+files=[ "res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh" ]
+
+source_file="res://data/dungeon/outer_wall.obj"
+source_md5="573030dcb174f95933abccd2af2795f3"
+
+dest_files=[ "res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh", "res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh" ]
+dest_md5="683cd88e626b071a394e00c5f3ab91fb"
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )

@@ -8,7 +8,7 @@ var item_prefab = preload("res://data/items/item_prefab.tscn")
 var enemy_prefab = preload("res://data/enemies/enemy_prefab.tscn")
 
 
-var corner = preload("res://data/dungeon/wall_corner.scn")
+var corner = preload("res://data/dungeon/wall_corner.tscn")
 
 enum GateType { Empty, Tan, Green, Blue }
 
@@ -24,7 +24,6 @@ class LevelInfo:
 	var skill = 0
 	var mazenumber = null  # 1..99
 	var seed_number = null
-	var next_seed = null
 	var used_gate = false;
 	var type = null
 	var has_minotaur = null
@@ -87,7 +86,7 @@ func next_maze_type(n):
 
 func prev_maze_type(n):
 	var prev = level_info[skill_level+1];
-	if level_info.has( n-1 ):
+	if level_info.has( int(n-1) ):
 		prev = level_info[ n-1 ];
 	return prev.type
 
@@ -109,7 +108,8 @@ func use_exit(x,y):
 		elif maze_number in [2,3]: maze_number = 6
 		elif maze_number in [5,6]: maze_number = 7
 		else: maze_number+=1
-	audio.play("descend")
+	audio.stream = load("res://data/sounds/descend.wav")
+	audio.play()
 	builder.build_maze()
 	player.map.update_map(current_depth())
 	player.reset_location()
@@ -144,12 +144,7 @@ func make_dungeon_info(skill, num):
 	result.type = [ Tan, Tan, Green, Blue ][ randint(4) ];
 	result.has_minotaur = num >= total_levels[skill]
 	result.start = Vector2(2 + randint( 4 ),2 + randint( 4 ) )
-	if level_info.has( num-1 ):
-		result.seed_number = level_info[num-1].next_seed
-	else:
-		result.seed_number = randi()
-	seed( result.seed_number )
-	result.next_seed = randi()
+	result.seed_number = randi()
 	result.depth = get_depth( skill, num )
 	level_info[num] = result
 
@@ -455,9 +450,9 @@ func add_corner( cx, cy, wallpost ):
 	maze_walls.add_child( it )
 
 
-var blue_gate = preload( "res://data/gate/blue_gate.scn")
-var green_gate = preload( "res://data/gate/green_gate.scn")
-var tan_gate = preload( "res://data/gate/green_gate.scn")
+var blue_gate = preload( "res://data/gate/blue_gate.tscn")
+var green_gate = preload( "res://data/gate/green_gate.tscn")
+var tan_gate = preload( "res://data/gate/green_gate.tscn")
 
 func add_gate_node( x, y, prefab ):
 	var p = world_pos( x, y ) + Vector3(1.5,0.3,1.5 )
@@ -482,7 +477,7 @@ func add_wall(cx, cy, kind, walldir ):
 		var name = get_wall_name( cx, cy, walldir )
 		w.set_name( name )				
 		w.set_translation( post )
-		w.set_rotation_deg( Vector3(0,  wall_angle[ walldir ], 0 ) )
+		w.rotation_degrees =  Vector3(0,  wall_angle[ walldir ], 0 )
 		maze_walls.add_child( w )
 		walls[ wall_index(cx, cy, walldir ) ] = w
 

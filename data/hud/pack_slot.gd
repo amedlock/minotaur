@@ -12,7 +12,7 @@ func _ready():
 	sprite.hide()
 	
 func clicked_slot(view, evt, shape_idx ):
-	if evt.type==InputEvent.MOUSE_BUTTON and evt.pressed:
+	if evt is InputEventMouseButton and evt.pressed:
 		hud.pack_slot_clicked( slot_num, evt.button_index )
 
 func set_item( it ):

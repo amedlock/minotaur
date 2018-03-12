@@ -5,16 +5,16 @@ enum WallDir  { North, South, East, West }
 enum WallType { None, Wall, Door, SecretDoor, Gate };
 enum WallPost  { NW, NE, SE, SW }
 
-var wall = preload("res://data/dungeon/dungeon_wall.scn")
-var corner = preload("res://data/dungeon/wall_corner.scn")
-var arch = preload("res://data/door/dungeon_arch.scn")
-var door = preload("res://data/door/door.tscn")
-var exit = preload("res://data/trapdoor/trapdoor.scn")
+var wall = preload("res://data/dungeon/dungeon_wall.tscn")
+var corner = preload("res://data/dungeon/wall_corner.tscn")
+var arch = preload("res://data/door/dungeon_arch.tscn")
+var door = preload("res://data/door/door_prefab.tscn")
+var exit = preload("res://data/trapdoor/trapdoor.tscn")
 
 
-var green_mtl = preload("res://data/dungeon/green.mtl")
-var blue_mtl = preload("res://data/dungeon/blue.mtl")
-var tan_mtl = preload("res://data/dungeon/tan.mtl")
+var green_mtl = preload("res://data/dungeon/green_mat.tres")
+var blue_mtl = preload("res://data/dungeon/blue_mat.tres")
+var tan_mtl = preload("res://data/dungeon/tan_mat.tres")
 
 var enemy_list ;
 var item_list;
@@ -297,7 +297,7 @@ func add_murals( type ):
 	var mat = mural_mat[type]
 	for m in flr.get_children():
 		if m.is_in_group("murals"):
-			m.get_node("Mesh").set_material_override( mat )
+			m.get_node("Mesh").set_surface_material( 0, mat )
 			
 				
 func add_minotaur(info, coords):
@@ -309,8 +309,8 @@ func add_minotaur(info, coords):
 
 func build_cell( info, cx, cy ):
 	var c = get_cell( cx, cy )
-	if c==null: return
-
+	if c==null: 
+		return
 	if c.north==Wall: dungeon.add_wall( cx, cy, wall, North )
 	elif c.north==Door: dungeon.add_wall( cx, cy, door, North )
 	

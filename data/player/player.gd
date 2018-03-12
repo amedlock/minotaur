@@ -77,6 +77,7 @@ func set_dir( d ):
 	dir = d % 360
 	set_rotation( Vector3( 0, deg2rad(dir), 0 ) )
 	hud.update_compass()
+	map.update_player(loc.x, loc.y, dir)
 
 func coord_to_world(v2):
 	return grid_start + Vector3( v2.x * 3, 0 , v2.y * 3)
@@ -85,7 +86,7 @@ func set_pos( cx, cy ):
 	loc.x = cx
 	loc.y = cy
 	self.set_translation( coord_to_world( loc )  );	
-	map.update_player(cx, cy)
+	map.update_player(cx, cy, dir)
 	
 
 func move_dir():
@@ -116,7 +117,7 @@ func _input(evt):
 	if active_action:
 		active_action.input( evt )
 		return	
-	if not (evt.type==InputEvent.KEY and evt.pressed): return
+	if not (evt is InputEventKey and evt.pressed): return
 	if evt.scancode==KEY_Q:
 		find_node("Glance").start( 90 )
 		return
@@ -201,7 +202,9 @@ var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
 func use_item():
 	if not right_hand:
 		return
-	var fx = "magic" if right_hand.name in magic_items else null;
+	var fx = null
+	if right_hand.name in magic_items:
+		fx = load("res://data/sounds/magic.wav")
 	if right_hand.name=="small_potion":
 		if right_hand.power in [1,3]:
 			health = health_max
@@ -240,7 +243,9 @@ func use_item():
 		right_hand= null
 	hud.update_pack()
 	hud.update_stats()
-	if fx!=null: audio.play(fx)
+	if fx!=null: 
+		audio.stream = fx
+		audio.play()
 
 func open_door():
 	if wall_ahead!=null:
@@ -360,7 +365,8 @@ func check_for_gate():
 	var c = dungeon.get_cell( loc.x, loc.y )
 	if c==null or c.gate<0: return false
 	transport_player( c.gate )
-	audio.play("magic")
+	audio.stream = load("res://data/sounds/magic.wav")
+	audio.play()
 	return true
 
 
@@ -372,7 +378,7 @@ func transport_player(g):
 		dungeon.load_prev_level()
 	reset_location()
 	if g==dungeon.GateType.Green:
-		health_max += max(health_max / 2)
+		health_max += int(health_max / 2)
 		mind_max = int(mind_max/2)
 	if g==dungeon.GateType.Blue:
 		health_max = int(health_max/2)

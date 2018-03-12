@@ -28,10 +28,10 @@ func index( x, y ): return x + (y * 100);
 
 
 
-func update_player( x,y ):
+func update_player( x,y, r ):
 	var pos = Vector2(39, 41) + Vector2( x * 16, y * 16 )
-	self.marker.set_pos( pos )
-	
+	self.marker.position =  pos 
+	self.marker.rotation_degrees = 360-r
 
 
 func _ready():
@@ -42,7 +42,7 @@ func _ready():
 		var r = rows.find_node("Row" + str(y) )
 		for x in range( 12 ):
 			var spr = r.find_node( "Col" + str(x) )
-			spr.set_z( 2 )
+			spr.z_index =  2 
 			lookup[ index(x ,y ) ] = spr
 			
 

@@ -37,11 +37,11 @@ func _ready():
 	game = dungeon.get_parent()	
 	item_list = dungeon.find_node("ItemList")
 	enemy_anim = player.find_node("EnemyAnim")
-	enemy_anim.connect("finished", self, "enemy_fire_done" )
+	enemy_anim.connect("animation_finished", self, "enemy_fire_done" )
 	enemy_weapon = player.find_node("EnemyWeapon")
 	enemy_audio = enemy_weapon.find_node("Audio")
 	player_anim = player.find_node("PlayerAnim")
-	player_anim.connect("finished", self, "player_fire_done" )
+	player_anim.connect("animation_finished", self, "player_fire_done" )
 	player_weapon = player.find_node("PlayerWeapon")
 
 
@@ -64,7 +64,7 @@ func start( enemy, eloc, dir_change ):
 
 
 func input(evt):
-	if evt.type!=InputEvent.KEY or (not evt.pressed):
+	if not (evt is InputEventKey and evt.pressed):
 		return
 	if self.timer>0:
 		return
@@ -118,9 +118,9 @@ var broken
 func get_sound_fx( item ):
 	if item==null: return null;
 	if item.name in ["fireball", "small_fireball"]:
-		return "fireball"
+		return load("res://data/sounds/fireball.wav")
 	if item.name in ["lightning", "small_lightning", "scroll", "book"]:
-		return "lightning"
+		return load("res://data/sounds/lightning.wav")
 	return null
 
 
@@ -150,17 +150,19 @@ func player_fire():
 	if broken and dungeon.maze_number > 2:  # clear out of the players hand
 		player.right_hand = null
 	player.hud.update_pack()
-	if fx!=null: audio.play(fx,0)
+	if fx!=null:
+		audio.stream = fx
+		audio.play()
 	timer = 1.5	
 	
 
-func player_fire_done():
-	if get_sound_fx( player_item )==null: audio.play( "hit" )
+func player_fire_done(which):
+	audio.stream = preload("res://data/sounds/hit.wav")
+	audio.play()
 	enemy.damage( player_item ) 	# remove it
 	if broken: player_item = null
 	player_item = null
 	player.attacking = false
-	audio.stop(0)
 
 
 func choose_enemy_weapon(monster):
@@ -181,18 +183,21 @@ func enemy_fire():
 	enemy_weapon.set_region_rect( enemy_item.img ) #Rect2( Vector2(0,0), Vector2(32,32)))
 	enemy_weapon.set_modulate( enemy_item.color )
 	var fx = get_sound_fx( enemy_item )
-	if fx!=null : enemy_audio.play( fx, 0 )
+	if fx!=null : 
+		enemy_audio.stream = fx
+		enemy_audio.play()
 	if enemy_item.name in ["axe", "dagger", "fireball", "small_fireball"]:
 		enemy_anim.play("SpinFire")
 	else:
 		enemy_anim.play("Fire")
 
-func enemy_fire_done():
-	if get_sound_fx( enemy_item )==null: enemy_audio.play("hit")
+func enemy_fire_done(which):
+	enemy_audio.stream = load("res://data/sounds/hit.wav")
+	enemy_audio.play()
 	player.damage( enemy, enemy_item )
 	player.hud.update_stats()
 	if retreating and not player.dead():
 		player.retreat()
-	enemy_audio.stop(0)
+
 
 	

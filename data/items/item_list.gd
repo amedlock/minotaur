@@ -206,7 +206,7 @@ func _ready():
 	dungeon = get_parent()
 	for name in icons:
 		var r = icons[name]
-		r.pos *= 32
+		r.position *= 32
 		icons[name] =  r
 	add_all_items()
 	

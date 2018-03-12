@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/dungeon_wall.obj-3c3b5024e7d7e47ac8fe8df2c8e229b7.mesh"
+
+[deps]
+
+files=[ "res://.import/dungeon_wall.obj-3c3b5024e7d7e47ac8fe8df2c8e229b7.mesh" ]
+
+source_file="res://data/dungeon/dungeon_wall.obj"
+source_md5="9f72af6bd76b2ab9940c10d7643c74a7"
+
+dest_files=[ "res://.import/dungeon_wall.obj-3c3b5024e7d7e47ac8fe8df2c8e229b7.mesh", "res://.import/dungeon_wall.obj-3c3b5024e7d7e47ac8fe8df2c8e229b7.mesh" ]
+dest_md5="3de416766666a5b8b2d13035fb128451"
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )

@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/trapdoor.obj-1307c4cf44be6fcabd56c91eb3fb1ed6.mesh"
+
+[deps]
+
+files=[ "res://.import/trapdoor.obj-1307c4cf44be6fcabd56c91eb3fb1ed6.mesh" ]
+
+source_file="res://data/trapdoor/trapdoor.obj"
+source_md5="3dc4e046e2b6c21947215c336fb179b1"
+
+dest_files=[ "res://.import/trapdoor.obj-1307c4cf44be6fcabd56c91eb3fb1ed6.mesh", "res://.import/trapdoor.obj-1307c4cf44be6fcabd56c91eb3fb1ed6.mesh" ]
+dest_md5="d793e860baac7cba3c23734ec6113166"
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )

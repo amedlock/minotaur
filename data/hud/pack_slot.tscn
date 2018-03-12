@@ -1,40 +1,40 @@
-[gd_scene load_steps=4 format=1]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://data/hud/pack_slot.gd" type="Script" id=1]
-[ext_resource path="res://data/items/item_sheet.tex" type="Texture" id=2]
+[ext_resource path="res://data/items/item_sheet.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
-extents = Vector2( 10, 10.0916 )
+extents = Vector2( 25.1821, 24.9649 )
 
-[node name="Icon" type="Area2D"]
+[node name="Icon" type="Area2D" index="0"]
 
-input/pickable = true
-shapes/0/shape = SubResource( 1 )
-shapes/0/transform = Matrix32( 2.61779, 0, 0, 2.66197, 2.37023, 6.01557 )
-shapes/0/trigger = true
+input_pickable = true
 gravity_vec = Vector2( 0, 1 )
 gravity = 98.0
 linear_damp = 0.1
 angular_damp = 1.0
-script/script = ExtResource( 1 )
-slot_num = 0
+audio_bus_override = false
+audio_bus_name = "Master"
+script = ExtResource( 1 )
+slot_num = null
 
-[node name="Collision1" type="CollisionShape2D" parent="."]
+[node name="Collision1" type="CollisionShape2D" parent="." index="0"]
 
-transform/pos = Vector2( 2.37023, 6.01557 )
-transform/scale = Vector2( 2.61779, 2.66197 )
+position = Vector2( 3.1777, 5.95821 )
 shape = SubResource( 1 )
-trigger = true
-_update_shape_index = 0
 
-[node name="Sprite" type="Sprite" parent="."]
+[node name="Sprite" type="Sprite" parent="." index="1"]
 
-transform/pos = Vector2( 2.60741, 5.29678 )
-transform/scale = Vector2( 2, 2 )
+position = Vector2( 2.6, 5.3 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
-region = true
+region_enabled = true
 region_rect = Rect2( 224, 224, 32, 32 )
+_sections_unfolded = [ "Region", "Transform" ]
+__meta__ = {
+"_edit_lock_": true
+}
 
 

@@ -12,7 +12,7 @@ func start():
 	player.active_action = self
 
 	
-func input(evt):
-	if evt.type==InputEvent.KEY and evt.pressed==false and evt.scancode==KEY_TAB:
+func _input(evt):
+	if evt is InputEventKey and evt.pressed==false and evt.scancode==KEY_TAB:
 		game.show_game()
 		complete()

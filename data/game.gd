@@ -55,12 +55,13 @@ func show_map():
 
 			
 func _input(evt):
-	if evt.type!=InputEvent.KEY : return
-	if evt.is_echo() or not evt.pressed: return
-	if Input.is_key_pressed(KEY_F1) and dungeon.is_visible():
-		help.toggle()
-	if Input.is_key_pressed(KEY_F10):
-		get_tree().quit()
+	if evt is InputEventKey:
+		if evt.echo or (not evt.pressed): 
+			return
+		if evt.scancode==KEY_F1 and dungeon.visible:
+			help.visible = !help.visible
+		elif evt.scancode==KEY_F10:
+			get_tree().quit()
 	
 		
 		

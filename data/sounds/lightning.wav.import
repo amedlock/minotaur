@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/lightning.wav-6e7f8bfe8f617da70796e318ed86098d.sample"
+
+[deps]
+
+source_file="res://data/sounds/lightning.wav"
+source_md5="7d6fddedcd3c1c872abbf0ebc9ffe4ee"
+
+dest_files=[ "res://.import/lightning.wav-6e7f8bfe8f617da70796e318ed86098d.sample" ]
+dest_md5="75fd82f6ab7b710a1bb65739a0028b07"
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

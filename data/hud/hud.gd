@@ -43,6 +43,9 @@ func _ready():
 	right_hand = hands.find_node("Right").find_node("Sprite")
 	at_feet = hands.find_node("Feet").find_node("Sprite")
 	pack = find_node( "Pack" )
+	hands.get_node("background/Feet").connect("input_event", self, "clicked_feet" )
+	hands.get_node("background/Left").connect("input_event", self, "clicked_left" )
+	hands.get_node("background/Right").connect("input_event", self, "clicked_right" )
 	
 
 
@@ -55,7 +58,7 @@ func calc_sprite_scale( src_w, src_h, dest_w, dest_h ):
 onready var compass = find_node("Compass")
 				
 func update_compass():
-	compass.set_rotd( player.dir )
+	compass.rotation_degrees =  player.dir 
 								
 
 func update_stats( ):
@@ -139,9 +142,10 @@ func pack_slot_clicked( slot , button ):
 	player.attacking = false
 	update_pack()
 
-func _on_Feet_input_event( viewport, event, shape_idx ):
+func clicked_feet( viewport, event, shape_idx ):
 	if player.is_moving(): return 
-	if event.type!=InputEvent.MOUSE_BUTTON: return
+	if not( event is InputEventMouseButton): 
+		return
 	if !event.pressed: return;
 	var feet = dungeon.item_at_feet()
 	if feet and feet.kind=="bag" and feet.needs_key==false:
@@ -166,8 +170,8 @@ func _on_Feet_input_event( viewport, event, shape_idx ):
 	update_pack()
 
 # alternate attack method, press F otherwise
-func _on_Right_input_event( viewport, event, shape_idx ):
-	if event.type!=InputEvent.MOUSE_BUTTON: return
+func clicked_right( viewport, event, shape_idx ):
+	if not (event is InputEventMouseButton): return
 	if !event.pressed: return;
 	if event.button_index == BUTTON_LEFT:
 		player.attack()
@@ -180,8 +184,8 @@ func _on_Right_input_event( viewport, event, shape_idx ):
 
 
 # alternate attack method?
-func _on_Left_input_event( viewport, event, shape_idx ):
-	if event.type!=InputEvent.MOUSE_BUTTON: return
+func clicked_left( viewport, event, shape_idx ):
+	if not (event is InputEventMouseButton): return
 	if !event.pressed: return;
 	if event.button_index == BUTTON_LEFT:
 		pass

@@ -27,7 +27,7 @@ func process(dt):
 	
 
 func input(evt):
-	if evt.type==InputEvent.KEY and evt.pressed==false and evt.scancode in [KEY_Q, KEY_E]:
+	if evt is InputEventKey and evt.pressed==false and evt.scancode in [KEY_Q, KEY_E]:
 		player.set_dir( start )
 		complete()
 
