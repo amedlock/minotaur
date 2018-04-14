@@ -283,7 +283,8 @@ func check_for_monster():
 	
 func win():
 	game.show_map()
-	audio.play( "win" )
+	audio.stream = load("res://data/sounds/win2.wav")
+	audio.play()
 
 func attack():
 	if is_fighting():

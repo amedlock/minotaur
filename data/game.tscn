@@ -195,7 +195,7 @@ tracks/2/keys = {
 "values": [ 0.0, 135.0, 360.0 ]
 }
 
-[node name="Game" type="Spatial" index="0"]
+[node name="Game" type="Spatial"]
 
 script = ExtResource( 1 )
 
@@ -221,7 +221,6 @@ _sections_unfolded = [ "Transform" ]
 [node name="ceil" parent="Dungeon" index="4" instance=ExtResource( 6 )]
 
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.62478, 0 )
-visible = false
 _sections_unfolded = [ "Transform" ]
 
 [node name="ItemList" type="Spatial" parent="Dungeon" index="5"]
@@ -234,7 +233,6 @@ script = ExtResource( 8 )
 
 [node name="Player" type="Spatial" parent="." index="1"]
 
-editor/display_folded = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 1.25, -13.5 )
 script = ExtResource( 9 )
 _sections_unfolded = [ "Transform" ]
@@ -362,7 +360,6 @@ bus = "Master"
 
 [node name="MainMenu" type="Node2D" parent="." index="2"]
 
-editor/display_folded = true
 visible = false
 script = ExtResource( 19 )
 
