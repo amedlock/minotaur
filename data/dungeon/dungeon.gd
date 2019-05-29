@@ -37,8 +37,8 @@ class Cell:
 	var x = 0
 	var y = 0
 	var gate = 0
-	var north = None
-	var east = None
+	var north = WallType.None
+	var east = WallType.None
 	var enemy = null ; # an enemy
 	var item = null ; # an item
 	
@@ -46,8 +46,8 @@ class Cell:
 		self.item = null
 		self.enemy = null
 		self.gate = -1
-		self.north = None
-		self.east = None
+		self.north = WallType.None
+		self.east = WallType.None
 
 
 var skill_level = 1
@@ -141,7 +141,7 @@ func make_dungeon_info(skill, num):
 	var result = LevelInfo.new()
 	result.skill = skill
 	result.mazenumber = num;
-	result.type = [ Tan, Tan, Green, Blue ][ randint(4) ];
+	result.type = [ GateType.Tan, GateType.Tan, GateType.Green, GateType.Blue ][ randint(4) ];
 	result.has_minotaur = num >= total_levels[skill]
 	result.start = Vector2(2 + randint( 4 ),2 + randint( 4 ) )
 	result.seed_number = randi()
@@ -237,23 +237,23 @@ func item_at_feet():
 
 
 func get_wall( cx, cy, dir ):
-	if dir==South: return get_wall( cx, cy+1, North )
-	if dir==West:  return get_wall( cx-1, cy, East );
+	if dir==WallDir.South: return get_wall( cx, cy+1, WallDir.North )
+	if dir==WallDir.West:  return get_wall( cx-1, cy, WallDir.East );
 	var c = get_cell( cx, cy )
 	if dir==null or c==null: return null
-	if dir==North: return c.north
-	if dir==East: return c.east
+	if dir==WallDir.North: return c.north
+	if dir==WallDir.East: return c.east
 
 
 func set_wall( cx, cy, dir, type ):
-	if dir==South: return set_wall( cx, cy+1, North, type )
-	if dir==West : return set_wall( cx-1, cy, East, type )
+	if dir==WallDir.South: return set_wall( cx, cy+1, WallDir.North, type )
+	if dir==WallDir.West : return set_wall( cx-1, cy, WallDir.East, type )
 	var c = get_cell(cx, cy)
 	if c==null or dir==null: 
 		return null
-	if dir==North: 
+	if dir==WallDir.North: 
 		c.north = type
-	elif dir==East : 
+	elif dir==WallDir.East : 
 		c.east = type
 
 
@@ -285,11 +285,11 @@ func get_wall_between( p1, p2 ):
 	if not is_adjacent( c, d ):
 		assert( false )
 	if c.y==d.y:
-		if c.x > d.x: return get_wall_node( d.x, d.y, East )
-		else: return get_wall_node( c.x, c.y, East )
+		if c.x > d.x: return get_wall_node( d.x, d.y, WallDir.East )
+		else: return get_wall_node( c.x, c.y, WallDir.East )
 	else:
-		if p1.y > p2.y: return get_wall_node( c.x, c.y, North );
-		else: return get_wall_node( d.x, d.y, North );
+		if p1.y > p2.y: return get_wall_node( c.x, c.y, WallDir.North );
+		else: return get_wall_node( d.x, d.y, WallDir.North );
 
 # responsible for setting wall_ahead,outer_wall_XXXX for player object
 func update_path_info(loc, dirvec):
@@ -315,18 +315,18 @@ func get_wall_name( x, y, walldir ):
 
 
 func wall_num( dir ):
-	if dir==North: return 1
-	if dir==East: return 2
-	if dir==South: return 3
-	if dir==West: return 4
+	if dir==WallDir.North: return 1
+	if dir==WallDir.East: return 2
+	if dir==WallDir.South: return 3
+	if dir==WallDir.West: return 4
 	return dir
 
 func wall_index( x, y, dir ):
 	return int( dir + (( x + (y * WIDTH * HEIGHT ) ) * 5 ))
 
 func get_wall_node(cx, cy, dir):
-	if dir==South: return get_wall_node( cx, cy+1, North )
-	if dir==West: return get_wall_node( cx-1, cy, East )
+	if dir==WallDir.South: return get_wall_node( cx, cy+1, WallDir.North )
+	if dir==WallDir.West: return get_wall_node( cx-1, cy, WallDir.East )
 	if get_cell( cx, cy )==null: return null
 	var index = wall_index( cx, cy, dir )
 	if not walls.has(index):
@@ -361,10 +361,10 @@ var wall_post_offset = {
 }
 
 var wall_angle = {
-	North: 0,
-	East: 270,
-	South: 180,
-	West: 90
+	WallDir.North: 0,
+	WallDir.East: 270,
+	WallDir.South: 180,
+	WallDir.West: 90
 }
 
 const maze_origin = Vector3( -18, 0, -18 )
@@ -468,7 +468,7 @@ func add_gate_node( x, y, prefab ):
 # num can only be 1 or 2 as cells only have walls on the north and east sides
 # 3 and 4 are recursively called to the next cell south or west respectively
 func add_wall(cx, cy, kind, walldir ): 
-	assert( walldir in [North,South,East,West] )
+	# assert( walldir in [North,South,East,West] )
 	var post = wall_post_for_wall( cx, cy, walldir ) 	
 	if not wall_valid( cx, cy, walldir ):
 		return

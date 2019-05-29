@@ -4,20 +4,22 @@ importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/enemy_sheet.png-5ec930f305681147d393bc2177807c77.s3tc.stex"
 path.etc2="res://.import/enemy_sheet.png-5ec930f305681147d393bc2177807c77.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://data/enemies/enemy_sheet.png"
-source_md5="f9f06f548ca1c44bea25054f65c66bfb"
-
 dest_files=[ "res://.import/enemy_sheet.png-5ec930f305681147d393bc2177807c77.s3tc.stex", "res://.import/enemy_sheet.png-5ec930f305681147d393bc2177807c77.etc2.stex" ]
-dest_md5="672cd1ca96b97208550a4cc9894de517"
 
 [params]
 
 compress/mode=2
 compress/lossy_quality=0.7
 compress/hdr_mode=0
+compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=true
 flags/filter=false
@@ -27,6 +29,7 @@ flags/srgb=2
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
+process/invert_color=false
 stream=false
 size_limit=0
 detect_3d=false

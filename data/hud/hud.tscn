@@ -9,7 +9,7 @@
 [ext_resource path="res://data/hud/pack_grid.png" type="Texture" id=7]
 [ext_resource path="res://data/hud/pack_slot.tscn" type="PackedScene" id=8]
 
-[node name="HUD" type="Node2D"]
+[node name="HUD" type="Node2D" index="0"]
 
 script = ExtResource( 1 )
 
@@ -506,6 +506,6 @@ scale = Vector2( 3, 3 )
 texture = ExtResource( 4 )
 region_enabled = true
 region_rect = Rect2( 160, 64, 32, 32 )
-_sections_unfolded = [ "Transform" ]
+_sections_unfolded = [ "Offset", "Region" ]
 
 

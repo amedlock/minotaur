@@ -37,22 +37,22 @@ func randint( hi ):
 
 func build_outer_wall():
 	for xp in range(1,dungeon.WIDTH-1):
-		dungeon.set_wall( xp, 1, North, Wall );
-		dungeon.set_wall( xp, dungeon.HEIGHT-1, North, Wall )
+		dungeon.set_wall( xp, 1, WallDir.North, WallType.Wall );
+		dungeon.set_wall( xp, dungeon.HEIGHT-1, WallDir.North, WallType.Wall )
 	for yp in range(1,dungeon.HEIGHT-1):
-		dungeon.set_wall( 0, yp, East, Wall )
-		dungeon.set_wall( dungeon.WIDTH-2, yp, East, Wall )
+		dungeon.set_wall( 0, yp, WallDir.East, WallType.Wall )
+		dungeon.set_wall( dungeon.WIDTH-2, yp, WallDir.East, WallType.Wall )
 
 
 func add_starting_point():
-	dungeon.set_wall( 3, 1, North, Door );
-	dungeon.set_wall( 8, 1, North, Door );
-	dungeon.set_wall( 3, dungeon.HEIGHT-1, North, Door );
-	dungeon.set_wall( 8, dungeon.HEIGHT-1, North, Door );
-	dungeon.set_wall( 0, 3, East, Door );
-	dungeon.set_wall( 0, 8, East, Door );
-	dungeon.set_wall( dungeon.WIDTH-2, 3, East, Door );
-	dungeon.set_wall( dungeon.WIDTH-2, 8, East, Door );
+	dungeon.set_wall( 3, 1, WallDir.North, WallType.Door );
+	dungeon.set_wall( 8, 1, WallDir.North, WallType.Door );
+	dungeon.set_wall( 3, dungeon.HEIGHT-1, WallDir.North, WallType.Door );
+	dungeon.set_wall( 8, dungeon.HEIGHT-1, WallDir.North, WallType.Door );
+	dungeon.set_wall( 0, 3, WallDir.East, WallType.Door );
+	dungeon.set_wall( 0, 8, WallDir.East, WallType.Door );
+	dungeon.set_wall( dungeon.WIDTH-2, 3, WallDir.East, WallType.Door );
+	dungeon.set_wall( dungeon.WIDTH-2, 8, WallDir.East, WallType.Door );
 	return Vector2(5, 1)
 
 
@@ -62,9 +62,9 @@ func fill_inner():
 		for y in range(1,dungeon.HEIGHT-1):
 			var c = dungeon.get_cell(x,y)
 			if y > 1:
-				c.north = Wall
+				c.north = WallType.Wall
 			if x < dungeon.WIDTH-2:
-				c.east = Wall
+				c.east = WallType.Wall
 
 
 func get_neighbors( cx, cy ):
@@ -79,25 +79,25 @@ func get_neighbors( cx, cy ):
 
 func path_dir( from, to ):
 	if from.x==to.x:
-		if from.y < to.y : return South
-		if from.y > to.y : return North
+		if from.y < to.y : return WallDir.South
+		if from.y > to.y : return WallDir.North
 	elif from.y==to.y:
-		if from.x < to.x: return East
-		elif from.x > to.x: return West
-	return None
+		if from.x < to.x: return WallDir.East
+		elif from.x > to.x: return WallDir.West
+	return WallDir.None
 
 func add_path( from, to ):
 	var dir = path_dir( from, to )
-	var kind = None
+	var kind = WallType.None
 	if randint(10) > 8 :
-		kind = Door
-	if dir==East:
+		kind = WallType.Door
+	if dir==WallDir.East:
 		from.east = kind
-	elif dir==West:
+	elif dir==WallDir.West:
 		to.east = kind
-	elif dir==North:
+	elif dir==WallDir.North:
 		from.north = kind
-	elif dir==South:
+	elif dir==WallDir.South:
 		to.north = kind
 	else:
 		assert(false)
@@ -150,19 +150,19 @@ func build_maze_prim(info):
 			frontier.append( it )
 	
 func check_wall( x, y, dir ):
-	if dir==West: return check_wall(x-1, y, East)
-	if dir==South: return check_wall( x, y+1, North )
+	if dir==WallDir.West: return check_wall(x-1, y, WallDir.East)
+	if dir==WallDir.South: return check_wall( x, y+1, WallDir.North )
 	var c = dungeon.get_cell( x,y )
 	if c==null: return false
-	if dir==North: return c.north == Wall
-	if dir==East: return c.east==Wall
+	if dir==WallDir.North: return c.north == WallType.Wall
+	if dir==WallDir.East: return c.east==WallType.Wall
 		
 # prims algo makes maze too twisty, add some strategic doorways
 func more_doors():
-	if check_wall( 3,3, East ):  dungeon.set_wall( 3, 3, East, Door )
-	if check_wall( 8,4, North ):  dungeon.set_wall( 8, 4, North, Door )
-	if check_wall( 3,8, North ):  dungeon.set_wall( 3, 8, North, Door )
-	if check_wall( 8,9, North ):  dungeon.set_wall( 8, 9, North, Door )
+	if check_wall( 3,3, WallDir.East ):  dungeon.set_wall( 3, 3, WallDir.East, WallType.Door )
+	if check_wall( 8,4, WallDir.North ):  dungeon.set_wall( 8, 4, WallDir.North, WallType.Door )
+	if check_wall( 3,8, WallDir.North ):  dungeon.set_wall( 3, 8, WallDir.North, WallType.Door )
+	if check_wall( 8,9, WallDir.North ):  dungeon.set_wall( 8, 9, WallDir.North, WallType.Door )
 	
 	
 
@@ -311,11 +311,11 @@ func build_cell( info, cx, cy ):
 	var c = get_cell( cx, cy )
 	if c==null: 
 		return
-	if c.north==Wall: dungeon.add_wall( cx, cy, wall, North )
-	elif c.north==Door: dungeon.add_wall( cx, cy, door, North )
+	if c.north==WallType.Wall: dungeon.add_wall( cx, cy, wall, WallDir.North )
+	elif c.north==WallType.Door: dungeon.add_wall( cx, cy, door, WallDir.North )
 	
-	if c.east==Wall: dungeon.add_wall( cx, cy, wall, East )
-	elif c.east==Door: dungeon.add_wall( cx, cy, door, East )
+	if c.east==WallType.Wall: dungeon.add_wall( cx, cy, wall, WallDir.East )
+	elif c.east==WallType.Door: dungeon.add_wall( cx, cy, door, WallDir.East )
 	
 	if c.gate==dungeon.GateType.Green: dungeon.add_gate_node( cx, cy, dungeon.green_gate )
 	if c.gate==dungeon.GateType.Blue: dungeon.add_gate_node( cx, cy, dungeon.blue_gate )
@@ -335,11 +335,11 @@ func add_cell_corner( cx, cy ):
 	var cw = get_cell(cx-1,cy ) 
 	var ne = false
 	var se = false
-	if c.north!=None: 
+	if c.north!=WallType.None: 
 		ne = true
 	if cw!=null and cw.north!=null: 
 		ne = true
-	if c.east!=None: 
+	if c.east!=WallType.None: 
 		ne = true
 		se = true
 	if ne and cy>0: dungeon.add_corner( cx, cy, WallPost.NE )
