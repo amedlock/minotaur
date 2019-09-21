@@ -133,12 +133,12 @@ func _input(evt):
 	if Input.is_key_pressed(KEY_T):
 		use_item()
 	if Input.is_key_pressed(KEY_F5):
-		reset_location()		
+		reset_location()
 	if Input.is_key_pressed(KEY_F6):
 		var li = dungeon.current_level_info()
 		dungeon.use_exit( li.exit.x, li.exit.y )
 	if Input.is_key_pressed(KEY_SPACE):
-		open_door()		
+		open_door()
 	if Input.is_key_pressed(KEY_W):
 		find_node("Move").forward( loc, move_dir() )
 	elif Input.is_key_pressed(KEY_S):
@@ -283,7 +283,8 @@ func check_for_monster():
 	
 func win():
 	game.show_map()
-	audio.play( "win" )
+	audio.stream = load("res://data/sounds/win2.wav")
+	audio.play()
 
 func attack():
 	if is_fighting():
@@ -319,7 +320,7 @@ func killed ( enemy ):
 	elif enemy.monster.kind=="both":
 		war_exp += enemy.monster.power 
 		mind_exp += enemy.monster.power 
-	
+
 
 func percentage( val , pct ):
 	return (val * ( 100 - pct ) ) / 100;

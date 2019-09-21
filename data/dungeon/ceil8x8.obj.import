@@ -9,10 +9,7 @@ path="res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh"
 files=[ "res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh" ]
 
 source_file="res://data/dungeon/ceil8x8.obj"
-source_md5="79ee09e76e6b66c72f47c02fffff71af"
-
 dest_files=[ "res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh", "res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh" ]
-dest_md5="e1c44a6588e04cb14301590e6c6ef140"
 
 [params]
 

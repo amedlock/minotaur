@@ -9,10 +9,7 @@ path="res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh"
 files=[ "res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh" ]
 
 source_file="res://data/door/dungeon_door.obj"
-source_md5="2a076b75e436b5cfbecdf131a7ebfcdd"
-
 dest_files=[ "res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh", "res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh" ]
-dest_md5="70deee3d00e0be4ab7d52f1a0c8c0c99"
 
 [params]
 

@@ -7,10 +7,7 @@ path="res://.import/descend.wav-e3e9e747e84e501426514e39fd239261.sample"
 [deps]
 
 source_file="res://data/sounds/descend.wav"
-source_md5="a413c2afe561c22f9033fb7683cb3f8e"
-
 dest_files=[ "res://.import/descend.wav-e3e9e747e84e501426514e39fd239261.sample" ]
-dest_md5="9cf8c4cd43694f8ba848ebb0b8856112"
 
 [params]
 

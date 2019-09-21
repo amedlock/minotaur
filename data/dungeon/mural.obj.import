@@ -9,10 +9,7 @@ path="res://.import/mural.obj-b61ed8f865a7da6b1fde6af3f6066799.mesh"
 files=[ "res://.import/mural.obj-b61ed8f865a7da6b1fde6af3f6066799.mesh" ]
 
 source_file="res://data/dungeon/mural.obj"
-source_md5="7d61964bbbfe87cace02d9b7f758d8a2"
-
 dest_files=[ "res://.import/mural.obj-b61ed8f865a7da6b1fde6af3f6066799.mesh", "res://.import/mural.obj-b61ed8f865a7da6b1fde6af3f6066799.mesh" ]
-dest_md5="cba7bf06890ba06671688dc1acbc5a03"
 
 [params]
 

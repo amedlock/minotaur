@@ -3,7 +3,7 @@ extends Spatial;
 enum GameMode { Menu, Game, Map, GameOver, GameWon };
 
 
-var mode = Menu
+var mode = GameMode.Menu
 
 var dungeon = null
 var player = null
@@ -31,17 +31,17 @@ func start_game( skill ):
 func game_over():
 	show_map()
 	player.disable()	
-	mode = GameOver
+	mode = GameMode.GameOver
 			
 func  show_game():
 	player.enable()
 	dungeon.show()
 	menu.disable()
 	map.hide()
-	mode = Game	
+	mode = GameMode.Game	
 				
 func  show_menu():
-	mode = Menu
+	mode = GameMode.Menu
 	map.hide()
 	dungeon.hide()
 	player.disable()
@@ -51,7 +51,7 @@ func show_map():
 	map.show()
 	dungeon.disable()
 	#player.disable()
-	mode = Map
+	mode = GameMode.Map
 
 			
 func _input(evt):

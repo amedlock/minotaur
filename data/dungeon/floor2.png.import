@@ -4,20 +4,22 @@ importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/floor2.png-4aeead24ca2e46207c3e9d07169afe2d.s3tc.stex"
 path.etc2="res://.import/floor2.png-4aeead24ca2e46207c3e9d07169afe2d.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 
 source_file="res://data/dungeon/floor2.png"
-source_md5="74db913b21d1ddcbda7d8082273f7c32"
-
 dest_files=[ "res://.import/floor2.png-4aeead24ca2e46207c3e9d07169afe2d.s3tc.stex", "res://.import/floor2.png-4aeead24ca2e46207c3e9d07169afe2d.etc2.stex" ]
-dest_md5="e00a1913ee25769bfe9f5c623e83030f"
 
 [params]
 
 compress/mode=2
 compress/lossy_quality=0.7
 compress/hdr_mode=0
+compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=true
 flags/filter=true
@@ -27,6 +29,7 @@ flags/srgb=1
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
+process/invert_color=false
 stream=false
 size_limit=0
 detect_3d=false
