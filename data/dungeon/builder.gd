@@ -212,10 +212,7 @@ func add_key( info, coords ):
 	var keys = item_list.find_items("item",["key"], powers )
 	assert( keys.empty()==false )
 	var c = choose_random( coords )
-	var k = choose_random( keys )
-	if k.power==3:
-		print("Blue Key!")
-	dungeon.get_cell( c.x, c.y ).item = k
+	dungeon.get_cell( c.x, c.y ).item = choose_random( keys )
 
 
 func add_bags( num, info, coords ):
