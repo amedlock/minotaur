@@ -34,6 +34,6 @@ func scale_sprite( spr, img , w, h ):
 func _ready():
 	#scale_sprite( find_node("slot1"), ace, 50, 50 )
 	for n in range(1,10):
-		var n = find_node("slot" + str(n) )
-		slots.append( n )
+		var which = find_node("slot" + str(n) )
+		slots.append( which )
 

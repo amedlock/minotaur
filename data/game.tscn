@@ -231,7 +231,7 @@ anims/SpinFire = SubResource( 2 )
 
 [node name="PlayerWeapon" type="Sprite" parent="Player"]
 visible = false
-position = Vector2( 1340, 600 )
+position = Vector2( 680, 400 )
 scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 15 )
 region_enabled = true
@@ -242,9 +242,8 @@ anims/Fire = SubResource( 3 )
 anims/SpinFire = SubResource( 4 )
 
 [node name="EnemyWeapon" type="Sprite" parent="Player"]
-editor/display_folded = true
 visible = false
-position = Vector2( 680, 400 )
+position = Vector2( 1340, 600 )
 scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 15 )
 region_enabled = true
@@ -258,7 +257,6 @@ shadow_enabled = true
 omni_range = 15.0
 
 [node name="Camera" type="Camera" parent="Player"]
-editor/display_folded = true
 environment = ExtResource( 16 )
 current = true
 

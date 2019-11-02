@@ -214,7 +214,8 @@ func _ready():
 func find_items(kind, names, powers):
 	var result = []
 	for x in items:
-		if x.kind!=kind: continue
+		if x.kind!=kind: 
+			continue
 		if names==null or (x.name in names):
 			if powers==null or (x.power in powers ):
 				result.append( x )

@@ -3,7 +3,7 @@ extends Sprite3D;
 var monster;  # reference to the Enemy object from enemy_list.gd  monsters[]
 var health;  # hit points
 var mind ;   # magic hit points
-var drops; # item dropped when killed, from item_list.gd  items[]
+# var drops; # item dropped when killed, from item_list.gd  items[]
 
 var x      # grid coordinates
 var y 

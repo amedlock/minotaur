@@ -9,503 +9,219 @@
 [ext_resource path="res://data/hud/pack_grid.png" type="Texture" id=7]
 [ext_resource path="res://data/hud/pack_slot.tscn" type="PackedScene" id=8]
 
-[node name="HUD" type="Node2D" index="0"]
-
+[node name="HUD" type="Node2D"]
 script = ExtResource( 1 )
 
-[node name="Stats" type="Panel" parent="." index="0"]
-
+[node name="Stats" type="Panel" parent="."]
 editor/display_folded = true
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
 margin_left = 1025.0
 margin_top = 555.0
 margin_right = 1275.0
 margin_bottom = 711.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
 
-[node name="HPLabel" type="Label" parent="Stats" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="HPLabel" type="Label" parent="Stats"]
 margin_left = 5.0
 margin_top = 6.0
 margin_right = 149.0
 margin_bottom = 36.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 text = "Health:"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect", "custom_fonts" ]
 
-[node name="HPDisplay" type="Label" parent="Stats" index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="HPDisplay" type="Label" parent="Stats"]
 margin_left = 160.0
 margin_top = 6.0
 margin_right = 246.0
 margin_bottom = 36.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "27/27"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect", "custom_fonts" ]
 
-[node name="MindLabel" type="Label" parent="Stats" index="2"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="MindLabel" type="Label" parent="Stats"]
 margin_left = 3.0
 margin_top = 36.0
 margin_right = 147.0
 margin_bottom = 66.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "Mind:"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect", "custom_fonts" ]
 
-[node name="MindDisplay" type="Label" parent="Stats" index="3"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="MindDisplay" type="Label" parent="Stats"]
 margin_left = 160.0
 margin_top = 36.0
 margin_right = 246.0
 margin_bottom = 66.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "27/27"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect", "custom_fonts" ]
 
-[node name="ArmorLabel" type="Label" parent="Stats" index="4"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="ArmorLabel" type="Label" parent="Stats"]
 margin_left = 1.0
 margin_top = 66.0
 margin_right = 145.0
 margin_bottom = 96.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "Armor:"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect", "custom_fonts" ]
 
-[node name="ArmorDisplay" type="Label" parent="Stats" index="5"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="ArmorDisplay" type="Label" parent="Stats"]
 margin_left = 160.0
 margin_top = 66.0
 margin_right = 246.0
 margin_bottom = 96.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "6/0"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "custom_fonts" ]
 
-[node name="DamageLabel" type="Label" parent="Stats" index="6"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="DamageLabel" type="Label" parent="Stats"]
 margin_left = 2.0
 margin_top = 96.0
 margin_right = 146.0
 margin_bottom = 126.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "Damage:"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
 
-[node name="DamageDisplay" type="Label" parent="Stats" index="7"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="DamageDisplay" type="Label" parent="Stats"]
 margin_left = 160.0
 margin_top = 96.0
 margin_right = 246.0
 margin_bottom = 126.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "12/0"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
 
-[node name="GoldLabel" type="Label" parent="Stats" index="8"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="GoldLabel" type="Label" parent="Stats"]
 margin_left = 2.0
 margin_top = 126.0
 margin_right = 146.0
 margin_bottom = 156.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "Gold:"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
 
-[node name="GoldDisplay" type="Label" parent="Stats" index="9"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="GoldDisplay" type="Label" parent="Stats"]
 margin_left = 160.0
 margin_top = 126.0
 margin_right = 246.0
 margin_bottom = 156.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 2 )
 text = "12/0"
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
 
-[node name="Hands" type="Control" parent="." index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="Hands" type="Control" parent="."]
 margin_left = 625.0
 margin_top = 655.0
 margin_right = 665.0
 margin_bottom = 695.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-_sections_unfolded = [ "Rect" ]
 
-[node name="background" type="Sprite" parent="Hands" index="0"]
-
+[node name="background" type="Sprite" parent="Hands"]
 position = Vector2( -2.5, -30 )
 texture = ExtResource( 3 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Left" type="Area2D" parent="Hands/background" index="0"]
-
+[node name="Left" type="Area2D" parent="Hands/background"]
 position = Vector2( -84.65, -1.04 )
 scale = Vector2( 1.25, 1.25 )
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
-_sections_unfolded = [ "Transform" ]
 
-[node name="Sprite" type="Sprite" parent="Hands/background/Left" index="0"]
-
+[node name="Sprite" type="Sprite" parent="Hands/background/Left"]
 texture = ExtResource( 4 )
 region_enabled = true
-_sections_unfolded = [ "Region" ]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Left" index="1"]
-
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Left"]
 position = Vector2( -0.407444, -0.187566 )
 shape = ExtResource( 5 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Feet" type="Area2D" parent="Hands/background" index="1"]
-
+[node name="Feet" type="Area2D" parent="Hands/background"]
 position = Vector2( 0.27, -0.71 )
 scale = Vector2( 1.25, 1.25 )
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
-_sections_unfolded = [ "Transform" ]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Feet" index="0"]
-
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Feet"]
 shape = ExtResource( 5 )
 
-[node name="Sprite" type="Sprite" parent="Hands/background/Feet" index="1"]
-
+[node name="Sprite" type="Sprite" parent="Hands/background/Feet"]
 texture = ExtResource( 4 )
 region_enabled = true
-_sections_unfolded = [ "Region" ]
 
-[node name="Right" type="Area2D" parent="Hands/background" index="2"]
-
+[node name="Right" type="Area2D" parent="Hands/background"]
 position = Vector2( 84.7, -1.59 )
 scale = Vector2( 1.25, 1.25 )
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
-_sections_unfolded = [ "Transform" ]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Right" index="0"]
-
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Right"]
 shape = ExtResource( 5 )
 
-[node name="Sprite" type="Sprite" parent="Hands/background/Right" index="1"]
-
+[node name="Sprite" type="Sprite" parent="Hands/background/Right"]
 texture = ExtResource( 4 )
 region_enabled = true
-_sections_unfolded = [ "Region" ]
 
-[node name="ArrowsDisplay" type="Label" parent="Hands" index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="ArrowsDisplay" type="Label" parent="Hands"]
 margin_left = -125.0
 margin_top = 12.0
 margin_right = -50.0
 margin_bottom = 32.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 text = "Arrows:6"
 align = 1
 valign = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Margin", "Rect", "custom_colors", "custom_fonts" ]
 
-[node name="LevelDisplay" type="Label" parent="Hands" index="2"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="LevelDisplay" type="Label" parent="Hands"]
 margin_left = -43.0
 margin_top = 13.0
 margin_right = 35.0
 margin_bottom = 33.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 6 )
 text = "Level: 1"
 align = 1
 valign = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
 
-[node name="FoodDisplay" type="Label" parent="Hands" index="3"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
+[node name="FoodDisplay" type="Label" parent="Hands"]
 margin_left = 45.0
 margin_top = 12.0
 margin_right = 122.0
 margin_bottom = 37.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
 custom_fonts/font = ExtResource( 6 )
 text = "Food: 3"
 align = 1
 valign = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-_sections_unfolded = [ "Rect" ]
 
-[node name="Pack" type="Area2D" parent="." index="2"]
-
+[node name="Pack" type="Area2D" parent="."]
 position = Vector2( 32, 600 )
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
-_sections_unfolded = [ "Transform" ]
 
-[node name="bg" type="Sprite" parent="Pack" index="0"]
-
+[node name="bg" type="Sprite" parent="Pack"]
 position = Vector2( 61, 28 )
 scale = Vector2( 0.7, 0.7 )
 texture = ExtResource( 7 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Slot1" parent="Pack" index="1" instance=ExtResource( 8 )]
-
+[node name="Slot1" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 0.700001, -36.7963 )
-_sections_unfolded = [ "Transform" ]
 slot_num = 1
 
-[node name="Slot2" parent="Pack" index="2" instance=ExtResource( 8 )]
-
+[node name="Slot2" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 58, -36.395 )
-_sections_unfolded = [ "Transform" ]
 slot_num = 2
 
-[node name="Slot3" parent="Pack" index="3" instance=ExtResource( 8 )]
-
+[node name="Slot3" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 116.155, -36.5229 )
 slot_num = 3
 
-[node name="Slot4" parent="Pack" index="4" instance=ExtResource( 8 )]
-
+[node name="Slot4" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( -0.59874, 21.5545 )
 slot_num = 4
 
-[node name="Slot5" parent="Pack" index="5" instance=ExtResource( 8 )]
-
+[node name="Slot5" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 59.275, 22.1533 )
 slot_num = 5
 
-[node name="Slot6" parent="Pack" index="6" instance=ExtResource( 8 )]
-
+[node name="Slot6" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 116.155, 20.9559 )
 slot_num = 6
 
-[node name="Slot7" parent="Pack" index="7" instance=ExtResource( 8 )]
-
+[node name="Slot7" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 0, 80.2308 )
 slot_num = 7
 
-[node name="Slot8" parent="Pack" index="8" instance=ExtResource( 8 )]
-
+[node name="Slot8" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 58.0775, 80.8295 )
 slot_num = 8
 
-[node name="Slot9" parent="Pack" index="9" instance=ExtResource( 8 )]
-
+[node name="Slot9" parent="Pack" instance=ExtResource( 8 )]
 position = Vector2( 117.352, 82.0269 )
 slot_num = 9
 
-[node name="Compass" type="Sprite" parent="." index="3"]
-
+[node name="Compass" type="Sprite" parent="."]
 position = Vector2( 920, 640 )
 scale = Vector2( 3, 3 )
 texture = ExtResource( 4 )
 region_enabled = true
 region_rect = Rect2( 160, 64, 32, 32 )
-_sections_unfolded = [ "Offset", "Region" ]
-
-

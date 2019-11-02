@@ -203,12 +203,19 @@ func add_enemies(info, coords):
 
 
 func add_key( info, coords ):
-	var powers = [1] if info.depth < 3 else [2]
-	if info.depth>4 : powers = [2,3]
+	var powers ;
+	match info.depth:
+		1,2 : powers = [1]
+		3,4 : powers = [1,2]
+		5,6 : powers = [2,3]
+		_: powers = [3]
 	var keys = item_list.find_items("item",["key"], powers )
 	assert( keys.empty()==false )
 	var c = choose_random( coords )
-	dungeon.get_cell( c.x, c.y ).item = choose_random( keys )
+	var k = choose_random( keys )
+	if k.power==3:
+		print("Blue Key!")
+	dungeon.get_cell( c.x, c.y ).item = k
 
 
 func add_bags( num, info, coords ):
