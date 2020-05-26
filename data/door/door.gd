@@ -10,7 +10,8 @@ func _ready():
 func is_moving(): return anim.is_playing()
 
 func activate():
-	if anim.is_playing():return
+	if anim.is_playing():
+		return
 	if raised:
 		anim.play("Lower")
 	else:

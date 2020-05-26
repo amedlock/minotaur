@@ -183,7 +183,6 @@ tracks/2/keys = {
 script = ExtResource( 1 )
 
 [node name="Dungeon" type="Spatial" parent="."]
-editor/display_folded = true
 script = ExtResource( 2 )
 
 [node name="Builder" type="Spatial" parent="Dungeon"]
@@ -266,7 +265,6 @@ current = true
 stream = ExtResource( 18 )
 
 [node name="MainMenu" type="Node2D" parent="."]
-editor/display_folded = true
 visible = false
 script = ExtResource( 19 )
 

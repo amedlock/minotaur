@@ -85,7 +85,7 @@ func consume( it ):
 	if it.name=="quiver":
 		player.arrows += 6
 		return true
-	if it.name=="flour":
+	if it.name=="food":
 		player.food += 6
 		return true
 	return false

@@ -119,7 +119,7 @@ func get_sound_fx( item ):
 	if item==null: return null;
 	if item.name in ["fireball", "small_fireball"]:
 		return load("res://data/sounds/fireball.wav")
-	if item.name in ["lightning", "small_lightning", "scroll", "book"]:
+	if item.name in ["small_wand", "large_wand", "scroll", "book"]:
 		return load("res://data/sounds/lightning.wav")
 	return null
 
@@ -136,7 +136,7 @@ func player_fire():
 		player_weapon.set_region_rect( player_item.missile )	
 		player.arrows -= 1
 		broken = (randi() % 30) == 29
-	elif player_item.name in ["scroll", "book"]:
+	elif player_item.name in ["scroll", "book", "small_wand", "large_wand"]:
 		player_weapon.set_region_rect( player_item.missile )
 		broken = (randi() % 25) == 24
 	else:

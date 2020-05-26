@@ -176,7 +176,6 @@ func add_gates(info):
 var exit_loc = [Vector2(3,4), Vector2(7,4), Vector2(4,3), Vector2(4,7) ]
 	
 func add_exit(info):
-	var which = randint(4)
 	info.exit = choose_random( exit_loc )
 
 func add_enemies(info, coords):
@@ -195,7 +194,7 @@ func add_enemies(info, coords):
 	elif info.type==green: kinds.append( "war" )
 	else: kinds = kinds + ["magic", "war" ]
 	var allowed = enemy_list.find_enemies( kinds, powers, info.depth )
-	for n in range(num):
+	for _n in range(num):
 		if allowed.empty() or coords.empty(): return
 		var c = take_random( coords )
 		var mon = choose_random( allowed )
@@ -217,15 +216,15 @@ func add_key( info, coords ):
 
 func add_bags( num, info, coords ):
 	var powers = [1]
-	var names = [ "money_belt", "small_bag" ]
+	var names = [ "small_bag" ]
 	if info.depth in [2,3,4]: 
 		powers = [1,2]
 		names.append( "bag" )
 	elif info.depth in [4,5]: 
-		names = [ "money_belt", "small_bag", "bag", "box" ]
+		names = [ "small_bag", "bag", "box" ]
 		powers = [1,2,3]
 	elif info.depth >= 6:
-		names = [ "money_belt", "small_bag", "bag", "box", "pack", "chest" ]
+		names = [  "small_bag", "bag", "box", "pack", "chest" ]
 		powers = [2,3]
 	var bags = item_list.find_items( "bag", names, powers )
 	for n in range(num):
@@ -235,7 +234,7 @@ func add_bags( num, info, coords ):
 		get_cell( c.x, c.y ).item = it 
 
 func add_money(num, info, coords):
-	var restrict = { "coins":1, "necklace":1 ,"ingot":2, "lamp":3, "chalice":4, "crown":6} 
+	var restrict = { "coins":1, "necklace":1 ,"lamp":2, "horn":3, "chalice":4, "crown":6} 
 	var names = []
 	for mname in restrict:
 		if info.depth >= restrict[mname]:
@@ -254,11 +253,11 @@ func add_money(num, info, coords):
 
 
 func add_other( info, coords):
-	var flour = item_list.find_item( "flour" )
+	var food = item_list.find_item( "food" )
 	for n in range(randint(5)):
 		if coords.empty(): return
 		var c = take_random( coords )
-		dungeon.get_cell( c.x, c.y ).item = flour
+		dungeon.get_cell( c.x, c.y ).item = food
 	var quiver = item_list.find_item("quiver"); 
 	for n in range(1 + randint(3)):
 		if coords.empty(): return
