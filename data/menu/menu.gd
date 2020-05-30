@@ -22,4 +22,6 @@ func _input(evt):
 			game.start_game( 2 )
 		if evt.scancode==KEY_3:
 			game.start_game( 3 )
+		if evt.scancode==KEY_4:
+			game.start_game( 4 )
 

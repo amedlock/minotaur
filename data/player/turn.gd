@@ -1,27 +1,35 @@
-extends "action.gd"
+extends Node
+
+signal action_complete
 
 
 onready var player = get_parent()
 
 export(float) var turn_time = 0.75;
 
-var start
-var delta
-var timer
+var alpha
+var delta = 0
+var timer = 0
 
-func start( cur, amt ):
-	start = float(cur)
+
+func start( amt ):
+	alpha = float(player.dir)
 	delta = amt
 	timer = 0
 	player.active_action = self
+	set_process(true)
 	
-func input( evt ): pass
+	
+func input(_evt):
+	pass
+	
 	
 func process( dt ):
-	timer += dt	
+	timer += dt
 	if timer >= turn_time:
-		player.set_dir( int(start+delta) )
-		complete()
+		player.set_dir( int(alpha+delta) )
+		emit_signal("action_complete", self.name)
 	else:
 		var ratio = timer / turn_time
-		player.set_dir( start + (delta * ratio) )
+		player.set_dir( alpha + (delta * ratio) )
+

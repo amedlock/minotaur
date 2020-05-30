@@ -1,7 +1,7 @@
 extends Spatial;
 
-# levels of war monsters
 
+# levels of war monsters
 const White = Color( 0xffffffff );
 const Grey = Color( 0x999999ff );
 const Orange = Color( 0xFF8400ff )
@@ -45,6 +45,7 @@ var war_colors = [ White, Grey, Orange ]
 var magic_colors = [Blue, Pink, Purple]
 var both_colors = [Tan, Green, Yellow]
 
+
 class Enemy:
 	var name
 	var kind 
@@ -55,7 +56,8 @@ class Enemy:
 	var mind = 10	
 	var max_damage
 
-	func dead(): return health<1 or mind < 1
+	func dead(): 
+		return health<1 or mind<1
 
 # registry of all the enemies
 var monsters = []
@@ -164,8 +166,6 @@ func find_enemies(kinds, powers, depth):
 		elif m.kind in kinds and m.power in powers:
 			result.append( m )
 	return result
-
-
 
 
 

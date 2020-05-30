@@ -62,7 +62,7 @@ func update_compass():
 								
 
 func update_stats( ):
-	level_disp.set_text( "Level: " + str( dungeon.current_depth() ) )
+	level_disp.set_text( "Level: " + str( dungeon.current_level.depth ) )
 	arrow_disp.set_text( "Arrows: " + str( player.arrows ) )
 	food_disp.set_text( "Food: " + str( player.food ) )
 	gold_disp.set_text( str( player.gold ) )
@@ -160,12 +160,12 @@ func clicked_feet( viewport, event, shape_idx ):
 	elif event.button_index == BUTTON_LEFT:
 		var cur = player.left_hand
 		player.left_hand = feet
-		feet= cur
+		feet = cur
 	elif event.button_index == BUTTON_RIGHT:
 		var cur = player.right_hand
 		player.right_hand = feet
 		feet = cur;
-	dungeon.set_cell_item( player.loc.x, player.loc.y, feet )
+	dungeon.grid.set_item( player.loc.x, player.loc.y, feet )
 	player.attacking = false
 	update_pack()
 

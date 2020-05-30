@@ -9,6 +9,11 @@
 ? enemy doors
 ! bombs!
 ! BUG: monster always attacks first
++ Remove coloring for most items, add more items
+- Revamp internal map layout
++ show ladder at feet when over exit
+
+
 
 
 X correct monster weapons/damage/hp - work in progress

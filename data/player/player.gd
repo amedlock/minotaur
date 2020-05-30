@@ -1,50 +1,49 @@
 extends Spatial;
 
 
-enum Movement { Forward, Back, TurnLeft, TurnRight, MoveLeft, MoveRight, LookLeft, LookRight }
-
-const MoveDir = {
-  0 : Vector2(0,-1),
-  90  : Vector2(-1,0),
-  180  : Vector2(0,1),
-  270  : Vector2(1,0)
-}
-
-
-
 var loc = Vector2(0, 0)  # coordinates of player x and z
 var dir = 270;
 
-const eye_height = 1.1
-var grid_start ;
+# offset from world grid coordinates
+var player_offset = Vector3(1.5, 1.25, 1.5)
 
-var enemy_near = [null,null,null,null] ; # danger close!
-
-var wall_ahead = null;  # set by dungeon.update_path_info()
-var wall_behind = null;
-var wall_left = null
-var wall_right = null
-
-var outer_wall_ahead = false ;
-var outer_wall_behind = false;
 
 var left_hand;
 var right_hand;
 
 var inventory = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null, 7:null, 8:null, 9:null }
 
-# references to game, hud and dungeon nodes
-var dungeon = null;
-var hud = null;
-var audio = null;
-var game  = null;
-var map 
-var item_list
-
 
 var last_loc
 var last_dir
 var active_action = null
+
+
+# references to game, hud and dungeon nodes
+var dungeon = null;
+
+var game  = null;
+var map 
+var item_list
+
+onready var hud = $Camera/HUD
+onready var audio = $Audio
+onready var glance = $Glance
+onready var combat = $Combat
+onready var turn = $Turn
+onready var move = $Move
+onready var view_map = $ViewMap
+
+func _ready():
+	dungeon = get_parent()
+	item_list = dungeon.find_node("ItemList")
+	game = dungeon.get_parent()
+	map = game.find_node("Map")
+	self.hide()
+	# connect all "action" nodes
+	for n in self.get_children():
+		if n.is_in_group("action"):
+			n.connect("action_complete", self, "action_complete")
 
 
 func enable():
@@ -58,118 +57,104 @@ func disable():
 	self.set_process_input( false )
 
 
-func _ready():
-	game = get_parent()
-	map = game.find_node("Map")
-	audio = find_node("Audio")
-	dungeon = game.find_node("Dungeon")
-	item_list = dungeon.find_node("ItemList")
-	hud = self.find_node( "HUD" )
-	grid_start = dungeon.maze_origin + Vector3( 1.5, 1.25, 1.5 )
-	set_process(true);
-	set_process_input(true)
-	self.hide()
-
-
-func set_dir( d ):	
+func set_dir( d ):
 	d = 0 if d==null else int(d)
-	while d < 0: d += 360
-	dir = d % 360
-	set_rotation( Vector3( 0, deg2rad(dir), 0 ) )
+	d = wrapi(d,0,360)
+	self.rotation_degrees = Vector3( 0, d, 0 )
+	self.dir = d
 	hud.update_compass()
 	map.update_player(loc.x, loc.y, dir)
 
-func coord_to_world(v2):
-	return grid_start + Vector3( v2.x * 3, 0 , v2.y * 3)
+
+func coord_to_world(p):
+	return Vector3(-18,0,-18) + Vector3(p.x * 3, 0, p.y * 3) + player_offset
+
 
 func set_pos( cx, cy ):
 	loc.x = cx
 	loc.y = cy
-	self.set_translation( coord_to_world( loc )  );	
+	self.translation = coord_to_world(loc)
 	map.update_player(cx, cy, dir)
 	
-
-func move_dir():
-	while dir<0: dir += 360	
-	dir = dir % 360
-	dir = int( dir / 90 ) * 90
-	return MoveDir[dir]
 
 func reset_location():
 	set_pos( 0, 0 ); last_loc = null
 	set_dir( 270 ); last_dir = null
-	update_path()
-
-func over_exit():
-	if dungeon.maze_number <1 : return false
-	var info = dungeon.current_level_info()
-	return info.exit.x == loc.x and info.exit.y==loc.y
 
 
-func is_fighting(): return active_action and active_action.get_name()=="Combat"
+func over_exit() -> bool:
+	if dungeon.current_level.depth <1 : 
+		return false
+	var cell = dungeon.grid.get_cell(loc.x, loc.y)
+	return cell.item and cell.item.name=="exit"
 
-func is_moving(): return active_action and active_action.get_name()=="Move"
 
-func dead(): return health<1 or mind<1
+func is_fighting(): 
+	return active_action and active_action.get_name()=="Combat"
+
+
+func is_moving(): 
+	return active_action and active_action.get_name()=="Move"
+
+
+func dead(): 
+	return health<1 or mind<1
+
+
+func dir_name() -> String :
+	match dir:
+		180: return "north"
+		270: return "east"
+		0: return "south"
+		90: return "west"
+	return ""
+
 
 
 func _input(evt):
 	if active_action:
-		active_action.input( evt )
-		return	
-	if not (evt is InputEventKey and evt.pressed): return
-	if evt.scancode==KEY_Q:
-		find_node("Glance").start( 90 )
+		active_action.input(evt)
 		return
-	elif evt.scancode==KEY_E:
-		find_node("Glance").start(  -90 )
-		return
-	if evt.scancode==KEY_TAB:
-		find_node("ViewMap").start()
-	if evt.scancode==KEY_X and over_exit():
-		dungeon.use_exit(loc.x, loc.y)
-	if Input.is_key_pressed(KEY_R):
-		rest()
-	if Input.is_key_pressed(KEY_T):
-		use_item()
-	if Input.is_key_pressed(KEY_F5):
-		reset_location()
-	if Input.is_key_pressed(KEY_F6):
-		var li = dungeon.current_level_info()
-		dungeon.use_exit( li.exit.x, li.exit.y )
-	if Input.is_key_pressed(KEY_SPACE):
-		open_door()
-	if Input.is_key_pressed(KEY_W):
-		find_node("Move").forward( loc, move_dir() )
-	elif Input.is_key_pressed(KEY_S):
-		find_node("Move").backward( loc, move_dir() )
-	elif Input.is_key_pressed(KEY_A):
-		find_node("Turn").start( dir, 90 )
-	elif Input.is_key_pressed(KEY_D):
-		find_node("Turn").start( dir, -90 )
-	elif Input.is_key_pressed(KEY_F):
-		self.attack()
+	if not (evt is InputEventKey and evt.pressed): 
+		return		
+	match evt.scancode:
+		KEY_Q: glance.start(90)
+		KEY_E: glance.start(-90)
+		KEY_TAB: view_map.start()
+		KEY_X: 
+			if over_exit():
+				dungeon.use_exit()
+		KEY_R: rest()
+		KEY_T: use_item()
+		KEY_F5: reset_location()
+		KEY_F6: dungeon.go_next_level()
+		KEY_SPACE: open_door()
+		KEY_W: move.forward()
+		KEY_S: move.backward()
+		KEY_A: turn.start( 90 )
+		KEY_D: turn.start( -90 )
+		KEY_F: self.attack()
 
-func _process(dt):
+
+
+func _process(delta):
 	if active_action:
-		active_action.process(dt)
+		active_action.process(delta)
 
 
 func action_complete( kind ):
 	active_action = null
-	if kind=="Move":
-		update_path()
-		if check_for_gate(): return
-		else: check_for_monster()
-	if kind=="Turn":
-		update_path()
-	if kind=="Glance":
-		pass
-	if kind=="Combat":
-		needs_rest = true
-		update_path()
-		if dead() and not cheat_death(): 
-			game.game_over()
+	match kind:
+		"Move":
+			dungeon.grid.get_cell(loc.x, loc.y).on_enter(game.player)
+		"Turn": pass
+		"Glance": pass
+		"die": pass
+		"win": 
+			needs_rest = true
+			hud.update_stats()
+			if dead() and not cheat_death(): 
+				game.game_over()
 
 
 func cheat_death():
@@ -186,15 +171,11 @@ func cheat_death():
 	return false
 
 
-func update_path():
-	var last = self.wall_ahead
-	dungeon.update_path_info(loc, move_dir() )
-	if last!=null and last!=wall_ahead: last.player_moved()
-	update_stats()
 
-func open_item(it):
+
+func open_item(it): 
 	var valuable = item_list.get_container_loot(it, dungeon.current_depth() )
-	dungeon.set_cell_item( loc.x, loc.y, valuable )
+	dungeon.set_item( loc.x, loc.y, valuable )
 
 
 var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
@@ -217,7 +198,7 @@ func use_item():
 		if right_hand.power in [2,3]:
 			mind_max += 5
 		right_hand = null
-	elif right_hand.name=="tome":
+	elif right_hand.name=="tome": # does nothing right now :/
 		if right_hand.power==1: pass
 		if right_hand.power==2: pass
 		if right_hand.power==3: pass
@@ -225,7 +206,7 @@ func use_item():
 		var feet = dungeon.item_at_feet()
 		if feet and feet.needs_key and right_hand.power >= feet.power:
 			open_item( feet )
-	elif right_hand.name=="ring":
+	elif right_hand.name=="ring":  # make armor items actually wearable and not just used
 		if right_hand.power in [1,3]:
 			m_armor += 5
 		elif right_hand.power in [2,3]:
@@ -247,38 +228,70 @@ func use_item():
 		audio.stream = fx
 		audio.play()
 
+
+
 func open_door():
-	if wall_ahead!=null:
-		wall_ahead.activate()
+	var w = wall_ahead()
+	if w:
+		w.activate()
+
 
 func can_see( wall ):
-	if wall==null: return true
-	return not wall.is_blocked()
+	return wall==null or (not wall.is_blocked())
+	
 
 func has_weapon():
 	return right_hand!=null and right_hand.kind=="weapon"
 
 
-func coord_ahead(): return loc + move_dir()
-func coord_behind(): return loc + -move_dir()
-func coord_right(): 
-	var f = coord_ahead()
-	return Vector2( f.y, f.x )
+func face_vector():
+	dir = wrapi(dir, 0, 360);
+	match int( dir / 90 ):
+		0 : return Vector2(0,-1)
+		1 : return Vector2(-1,0)
+		2 : return Vector2(0,1)
+		3 : return Vector2(1,0)
+	assert(false)
 
-func coord_left(): 
-	var f = coord_ahead()
+
+func wall_ahead():
+	return dungeon.grid.get_wall(loc, face_vector() )
+
+func wall_behind():
+	return dungeon.grid.get_wall(loc, -face_vector() )
+
+func coord_ahead() -> Vector2: 
+	return loc + face_vector() 
+	
+func coord_behind() -> Vector2: 
+	return loc + -face_vector() 
+	
+func coord_right() -> Vector2: 
+	var f = face_vector()
 	return Vector2( f.y, -f.x )
+
+func coord_left() -> Vector2: 
+	var f = face_vector()
+	return Vector2( -f.y, f.x )
+
+
+func start_combat( pos: Vector2, ang : int ) -> bool:
+	var cell = dungeon.grid.get_cell(pos.x ,pos.y)
+	if cell and cell.enemy:
+		combat.fight(cell.enemy, ang)
+		return true
+	return false
 
 
 func check_for_monster():
-	var combat = find_node("Combat")
-	if enemy_near[0] and can_see( wall_ahead ):
-		combat.start( enemy_near[0], coord_ahead(), 0 )
-	if randi() % 4 < 2: return
-	if enemy_near[1] and can_see( wall_right ):  
-		combat.start( enemy_near[1], coord_right(), -90  )
-	if enemy_near[3] and can_see( wall_left ):  
-		combat.start( enemy_near[3] , coord_left(), 90 )
+	if start_combat(coord_ahead(), 0):
+		return
+	if randi() % 4 < 2: 
+		return
+	if start_combat(coord_left(), -90):
+		return
+	if start_combat(coord_right(), 90):
+		return
 
 	
 func win():
@@ -289,12 +302,16 @@ func win():
 func attack():
 	if is_fighting():
 		self.attacking = true 
+		return
 	elif active_action!=null:
 		return
-	elif enemy_near[0] and can_see( wall_ahead ):
-		var combat = find_node("Combat")
-		var coord = self.loc + MoveDir[self.dir]
-		combat.start( enemy_near[0], coord, 0 )		
+	var fwd = coord_ahead()
+	var cell_ahead = dungeon.grid.get_cell( fwd.x, fwd.y )
+	if cell_ahead==null or cell_ahead.enemy==null:
+		return
+	var wall = dungeon.grid.get_wall(loc, fwd)
+	if can_see(wall):
+		combat.start( cell_ahead, fwd, 0 )
 
 func rest():
 	if food<1 or (not needs_rest): return
@@ -357,36 +374,38 @@ func retreat():
 	if last_loc==null: return false
 	set_pos( last_loc.x, last_loc.y ); last_loc = null
 	set_dir( last_dir ); last_dir = null
-	update_path()
-	if active_action: active_action.complete()
+	if active_action: 
+		active_action.complete()
 	return true
 
 
 func check_for_gate():
-	var c = dungeon.get_cell( loc.x, loc.y )
-	if c==null or c.gate<0: return false
-	transport_player( c.gate )
-	audio.stream = load("res://data/sounds/magic.wav")
-	audio.play()
-	return true
+	var cell = dungeon.get_cell( loc.x, loc.y )
+	if cell and cell.gate: 
+		transport_player( cell )
+		audio.stream = load("res://data/sounds/magic.wav")
+		audio.play()
+		return true
+	return false
 
 
+func load_gate_level(gate):
+	print("Gate:", gate.kind)
 
-func transport_player(g):
-	if loc.x==dungeon.WIDTH-1 and loc.y==0:
-		dungeon.load_next_level()
-	elif loc.x==0 and loc.y==dungeon.HEIGHT-1:
-		dungeon.load_prev_level()
-	reset_location()
-	if g==dungeon.GateType.Green:
-		health_max += int(health_max / 2)
-		mind_max = int(mind_max/2)
-	if g==dungeon.GateType.Blue:
-		health_max = int(health_max/2)
-		mind_max += int(mind_max / 2)
+
+func transport_player(cell):
+	match cell.gate.kind:
+		"green":
+			health_max += int(health_max / 2)
+			mind_max = int(mind_max/2)	
+		"blue":
+			health_max = int(health_max/2)
+			mind_max += int(mind_max / 2)	
 	mind = min( mind, mind_max )
 	health = min(health,health_max)
-	needs_rest = true
+	needs_rest = true			
+	load_gate_level(cell.gate)
+	reset_location()
 	hud.update_stats()
 
 var food = 6;
@@ -411,8 +430,8 @@ var attacking = false  # is the player attempting to attack?
 var skill = 1
 
 
-func init( skill ):
-	self.skill = skill
+func init( difficulty ):
+	self.skill = difficulty
 	gold = 0
 	armor = 0
 	m_armor = 0
@@ -435,10 +454,11 @@ func init( skill ):
 		mind = 8
 	elif skill==4:
 		health = 12
-		mind = 6
+		mind = 7
 	mind_max = mind
 	health_max = health
-	
+
+
 
 func war_armor(): 
 	var result = armor 

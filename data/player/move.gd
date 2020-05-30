@@ -1,4 +1,6 @@
-extends "action.gd"
+extends Node
+
+signal action_complete
 
 onready var player = get_parent()
 
@@ -7,35 +9,41 @@ var start = null
 var dir = null
 
 export(float)  var move_time = 0.5 ;
-	
-func forward( loc, vdir ):
-	if player.wall_ahead and player.wall_ahead.is_blocked():
-		return
-	if player.outer_wall_ahead or player.enemy_near[0]!=null:
+
+
+func forward():
+	var wall = player.wall_ahead()
+	if wall and wall.is_blocked():
 		return
 	timer = 0
-	start = loc
-	dir = vdir
+	start = player.loc
+	dir = player.face_vector()
 	player.mark_last()
 	player.active_action = self
 	
-func backward( loc, vdir ):
-	if player.wall_behind and player.wall_behind.is_blocked():
-		return
-	if player.outer_wall_behind:
+func backward():
+	var wall = player.wall_behind()
+	if wall and wall.is_blocked():
 		return
 	timer = 0
-	start = loc
-	dir = -vdir
+	start = player.loc
+	dir = -player.face_vector()
 	player.mark_last()
 	player.active_action = self	
 	
+
+
+func input(_evt):
+	pass	
+
+
+
 func process(dt):
-	timer  += dt
+	timer += dt
 	if timer>= move_time:
 		var np = start + dir
 		player.set_pos( np.x, np.y )
-		complete()
+		emit_signal("action_complete", self.name)
 	else:
 		var ratio = timer / move_time;
 		var loc = start + (ratio * dir)

@@ -1,6 +1,8 @@
-extends "action.gd"
+extends Node
 
-onready var player = get_parent()
+signal action_complete
+
+var player
 var dungeon
 var game
 var item_list
@@ -15,8 +17,7 @@ var enemy_weapon
 var enemy_audio
 var enemy_item # enemy item being fired
 
-var mx # monster grid coords
-var my 
+var loc 
 
 var turn_time = 0.5
 var timer = 0.0  # can player attack yet?
@@ -26,15 +27,16 @@ var retreating = false # retreat from combat?
 
 
 # for turning the player to face enemy
-var turning = false
+var turning = null
 var facing = null 
 var delta  = null
 
 
 func _ready():
-	dungeon = player.get_parent().find_node("Dungeon")
-	audio = player.find_node("Audio")
-	game = dungeon.get_parent()	
+	player = get_parent()
+	dungeon = player.get_parent()
+	game = player.get_parent()
+	audio = game.find_node("Audio")
 	item_list = dungeon.find_node("ItemList")
 	enemy_anim = player.find_node("EnemyAnim")
 	enemy_anim.connect("animation_finished", self, "enemy_fire_done" )
@@ -45,17 +47,15 @@ func _ready():
 	player_weapon = player.find_node("PlayerWeapon")
 
 
-	
-func start( enemy, eloc, dir_change ):
-	if enemy==null: return
-	if player.active_action: return
-	mx = eloc.x
-	my = eloc.y
+
+func fight( _enemy, dir_change ):
+	if _enemy==null: 
+		return
 	timer = 0
 	timer2 = 0	
 	player.active_action = self
 	retreating = false
-	self.enemy = enemy
+	self.enemy = _enemy
 	if dir_change!=0:
 		self.facing = player.dir
 		self.delta = dir_change
@@ -74,7 +74,7 @@ func input(evt):
 	if evt.scancode==KEY_F:
 		self.timer = 0.75
 		player.attacking = true
-	pass
+
 	
 func process(dt):
 	if turning:
@@ -85,13 +85,13 @@ func process(dt):
 	if player_anim.is_playing() or enemy_anim.is_playing():
 		return
 	if player.dead():
-		complete()
+		emit_signal("action_complete", "die")
 	if enemy.dead():
 		enemy.die()
 		player.killed( enemy )
 		if enemy.monster.name=="minotaur": 
 			dungeon.add_final( enemy.x, enemy.y )
-		complete()
+		emit_signal("action_complete", "win")
 	if timer==0 and player.attacking and player.has_weapon():
 		player_fire()
 	if timer2==0:
@@ -99,7 +99,6 @@ func process(dt):
 	elif retreating:
 		player.retreat()
 
-	
 	
 func turn_player(dt):
 	timer = timer+dt
@@ -110,7 +109,7 @@ func turn_player(dt):
 		turning = false
 		delta = null
 		facing = null
-		player.update_path()		
+		player.update_path()
 
 var broken
 

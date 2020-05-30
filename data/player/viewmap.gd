@@ -1,10 +1,12 @@
-extends "action.gd"
+extends Node
 
+signal action_complete
 
-onready var player = get_parent()
+var player
 var game
 
 func _ready():
+	player = get_parent()
 	game = player.get_parent()
 
 func start():
@@ -12,7 +14,10 @@ func start():
 	player.active_action = self
 
 	
-func _input(evt):
+func input(evt):
 	if evt is InputEventKey and evt.pressed==false and evt.scancode==KEY_TAB:
 		game.show_game()
-		complete()
+		emit_signal("action_complete", self.name)
+
+func process(_delta):
+	pass

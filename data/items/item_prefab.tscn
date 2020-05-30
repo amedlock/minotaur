@@ -5,36 +5,10 @@
 [ext_resource path="res://data/items/item.gd" type="Script" id=3]
 
 [node name="item" type="Sprite3D"]
-
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0 )
-layers = 1
 material_override = ExtResource( 1 )
-cast_shadow = 1
-extra_cull_margin = 0.0
-use_in_baked_light = false
-lod_min_distance = 0.0
-lod_min_hysteresis = 0.0
-lod_max_distance = 0.0
-lod_max_hysteresis = 0.0
-centered = true
-offset = Vector2( 0, 0 )
-flip_h = false
-flip_v = false
-modulate = Color( 1, 1, 1, 1 )
-opacity = 1.0
 pixel_size = 0.02
-axis = 2
-transparent = true
-shaded = false
-double_sided = true
-alpha_cut = 0
 texture = ExtResource( 2 )
-vframes = 1
-hframes = 1
-frame = 0
 region_enabled = true
 region_rect = Rect2( 0, 0, 32, 32 )
 script = ExtResource( 3 )
-_sections_unfolded = [ "Geometry", "Region", "Transform" ]
-
-

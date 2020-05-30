@@ -15,6 +15,17 @@ var enemies
 func _ready():
 	enemies = self.get_parent()
 
+
+func configure(xp, yp, enemy):
+	monster = enemy
+	x = xp
+	y = yp
+	health = enemy.health
+	mind = enemy.mind
+	set_region_rect( monster.img )
+	set_modulate( monster.color )
+
+
 func damage( item ):
 	if item!=null:
 		self.health = max( self.health-item.stat1, 0 )
@@ -35,7 +46,8 @@ func die():
 	var anim = sm.find_node("Animation")
 	anim.connect("animation_finished", self, "remove_me", [sm] )
 	anim.play( "Puff" )
-	enemies.get_parent().remove_enemy( x, y )
-		
-func remove_me(which, sm):
+	enemies.get_parent().set_enemy( x, y, null )
+
+
+func remove_me(_which, sm):
 	sm.queue_free()

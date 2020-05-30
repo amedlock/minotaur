@@ -7,11 +7,13 @@ func _ready():
 	raised = false;
 	anim.connect("animation_finished", self, "anim_done" )
 	
-func is_moving(): return anim.is_playing()
+func is_moving(): 
+	return anim.is_playing()
 
 func activate():
 	if anim.is_playing():
 		return
+	print("door activated")
 	if raised:
 		anim.play("Lower")
 	else:

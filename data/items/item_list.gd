@@ -73,15 +73,14 @@ class Item:
 	var missile; # bows, scrolls, etc	
 	var stat1  
 	var stat2
+	var offset = Vector3(0,0,0)   # Vector3 offset for items
 
 
-
-var treasure # final treasure
+var exit  	 	# exit ladder
+var treasure 	# final treasure
 
 
 var items = []
-
-# item_type = "item", "weapon", "armor", "bag", "shield", "key", "potion", "money", "treasure"
 
 func define_item( item_type, icon_name, power, col, stat1, stat2 ):
 	var it = Item.new()
@@ -91,7 +90,9 @@ func define_item( item_type, icon_name, power, col, stat1, stat2 ):
 	it.needs_key = icon_name in ["box", "pack", "chest" ]
 	if icon_name in ["bow", "crossbow"]:
 		it.missile = icons["arrow"]
-	elif icon_name in ["large_wand", "small_wand", "book"]:
+	if icon_name in ["large_wand", "book"]:
+		it.missile = icons["small_fireball"]
+	elif icon_name in ["small_wand", "scroll"]:
 		it.missile = icons["small_lightning"]
 	it.color = col
 	it.power = power
@@ -197,9 +198,10 @@ func add_all_items():
 	add_money()
 	add_weapons()
 	treasure = define_item("treasure", "treasure", 1, Yellow, 0, 0 )
-		
-	
-	
+	exit = define_item("exit", "ladder", 1, Tan, 0, 0)
+	exit.offset = Vector3( 1.5, 0.2, 1.5 )
+
+
 var dungeon
 
 
@@ -231,13 +233,9 @@ func all_items( kind, name ):
 
 func find_item( name ):
 	for n in items:
-		if n.name==name: return n
+		if n.name==name: 
+			return n
 	return null;
-
-func choose_random( items ):
-	assert( items.size() > 0 )
-	var pos = randi() % items.size()
-	return items[pos]
 
 
 var level_bags = [
@@ -257,25 +255,35 @@ var level_money = [
 ]
 
 
-func get_special_loot( it, depth ):
-	return choose_random(  find_items("armor", null, null ) )
+func choose_random_item( kind, names, powers ):
+	var subset = find_items(kind, names, powers)
+	if subset.size()==0:
+		return null
+	var pos = randi() % subset.size()
+	return subset[pos]
 
-func get_container_loot(it, depth):
+
+func get_special_loot( _item, _depth ):
+	return  choose_random_item( "armor", null, null )
+
+
+# this needs to take depth into account
+func get_container_loot(item, depth):
 	var result  
-	if it.needs_key:
-		result = get_special_loot(it,depth)
+	if item.needs_key:
+		result = get_special_loot(item,depth)
 		if result!=null: return result
 	var levels = [1]
 	if depth <=5: levels = [depth-1,depth]					
 	if randi() % 20<2: 
-		result = find_items("item", ["potion", "ring"], levels )
-		if result.size()>0: return choose_random( result )
+		result = choose_random_item("item", ["potion", "ring"], levels )
+		if result:
+			return result
 	var names = []
 	for n in range( level_money.size() ):
 		if n > depth-1: continue
 		for nl in level_money[n]:
 			names.append( nl )
-	result = find_items( "money", names, levels )
-	return choose_random( result )
+	return choose_random_item( "money", names, levels )
 	
 

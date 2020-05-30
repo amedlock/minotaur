@@ -6,105 +6,61 @@
 [ext_resource path="res://data/map/map_row.tscn" type="PackedScene" id=4]
 
 [node name="MapView" type="Node2D"]
-
 script = ExtResource( 1 )
 
-[node name="bg" type="Sprite" parent="." index="0"]
-
+[node name="bg" type="Sprite" parent="."]
 texture = ExtResource( 2 )
 centered = false
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="marker" parent="." index="1" instance=ExtResource( 3 )]
-
+[node name="marker" parent="." instance=ExtResource( 3 )]
 region_enabled = true
-_sections_unfolded = [ "Region" ]
 
-[node name="Rows" type="Node2D" parent="." index="2"]
-
+[node name="Rows" type="Node2D" parent="."]
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Row0" parent="Rows" index="0" instance=ExtResource( 4 )]
-
+[node name="Row0" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 40 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row1" parent="Rows" index="1" instance=ExtResource( 4 )]
-
+[node name="Row1" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 56 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row2" parent="Rows" index="2" instance=ExtResource( 4 )]
-
+[node name="Row2" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 72 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row3" parent="Rows" index="3" instance=ExtResource( 4 )]
-
+[node name="Row3" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 88 )
 
-[node name="Row4" parent="Rows" index="4" instance=ExtResource( 4 )]
-
+[node name="Row4" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 104 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row5" parent="Rows" index="5" instance=ExtResource( 4 )]
-
+[node name="Row5" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 120 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row6" parent="Rows" index="6" instance=ExtResource( 4 )]
-
+[node name="Row6" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 136 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row7" parent="Rows" index="7" instance=ExtResource( 4 )]
-
+[node name="Row7" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 152 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row8" parent="Rows" index="8" instance=ExtResource( 4 )]
-
+[node name="Row8" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 168 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row9" parent="Rows" index="9" instance=ExtResource( 4 )]
-
+[node name="Row9" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 184 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row10" parent="Rows" index="10" instance=ExtResource( 4 )]
-
+[node name="Row10" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 200 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Row11" parent="Rows" index="11" instance=ExtResource( 4 )]
-
+[node name="Row11" parent="Rows" instance=ExtResource( 4 )]
 position = Vector2( 126, 216 )
-_sections_unfolded = [ "Transform" ]
 
-[node name="Label" type="Label" parent="." index="3"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 4
+[node name="Label" type="Label" parent="."]
 custom_constants/shadow_as_outline = 5
 text = "Level : 1"
 align = 1
 valign = 1
-percent_visible = 1.0
-lines_skipped = 0
-max_lines_visible = -1
-
-

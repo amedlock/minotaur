@@ -3,8 +3,7 @@
 [ext_resource path="res://data/map/map_walls.png" type="Texture" id=1]
 
 [node name="marker" type="Sprite"]
-
+modulate = Color( 0, 0.211765, 0.615686, 1 )
 texture = ExtResource( 1 )
+region_enabled = true
 region_rect = Rect2( 48, 48, 16, 16 )
-
-

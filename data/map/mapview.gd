@@ -47,9 +47,11 @@ func _ready():
 			
 
 func choose_walltype( c, wallnum, doornum ): 
-	if c == dungeon.WallType.Wall: 
+	if c==null:
+		return 0
+	elif c.is_in_group("wall"): 
 		return wallnum
-	elif c==dungeon.WallType.Door:
+	elif c.is_in_group("door"):
 		return doornum
 	else:
 		return 0
