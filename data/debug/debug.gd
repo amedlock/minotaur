@@ -25,14 +25,15 @@ func join_str( items: Array) -> String:
 
 func _process(_delta):
 	var coord = Vector2( int(player.loc.x), int(player.loc.y))
-	var ahead = player.coord_ahead()
 	var loc = player.loc
+	var cell_ahead = player.cell_ahead()
+	var cell = grid.get_cell(loc.x, loc.y)
 	var info = [
 		"Position: %s" % str(coord),
+		"Cell: %s" % str(cell.debug_info()),
 		"World pos: %s" % [str(player.translation)],
-		"Cell: %s" % grid.get_cell(loc.x, loc.y).debug_info() ,
 		"Facing: %s %s" % [str(player.dir), str(player.dir_name())],
-		"Ahead: %s" % str(ahead)
+		"Cell Ahead: %s" % str(cell_ahead.debug_info() if cell_ahead else "")
 	]
 	var item = player.item_at_feet()
 	if item:

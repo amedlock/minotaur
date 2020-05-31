@@ -24,7 +24,7 @@ func configure(xp, yp, enemy):
 	mind = enemy.mind
 	self.name = enemy.name
 	set_region_rect( monster.img )
-	set_modulate( monster.color )
+	#set_modulate( monster.color )
 
 
 func damage( item ):

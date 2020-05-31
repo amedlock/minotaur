@@ -31,7 +31,8 @@ func _ready():
 func debug_info() -> String:
 	var n = self.north.name if self.north else "none"
 	var e = self.east.name if self.east else "none"
-	return "(%s - %s, %s)" % [self.name, n, e]
+	var en = self.enemy.name if self.enemy else "none"
+	return "(%s %s - en:%s, doors:%s, %s)" % [self.name, Vector2(x,y), en, n, e]
 
 
 func configure(xp, yp):
@@ -144,9 +145,7 @@ func set_item(new_item):
 	if new_item!=null:
 		var node = item_prefab.instance()
 		self.add_child( node )
-		if new_item.name=="ladder":
-			print("Stop")
-		node.translation = Vector3( 1.5, 0.55, 1.5 ) + new_item.offset
+		node.translation = Vector3( 1.5, 0.55, -1.5 ) + new_item.offset
 		node.configure(new_item)
 		item = node
 	
@@ -160,7 +159,7 @@ func set_enemy(e):
 		var node = enemy_prefab.instance()
 		self.add_child( node )
 		node.configure(x, y, e)
-		node.translation = Vector3( 1.5, 0.9, 1.5 )
+		node.translation = Vector3( 1.5, 0.9, -1.5 )
 		self.enemy = node
 
 

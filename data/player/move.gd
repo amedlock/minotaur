@@ -15,6 +15,9 @@ func forward():
 	var wall = player.wall_ahead()
 	if wall and wall.is_blocked():
 		return
+	var cell = player.cell_ahead()
+	if cell.enemy:
+		print("Monster is there")
 	timer = 0
 	start = player.loc
 	dir = player.face_vector()

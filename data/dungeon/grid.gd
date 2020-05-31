@@ -39,7 +39,7 @@ func configure(w: int, h: int, cell_sz: float):
 			self.add_child(node)
 			node.configure(xp, yp)
 			node.name = "Cell_%d_%d" % [xp, yp]
-			node.translation = Vector3(xp * cell_sz, 0, yp * -cell_sz)
+			node.translation = Vector3(xp * cell_sz, 0, -(yp * cell_sz))
 			cells[index] = node
 			cell_file.store_string("Cell %d,%d = %s\n" % [xp, yp, str(node.translation)])			
 	cell_file.close()
@@ -49,21 +49,13 @@ func reset_all():
 	for c in cells:
 		c.reset()
 
+
 func get_cell(x : int, y: int):
 	if x<0 or x>=width:
 		return null
 	if y<0 or y>=height:
 		return null
 	return cells[x + (y * width)]
-
-
-
-var direction_vector = {
-	"north": Vector2(0,1),
-	"east": Vector2(1,0),
-	"south": Vector2(0,-1),
-	"west": Vector2(-1,0)
-}
 
 
 func get_wall(p : Vector2, dir: Vector2):
@@ -74,8 +66,6 @@ func get_wall(p : Vector2, dir: Vector2):
 	var cur = get_cell(p.x, p.y)
 	if cur==null:
 		return outer_wall
-	if p.x==1 and p.y==3 and dir.y==1:
-		print("Stop")
 	var p2 = p + dir
 	var cell = get_cell(p2.x, p2.y)
 	if cell==null:
@@ -109,14 +99,14 @@ func set_item(x, y, item):
 
 func set_enemy(x, y, enemy):
 	var cell = get_cell(x,y)
+	if x==6 and y==1:
+		print("Stop")
 	if cell:
 		cell.set_enemy(enemy)
 
 
 
 func set_wall(p, dir, kind):
-	if p.x==1 and p.y==3 and dir=="west":
-		print("Stop")	
 	if dir=="west":
 		return set_wall(Vector2(p.x-1, p.y), "east", kind)
 	elif dir=="south":

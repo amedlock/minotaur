@@ -288,6 +288,10 @@ func face_vector():
 	assert(false)
 
 
+func cell_ahead():
+	var p = loc + face_vector()
+	return dungeon.grid.get_cell(p.x, p.y)
+
 func wall_ahead():
 	return dungeon.grid.get_wall(loc, face_vector() )
 
