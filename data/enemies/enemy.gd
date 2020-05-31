@@ -22,6 +22,7 @@ func configure(xp, yp, enemy):
 	y = yp
 	health = enemy.health
 	mind = enemy.mind
+	self.name = enemy.name
 	set_region_rect( monster.img )
 	set_modulate( monster.color )
 

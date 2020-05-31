@@ -57,7 +57,7 @@ func calc_sprite_scale( src_w, src_h, dest_w, dest_h ):
 onready var compass = find_node("Compass")
 				
 func update_compass():
-	compass.rotation_degrees =  player.dir 
+	compass.rotation_degrees = -player.dir 
 								
 
 func update_stats( ):

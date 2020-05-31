@@ -64,3 +64,5 @@ custom_constants/shadow_as_outline = 5
 text = "Level : 1"
 align = 1
 valign = 1
+
+[node name="Gates" type="Node2D" parent="."]

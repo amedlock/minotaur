@@ -20,13 +20,18 @@ var item_prefab = preload("res://data/items/item_prefab.tscn")
 var enemy_prefab = preload("res://data/enemies/enemy_prefab.tscn")
 
 
-var dungeon
 var grid 
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	grid = self.get_parent()
+
+
+func debug_info() -> String:
+	var n = self.north.name if self.north else "none"
+	var e = self.east.name if self.east else "none"
+	return "(%s - %s, %s)" % [self.name, n, e]
 
 
 func configure(xp, yp):
@@ -70,9 +75,10 @@ func check_wall(c):
 		if c.x > self.x:
 			return east
 		else:
+			assert( c.x < self.x )
 			return c.east
 	if c.x==self.x:
-		if c.y < self.y:
+		if c.y > self.y:
 			return self.north
 		else:
 			return c.north
@@ -102,14 +108,15 @@ func reset():
 
 
 var wall_angle = {
-	"north": 0,
-	"east": 270,
-	"south": 180,
-	"west": 90
+	"north": 180,
+	"east": 270	
 }
 
 
+const wall_offset = Vector3( 3, 0.25, -3)
+
 func set_wall(dir, kind):
+	assert( dir in ["north", "east"])
 	var prev = get(dir)
 	if prev:
 		remove_child(prev)
@@ -118,11 +125,13 @@ func set_wall(dir, kind):
 	match kind:
 		"door": node = door_prefab.instance()
 		"wall": node = wall_prefab.instance()
-	node.rotation_degrees = Vector3(0, wall_angle[dir], 0 )
-	if dir in ['north', 'east']:
-		node.translation = Vector3(3, 0, -3)
-	node.add_to_group("wall")
+	node.add_to_group(kind)
 	self.add_child(node)
+	node.name = kind
+	node.translation = wall_offset
+	match dir:
+		"north" : node.rotation_degrees = Vector3(0,180,0)
+		"east" : node.rotation_degrees = Vector3(0,270,0)
 	self.set(dir, node)
 
 
@@ -135,7 +144,9 @@ func set_item(new_item):
 	if new_item!=null:
 		var node = item_prefab.instance()
 		self.add_child( node )
-		node.translation = Vector3( 1.5, 0.6, 1.5 ) + new_item.offset
+		if new_item.name=="ladder":
+			print("Stop")
+		node.translation = Vector3( 1.5, 0.55, 1.5 ) + new_item.offset
 		node.configure(new_item)
 		item = node
 	

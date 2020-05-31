@@ -119,7 +119,6 @@ scale = Vector2( 1.25, 1.25 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Left"]
 position = Vector2( -0.40744, -0.187561 )
-scale = Vector2( 1, 1 )
 shape = ExtResource( 5 )
 
 [node name="Sprite" type="Sprite" parent="Hands/background/Left"]

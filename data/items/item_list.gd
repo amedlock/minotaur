@@ -79,6 +79,16 @@ class Item:
 	var stat2
 	var offset = Vector3(0,0,0)   # Vector3 offset for items in maze
 
+	func json() -> Dictionary:
+		var fields = ['name', 'kind', 'img', 'color', 'power', 
+					  'offset', 'stat1', 'stat2', 'missile']
+		var result = {}
+		for key in fields:
+			var val = self.get(key)
+			if val:
+				result[key] = val
+		return result
+
 	func can_open_with( other ):
 		if other==null or self.kind!="container":
 			return false
@@ -212,7 +222,7 @@ func add_all_items():
 	add_weapons()
 	treasure = define_item("treasure", "treasure", 1, Yellow, 0, 0 )
 	exit = define_item("exit", "ladder", 1, Tan, 0, 0)
-	exit.offset = Vector3( 1.5, 0.2, 1.5 )
+	#exit.offset = Vector3( 0, 0.45, 0 )
 
 
 var dungeon

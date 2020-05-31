@@ -37,6 +37,7 @@ onready var turn = $Turn
 onready var move = $Move
 onready var show_map = $ShowMap
 
+
 func _ready():
 	dungeon = get_parent()
 	start_pos = dungeon.find_node("StartPos")
@@ -68,7 +69,6 @@ func set_dir( d ):
 	self.rotation_degrees = Vector3( 0, d, 0 )
 	self.dir = d
 	hud.update_compass()
-	map_view.update()
 
 
 func coord_to_world(p):
@@ -79,7 +79,7 @@ func set_pos( cx, cy ):
 	loc.x = cx
 	loc.y = cy
 	self.translation = coord_to_world(loc)
-	map_view.update()
+
 	
 
 func reset_location():
@@ -104,6 +104,8 @@ func is_moving():
 
 func dead(): 
 	return health<1 or mind<1
+
+
 
 func dir_name() -> String:
 	if dir > 315 or dir < 45: return "north"
@@ -149,7 +151,6 @@ func action_complete( kind ):
 	match kind:
 		"Move":
 			dungeon.grid.get_cell(loc.x, loc.y).on_enter(game.player)
-			map_view.update()
 		"Turn": pass
 		"Glance": pass
 		"die": pass
@@ -280,9 +281,9 @@ func has_weapon():
 func face_vector():
 	dir = wrapi(dir, 0, 360);
 	match int( dir / 90 ):
-		0 : return Vector2(0,1)	 # south
+		0 : return Vector2(0,1)  # north
 		1 : return Vector2(-1,0) # west
-		2 : return Vector2(0,-1) # north
+		2 : return Vector2(0,-1) # south
 		3 : return Vector2(1,0)  # east
 	assert(false)
 

@@ -24,7 +24,6 @@ func _ready():
 
 # Called when the node enters the scene tree for the first time.
 func configure(w: int, h: int, cell_sz: float):
-	var extents = [range(-18,18), range(-18,18)]
 	self.width = w
 	self.height = h
 	self.cell_size = cell_sz
@@ -39,10 +38,10 @@ func configure(w: int, h: int, cell_sz: float):
 			var node = cell_prefab.instance()
 			self.add_child(node)
 			node.configure(xp, yp)
+			node.name = "Cell_%d_%d" % [xp, yp]
 			node.translation = Vector3(xp * cell_sz, 0, yp * -cell_sz)
 			cells[index] = node
 			cell_file.store_string("Cell %d,%d = %s\n" % [xp, yp, str(node.translation)])			
-			cell_file.store_string("Cell %d,%d = world %s\n" % [xp, yp, str(node.global_transform.origin)])			
 	cell_file.close()
 
 
@@ -60,28 +59,32 @@ func get_cell(x : int, y: int):
 
 
 var direction_vector = {
-	"north": Vector2(0,-1),
+	"north": Vector2(0,1),
 	"east": Vector2(1,0),
-	"south": Vector2(0,1),
+	"south": Vector2(0,-1),
 	"west": Vector2(-1,0)
 }
 
 
 func get_wall(p : Vector2, dir: Vector2):
-	if dir.x==-1 or dir.y==-1: # south or west
-		return get_wall(p + dir, -dir )
+	if dir.x==-1: # west
+		return get_wall( Vector2(p.x-1, p.y), -dir)
+	elif dir.y==-1: # south
+		return get_wall( Vector2(p.x, p.y-1), -dir)
 	var cur = get_cell(p.x, p.y)
 	if cur==null:
 		return outer_wall
+	if p.x==1 and p.y==3 and dir.y==1:
+		print("Stop")
 	var p2 = p + dir
 	var cell = get_cell(p2.x, p2.y)
 	if cell==null:
 		return outer_wall
 	else:
 		if dir.x==1:
-			return cell.east
+			return cur.east
 		elif dir.y==1:
-			return cell.north
+			return cur.north
 	return null
 
 
@@ -110,11 +113,14 @@ func set_enemy(x, y, enemy):
 		cell.set_enemy(enemy)
 
 
+
 func set_wall(p, dir, kind):
+	if p.x==1 and p.y==3 and dir=="west":
+		print("Stop")	
 	if dir=="west":
 		return set_wall(Vector2(p.x-1, p.y), "east", kind)
 	elif dir=="south":
-		return set_wall(Vector2(p.x, p.y+1), "north", kind)
+		return set_wall(Vector2(p.x, p.y-1), "north", kind)
 	var cell = get_cell(p.x,p.y)
 	if cell:
 		cell.set_wall(dir, kind)
@@ -122,11 +128,11 @@ func set_wall(p, dir, kind):
 
 func set_door(x, y, dir):
 	if dir=="west":
-		x = x-1
-		dir = "east"
+		set_door(x-1, y, "east")
 	elif dir=="south":
-		y = y + 1
-		dir = "north"
-	var cell = get_cell(x,y)
-	if cell:
-		cell.set_door(dir)
+		set_door(x, y-1, "north")
+	else:
+		var cell = get_cell(x,y)
+		if cell:
+			cell.set_door(dir)
+

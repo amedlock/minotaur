@@ -4,7 +4,7 @@ const Up = Vector3(0,1,0)
 
 export( String, "blue", "tan", "green" ) var kind = "tan"
 
-var min_size = 0.01
+var min_size = 0.02
 var max_size = 0.03
 
 

@@ -86,6 +86,20 @@ func enable():
 func disable():
 	self.hide()	
 
+var mural_colors = {
+	"war":preload("res://data/dungeon/green_mat.tres"),
+	"magic" :preload("res://data/dungeon/blue_mat.tres"),
+	"both"  :preload("res://data/dungeon/tan_mat.tres")
+}
+
+func set_mural_color(kind):
+	var mat = mural_colors[kind]
+	for m in find_node("floor").get_children():
+		if m.is_in_group("murals"):
+			m.get_node("Mesh").set_surface_material( 0, mat )
+	
+
+
 
 func go_next_level():
 	var next = current_level.depth+1
@@ -100,7 +114,7 @@ func go_next_level():
 
 func use_exit():
 	var item = player.item_at_feet()
-	if item==null or item.name!="exit":
+	if item==null or item.name!="ladder":
 		return
 	go_next_level()
 

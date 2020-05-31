@@ -5,7 +5,7 @@
 [ext_resource path="res://data/items/item.gd" type="Script" id=3]
 
 [node name="item" type="Sprite3D"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0 )
 material_override = ExtResource( 1 )
 pixel_size = 0.02
 texture = ExtResource( 2 )

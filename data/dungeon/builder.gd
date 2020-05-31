@@ -1,46 +1,21 @@
 extends Spatial;
 
 
-var wall = preload("res://data/dungeon/dungeon_wall.tscn")
-var corner = preload("res://data/dungeon/wall_corner.tscn")
-var arch = preload("res://data/door/dungeon_arch.tscn")
-var door = preload("res://data/door/door_prefab.tscn")
-var exit = preload("res://data/trapdoor/trapdoor.tscn")
-
-
-var green_mtl = preload("res://data/dungeon/green_mat.tres")
-var blue_mtl = preload("res://data/dungeon/blue_mat.tres")
-var tan_mtl = preload("res://data/dungeon/tan_mat.tres")
-
 var enemy_list ;
 var item_list;
 var dungeon ;
 
-var WallType 
-var WallDir 
-var WallPost
-var LevelInfo
-
 var rng = RandomNumberGenerator.new()
+
 
 func _ready():
 	dungeon = get_parent()
 	enemy_list = dungeon.find_node("Enemies")
 	item_list = dungeon.find_node("ItemList")
-	# get some type references
-	WallType = dungeon.WallType
-	WallPost = dungeon.WallPost
-	WallDir = dungeon.WallDir	
-	LevelInfo = dungeon.LevelInfo
-
-
-func get_cell( x, y ): 
-	return dungeon.grid.get_cell(x,y)
 
 
 func randint( hi ):
 	return rng.randi() % hi
-
 
 
 class MazeCell:
@@ -60,7 +35,9 @@ class MazeCell:
 		var obj= {'coord':"%s,%s" % [x, y] }
 		if enemy:
 			obj['enemy'] = enemy.json()
-		for key in ['north', 'east', 'item', 'gate']:
+		if item:
+			obj['item'] = item.json()
+		for key in ['north', 'east', 'gate']:
 			var val = self.get(key)
 			if val!=null:
 				obj[key] = val
@@ -69,51 +46,50 @@ class MazeCell:
 var maze = []
 
 func maze_cell(x, y) -> MazeCell:
-	if x < 0 or x >= dungeon.WIDTH:
+	if x<0 or x>=dungeon.WIDTH:
 		return null
-	if y < 0 or y >= dungeon.HEIGHT:
+	if y<0 or y>=dungeon.HEIGHT:
 		return null
-	return maze[x + y * dungeon.WIDTH]
+	return maze[x + (y * dungeon.WIDTH)]
+
 
 
 func build_outer_wall():
-	for xp in range(1,dungeon.WIDTH-1):
+	var max_x = dungeon.WIDTH-1
+	var max_y = dungeon.HEIGHT-1
+	for xp in range(1,max_x):
 		maze_cell(xp, 0).north = "wall"
-		maze_cell(xp,dungeon.HEIGHT-2).north = "wall"
-	for yp in range(1,dungeon.HEIGHT-1):
+		maze_cell(xp,max_y-1).north = "wall"
+	for yp in range(1,max_y):
 		maze_cell( 0, yp ).east ="wall" 
-		maze_cell( dungeon.WIDTH-2, yp).east ="wall"
-
+		maze_cell( max_x-1, yp).east ="wall"
+	assert(maze_cell(6,10).north)
+	assert(maze_cell(10,6).east)
 
 func add_outer_doors():
-	maze_cell(4,0).north = "door"
-	maze_cell(8,0 ).north  = "door"
-	maze_cell(4,dungeon.HEIGHT-2).north = "door" 
+	maze_cell(3,0).north = "door"
+	maze_cell(8,0).north  = "door"
+	maze_cell(3,dungeon.HEIGHT-2).north = "door"
 	maze_cell(8,dungeon.HEIGHT-2).north = "door" 
-	maze_cell(0,4).east = "door"
+	maze_cell(0,3).east = "door"
 	maze_cell(0,8).east ="door" 
-	maze_cell(dungeon.WIDTH-2,4).east = "door" 
+	maze_cell(dungeon.WIDTH-2,3).east = "door" 
 	maze_cell(dungeon.WIDTH-2,8).east  = "door" 
 
-
-func fill_inner():
-	for x in range(1,dungeon.WIDTH-1):
-		for y in range(1,dungeon.HEIGHT-1):
-			maze_cell(x,y).north = "wall"
-			maze_cell(x, y).east = "wall"
 
 
 func get_neighbors( cx, cy ):
 	var result = []
-	if cx > 1: 
-		result.append( maze_cell( cx-1, cy ) )
-	if cx < dungeon.WIDTH-2: 
-		result.append( maze_cell( cx+1, cy ) )
-	if cy > 1: 
-		result.append( maze_cell( cx, cy-1 ) )
-	if cy < dungeon.HEIGHT-2: 
-		result.append( maze_cell( cx, cy+1 ) )
-	return result;	
+	var n = maze_cell(cx, cy+1)
+	var s = maze_cell(cx, cy-1)
+	var e = maze_cell(cx+1, cy)
+	var w = maze_cell(cx-1, cy)
+	for mc in [n,s,e,w]:
+		if mc and not is_outer_maze(mc):
+			result.append(mc)
+	for x in result:
+		assert( not is_outer_maze(x))	
+	return result
 
 
 
@@ -128,6 +104,8 @@ func path_dir( from, to ):
 
 func add_path( from, to ):
 	var dir = path_dir( from, to )
+	assert( not is_outer_maze(to) )
+	assert( not is_outer_maze(from) )
 	if not dir:
 		return
 	var kind = null
@@ -171,15 +149,21 @@ func find_adjacent( x, y, seen ):
 	for it in seen:
 		if is_adjacent( it.x, it.y, x, y ):
 			work.append( it )
-	var p = work[ randint( work.size() ) ]
-	assert( is_adjacent( p.x, p.y, x, y ) )
-	return p
+	return choose_random(work)
 
+
+
+func fill_inner():
+	for x in range(1,dungeon.WIDTH-1):
+		for y in range(1,dungeon.HEIGHT-1):
+			var mc = maze_cell(x,y)
+			mc.north = "wall"
+			mc.east = "wall"
 
 
 func build_maze_prim(info):
 	fill_inner()
-	var seen = [get_cell(info.start.x, info.start.y)]
+	var seen = [maze_cell(info.start.x, info.start.y)]
 	var frontier = get_neighbors( info.start.x, info.start.y )
 	while frontier.size()>0:
 		var pick = take_random( frontier )
@@ -193,7 +177,7 @@ func build_maze_prim(info):
 	
 func check_wall( x, y, dir ):
 	if dir=="west": return check_wall(x-1, y, "east")
-	if dir=="south": return check_wall( x, y+1, "north" )
+	if dir=="south": return check_wall( x, y-1, "north" )
 	var c = maze_cell( x,y )
 	if c==null: 
 		return false
@@ -212,8 +196,8 @@ func more_doors():
 		maze_cell( 3, 8 ).north = "door" 
 	if check_wall( 8,9, "north" ):  
 		maze_cell( 8, 9 ).north = "door"
-	
-	
+
+
 
 func add_gates(info ):
 	if info.depth > 2: return
@@ -231,8 +215,7 @@ func add_gates(info ):
 func add_exit():
 	var exit_loc = [Vector2(3,4), Vector2(7,4), Vector2(4,3), Vector2(4,7) ]
 	var result : Vector2 = choose_random( exit_loc ) 
-	maze_cell(result.x, result.y).item = item_list.find_item("exit")
-	
+	maze_cell(result.x, result.y).item = item_list.find_item("ladder")
 
 func add_enemies(info, coords):
 	var num = randint(6) + 12
@@ -267,7 +250,8 @@ func add_key( info, coords ):
 	var keys = item_list.find_items("item",["key"], powers )
 	assert( keys.empty()==false )
 	var c = choose_random( coords )
-	dungeon.grid.set_item( c.x, c.y, choose_random(keys))
+	maze_cell(c.x, c.y).item = choose_random(keys)
+
 
 
 func add_loot( num, info, coords ):
@@ -285,9 +269,8 @@ func add_loot( num, info, coords ):
 	var bags = item_list.find_items( "container", names, powers )
 	for _n in range(num):
 		if coords.empty(): return
-		var it = choose_random( bags )
 		var c = take_random( coords )
-		dungeon.grid.set_item(c.x, c.y, it)
+		maze_cell(c.x,c.y).item = choose_random( bags )
 
 
 func add_money(num, info, coords):
@@ -304,9 +287,8 @@ func add_money(num, info, coords):
 	if allowed.empty(): return  # shouldnt happen
 	for _n in range(num):
 		if coords.empty(): return
-		var it = choose_random( allowed )
 		var c = take_random( coords ) 
-		dungeon.grid.set_item( c.x, c.y, it )
+		maze_cell(c.x, c.y).item = choose_random( allowed )
 
 
 func add_other(coords):
@@ -314,12 +296,12 @@ func add_other(coords):
 	for _n in range(randint(5)):
 		if coords.empty(): return
 		var c = take_random( coords )
-		dungeon.grid.set_item( c.x, c.y, food )
+		maze_cell(c.x, c.y).item = food
 	var quiver = item_list.find_item("quiver"); 
 	for _n in range(1 + randint(3)):
 		if coords.empty(): return
 		var c = take_random( coords )
-		dungeon.grid.set_item( c.x, c.y, quiver )
+		maze_cell(c.x,c.y).item = quiver
 
 		
 
@@ -332,13 +314,12 @@ func add_weapons( num, info, coords ):
 	var armor = item_list.find_items( "armor", null, powers )
 	for _n in range( randi() % 3 ):
 		var c = take_random( coords )
-		dungeon.grid.set_item( c.x, c.y, take_random( armor ) )
+		maze_cell(c.x,c.y).item = take_random( armor )
 	var allowed = item_list.find_items( "weapon", null, powers )		
 	for _n in range(num):
 		if coords.empty():  return
 		var c = take_random( coords )
-		var it = choose_random( allowed )
-		dungeon.grid.set_item( c.x, c.y, it )
+		maze_cell(c.x,c.y).item = choose_random( allowed )
 
 
 func add_items(info, coords):
@@ -352,14 +333,8 @@ func add_items(info, coords):
 	add_weapons( weapons, info, coords )
 
 
-var mural_mat = { "both": tan_mtl, "war": green_mtl, "magic": blue_mtl }
-
-func add_murals( info ):
-	var flr = dungeon.find_node("floor")
-	var mat = mural_mat[info.m_type]
-	for m in flr.get_children():
-		if m.is_in_group("murals"):
-			m.get_node("Mesh").set_surface_material( 0, mat )
+func set_mural_color( info ):
+	dungeon.set_mural_color(info.m_type)
 			
 				
 func add_minotaur(info, coords):
@@ -408,14 +383,44 @@ func build_dungeon_grid():
 			grid.set_gate(c.x, c.y, c.gate)
 
 
+func is_outer_maze(c):
+	return c.x==0 or c.y==0 or c.x==dungeon.WIDTH-1 or c.y==dungeon.HEIGHT-1
+
 func all_empty_cells():
 	var coords =[]
 	for xc in range(1,dungeon.WIDTH-1):
 		for yc in range(1,dungeon.HEIGHT-1):
 			var mc = maze_cell(xc, yc)
+			assert( not is_outer_maze(mc))
 			if mc.item==null:
 				coords.append( Vector2(xc,yc) )
 	return coords;
+
+
+func test_wall_both(x:int, y:int, dir:String):
+	var mwall = maze_cell(x,y).get(dir)
+	if not mwall:
+		print("Missing maze wall(%s) at %d,%d " % [dir,x,y])
+	var cwall = dungeon.grid.get_cell(x,y).get(dir)
+	if not cwall:
+		print("Missing grid wall(%s) at %d,%d " % [dir,x,y])
+
+	
+
+func test_grid():
+	var max_x = dungeon.WIDTH-1
+	var max_y = dungeon.HEIGHT-1
+	test_wall_both(6,10,"north")
+	test_wall_both(6,10,"north")
+	test_wall_both(6,10,"north")
+	# check outer wall
+	for y in range(1,max_y):
+		test_wall_both(0,y,"east")
+		test_wall_both(max_x-1,y, "east")
+	for x in range(1,max_x):		
+		test_wall_both(x,0,"north")
+		test_wall_both(x, max_y-1,"north")
+
 
 
 func build_maze():
@@ -429,8 +434,8 @@ func build_maze():
 	var types = ["war", "magic", "both"]
 	info.m_type = choose_random(types)
 	build_outer_wall()
+	add_outer_doors()	
 	build_maze_prim(info)
-	add_outer_doors()
 	more_doors()
 	add_exit()
 	add_gates(info)
@@ -439,7 +444,8 @@ func build_maze():
 	add_items( info, empty_cells)
 	add_minotaur( info, empty_cells )
 	build_dungeon_grid() # build the actual geometry
-	add_murals(info)	
+	test_grid()
+	set_mural_color(info)	
 	var f = File.new()
 	f.open("map_cell.json", File.WRITE)
 	f.store_string("[")
