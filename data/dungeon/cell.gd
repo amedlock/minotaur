@@ -7,9 +7,9 @@ var y = 0
 var north 
 var east 
 
-var item  
-var enemy 
-var gate 
+var item : Spatial 
+var enemy : Spatial
+var gate : Spatial 
 
 var wall_prefab = preload("res://data/dungeon/dungeon_wall.tscn")
 var corner_prefab = preload("res://data/dungeon/wall_corner.tscn")
@@ -38,8 +38,9 @@ func get_index() -> int:
 	return x + (y * grid.width)
 
 
-func on_enter(_player):
-	print("Player entered")
+func on_enter(player):
+	if self.gate:
+		player.enter_gate(self.gate.kind)
 
 
 var green_gate = preload("res://data/gate/green_gate.tscn")
@@ -47,11 +48,16 @@ var blue_gate = preload("res://data/gate/blue_gate.tscn")
 var tan_gate = preload("res://data/gate/tan_gate.tscn")
 
 func set_gate(kind):
+	if self.gate:
+		free_child(gate)
+		self.gate = null
 	var node 
 	match kind:
 		"war": node = green_gate.instance()
 		"magic": node = blue_gate.instance()
 		"both": node = tan_gate.instance()
+		_: return
+	node.translation = Vector3(1.5, 0.25, -1.5)
 	self.add_child(node)
 	self.gate = node
 
@@ -61,14 +67,14 @@ func check_wall(c):
 	if c==null:
 		return null
 	if c.y==self.y:
-		if c.x == self.x+1:
+		if c.x > self.x:
 			return east
-		elif c.x == self.x-1:
+		else:
 			return c.east
 	if c.x==self.x:
-		if c.y == self.y+1:
+		if c.y < self.y:
 			return self.north
-		elif c.y == self.y-1:
+		else:
 			return c.north
 	return null
 
@@ -103,7 +109,6 @@ var wall_angle = {
 }
 
 
-
 func set_wall(dir, kind):
 	var prev = get(dir)
 	if prev:
@@ -114,6 +119,8 @@ func set_wall(dir, kind):
 		"door": node = door_prefab.instance()
 		"wall": node = wall_prefab.instance()
 	node.rotation_degrees = Vector3(0, wall_angle[dir], 0 )
+	if dir in ['north', 'east']:
+		node.translation = Vector3(3, 0, -3)
 	node.add_to_group("wall")
 	self.add_child(node)
 	self.set(dir, node)

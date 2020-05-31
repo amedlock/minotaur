@@ -7,7 +7,7 @@ var game
 
 func _ready():
 	player = get_parent()
-	game = player.get_parent()
+	game = player.find_parent("Game")
 
 func start():
 	game.show_map()

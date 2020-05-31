@@ -10,6 +10,7 @@ kind = "blue"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 material_override = ExtResource( 1 )
+cast_shadow = 0
 offset = Vector2( 0, 32 )
 modulate = Color( 0.319061, 0.434399, 0.960938, 1 )
 pixel_size = 0.03

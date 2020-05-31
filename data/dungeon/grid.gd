@@ -14,25 +14,36 @@ var outer_wall
 
 var cell_size
 
+var dungeon
+
+
 func _ready():
-  outer_wall = get_parent().find_node("outer_wall")
+	dungeon = get_parent()
+	outer_wall = dungeon.find_node("outer_wall")
 
 
 # Called when the node enters the scene tree for the first time.
 func configure(w: int, h: int, cell_sz: float):
+	var extents = [range(-18,18), range(-18,18)]
 	self.width = w
 	self.height = h
 	self.cell_size = cell_sz
 	var total = width * height
 	cells.resize(total)
+	var cell_file = File.new()
+	cell_file.open("cell_file.txt", File.WRITE)
+	cell_file.store_string("start = %s\n" % str(dungeon.translation))
 	for yp in range(0,height):
 		for xp in range(0,width):
 			var index = xp + (yp * width)
 			var node = cell_prefab.instance()
 			self.add_child(node)
 			node.configure(xp, yp)
-			node.translation = Vector3(xp * cell_sz, 0, yp * cell_sz)
+			node.translation = Vector3(xp * cell_sz, 0, yp * -cell_sz)
 			cells[index] = node
+			cell_file.store_string("Cell %d,%d = %s\n" % [xp, yp, str(node.translation)])			
+			cell_file.store_string("Cell %d,%d = world %s\n" % [xp, yp, str(node.global_transform.origin)])			
+	cell_file.close()
 
 
 func reset_all():
@@ -49,9 +60,9 @@ func get_cell(x : int, y: int):
 
 
 var direction_vector = {
-	"north": Vector2(0,1),
+	"north": Vector2(0,-1),
 	"east": Vector2(1,0),
-	"south": Vector2(0,-1),
+	"south": Vector2(0,1),
 	"west": Vector2(-1,0)
 }
 
@@ -80,7 +91,7 @@ func add_corner(x, y, which):
 		cell.add_corner(which)
 
 
-func add_gate( x,y , kind):
+func set_gate( x,y , kind):
 	var cell = get_cell(x,y)
 	if not cell:
 		return
@@ -103,7 +114,7 @@ func set_wall(p, dir, kind):
 	if dir=="west":
 		return set_wall(Vector2(p.x-1, p.y), "east", kind)
 	elif dir=="south":
-		return set_wall(Vector2(p.x, p.y + 1), "north", kind)
+		return set_wall(Vector2(p.x, p.y+1), "north", kind)
 	var cell = get_cell(p.x,p.y)
 	if cell:
 		cell.set_wall(dir, kind)

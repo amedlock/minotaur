@@ -155,7 +155,7 @@ func player_fire():
 	timer = 1.5	
 	
 
-func player_fire_done(which):
+func player_fire_done(_which):
 	audio.stream = preload("res://data/sounds/hit.wav")
 	audio.play()
 	enemy.damage( player_item ) 	# remove it
@@ -190,7 +190,7 @@ func enemy_fire():
 	else:
 		enemy_anim.play("Fire")
 
-func enemy_fire_done(which):
+func enemy_fire_done(_which):
 	enemy_audio.stream = load("res://data/sounds/hit.wav")
 	enemy_audio.play()
 	player.damage( enemy, enemy_item )

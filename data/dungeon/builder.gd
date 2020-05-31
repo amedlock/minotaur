@@ -43,19 +43,28 @@ func randint( hi ):
 
 
 
-
 class MazeCell:
 	var x
 	var y
 	var north = null
 	var east = null
+	var gate = null
 	var item = null 
 	var enemy = null
 
 	func _init(xp, yp):
 		self.x = xp
 		self.y = yp
-
+	
+	func json() -> String:
+		var obj= {'coord':"%s,%s" % [x, y] }
+		if enemy:
+			obj['enemy'] = enemy.json()
+		for key in ['north', 'east', 'item', 'gate']:
+			var val = self.get(key)
+			if val!=null:
+				obj[key] = val
+		return to_json(obj)
 
 var maze = []
 
@@ -69,31 +78,29 @@ func maze_cell(x, y) -> MazeCell:
 
 func build_outer_wall():
 	for xp in range(1,dungeon.WIDTH-1):
-		maze_cell(xp, 1).north = "wall"
-		maze_cell(xp,dungeon.HEIGHT-1).north = "wall"
+		maze_cell(xp, 0).north = "wall"
+		maze_cell(xp,dungeon.HEIGHT-2).north = "wall"
 	for yp in range(1,dungeon.HEIGHT-1):
 		maze_cell( 0, yp ).east ="wall" 
 		maze_cell( dungeon.WIDTH-2, yp).east ="wall"
 
 
-func add_outside_doors():
-	maze_cell(3,1).north = "door"
-	maze_cell( 8, 1 ).north  = "door"
-	maze_cell( 3, dungeon.HEIGHT-1 ).north = "door" 
-	maze_cell( 8, dungeon.HEIGHT-1 ).north = "door" 
-	maze_cell( 0, 3 ).east = "door"
-	maze_cell( 0, 8 ).east ="door" 
-	maze_cell( dungeon.WIDTH-2, 3 ).east = "door" 
-	maze_cell( dungeon.WIDTH-2, 8 ).east  = "door" 
+func add_outer_doors():
+	maze_cell(4,0).north = "door"
+	maze_cell(8,0 ).north  = "door"
+	maze_cell(4,dungeon.HEIGHT-2).north = "door" 
+	maze_cell(8,dungeon.HEIGHT-2).north = "door" 
+	maze_cell(0,4).east = "door"
+	maze_cell(0,8).east ="door" 
+	maze_cell(dungeon.WIDTH-2,4).east = "door" 
+	maze_cell(dungeon.WIDTH-2,8).east  = "door" 
 
 
 func fill_inner():
 	for x in range(1,dungeon.WIDTH-1):
 		for y in range(1,dungeon.HEIGHT-1):
-			if y > 1:
-				maze_cell(x,y).north = "wall"
-			if x < dungeon.WIDTH-2:
-				maze_cell(x, y).east = "wall"
+			maze_cell(x,y).north = "wall"
+			maze_cell(x, y).east = "wall"
 
 
 func get_neighbors( cx, cy ):
@@ -211,13 +218,18 @@ func more_doors():
 func add_gates(info ):
 	if info.depth > 2: return
 	if info.used_gate==true: return
-	maze_cell(dungeon.WIDTH-1, 0).item = item_list.find_item("gate")
-	maze_cell(0, dungeon.HEIGHT-1).item = item_list.find_item("gate")
+	var gates = []
+	match info.m_type:
+		"war": gates = ["magic", "both"]
+		"magic": gates = ["war", "both"]
+		"both": gates = ["magic", "war"]
+	maze_cell(dungeon.WIDTH-1, 0).gate = gates[0]
+	maze_cell(0, dungeon.HEIGHT-1).gate = gates[1]
 	
 	
-var exit_loc = [Vector2(3,4), Vector2(7,4), Vector2(4,3), Vector2(4,7) ]
-	
+
 func add_exit():
+	var exit_loc = [Vector2(3,4), Vector2(7,4), Vector2(4,3), Vector2(4,7) ]
 	var result : Vector2 = choose_random( exit_loc ) 
 	maze_cell(result.x, result.y).item = item_list.find_item("exit")
 	
@@ -225,10 +237,11 @@ func add_exit():
 func add_enemies(info, coords):
 	var num = randint(6) + 12
 	var powers = []
-	if info.depth in [1,2]: powers = [1]
-	elif info.depth in [3,4]: powers = [1,2]
-	elif info.depth in [5,6]: powers = [2,3]
-	elif info.depth >= 7: powers = [3]
+	match info.depth:
+		[1,2]: powers = [1]
+		[3,4]: powers = [1,2]
+		[5,6]: powers = [2,3]
+		_: powers= [3]
 	var kinds  = []
 	if info.war_monsters:
 		kinds.append("war")
@@ -257,7 +270,7 @@ func add_key( info, coords ):
 	dungeon.grid.set_item( c.x, c.y, choose_random(keys))
 
 
-func add_bags( num, info, coords ):
+func add_loot( num, info, coords ):
 	var powers = [1]
 	var names = [ "small_bag" ]
 	if info.depth in [2,3,4]: 
@@ -269,7 +282,7 @@ func add_bags( num, info, coords ):
 	elif info.depth >= 6:
 		names = [  "small_bag", "bag", "box", "pack", "chest" ]
 		powers = [2,3]
-	var bags = item_list.find_items( "bag", names, powers )
+	var bags = item_list.find_items( "container", names, powers )
 	for _n in range(num):
 		if coords.empty(): return
 		var it = choose_random( bags )
@@ -332,7 +345,7 @@ func add_items(info, coords):
 	var bags = 6 + randint(3)
 	var money = 10 - bags
 	var weapons = 7 + randint( 5 )
-	add_bags( bags, info, coords )
+	add_loot( bags, info, coords )
 	add_key( info, coords )
 	add_money( money, info, coords )
 	add_other( coords )	
@@ -379,6 +392,7 @@ func add_all_corners():
 			add_cell_corner( x, y )
 	
 
+# this actually builds the grid cells through the Grid node
 func build_dungeon_grid():
 	var grid = dungeon.grid
 	for c in maze:
@@ -390,14 +404,11 @@ func build_dungeon_grid():
 			grid.set_item(c.x, c.y, c.item)
 		if c.enemy:
 			grid.set_enemy(c.x, c.y, c.enemy )
-#	if info.exit.x==cx and info.exit.y==cy: 
-#		var e = exit.instance()
-#		e.set_translation( dungeon.world_pos(cx, cy ) + Vector3( 1.5, 0.2, 1.5 ) )
-#		dungeon.maze_walls.add_child( e )
+		if c.gate:
+			grid.set_gate(c.x, c.y, c.gate)
 
 
-
-func make_empty_cells():
+func all_empty_cells():
 	var coords =[]
 	for xc in range(1,dungeon.WIDTH-1):
 		for yc in range(1,dungeon.HEIGHT-1):
@@ -419,13 +430,28 @@ func build_maze():
 	info.m_type = choose_random(types)
 	build_outer_wall()
 	build_maze_prim(info)
+	add_outer_doors()
 	more_doors()
 	add_exit()
 	add_gates(info)
-	var empty_cells = make_empty_cells()	
+	var empty_cells = all_empty_cells()	
 	add_enemies(info, empty_cells)
 	add_items( info, empty_cells)
 	add_minotaur( info, empty_cells )
-	build_dungeon_grid()
+	build_dungeon_grid() # build the actual geometry
 	add_murals(info)	
+	var f = File.new()
+	f.open("map_cell.json", File.WRITE)
+	f.store_string("[")
+	var first = true
+	for m in maze:
+		if first:
+			first = false
+		else:
+			f.store_string(",\n")
+		f.store_string( m.json() )
+	f.store_string("]")
+	f.close()
 	maze.clear()
+	
+	

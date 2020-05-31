@@ -1,6 +1,7 @@
 extends Node
 
 var dungeon ;
+var player 
 
 var map_cell = preload("res://data/map/map_cell.tscn")
 
@@ -24,18 +25,11 @@ var marker
 
 var lookup = {}
 
-func index( x, y ): return x + (y * 100);
-
-
-
-func update_player( x,y, r ):
-	var pos = Vector2(39, 41) + Vector2( x * 16, y * 16 )
-	self.marker.position =  pos 
-	self.marker.rotation_degrees = 360-r
 
 
 func _ready():
 	dungeon = get_parent().find_node("Dungeon")
+	player = dungeon.find_node("Player")
 	marker = find_node("marker")
 	assert( marker!=null )
 	for y in range( 12 ):
@@ -44,7 +38,17 @@ func _ready():
 			var spr = r.find_node( "Col" + str(x) )
 			spr.z_index =  2 
 			lookup[ index(x ,y ) ] = spr
-			
+
+
+func index( x, y ): 
+	return x + (y * 100);
+
+
+func update():
+	var loc = player.loc
+	self.marker.position = Vector2(39, 41) + Vector2( loc.x * 16, loc.y * 16 )
+	self.marker.rotation_degrees = 360-player.dir
+
 
 func choose_walltype( c, wallnum, doornum ): 
 	if c==null:
@@ -55,6 +59,7 @@ func choose_walltype( c, wallnum, doornum ):
 		return doornum
 	else:
 		return 0
+
 
 var cell_types = {
 	0 : empty,
@@ -73,7 +78,7 @@ func update_map(depth):
 	find_node("Label").set_text("Level: " + str(depth) )
 	for y in range( 12 ):
 		for x in range( 12 ):
-			var c = dungeon.get_cell( x, y )
+			var c = dungeon.grid.get_cell( x, y )
 			var spr = lookup[ index( x, y ) ]
 			var n = choose_walltype( c.north, 1, 2 )
 			var e = choose_walltype( c.east, 4, 8 )

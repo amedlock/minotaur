@@ -45,6 +45,10 @@ var icons = {
 	"treasure" : Rect2( Vector2(7,7), ImageSize )
 }
 
+
+
+
+
 # levels of war monsters
 const White = Color( 0xffffffff );
 const Grey = Color( 0x999999ff );
@@ -73,13 +77,22 @@ class Item:
 	var missile; # bows, scrolls, etc	
 	var stat1  
 	var stat2
-	var offset = Vector3(0,0,0)   # Vector3 offset for items
+	var offset = Vector3(0,0,0)   # Vector3 offset for items in maze
+
+	func can_open_with( other ):
+		if other==null or self.kind!="container":
+			return false
+		if not self.needs_key:
+			return true
+		return other.name=="key" and other.power >= self.power
+
 
 
 var exit  	 	# exit ladder
 var treasure 	# final treasure
 
 
+# A list of every item in the game
 var items = []
 
 func define_item( item_type, icon_name, power, col, stat1, stat2 ):
@@ -108,11 +121,11 @@ func add_containers( ):
 	for index in range(3):
 		var power = index+1
 		var col = container_colors[index]
-		define_item( "bag", "small_bag", power, col, 0, 0 )
-		define_item( "bag", "bag", power, col,  0, 0 )
-		define_item( "bag", "box", power, col, 0, 0 )
-		define_item( "bag", "pack", power, col, 0, 0 )
-		define_item( "bag", "chest", power, col, 0, 0 )
+		define_item( "container", "small_bag", power, col, 0, 0 )
+		define_item( "container", "bag", power, col,  0, 0 )
+		define_item( "container", "box", power, col, 0, 0 )
+		define_item( "container", "pack", power, col, 0, 0 )
+		define_item( "container", "chest", power, col, 0, 0 )
 
 func add_potions():
 	var potion_colors = [Blue, Pink, Purple ]

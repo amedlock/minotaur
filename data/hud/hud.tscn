@@ -105,6 +105,9 @@ margin_left = 625.0
 margin_top = 655.0
 margin_right = 665.0
 margin_bottom = 695.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="background" type="Sprite" parent="Hands"]
 position = Vector2( -2.5, -30 )
@@ -114,13 +117,14 @@ texture = ExtResource( 3 )
 position = Vector2( -84.65, -1.04 )
 scale = Vector2( 1.25, 1.25 )
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Left"]
+position = Vector2( -0.40744, -0.187561 )
+scale = Vector2( 1, 1 )
+shape = ExtResource( 5 )
+
 [node name="Sprite" type="Sprite" parent="Hands/background/Left"]
 texture = ExtResource( 4 )
 region_enabled = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hands/background/Left"]
-position = Vector2( -0.407444, -0.187566 )
-shape = ExtResource( 5 )
 
 [node name="Feet" type="Area2D" parent="Hands/background"]
 position = Vector2( 0.27, -0.71 )

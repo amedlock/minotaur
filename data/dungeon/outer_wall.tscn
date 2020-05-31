@@ -7,6 +7,6 @@
 [node name="outer_wall" type="Spatial"]
 script = ExtResource( 3 )
 
-[node name="Grid" type="MeshInstance" parent="."]
+[node name="mesh" type="MeshInstance" parent="."]
 mesh = ExtResource( 1 )
 material/0 = ExtResource( 2 )

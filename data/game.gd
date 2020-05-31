@@ -16,7 +16,7 @@ func _ready():
 	dungeon = find_node("Dungeon")
 	player = find_node("Player")
 	menu = find_node("MainMenu")
-	map = find_node("Map")
+	map = find_node("MapView")
 	set_process_input( true )
 	show_menu()
 

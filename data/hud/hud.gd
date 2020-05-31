@@ -9,9 +9,9 @@ var gold_disp;
 var food_disp;
 var level_disp;
 var arrow_disp;
-var left_hand ;
-var at_feet;
-var right_hand;
+var left_hand_sprite ;
+var at_feet_sprite;
+var right_hand_sprite;
 
 var pack ;
 var hands
@@ -39,15 +39,14 @@ func _ready():
 	level_disp = hands.find_node("LevelDisplay" )
 	arrow_disp = hands.find_node("ArrowsDisplay")
 	food_disp = hands.find_node("FoodDisplay")	
-	left_hand = hands.find_node("Left").find_node("Sprite")
-	right_hand = hands.find_node("Right").find_node("Sprite")
-	at_feet = hands.find_node("Feet").find_node("Sprite")
+	left_hand_sprite = hands.find_node("Left").find_node("Sprite")
+	right_hand_sprite = hands.find_node("Right").find_node("Sprite")
+	at_feet_sprite = hands.find_node("Feet").find_node("Sprite")
 	pack = find_node( "Pack" )
 	hands.get_node("background/Feet").connect("input_event", self, "clicked_feet" )
 	hands.get_node("background/Left").connect("input_event", self, "clicked_left" )
 	hands.get_node("background/Right").connect("input_event", self, "clicked_right" )
 	
-
 
 
 func calc_sprite_scale( src_w, src_h, dest_w, dest_h ):
@@ -76,33 +75,19 @@ func update_damage():
 	damage_disp.set_text( str( player.war_dmg() ) + "/" + str( player.mind_dmg() ) )
 
 	
-
-func consume( it ):
-	if it==null: return false
-	if it.kind=="money":
-		player.gold += it.stat1
-		return true
-	if it.name=="quiver":
-		player.arrows += 6
-		return true
-	if it.name=="food":
-		player.food += 6
-		return true
-	return false
-
 func check_money():
 	if player.left_hand and player.left_hand.kind=="money":
 		player.gold += player.left_hand.stat1
-		player.left_hand = null		
+		player.left_hand = null
 	if player.right_hand and player.right_hand.kind=="money":
 		player.gold += player.right_hand.stat1
-		player.right_hand = null		
+		player.right_hand = null
 
 func update_pack():
 	check_money()
-	update_hand_slot( left_hand, player.left_hand )
-	update_hand_slot( right_hand, player.right_hand )
-	update_hand_slot( at_feet, dungeon.item_at_feet() )
+	update_hand_slot( left_hand_sprite, player.left_hand )
+	update_hand_slot( right_hand_sprite, player.right_hand )
+	update_hand_slot( at_feet_sprite, player.item_at_feet() )
 	update_damage()
 	var index = 1
 	for name in pack_slots:
@@ -112,11 +97,13 @@ func update_pack():
 		else:
 			p.set_item( null )
 		index += 1
-	
-func update_hand_slot( dest, item ):
-	if item==null:
+
+
+func update_hand_slot( dest, node : Spatial ):
+	if node==null or node.item==null:
 		dest.hide()
 	else:
+		var item = node.item
 		dest.set_scale( calc_sprite_scale( 32, 32, 50, 50 ) )
 		dest.set_region_rect( item.img )
 		dest.set_modulate( item.color if item.color!=null else Color( 0xffffffff ) )
@@ -130,9 +117,8 @@ func update_hand_slot( dest, item ):
 
 func pack_slot_clicked( slot , button ):
 	var cur = player.inventory[ slot ]
-	if consume(cur):
+	if player.consume(cur):
 		player.inventory[slot] = null
-		update_stats()
 	elif button==BUTTON_RIGHT:
 		player.inventory[ slot ] = player.right_hand
 		player.right_hand = cur
@@ -140,23 +126,18 @@ func pack_slot_clicked( slot , button ):
 		player.inventory[ slot ] = player.left_hand
 		player.left_hand = cur
 	player.attacking = false
+	update_stats()
 	update_pack()
 
-func clicked_feet( viewport, event, shape_idx ):
-	if player.is_moving(): return 
-	if not( event is InputEventMouseButton): 
+func clicked_feet( _viewport, event, _shape_idx ):
+	if not(event is InputEventMouseButton) or not event.pressed: 
 		return
-	if !event.pressed: return;
-	var feet = dungeon.item_at_feet()
-	if feet and feet.kind=="bag" and feet.needs_key==false:
-		player.open_item( feet )
-		update_pack()
-		return
-	if feet and feet.kind=="treasure":
-		player.win()
-	if consume(feet):
-		feet= null
-		update_stats()
+	if player.is_moving(): 
+		return 
+	var feet = player.item_at_feet()
+	if feet:
+		if player.take_item(feet):
+			feet= null
 	elif event.button_index == BUTTON_LEFT:
 		var cur = player.left_hand
 		player.left_hand = feet
@@ -167,10 +148,11 @@ func clicked_feet( viewport, event, shape_idx ):
 		feet = cur;
 	dungeon.grid.set_item( player.loc.x, player.loc.y, feet )
 	player.attacking = false
+	update_stats()	
 	update_pack()
 
 # alternate attack method, press F otherwise
-func clicked_right( viewport, event, shape_idx ):
+func clicked_right( _viewport, event, _shape_idx ):
 	if not (event is InputEventMouseButton): return
 	if !event.pressed: return;
 	if event.button_index == BUTTON_LEFT:
@@ -184,7 +166,7 @@ func clicked_right( viewport, event, shape_idx ):
 
 
 # alternate attack method?
-func clicked_left( viewport, event, shape_idx ):
+func clicked_left( _viewport, event, _shape_idx ):
 	if not (event is InputEventMouseButton): return
 	if !event.pressed: return;
 	if event.button_index == BUTTON_LEFT:

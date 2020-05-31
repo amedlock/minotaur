@@ -77,7 +77,7 @@ func init_maze( skill, seednum ):
 	hud.update_stats()
 	enable()
 	player.reset_location()
-	player.map.update_map(current_level.depth)
+	player.map_view.update_map(current_level.depth)
 
 
 func enable():
@@ -85,9 +85,6 @@ func enable():
 	
 func disable():
 	self.hide()	
-
-func get_cell(x, y):
-	return grid.get_cell(x,y)
 
 
 func go_next_level():
@@ -98,11 +95,11 @@ func go_next_level():
 	audio.stream = load("res://data/sounds/descend.wav")
 	audio.play()
 	builder.build_maze()
-	player.map.update_map(current_level.depth)
+	player.map_view.update_map(current_level.depth)
 	player.reset_location()
 
 func use_exit():
-	var item = self.item_at_feet()
+	var item = player.item_at_feet()
 	if item==null or item.name!="exit":
 		return
 	go_next_level()
@@ -137,14 +134,6 @@ func enter_gate():
 
 func world_pos( cx, cy ):
 	return maze_origin + Vector3( cx*3, 0, cy * 3 )
-	
-
-func item_at_feet():
-	if player.is_moving(): return null
-	var c = grid.get_cell( player.loc.x, player.loc.y )
-	if c!=null: 
-		return c.item
-	return null
 	
 
 

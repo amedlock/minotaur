@@ -59,6 +59,10 @@ class Enemy:
 	func dead(): 
 		return health<1 or mind<1
 
+	func json() -> Dictionary:
+		return {'name':name, 'kind':kind, 'power': power, 
+				'health':health, 'mind': mind, 'max_damage': max_damage}
+
 # registry of all the enemies
 var monsters = []
 

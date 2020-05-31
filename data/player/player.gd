@@ -8,8 +8,9 @@ var dir = 270;
 var player_offset = Vector3(1.5, 1.25, 1.5)
 
 
-var left_hand;
-var right_hand;
+# these are Item references, not nodes
+var left_hand ;
+var right_hand ;
 
 var inventory = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null, 7:null, 8:null, 9:null }
 
@@ -21,10 +22,12 @@ var active_action = null
 
 # references to game, hud and dungeon nodes
 var dungeon = null;
-
+var grid = null
 var game  = null;
-var map 
+var map_view
 var item_list
+
+var start_pos
 
 onready var hud = $Camera/HUD
 onready var audio = $Audio
@@ -32,13 +35,15 @@ onready var glance = $Glance
 onready var combat = $Combat
 onready var turn = $Turn
 onready var move = $Move
-onready var view_map = $ViewMap
+onready var show_map = $ShowMap
 
 func _ready():
 	dungeon = get_parent()
+	start_pos = dungeon.find_node("StartPos")
+	grid = dungeon.find_node("Grid")
 	item_list = dungeon.find_node("ItemList")
 	game = dungeon.get_parent()
-	map = game.find_node("Map")
+	map_view = game.find_node("MapView")
 	self.hide()
 	# connect all "action" nodes
 	for n in self.get_children():
@@ -63,18 +68,18 @@ func set_dir( d ):
 	self.rotation_degrees = Vector3( 0, d, 0 )
 	self.dir = d
 	hud.update_compass()
-	map.update_player(loc.x, loc.y, dir)
+	map_view.update()
 
 
 func coord_to_world(p):
-	return Vector3(-18,0,-18) + Vector3(p.x * 3, 0, p.y * 3) + player_offset
+	return start_pos.translation + Vector3(p.x * 3, 0, -p.y * 3)
 
 
 func set_pos( cx, cy ):
 	loc.x = cx
 	loc.y = cy
 	self.translation = coord_to_world(loc)
-	map.update_player(cx, cy, dir)
+	map_view.update()
 	
 
 func reset_location():
@@ -100,14 +105,11 @@ func is_moving():
 func dead(): 
 	return health<1 or mind<1
 
-
-func dir_name() -> String :
-	match dir:
-		180: return "north"
-		270: return "east"
-		0: return "south"
-		90: return "west"
-	return ""
+func dir_name() -> String:
+	if dir > 315 or dir < 45: return "north"
+	if dir >= 45 and dir < 135: return "west"
+	if dir >= 135 and dir < 225: return "south"
+	return "east"
 
 
 
@@ -120,7 +122,7 @@ func _input(evt):
 	match evt.scancode:
 		KEY_Q: glance.start(90)
 		KEY_E: glance.start(-90)
-		KEY_TAB: view_map.start()
+		KEY_TAB: show_map.start()
 		KEY_X: 
 			if over_exit():
 				dungeon.use_exit()
@@ -147,6 +149,7 @@ func action_complete( kind ):
 	match kind:
 		"Move":
 			dungeon.grid.get_cell(loc.x, loc.y).on_enter(game.player)
+			map_view.update()
 		"Turn": pass
 		"Glance": pass
 		"die": pass
@@ -171,41 +174,61 @@ func cheat_death():
 	return false
 
 
+func item_at_feet():
+	if is_moving(): 
+		return null
+	var item_node = grid.get_cell( loc.x, loc.y ).item
+	return item_node.item if item_node else null
 
 
-func open_item(it): 
-	var valuable = item_list.get_container_loot(it, dungeon.current_depth() )
-	dungeon.set_item( loc.x, loc.y, valuable )
+func open_container(item):
+	var valuable = item_list.get_container_loot(item, dungeon.current_level.depth )
+	grid.set_item( loc.x, loc.y, valuable )
 
+
+func take_item( item ):
+	if item.kind=="container" and not item.needs_key:
+		open_container(item)
+		return true
+	match item.name:
+		"treasure": win()
+		"money": 	gold += item.stat1
+		"quiver": 	arrows += 6
+		"food":		food += 6
+		_: return false
+	return true	
 
 var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
+
+
+var magic_sound = preload("res://data/sounds/magic.wav")
+
 
 func use_item():
 	if not right_hand:
 		return
-	var fx = null
-	if right_hand.name in magic_items:
-		fx = load("res://data/sounds/magic.wav")
+	var at_feet = item_at_feet()
 	if right_hand.name=="small_potion":
 		if right_hand.power in [1,3]:
 			health = health_max
 		if right_hand.power in [2,3]:
 			mind = mind_max
+		play_sound(magic_sound)
 		right_hand = null
 	elif right_hand.name=="potion":
 		if right_hand.power in [1,3]:
 			health_max += 10
 		if right_hand.power in [2,3]:
 			mind_max += 5
+		play_sound(magic_sound)
 		right_hand = null
 	elif right_hand.name=="tome": # does nothing right now :/
 		if right_hand.power==1: pass
 		if right_hand.power==2: pass
 		if right_hand.power==3: pass
 	elif right_hand.name=="key":
-		var feet = dungeon.item_at_feet()
-		if feet and feet.needs_key and right_hand.power >= feet.power:
-			open_item( feet )
+		if at_feet and at_feet.can_open_with(right_hand):
+			open_container(at_feet)
 	elif right_hand.name=="ring":  # make armor items actually wearable and not just used
 		if right_hand.power in [1,3]:
 			m_armor += 5
@@ -224,16 +247,26 @@ func use_item():
 		right_hand= null
 	hud.update_pack()
 	hud.update_stats()
-	if fx!=null: 
-		audio.stream = fx
-		audio.play()
 
 
+
+func play_sound(sample):
+	audio.stream = sample
+	audio.play()
+	
 
 func open_door():
 	var w = wall_ahead()
 	if w:
 		w.activate()
+
+
+func enter_gate(kind:String):
+	audio.stream = load("res://data/sounds/magic.wav")
+	audio.play()
+	var cell = grid.get_cell(loc.x, loc.y)
+	cell.set_gate(null)
+	print("Entered gate:" + kind)
 
 
 func can_see( wall ):
@@ -247,10 +280,10 @@ func has_weapon():
 func face_vector():
 	dir = wrapi(dir, 0, 360);
 	match int( dir / 90 ):
-		0 : return Vector2(0,-1)
-		1 : return Vector2(-1,0)
-		2 : return Vector2(0,1)
-		3 : return Vector2(1,0)
+		0 : return Vector2(0,1)	 # south
+		1 : return Vector2(-1,0) # west
+		2 : return Vector2(0,-1) # north
+		3 : return Vector2(1,0)  # east
 	assert(false)
 
 
@@ -378,15 +411,6 @@ func retreat():
 		active_action.complete()
 	return true
 
-
-func check_for_gate():
-	var cell = dungeon.get_cell( loc.x, loc.y )
-	if cell and cell.gate: 
-		transport_player( cell )
-		audio.stream = load("res://data/sounds/magic.wav")
-		audio.play()
-		return true
-	return false
 
 
 func load_gate_level(gate):
