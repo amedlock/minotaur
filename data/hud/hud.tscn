@@ -157,6 +157,9 @@ custom_colors/font_color = Color( 1, 1, 1, 1 )
 text = "Arrows:6"
 align = 1
 valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="LevelDisplay" type="Label" parent="Hands"]
 margin_left = -43.0
@@ -178,8 +181,14 @@ text = "Food: 3"
 align = 1
 valign = 1
 
-[node name="Pack" type="Area2D" parent="."]
-position = Vector2( 32, 600 )
+[node name="Pack" type="Control" parent="."]
+margin_left = 39.6668
+margin_top = 591.829
+margin_right = 39.6668
+margin_bottom = 591.829
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="bg" type="Sprite" parent="Pack"]
 position = Vector2( 61, 28 )

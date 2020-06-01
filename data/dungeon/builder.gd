@@ -26,7 +26,6 @@ class MazeCell:
 	var gate = null
 	var item = null 
 	var enemy = null
-	var seen = false # for prim's
 
 	func _init(xp, yp):
 		self.x = xp
@@ -90,7 +89,7 @@ func add_path( from, to ):
 		if from.y==to.y-1:
 			from.north = null
 		else:
-			to.north==null
+			to.north= null
 	else:
 		if from.x==to.x-1:
 			from.east = null
@@ -159,16 +158,28 @@ func write_maze(name: String):
 	f.close()
 
 
+func add_walls(mc : MazeCell):
+	if mc.x==dungeon.WIDTH-1 or mc.y==dungeon.HEIGHT-1:
+		return
+	if mc.y==0:
+		if mc.x > 0:
+			mc.north = "wall"
+	elif mc.x==0:
+		if mc.y > 0:
+			mc.east = "wall"
+	else:
+		mc.north = "wall"
+		mc.east = "wall"
+
 # cur	-> current active cell, picked from frontier
 # seen 	-> already processed and in the maze
 # frontier -> neighbors to all seen cells
 
+
+
 func build_maze_prim(info):
 	for mc in maze:
-		if mc.y==11 or mc.x==11:
-			continue
-		mc.north = "wall"
-		mc.east = "wall"
+		add_walls(mc)
 	clear_outer_wall()
 	add_outer_doors()
 	write_maze("maze1.txt")
@@ -441,6 +452,10 @@ func build_maze():
 	more_doors()
 	add_exit()
 	add_gates(info)
+	var boxes = item_list.find_items("container", ["box"], [1])
+	maze_cell(0,1).item = choose_random(boxes)
+	var keys = item_list.find_items("item", "key", null)
+	maze_cell(0,2).item = choose_random(keys)
 	var empty_cells = all_empty_cells()	
 	add_enemies(info, empty_cells)
 	add_items( info, empty_cells)

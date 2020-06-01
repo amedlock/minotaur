@@ -202,8 +202,8 @@ func add_weapons():
 
 
 func add_all_items():
-	define_item( "item", "quiver", 1, Tan,  6, 0 )
-	define_item( "item", "food", 1, Tan, 3, 0 )
+	define_item( "quiver", "quiver", 1, Tan,  6, 0 )
+	define_item( "food", "food", 1, Tan, 3, 0 )
 	define_item( "item", "key", 1, Tan,  3, 0 )
 	define_item( "item", "key", 2, Orange,  3, 0 )
 	define_item( "item", "key", 3, Blue,  3, 0 )

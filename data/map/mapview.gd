@@ -119,11 +119,11 @@ func fix_up_corner(cell):
 	fix.name="fix_%d_%d" % [cell.x, cell.y]
 	fix.region_rect = map_tile(2,2)
 	fix.position = tile_position(cell.x,cell.y)
-	print(fix.position)
 	other.add_child(fix)
 
 	
 
+#rebuilds the map layout, only called when level layout changes
 func update_map(depth):
 	clear_all()
 	find_node("Label").set_text("Level: " + str(depth) )

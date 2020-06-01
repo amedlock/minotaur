@@ -171,6 +171,12 @@ func cheat_death():
 	return false
 
 
+func set_item_at_feet(item):
+	if is_moving(): 
+		return null
+	grid.set_item( loc.x, loc.y , item)
+
+
 func item_at_feet():
 	if is_moving(): 
 		return null
@@ -178,21 +184,43 @@ func item_at_feet():
 	return item_node.item if item_node else null
 
 
+func has_key_for(item):
+	for n in inventory.values():
+		if n and n.name=="key" and n.power >= item.power:
+			return true
+	if right_hand and right_hand.name=="key" and right_hand.power >= item.power:
+		return true
+	if left_hand and left_hand.name=="key" and left_hand.power >= item.power:
+		return true
+	return false
+
 func open_container(item):
-	return item_list.get_container_loot(item, dungeon.current_level.depth )
+	if item.needs_key:
+		if not self.has_key_for(item):
+			return false
+	var loot = item_list.get_container_loot(item, dungeon.current_level.depth )
+	if loot:
+		set_item_at_feet(loot)
+		return true
+	return false
+
 
 
 # can the item be used/consumed?
 func take_item( item ):
 	if item:
-		if item.kind=="container" and not item.needs_key:
-			return open_container(item)
-		match item.name:
+		if item.kind=="container" and open_container(item):
+			return true
+		match item.kind:
 			"treasure": win()
-			"money": 	gold += item.stat1
+			"money": 	
+				gold += item.stat1
 			"quiver": 	arrows += 6
 			"food":		food += 6
-	return null
+			_: return false
+		set_item_at_feet(null)
+		return true
+	return false
 
 var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
 

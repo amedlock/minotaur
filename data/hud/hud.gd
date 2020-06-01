@@ -121,9 +121,7 @@ func update():
 
 func pack_slot_clicked( slot , button ):
 	var cur = player.inventory[ slot ]
-	if player.take_item(cur):
-		player.inventory[slot] = null
-	elif button==BUTTON_RIGHT:
+	if button==BUTTON_RIGHT:
 		player.inventory[ slot ] = player.right_hand
 		player.right_hand = cur
 	elif button==BUTTON_LEFT:
@@ -140,20 +138,18 @@ func clicked_feet( _viewport, event, _shape_idx ):
 		return
 	if player.is_moving(): 
 		return 
-	var feet = player.item_at_feet()
-	if not feet:
-		return
-	if feet and player.take_item(feet):
-		feet= null
+	var item = player.item_at_feet()
+	var loc = player.loc
+	if item and player.take_item(item):
+		pass
 	elif event.button_index == BUTTON_LEFT:
-		var cur = player.left_hand
-		player.left_hand = feet
-		feet = cur
+		var left_item = player.left_hand
+		player.left_hand = item
+		player.set_item_at_feet(left_item)
 	elif event.button_index == BUTTON_RIGHT:
-		var cur = player.right_hand
-		player.right_hand = feet
-		feet = cur;
-	dungeon.grid.set_item( player.loc.x, player.loc.y, feet )
+		var right_item = player.right_hand
+		player.right_hand = item
+		player.set_item_at_feet(right_item)
 	player.attacking = false
 	update()
 
@@ -189,5 +185,5 @@ func clicked_left( _viewport, event, _shape_idx ):
 		player.attacking = false
 	update()
 	
-	
+
 

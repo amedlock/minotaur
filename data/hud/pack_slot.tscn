@@ -4,37 +4,21 @@
 [ext_resource path="res://data/items/item_sheet.png" type="Texture" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-
-custom_solver_bias = 0.0
 extents = Vector2( 25.1821, 24.9649 )
 
-[node name="Icon" type="Area2D" index="0"]
-
-input_pickable = true
-gravity_vec = Vector2( 0, 1 )
-gravity = 98.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
+[node name="Icon" type="Area2D"]
 script = ExtResource( 1 )
-slot_num = null
 
-[node name="Collision1" type="CollisionShape2D" parent="." index="0"]
-
+[node name="Collision1" type="CollisionShape2D" parent="."]
 position = Vector2( 3.1777, 5.95821 )
 shape = SubResource( 1 )
 
-[node name="Sprite" type="Sprite" parent="." index="1"]
-
+[node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 2.6, 5.3 )
-scale = Vector2( 2, 2 )
+scale = Vector2( 1.5, 1.5 )
 texture = ExtResource( 2 )
 region_enabled = true
 region_rect = Rect2( 224, 224, 32, 32 )
-_sections_unfolded = [ "Region", "Transform" ]
 __meta__ = {
 "_edit_lock_": true
 }
-
-

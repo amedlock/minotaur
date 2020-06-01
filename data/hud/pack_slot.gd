@@ -4,10 +4,11 @@ extends Area2D;
 export(int) var  slot_num;
 
 
-onready var hud = get_parent().get_parent();
-onready var sprite = find_node("Sprite")
+var hud;
+onready var sprite = $Sprite
 
 func _ready():
+	hud = find_parent("HUD")
 	connect("input_event", self, "clicked_slot" )
 	sprite.hide()
 	
