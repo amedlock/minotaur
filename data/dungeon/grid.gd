@@ -1,7 +1,7 @@
 extends Spatial
 
-var width
-var height
+var width = 12
+var height = 12
 
 var cells = []
 
@@ -20,6 +20,11 @@ var dungeon
 func _ready():
 	dungeon = get_parent()
 	outer_wall = dungeon.find_node("outer_wall")
+
+
+
+func index(x,y) -> int:
+	return x + (y * width)
 
 
 # Called when the node enters the scene tree for the first time.

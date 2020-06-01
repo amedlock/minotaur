@@ -3,6 +3,7 @@ extends Spatial
 onready var anim = find_node("anim");
 var raised = false
 
+
 func _ready():
 	raised = false;
 	anim.connect("animation_finished", self, "anim_done" )

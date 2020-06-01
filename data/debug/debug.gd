@@ -7,12 +7,22 @@ var game
 var dungeon
 var grid
 
+var enabled = false
 
 func _ready():
 	player = find_parent("Player")
 	game = player.find_parent("Game")
 	dungeon = game.find_node("Dungeon")
 	grid = dungeon.find_node("Grid")
+	visible = enabled
+
+
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		if event.scancode==KEY_F2:
+			enabled = !enabled
+			visible = enabled
+		
 
 
 func join_str( items: Array) -> String:
@@ -24,6 +34,8 @@ func join_str( items: Array) -> String:
 	return result
 
 func _process(_delta):
+	if not enabled:
+		return
 	var coord = Vector2( int(player.loc.x), int(player.loc.y))
 	var loc = player.loc
 	var cell_ahead = player.cell_ahead()

@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://data/map/mapview.gd" type="Script" id=1]
 [ext_resource path="res://data/map/map.png" type="Texture" id=2]
 [ext_resource path="res://data/map/marker.tscn" type="PackedScene" id=3]
-[ext_resource path="res://data/map/map_row.tscn" type="PackedScene" id=4]
 
 [node name="MapView" type="Node2D"]
 scale = Vector2( 2, 2 )
@@ -17,47 +16,9 @@ __meta__ = {
 }
 
 [node name="marker" parent="." instance=ExtResource( 3 )]
-
-[node name="Rows" type="Node2D" parent="."]
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="Row0" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 40 )
-
-[node name="Row1" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 56 )
-
-[node name="Row2" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 72 )
-
-[node name="Row3" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 88 )
-
-[node name="Row4" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 104 )
-
-[node name="Row5" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 120 )
-
-[node name="Row6" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 136 )
-
-[node name="Row7" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 152 )
-
-[node name="Row8" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 168 )
-
-[node name="Row9" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 184 )
-
-[node name="Row10" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 200 )
-
-[node name="Row11" parent="Rows" instance=ExtResource( 4 )]
-position = Vector2( 126, 216 )
+visible = false
+position = Vector2( 39.5129, 215.486 )
+z_index = 3
 
 [node name="Label" type="Label" parent="."]
 custom_constants/shadow_as_outline = 5
@@ -65,4 +26,6 @@ text = "Level : 1"
 align = 1
 valign = 1
 
-[node name="Gates" type="Node2D" parent="."]
+[node name="Other" type="Node2D" parent="."]
+
+[node name="Walls" type="Node2D" parent="."]

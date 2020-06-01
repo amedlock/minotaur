@@ -87,7 +87,8 @@ func update_pack():
 	check_money()
 	update_hand_slot( left_hand_sprite, player.left_hand )
 	update_hand_slot( right_hand_sprite, player.right_hand )
-	update_hand_slot( at_feet_sprite, player.item_at_feet() )
+	var at_feet = player.item_at_feet()
+	update_hand_slot( at_feet_sprite, at_feet )
 	update_damage()
 	var index = 1
 	for name in pack_slots:
@@ -99,11 +100,10 @@ func update_pack():
 		index += 1
 
 
-func update_hand_slot( dest, node : Spatial ):
-	if node==null or node.item==null:
+func update_hand_slot( dest, item ):
+	if not item:
 		dest.hide()
 	else:
-		var item = node.item
 		dest.set_scale( calc_sprite_scale( 32, 32, 50, 50 ) )
 		dest.set_region_rect( item.img )
 		dest.set_modulate( item.color if item.color!=null else Color( 0xffffffff ) )
@@ -111,13 +111,17 @@ func update_hand_slot( dest, node : Spatial ):
 
 
 
+func update():
+	update_compass()
+	update_pack()
+	update_stats()
 
 
 # events 
 
 func pack_slot_clicked( slot , button ):
 	var cur = player.inventory[ slot ]
-	if player.consume(cur):
+	if player.take_item(cur):
 		player.inventory[slot] = null
 	elif button==BUTTON_RIGHT:
 		player.inventory[ slot ] = player.right_hand
@@ -129,15 +133,18 @@ func pack_slot_clicked( slot , button ):
 	update_stats()
 	update_pack()
 
+
+
 func clicked_feet( _viewport, event, _shape_idx ):
 	if not(event is InputEventMouseButton) or not event.pressed: 
 		return
 	if player.is_moving(): 
 		return 
 	var feet = player.item_at_feet()
-	if feet:
-		if player.take_item(feet):
-			feet= null
+	if not feet:
+		return
+	if feet and player.take_item(feet):
+		feet= null
 	elif event.button_index == BUTTON_LEFT:
 		var cur = player.left_hand
 		player.left_hand = feet
@@ -148,13 +155,15 @@ func clicked_feet( _viewport, event, _shape_idx ):
 		feet = cur;
 	dungeon.grid.set_item( player.loc.x, player.loc.y, feet )
 	player.attacking = false
-	update_stats()	
-	update_pack()
+	update()
+
 
 # alternate attack method, press F otherwise
 func clicked_right( _viewport, event, _shape_idx ):
-	if not (event is InputEventMouseButton): return
-	if !event.pressed: return;
+	if not (event is InputEventMouseButton): 
+		return
+	if !event.pressed: 
+		return;
 	if event.button_index == BUTTON_LEFT:
 		player.attack()
 	elif event.button_index == BUTTON_RIGHT:
@@ -162,13 +171,15 @@ func clicked_right( _viewport, event, _shape_idx ):
 		player.left_hand = player.right_hand
 		player.right_hand = left
 		player.attacking = false
-	update_pack()
+	update()
 
 
 # alternate attack method?
 func clicked_left( _viewport, event, _shape_idx ):
-	if not (event is InputEventMouseButton): return
-	if !event.pressed: return;
+	if not (event is InputEventMouseButton): 
+		return
+	if !event.pressed: 
+		return;
 	if event.button_index == BUTTON_LEFT:
 		pass
 	elif event.button_index==BUTTON_RIGHT:
@@ -176,7 +187,7 @@ func clicked_left( _viewport, event, _shape_idx ):
 		player.left_hand = player.right_hand
 		player.right_hand = left
 		player.attacking = false
-	update_pack()
+	update()
 	
 	
 

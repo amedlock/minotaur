@@ -177,27 +177,6 @@ func quick_rotate_90(v: Vector2, amt: int):
 		amt -= 1
 	return v
 
-
-func wall_num( dir ):
-	if dir=="north": return 1
-	if dir=="east": return 2
-	if dir=="south": return 3
-	if dir=="west": return 4
-	return dir
-
-func wall_index( x, y, dir ):
-	return int( dir + (( x + (y * WIDTH * HEIGHT ) ) * 5 ))
-
-	
-func wall_valid( cx, cy, num ):
-	if num<0 or num>4:
-		return false
-	if cx<0 or cy<0 or cx>WIDTH-1 or cy>HEIGHT-1: 
-		return false
-	if cx==0 and num==4: return false
-	if cx==WIDTH-1 and num==2: return false
-	return true
-	
 	
 var wall_post = {
 	"north": WallPost.NW,

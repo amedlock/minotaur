@@ -4,9 +4,6 @@ extends Spatial;
 var loc = Vector2(0, 0)  # coordinates of player x and z
 var dir = 270;
 
-# offset from world grid coordinates
-var player_offset = Vector3(1.5, 1.25, 1.5)
-
 
 # these are Item references, not nodes
 var left_hand ;
@@ -55,7 +52,7 @@ func _ready():
 func enable():
 	self.show()
 	self.set_process_input( true )
-	update_stats()
+	hud.update()
 
 
 func disable():
@@ -156,11 +153,10 @@ func action_complete( kind ):
 		"die": pass
 		"win": 
 			needs_rest = true
-			hud.update_stats()
 			if dead() and not cheat_death(): 
 				game.game_over()
-
-
+	hud.update()
+		
 func cheat_death():
 	if resurrected: return false
 	if gold > 500:
@@ -183,21 +179,20 @@ func item_at_feet():
 
 
 func open_container(item):
-	var valuable = item_list.get_container_loot(item, dungeon.current_level.depth )
-	grid.set_item( loc.x, loc.y, valuable )
+	return item_list.get_container_loot(item, dungeon.current_level.depth )
 
 
+# can the item be used/consumed?
 func take_item( item ):
-	if item.kind=="container" and not item.needs_key:
-		open_container(item)
-		return true
-	match item.name:
-		"treasure": win()
-		"money": 	gold += item.stat1
-		"quiver": 	arrows += 6
-		"food":		food += 6
-		_: return false
-	return true	
+	if item:
+		if item.kind=="container" and not item.needs_key:
+			return open_container(item)
+		match item.name:
+			"treasure": win()
+			"money": 	gold += item.stat1
+			"quiver": 	arrows += 6
+			"food":		food += 6
+	return null
 
 var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
 
@@ -511,7 +506,4 @@ func mind_dmg():
 		return right_hand.stat2
 	return 0
 
-func update_stats():
-	hud.update_stats()
-	hud.update_pack()
 

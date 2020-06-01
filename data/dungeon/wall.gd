@@ -1,6 +1,5 @@
 extends Spatial
 
-
 func is_blocked():
 	return true
 

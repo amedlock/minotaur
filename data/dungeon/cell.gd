@@ -20,7 +20,7 @@ var item_prefab = preload("res://data/items/item_prefab.tscn")
 var enemy_prefab = preload("res://data/enemies/enemy_prefab.tscn")
 
 
-var grid 
+var grid
 
 
 # Called when the node enters the scene tree for the first time.
@@ -29,10 +29,15 @@ func _ready():
 
 
 func debug_info() -> String:
-	var n = self.north.name if self.north else "none"
-	var e = self.east.name if self.east else "none"
-	var en = self.enemy.name if self.enemy else "none"
-	return "(%s %s - en:%s, doors:%s, %s)" % [self.name, Vector2(x,y), en, n, e]
+	var args = [
+		self.name, 
+		Vector2(x,y),
+		self.item.debug_info() if self.item else "none",
+		self.enemy.name if self.enemy else "none",
+		self.north.name if self.north else "none",
+		self.east.name if self.east else "none"
+	]
+	return "(%s %s - item:%s en:%s, doors:%s, %s)" % args
 
 
 func configure(xp, yp):

@@ -7,6 +7,10 @@ var color ;
 var magic_sound = preload("res://data/sounds/magic.wav")
 
 
+func debug_info():
+	return item.name
+
+
 func configure(item_info):
 	self.item = item_info
 	color = item_info.color
