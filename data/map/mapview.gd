@@ -19,9 +19,6 @@ var player
 
 var lookup = {}
 
-#const blue_color = Color("#00369d")
-#const grey_color = Color("#909090")
-
 
 func _ready():
 	var game = get_parent()
@@ -35,10 +32,6 @@ func _ready():
 			col.region_rect = empty_tile
 			col.z_index =  2 
 			col.name = "map_%d_%d" % [x, y]
-			if x==0:
-				col.modulate = Color.blue
-			elif x==11:
-				col.modulate = Color.red
 			lookup[ index(x,y) ] = col
 
 
@@ -66,6 +59,7 @@ func index( x, y ):
 
 func update():
 	var loc = player.loc
+	marker.visible = true
 	marker.position = tile_position(loc.x, loc.y)
 	if player.dead():
 		marker.modulate = Color.gray
