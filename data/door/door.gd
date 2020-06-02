@@ -14,7 +14,6 @@ func is_moving():
 func activate():
 	if anim.is_playing():
 		return
-	print("door activated: %s" % self.get_parent().debug_info() )
 	if raised:
 		anim.play("Lower")
 	else:

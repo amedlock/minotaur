@@ -24,7 +24,7 @@ var game  = null;
 var map_view
 var item_list
 
-var start_pos
+var start_pos  # starting position for player
 
 onready var hud = $Camera/HUD
 onready var audio = $Audio
@@ -37,10 +37,10 @@ onready var show_map = $ShowMap
 
 func _ready():
 	dungeon = get_parent()
+	game = dungeon.get_parent()
 	start_pos = dungeon.find_node("StartPos")
 	grid = dungeon.find_node("Grid")
-	item_list = dungeon.find_node("ItemList")
-	game = dungeon.get_parent()
+	item_list = dungeon.find_node("ItemList")	
 	map_view = game.find_node("MapView")
 	self.hide()
 	# connect all "action" nodes
@@ -156,7 +156,8 @@ func action_complete( kind ):
 			if dead() and not cheat_death(): 
 				game.game_over()
 	hud.update()
-		
+
+
 func cheat_death():
 	if resurrected: return false
 	if gold > 500:

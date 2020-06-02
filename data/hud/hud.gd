@@ -139,7 +139,6 @@ func clicked_feet( _viewport, event, _shape_idx ):
 	if player.is_moving(): 
 		return 
 	var item = player.item_at_feet()
-	var loc = player.loc
 	if item and player.take_item(item):
 		pass
 	elif event.button_index == BUTTON_LEFT:
