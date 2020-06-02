@@ -24,7 +24,6 @@ func configure(xp, yp, enemy):
 	mind = enemy.mind
 	self.name = enemy.name
 	set_region_rect( monster.img )
-	#set_modulate( monster.color )
 
 
 func damage( item ):
@@ -41,14 +40,15 @@ func die():
 		return # this might get called twice
 	self.hide()	
 	var sm = smoke.instance()
-	sm.show()
 	enemies.add_child( sm )
-	sm.translation =  self.translation - Vector3( 0, 0.6, 0 ) 
 	var anim = sm.find_node("Animation")
 	anim.connect("animation_finished", self, "remove_me", [sm] )
+	sm.translation =  self.translation - Vector3( 0, 0.6, 0 ) 
+	sm.show()	
 	anim.play( "Puff" )
 	enemies.get_parent().set_enemy( x, y, null )
 
 
 func remove_me(_which, sm):
 	sm.queue_free()
+

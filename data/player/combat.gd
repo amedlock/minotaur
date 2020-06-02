@@ -109,7 +109,7 @@ func turn_player(dt):
 		turning = false
 		delta = null
 		facing = null
-		player.update_path()
+
 
 var broken
 

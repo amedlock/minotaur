@@ -24,34 +24,28 @@ const ImageSize = Vector2(32,32);
 
 var icons = {
 	"skeleton" : Rect2(Vector2( 0, 0), ImageSize ),
-	"cloaked_skel":  Rect2(Vector2( 64, 0), ImageSize ),
-	"giant":  Rect2(Vector2( 128, 0), ImageSize ),
-	"dwarf":  Rect2(Vector2( 192, 0), ImageSize ),
 	"skeleton_shield":  Rect2(Vector2( 32, 32), ImageSize ),
-	"cloaked_shield":  Rect2(Vector2( 96, 32), ImageSize ),		
+	"cloaked_skel":  Rect2(Vector2( 64, 0), ImageSize ),
+	"cloaked_shield":  Rect2(Vector2( 96, 32), ImageSize ),	
+	"giant":  Rect2(Vector2( 128, 0), ImageSize ),
 	"giant_shield":  Rect2(Vector2( 160, 32), ImageSize ),		
+	"dwarf":  Rect2(Vector2( 192, 0), ImageSize ),
 	"dwarf_shield":  Rect2(Vector2( 224, 32), ImageSize ),		
 	"wraith":  Rect2(Vector2( 0, 64), ImageSize ),
 	"wraith_shield":  Rect2(Vector2( 64, 64), ImageSize ),
 	"snake":  Rect2(Vector2( 192, 64), ImageSize ),
+	"alligator":  Rect2(Vector2( 224, 96), ImageSize ),
 	"dragon":  Rect2(Vector2( 32, 96), ImageSize ),
 	"giant_ant":  Rect2(Vector2( 96, 96), ImageSize ),
-	"minotaur":  Rect2(Vector2( 160, 96), ImageSize ),
 	"scorpion" :  Rect2(Vector2(128,64), ImageSize  ),
-	"alligator":  Rect2(Vector2( 224, 96), ImageSize )
+	"minotaur":  Rect2(Vector2( 160, 96), ImageSize )
 }
-
-var war_colors = [ White, Grey, Orange ]
-var magic_colors = [Blue, Pink, Purple]
-var both_colors = [Tan, Green, Yellow]
-
 
 class Enemy:
 	var name
 	var kind 
 	var power
 	var img = null
-	var color = null
 	var health = 10
 	var mind = 10	
 	var max_damage
@@ -62,6 +56,7 @@ class Enemy:
 	func json() -> Dictionary:
 		return {'name':name, 'kind':kind, 'power': power, 
 				'health':health, 'mind': mind, 'max_damage': max_damage}
+
 
 # registry of all the enemies
 var monsters = []
@@ -78,12 +73,6 @@ func add_enemy( name, power, type, health, max_dmg ):
 	e.health = health
 	e.mind = health * 2 / 3
 	e.max_damage = max_dmg
-	if name in ["giant", "dwarf","giant_shield", "dwarf_shield" ]:
-		e.color = [Yellow, Tan, Orange][power-1]
-	elif type=="war": e.color = war_colors[power-1]
-	elif type=="magic": e.color = magic_colors[power-1]
-	elif type=="both": e.color = both_colors[power-1]
-	else: e.color = Purple
 	monsters.append( e )
 	return e
 

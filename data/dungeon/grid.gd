@@ -72,8 +72,8 @@ func get_wall(p : Vector2, dir: Vector2):
 	if cur==null:
 		return outer_wall
 	var p2 = p + dir
-	var cell = get_cell(p2.x, p2.y)
-	if cell==null:
+
+	if get_cell(p2.x, p2.y)==null:
 		return outer_wall
 	else:
 		if dir.x==1:

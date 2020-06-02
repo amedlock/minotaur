@@ -26,7 +26,6 @@ enum MazeType { War, Magic, Both }
 # just the info for the level, no spatials here
 class LevelInfo:
 	var depth = null    			# 1..100
-	var m_type : String 			# "war", "magic", "both" 
 	var seed_number = null   		# seed used to generate dungeon
 	var used_gate = false    		# used a gate to come here
 	var war_monsters = false		# has war monsters
@@ -36,8 +35,6 @@ class LevelInfo:
 	var start = null				# starting coord
 	var gate = GateType.Empty   	# what gate type is on this level
 
-
-var rng = RandomNumberGenerator.new()
 
 var skill_level = 1   # 1,2,3,4
 
@@ -69,11 +66,12 @@ func _ready():
 func init_maze( skill, seednum ):
 	skill_level = skill
 	seed_number= seednum
+	var rng = RandomNumberGenerator.new()
 	rng.seed = seednum
 	for num in range(1, MAX_LEVEL+1):
-		level_info[num] = make_dungeon_info( skill, num )
+		level_info[num] = make_dungeon_info( skill, num, rng )
 	current_level = level_info[1]
-	builder.build_maze()
+	builder.build_maze(current_level)
 	hud.update_stats()
 	enable()
 	player.reset_location()
@@ -108,34 +106,29 @@ func go_next_level():
 	current_level = level_info[next]
 	audio.stream = load("res://data/sounds/descend.wav")
 	audio.play()
-	builder.build_maze()
+	builder.build_maze(current_level)
 	player.map_view.update_map(current_level.depth)
 	player.reset_location()
+
+
 
 func use_exit():
 	var item = player.item_at_feet()
 	if item==null or item.name!="ladder":
-		return
+		return false
 	go_next_level()
-
-
-func randint( hi ):
-	if hi < 1: return 0
-	var result = rng.randi() % hi
-	return result;
+	return true
 
 
 
-
-func make_dungeon_info(skill:int, num: int) -> LevelInfo:
+func make_dungeon_info(skill:int, num: int, rng: RandomNumberGenerator) -> LevelInfo:
 	var result = LevelInfo.new()
 	result.depth = num;
-	var monster_rng = randint(100)
+	result.seed_number = rng.randi()
+	var monster_rng = rng.randi_range(0,100)
 	result.war_monsters = monster_rng < 40 or monster_rng > 80
 	result.magic_monsters = monster_rng >= 40 
 	result.has_minotaur = num >= minotaur_appears[skill]
-	result.start = Vector2(2 + randint( 4 ),2 + randint( 4 ) )
-	result.seed_number = rng.randi()
 	return result
 
 
@@ -143,7 +136,6 @@ func make_dungeon_info(skill:int, num: int) -> LevelInfo:
 func enter_gate():
 	current_level.used_gate = true
 	builder.build_maze()
-
 
 
 func world_pos( cx, cy ):

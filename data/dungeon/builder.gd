@@ -186,7 +186,10 @@ func build_maze_prim(info):
 	var prim_out = File.new(); 
 	prim_out.open("prim.txt", File.WRITE)
 	
-	var start = maze_cell(info.start.x, info.start.y)
+	var sx = rng.randi_range(1,5)
+	var sy = rng.randi_range(1,5)
+	
+	var start = maze_cell(sx, sy)
 	var seen 	 =[start]		# seen cells are part of maze
 	var frontier =[]		# these are potentials
 	update_frontier(start, seen, frontier)
@@ -231,13 +234,9 @@ func more_doors():
 func add_gates(info ):
 	if info.depth > 2: return
 	if info.used_gate==true: return
-	var gates = []
-	match info.m_type:
-		"war": gates = ["magic", "both"]
-		"magic": gates = ["war", "both"]
-		"both": gates = ["magic", "war"]
-	maze_cell(dungeon.WIDTH-1, 0).gate = gates[0]
-	maze_cell(0, dungeon.HEIGHT-1).gate = gates[1]
+	var g = choose_random(["war", "magic", "both"])
+	maze_cell(dungeon.WIDTH-1, 0).gate = g
+	maze_cell(0, dungeon.HEIGHT-1).gate = g
 
 
 
@@ -363,7 +362,13 @@ func add_items(info, coords):
 
 
 func set_mural_color( info ):
-	dungeon.set_mural_color(info.m_type)
+	if info.war_monsters:
+		if info.magic_monsters:
+			dungeon.set_mural_color("both")
+		else:
+			dungeon.set_mural_color("war")
+	else:
+		dungeon.set_mural_color("magic")
 
 
 func add_minotaur(info, coords):
@@ -437,27 +442,7 @@ func test_maze():
 		assert(maze_cell(0,y).east)
 
 
-
-func build_maze():
-	var info = dungeon.current_level
-	maze.resize(dungeon.WIDTH * dungeon.HEIGHT)
-	for yp in range(dungeon.HEIGHT):
-		for xp in range(dungeon.WIDTH):
-			var n = xp + (yp * dungeon.WIDTH)
-			maze[n] = MazeCell.new(xp, yp)
-	rng.seed = info.seed_number
-	var types = ["war", "magic", "both"]
-	info.m_type = choose_random(types)
-	build_maze_prim(info)
-	more_doors()
-	add_exit()
-	add_gates(info)
-	var empty_cells = all_empty_cells()	
-	add_enemies(info, empty_cells)
-	add_items( info, empty_cells)
-	add_minotaur( info, empty_cells )
-	build_dungeon_grid() # build the actual geometry
-	set_mural_color(info)	
+func save_maze():
 	var f = File.new()
 	f.open("map_cell.json", File.WRITE)
 	f.store_string("[")
@@ -470,6 +455,29 @@ func build_maze():
 		f.store_string( m.json() )
 	f.store_string("]")
 	f.close()
+
+
+
+func build_maze(level_info):
+	maze.resize(dungeon.WIDTH * dungeon.HEIGHT)
+	for yp in range(dungeon.HEIGHT):
+		for xp in range(dungeon.WIDTH):
+			var n = xp + (yp * dungeon.WIDTH)
+			maze[n] = MazeCell.new(xp, yp)
+	rng.seed = level_info.seed_number
+	var monster_kind = rng.randi_range(0,100)
+	level_info.war_monsters = monster_kind < 40 or monster_kind > 80
+	level_info.magic_monsters = monster_kind >=40
+	build_maze_prim(level_info)
+	more_doors()
+	add_exit()
+	add_gates(level_info)
+	var empty_cells = all_empty_cells()	
+	add_enemies(level_info, empty_cells)
+	add_items( level_info, empty_cells)
+	add_minotaur( level_info, empty_cells )
+	build_dungeon_grid() # build the actual geometry
+	set_mural_color(level_info)	
 	maze.clear()
 	
 	

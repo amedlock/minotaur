@@ -253,8 +253,7 @@ anims/Fire = SubResource( 1 )
 anims/SpinFire = SubResource( 2 )
 
 [node name="PlayerWeapon" type="Sprite" parent="Dungeon/Player"]
-visible = false
-position = Vector2( 680, 400 )
+position = Vector2( 1304.75, 740.1 )
 scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 15 )
 region_enabled = true
@@ -265,9 +264,7 @@ anims/Fire = SubResource( 3 )
 anims/SpinFire = SubResource( 4 )
 
 [node name="EnemyWeapon" type="Sprite" parent="Dungeon/Player"]
-visible = false
-position = Vector2( 1284.22, 727.875 )
-rotation = 6.28319
+position = Vector2( 1345.16, 725.954 )
 scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 15 )
 region_enabled = true

@@ -36,6 +36,7 @@ onready var show_map = $ShowMap
 
 
 func _ready():
+	test()
 	dungeon = get_parent()
 	game = dungeon.get_parent()
 	start_pos = dungeon.find_node("StartPos")
@@ -47,6 +48,15 @@ func _ready():
 	for n in self.get_children():
 		if n.is_in_group("action"):
 			n.connect("action_complete", self, "action_complete")
+
+
+func test():
+	var v = Vector2(0,1)
+	print("0:" , str(v.rotated(deg2rad(0))))
+	print("90:" , str(v.rotated(deg2rad(90))))
+	print("180:" , str(v.rotated(deg2rad(180))))
+	print("270:" , str(v.rotated(deg2rad(270))))
+	
 
 
 func enable():
@@ -88,7 +98,7 @@ func over_exit() -> bool:
 	if dungeon.current_level.depth <1 : 
 		return false
 	var cell = dungeon.grid.get_cell(loc.x, loc.y)
-	return cell.item and cell.item.name=="exit"
+	return cell.item and cell.item.item.name=="ladder"
 
 
 func is_fighting(): 
@@ -117,7 +127,7 @@ func _input(evt):
 		active_action.input(evt)
 		return
 	if not (evt is InputEventKey and evt.pressed): 
-		return		
+		return
 	match evt.scancode:
 		KEY_Q: glance.start(90)
 		KEY_E: glance.start(-90)
@@ -156,6 +166,7 @@ func action_complete( kind ):
 			if dead() and not cheat_death(): 
 				game.game_over()
 	hud.update()
+	check_for_monster()
 
 
 func cheat_death():
@@ -316,6 +327,10 @@ func cell_ahead():
 	var p = loc + face_vector()
 	return dungeon.grid.get_cell(p.x, p.y)
 
+func cell_behind():
+	var p = loc + (-face_vector())
+	return dungeon.grid.get_cell(p.x, p.y)
+
 func wall_ahead():
 	return dungeon.grid.get_wall(loc, face_vector() )
 
@@ -338,6 +353,10 @@ func coord_left() -> Vector2:
 
 
 func start_combat( pos: Vector2, ang : int ) -> bool:
+	var v = Vector2(1,0).rotated(deg2rad(ang))
+	var wall = dungeon.grid.get_wall(loc, v)
+	if wall and wall.is_blocked():
+		return false
 	var cell = dungeon.grid.get_cell(pos.x ,pos.y)
 	if cell and cell.enemy:
 		combat.fight(cell.enemy, ang)
@@ -348,7 +367,7 @@ func start_combat( pos: Vector2, ang : int ) -> bool:
 func check_for_monster():
 	if start_combat(coord_ahead(), 0):
 		return
-	if randi() % 4 < 2: 
+	if randi() % 4 < 4: 
 		return
 	if start_combat(coord_left(), -90):
 		return
@@ -367,13 +386,12 @@ func attack():
 		return
 	elif active_action!=null:
 		return
-	var fwd = coord_ahead()
-	var cell_ahead = dungeon.grid.get_cell( fwd.x, fwd.y )
+	var cell_ahead = cell_ahead()
 	if cell_ahead==null or cell_ahead.enemy==null:
 		return
-	var wall = dungeon.grid.get_wall(loc, fwd)
+	var wall = dungeon.grid.get_wall(loc, face_vector())
 	if can_see(wall):
-		combat.start( cell_ahead, fwd, 0 )
+		combat.fight( cell_ahead.enemy, 0 )
 
 func rest():
 	if food<1 or (not needs_rest): return
