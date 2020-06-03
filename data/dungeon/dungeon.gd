@@ -71,6 +71,7 @@ func init_maze( skill, seednum ):
 	for num in range(1, MAX_LEVEL+1):
 		level_info[num] = make_dungeon_info( skill, num, rng )
 	current_level = level_info[1]
+	grid.reset_all()
 	builder.build_maze(current_level)
 	hud.update_stats()
 	enable()
@@ -106,9 +107,11 @@ func go_next_level():
 	current_level = level_info[next]
 	audio.stream = load("res://data/sounds/descend.wav")
 	audio.play()
+	grid.reset_all()
 	builder.build_maze(current_level)
 	player.map_view.update_map(current_level.depth)
 	player.reset_location()
+	player.hud.update()
 
 
 
@@ -133,8 +136,12 @@ func make_dungeon_info(skill:int, num: int, rng: RandomNumberGenerator) -> Level
 
 
 
-func enter_gate():
+func load_gate_level(gate):
 	current_level.used_gate = true
+	current_level.seed_number = randi()
+	current_level.magic_monsters = gate.kind != 'war'
+	current_level.war_monsters = gate.kind != 'magic'
+	grid.reset_all()
 	builder.build_maze()
 
 

@@ -6,6 +6,7 @@
 
 [node name="gate" type="Spatial"]
 script = ExtResource( 3 )
+kind = "both"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 material_override = ExtResource( 1 )

@@ -66,7 +66,7 @@ func update():
 		marker.region_rect = tombstone_tile
 		marker.rotation_degrees = 0
 	else:
-		marker.modulate = Color.orange
+		marker.modulate = Color.black
 		marker.region_rect = arrow_tile
 		marker.rotation_degrees = 360-player.dir
 

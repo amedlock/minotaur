@@ -26,19 +26,22 @@ class MazeCell:
 	var gate = null
 	var item = null 
 	var enemy = null
+	var active = false # maze building flag
 
 	func _init(xp, yp):
 		self.x = xp
 		self.y = yp
 
-	func adjacent_to(m2:MazeCell)->bool:
-		if m2:
-			if m2.x==x:
-				return abs(m2.y-y)==1
-			if m2.y==y:
-				return abs(m2.x-x)==1
+	func adjacent_to(m2:MazeCell) -> bool:
+		if m2.x==x:
+			return m2.y==y+1 or m2.y==y-1
+		if m2.y==y:
+			return m2.x==x+1 or m2.x==x-1
 		return false
 	
+	func _to_string():
+		return "MAZE:%s" % str(Vector2(x,y))
+		
 	func json() -> String:
 		var obj= {'coord':"%s,%s" % [x, y] }
 		if enemy:
@@ -85,13 +88,15 @@ func add_outer_doors():
 
 
 func add_path( from, to ):
+	from.active = true
+	to.active = true
 	if from.x==to.x:
-		if from.y==to.y-1:
+		if from.y+1==to.y:
 			from.north = null
 		else:
 			to.north= null
 	else:
-		if from.x==to.x-1:
+		if from.x+1==to.x:
 			from.east = null
 		else:
 			to.east = null
@@ -111,24 +116,38 @@ func take_random( items ):
 	return it
 
 
-func update_frontier( mc :MazeCell, seen, frontier ):
+# maze cells adjacent (NSEW) to mc
+func all_adjacent(mc: MazeCell) -> Array:
+	var result = []
 	var n = maze_cell(mc.x,mc.y+1)
-	var s = maze_cell(mc.x, mc.y-1)
-	var e = maze_cell(mc.x+1, mc.y)
-	var w = maze_cell(mc.x-1, mc.y)
-	for mc in [n,s,e,w]:
-		if not mc:
-			continue
-		if mc in seen:
-			continue
-		if not is_outer_maze(mc):
-			frontier.append(mc)
+	if n:
+		result.append(n)
+	var s = maze_cell(mc.x,mc.y-1)
+	if s:
+		result.append(s)
+	var e = maze_cell(mc.x+1,mc.y)
+	if e:
+		result.append(e)
+	var w = maze_cell(mc.x-1,mc.y)
+	if w:
+		result.append(w)
+	return result
+	
 
 
-func find_adjacent(mc : MazeCell, seen) -> MazeCell:
+func find_inactive_near( mc :MazeCell ):
+	var result = []
+	for x in all_adjacent(mc):
+		if x.active or is_outer_maze(x):
+			continue
+		result.append(x)
+	return result
+
+
+func find_active_near(mc : MazeCell) -> MazeCell:
 	var work = []
-	for it in seen:
-		if it.adjacent_to(mc):
+	for it in all_adjacent(mc):
+		if it.active:
 			work.append(it)
 	return choose_random(work)
 
@@ -142,7 +161,7 @@ func format_num(n, sz):
 func write_maze(name: String):
 	var f = File.new()
 	f.open(name, File.WRITE)
-	for y in range(dungeon.WIDTH):
+	for y in range(dungeon.WIDTH-1, -1, -1):
 		f.store_string("\n%s " % format_num(y,3))
 		for x in range(dungeon.HEIGHT):
 			var mc = maze_cell(x,y)
@@ -171,40 +190,31 @@ func add_walls(mc : MazeCell):
 		mc.north = "wall"
 		mc.east = "wall"
 
+
 # cur	-> current active cell, picked from frontier
 # seen 	-> already processed and in the maze
 # frontier -> neighbors to all seen cells
 
-
-
-func build_maze_prim(info):
+func build_maze_prim():
 	for mc in maze:
+		mc.active = false
 		add_walls(mc)
-	clear_outer_wall()
 	add_outer_doors()
-	write_maze("maze1.txt")
-	var prim_out = File.new(); 
-	prim_out.open("prim.txt", File.WRITE)
 	
 	var sx = rng.randi_range(1,5)
 	var sy = rng.randi_range(1,5)
 	
 	var start = maze_cell(sx, sy)
-	var seen 	 =[start]		# seen cells are part of maze
-	var frontier =[]		# these are potentials
-	update_frontier(start, seen, frontier)
+	start.active = true # first active cell
+		
+	var frontier = find_inactive_near(start) # these are potentials
 	while frontier.size()>0:
 		var pick = take_random( frontier )
-		var near = find_adjacent(pick, seen)
-		var coords =[ pick.x, pick.y, near.x, near.y]
-		prim_out.store_string("Path from %s,%s -> %s,%s\n" % coords)
-		add_path( pick, near )
-		seen.append( pick )
-		update_frontier(pick, seen, frontier)
-	prim_out.close()
-	write_maze("maze2.txt")
-	test_maze()	
-
+		var near = find_active_near(pick)
+		add_path( near, pick )
+		for f in find_inactive_near(pick):
+			if not(f in frontier):
+				frontier.append( f )
 
 	
 func check_wall( x, y, dir ):
@@ -234,9 +244,16 @@ func more_doors():
 func add_gates(info ):
 	if info.depth > 2: return
 	if info.used_gate==true: return
-	var g = choose_random(["war", "magic", "both"])
-	maze_cell(dungeon.WIDTH-1, 0).gate = g
-	maze_cell(0, dungeon.HEIGHT-1).gate = g
+	var gates = []
+	if info.war_monsters:
+		if info.magic_monsters:
+			gates = ["magic", "war"]
+		else:
+			gates = ["both", "magic"]
+	else:
+		gates = ["both", "war"]
+	maze_cell(dungeon.WIDTH-1, 0).gate = gates[0]
+	maze_cell(0, dungeon.HEIGHT-1).gate = gates[1]
 
 
 
@@ -459,6 +476,7 @@ func save_maze():
 
 
 func build_maze(level_info):
+	maze.clear()
 	maze.resize(dungeon.WIDTH * dungeon.HEIGHT)
 	for yp in range(dungeon.HEIGHT):
 		for xp in range(dungeon.WIDTH):
@@ -468,7 +486,7 @@ func build_maze(level_info):
 	var monster_kind = rng.randi_range(0,100)
 	level_info.war_monsters = monster_kind < 40 or monster_kind > 80
 	level_info.magic_monsters = monster_kind >=40
-	build_maze_prim(level_info)
+	build_maze_prim()
 	more_doors()
 	add_exit()
 	add_gates(level_info)

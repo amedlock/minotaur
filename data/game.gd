@@ -22,7 +22,7 @@ func start_game( skill ):
 	help.show()
 
 func game_over():
-	map_view.show_tombstone()
+	map_view.update()
 	show_map()
 	player.disable()	
 	mode = GameMode.GameOver

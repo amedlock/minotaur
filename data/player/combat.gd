@@ -89,8 +89,6 @@ func process(dt):
 	if enemy.dead():
 		enemy.die()
 		player.killed( enemy )
-		if enemy.monster.name=="minotaur": 
-			dungeon.add_final( enemy.x, enemy.y )
 		emit_signal("action_complete", "win")
 	if timer==0 and player.attacking and player.has_weapon():
 		player_fire()
@@ -146,7 +144,7 @@ func player_fire():
 		player_anim.play("SpinFire")
 	else:	
 		player_anim.play("Fire")
-	if broken and dungeon.maze_number > 2:  # clear out of the players hand
+	if broken and dungeon.current_level.depth > 2:  # clear out of the players hand
 		player.right_hand = null
 	player.hud.update_pack()
 	if fx!=null:

@@ -36,7 +36,6 @@ onready var show_map = $ShowMap
 
 
 func _ready():
-	test()
 	dungeon = get_parent()
 	game = dungeon.get_parent()
 	start_pos = dungeon.find_node("StartPos")
@@ -48,15 +47,6 @@ func _ready():
 	for n in self.get_children():
 		if n.is_in_group("action"):
 			n.connect("action_complete", self, "action_complete")
-
-
-func test():
-	var v = Vector2(0,1)
-	print("0:" , str(v.rotated(deg2rad(0))))
-	print("90:" , str(v.rotated(deg2rad(90))))
-	print("180:" , str(v.rotated(deg2rad(180))))
-	print("270:" , str(v.rotated(deg2rad(270))))
-	
 
 
 func enable():
@@ -139,6 +129,9 @@ func _input(evt):
 		KEY_T: use_item()
 		KEY_F5: reset_location()
 		KEY_F6: dungeon.go_next_level()
+		KEY_F7: 
+			self.health = 1; 
+			self.mind = 1
 		KEY_SPACE: open_door()
 		KEY_W: move.forward()
 		KEY_S: move.backward()
@@ -158,16 +151,23 @@ func action_complete( kind ):
 	match kind:
 		"Move":
 			dungeon.grid.get_cell(loc.x, loc.y).on_enter(game.player)
-		"Turn": pass
-		"Glance": pass
-		"die": pass
-		"win": 
-			needs_rest = true
+			close_doors()
+			check_for_monster()
+		"Turn": 
+			check_for_monster()
+		"Glance": 
+			check_for_monster()
+		"die": 
 			if dead() and not cheat_death(): 
 				game.game_over()
+		"win": 
+			needs_rest = true
 	hud.update()
-	check_for_monster()
+	
 
+
+func close_doors():
+	pass
 
 func cheat_death():
 	if resurrected: return false
@@ -298,9 +298,11 @@ func open_door():
 
 
 func enter_gate(kind:String):
-	audio.stream = load("res://data/sounds/magic.wav")
-	audio.play()
 	var cell = grid.get_cell(loc.x, loc.y)
+	if cell.gate:
+		audio.stream = load("res://data/sounds/magic.wav")
+		audio.play()
+		dungeon.load_gate_level(cell.gate)
 	cell.set_gate(null)
 	print("Entered gate:" + kind)
 
@@ -332,10 +334,10 @@ func cell_behind():
 	return dungeon.grid.get_cell(p.x, p.y)
 
 func wall_ahead():
-	return dungeon.grid.get_wall(loc, face_vector() )
+	return dungeon.grid.get_wall(loc, coord_ahead() )
 
 func wall_behind():
-	return dungeon.grid.get_wall(loc, -face_vector() )
+	return dungeon.grid.get_wall(loc, coord_behind() )
 
 func coord_ahead() -> Vector2: 
 	return loc + face_vector() 
@@ -345,33 +347,34 @@ func coord_behind() -> Vector2:
 	
 func coord_right() -> Vector2: 
 	var f = face_vector()
-	return Vector2( f.y, -f.x )
+	return loc + Vector2( f.y, -f.x )
 
 func coord_left() -> Vector2: 
 	var f = face_vector()
-	return Vector2( -f.y, f.x )
+	return loc + Vector2( -f.y, f.x )
 
 
-func start_combat( pos: Vector2, ang : int ) -> bool:
-	var v = Vector2(1,0).rotated(deg2rad(ang))
-	var wall = dungeon.grid.get_wall(loc, v)
+func start_combat( pos: Vector2 ) -> bool:
+	var wall = dungeon.grid.get_wall(loc, pos)
 	if wall and wall.is_blocked():
 		return false
 	var cell = dungeon.grid.get_cell(pos.x ,pos.y)
 	if cell and cell.enemy:
+		var ang = int(-rad2deg( (pos - loc).angle_to(face_vector()) ))
+		assert( ang in [90, 0, -90])
 		combat.fight(cell.enemy, ang)
 		return true
 	return false
 
 
 func check_for_monster():
-	if start_combat(coord_ahead(), 0):
+	if start_combat(coord_ahead()):
 		return
-	if randi() % 4 < 4: 
+	if (randi() % 7)<4: 
 		return
-	if start_combat(coord_left(), -90):
+	if start_combat(coord_left()):
 		return
-	if start_combat(coord_right(), 90):
+	if start_combat(coord_right()):
 		return
 
 	
@@ -389,7 +392,7 @@ func attack():
 	var cell_ahead = cell_ahead()
 	if cell_ahead==null or cell_ahead.enemy==null:
 		return
-	var wall = dungeon.grid.get_wall(loc, face_vector())
+	var wall = wall_ahead()
 	if can_see(wall):
 		combat.fight( cell_ahead.enemy, 0 )
 
@@ -417,7 +420,8 @@ func killed ( enemy ):
 	elif enemy.monster.kind=="both":
 		war_exp += enemy.monster.power 
 		mind_exp += enemy.monster.power 
-
+	if enemy.monster.name=="minotaur": 
+		dungeon.add_final( enemy.x, enemy.y )
 
 func percentage( val , pct ):
 	return (val * ( 100 - pct ) ) / 100;
@@ -460,10 +464,6 @@ func retreat():
 
 
 
-func load_gate_level(gate):
-	print("Gate:", gate.kind)
-
-
 func transport_player(cell):
 	match cell.gate.kind:
 		"green":
@@ -474,8 +474,8 @@ func transport_player(cell):
 			mind_max += int(mind_max / 2)	
 	mind = min( mind, mind_max )
 	health = min(health,health_max)
-	needs_rest = true			
-	load_gate_level(cell.gate)
+	needs_rest = true
+	dungeon.enter_gate(cell.gate)
 	reset_location()
 	hud.update_stats()
 

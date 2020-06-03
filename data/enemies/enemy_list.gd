@@ -22,39 +22,44 @@ const Red = Color( 0xcc2a2aff )
 
 const ImageSize = Vector2(32,32);
 
+func grid_cell(x,y):
+	return Rect2( Vector2(x * 32, y * 32), ImageSize )
+
+
+
 var icons = {
-	"skeleton" : Rect2(Vector2( 0, 0), ImageSize ),
-	"skeleton_shield":  Rect2(Vector2( 32, 32), ImageSize ),
-	"cloaked_skel":  Rect2(Vector2( 64, 0), ImageSize ),
-	"cloaked_shield":  Rect2(Vector2( 96, 32), ImageSize ),	
-	"giant":  Rect2(Vector2( 128, 0), ImageSize ),
-	"giant_shield":  Rect2(Vector2( 160, 32), ImageSize ),		
-	"dwarf":  Rect2(Vector2( 192, 0), ImageSize ),
-	"dwarf_shield":  Rect2(Vector2( 224, 32), ImageSize ),		
-	"wraith":  Rect2(Vector2( 0, 64), ImageSize ),
-	"wraith_shield":  Rect2(Vector2( 64, 64), ImageSize ),
-	"snake":  Rect2(Vector2( 192, 64), ImageSize ),
-	"alligator":  Rect2(Vector2( 224, 96), ImageSize ),
-	"dragon":  Rect2(Vector2( 32, 96), ImageSize ),
-	"giant_ant":  Rect2(Vector2( 96, 96), ImageSize ),
-	"scorpion" :  Rect2(Vector2(128,64), ImageSize  ),
-	"minotaur":  Rect2(Vector2( 160, 96), ImageSize )
+	"skeleton" : grid_cell(0,0),
+	"skeleton_shield":  grid_cell(1,1),
+	"cloaked_skel":  grid_cell(2,0),
+	"cloaked_shield":  grid_cell(3,1),
+	"giant":  grid_cell(4,0),
+	"giant_shield":  grid_cell(5,1),
+	"dwarf":  grid_cell(6,0),
+	"dwarf_shield":  grid_cell(7,1),
+	"wraith": grid_cell(0,2),
+	"wraith_shield":  grid_cell(2,2),
+	"snake":  grid_cell(6,2),
+	"alligator":  grid_cell(7,3),
+	"dragon":  grid_cell(1,3),
+	"giant_ant":  grid_cell(3,3),
+	"scorpion" :  grid_cell(4,2),
+	"minotaur":  grid_cell(5,3)
 }
 
 class Enemy:
 	var name
-	var kind 
+	var kind
 	var power
 	var img = null
 	var health = 10
-	var mind = 10	
+	var mind = 10
 	var max_damage
 
-	func dead(): 
+	func dead():
 		return health<1 or mind<1
 
 	func json() -> Dictionary:
-		return {'name':name, 'kind':kind, 'power': power, 
+		return {'name':name, 'kind':kind, 'power': power,
 				'health':health, 'mind': mind, 'max_damage': max_damage}
 
 
@@ -63,7 +68,7 @@ var monsters = []
 
 
 
-#enemy type = "war" "magic" or "both" 
+#enemy type = "war" "magic" or "both"
 func add_enemy( name, power, type, health, max_dmg ):
 	var e = Enemy.new()
 	e.name = name
@@ -99,31 +104,31 @@ func add_enemies():
 	add_enemy( "giant_shield", 3, "war", 65, 31 );
 	add_enemy( "dwarf", 1,"magic",  10, 3 );
 	add_enemy( "dwarf", 2,"magic",  17, 11 );
-	add_enemy( "dwarf", 3,"magic",  24, 15 );	
+	add_enemy( "dwarf", 3,"magic",  24, 15 );
 	add_enemy( "dwarf_shield", 1,  "magic",12, 9 );
 	add_enemy( "dwarf_shield", 2,  "magic", 20, 13 );
 	add_enemy( "dwarf_shield", 3, "magic", 28, 17 );
 	add_enemy( "scorpion", 1,"magic", 9,  7 );
 	add_enemy( "scorpion", 2, "magic", 18,  13 );
-	add_enemy( "scorpion", 3, "magic", 27,  17 );	
+	add_enemy( "scorpion", 3, "magic", 27,  17 );
 	add_enemy( "giant_ant", 1, "magic", 6,  5 );
 	add_enemy( "giant_ant", 2, "magic", 12,  10 );
-	add_enemy( "giant_ant", 3, "magic", 20,  15 );	
+	add_enemy( "giant_ant", 3, "magic", 20,  15 );
 	add_enemy( "snake", 1, "magic", 11,  9 );
 	add_enemy( "snake", 2, "magic", 22, 16 );
-	add_enemy( "snake", 3, "magic", 33,  23 );	
+	add_enemy( "snake", 3, "magic", 33,  23 );
 	add_enemy( "alligator", 1, "magic", 18,  12 );
 	add_enemy( "alligator", 2, "magic", 25,  20 );
-	add_enemy( "alligator", 3, "magic", 32,  28 );		
+	add_enemy( "alligator", 3, "magic", 32,  28 );
 	add_enemy( "dragon", 1, "magic", 30, 15 );
 	add_enemy( "dragon", 2, "magic", 45, 25 );
-	add_enemy( "dragon", 3, "magic",  60, 35 );			
+	add_enemy( "dragon", 3, "magic",  60, 35 );
 	add_enemy( "wraith", 1, "both", 20, 15 );
 	add_enemy( "wraith", 2, "both", 40, 25 );
 	add_enemy( "wraith", 3, "both", 60, 35 );
 	add_enemy( "wraith_shield", 1, "both", 35, 17 );
 	add_enemy( "wraith_shield", 2, "both", 45, 27 );
-	add_enemy( "wraith_shield", 3, "both", 70,  38 );				
+	add_enemy( "wraith_shield", 3, "both", 70,  38 );
 
 var items
 var dungeon

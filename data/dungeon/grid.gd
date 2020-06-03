@@ -63,23 +63,22 @@ func get_cell(x : int, y: int):
 	return cells[x + (y * width)]
 
 
-func get_wall(p : Vector2, dir: Vector2):
-	if dir.x==-1: # west
-		return get_wall( Vector2(p.x-1, p.y), -dir)
-	elif dir.y==-1: # south
-		return get_wall( Vector2(p.x, p.y-1), -dir)
+func get_wall(p : Vector2, p2: Vector2):
+	if p.x>p2.x: # west
+		return get_wall(p2, p)
+	elif p.y>p2.y: # south
+		return get_wall(p2, p)
+		
 	var cur = get_cell(p.x, p.y)
 	if cur==null:
 		return outer_wall
-	var p2 = p + dir
-
-	if get_cell(p2.x, p2.y)==null:
-		return outer_wall
+	
+	if p2.x > p.x:
+		return cur.east
+	elif p2.y > p.y:
+		return cur.north
 	else:
-		if dir.x==1:
-			return cur.east
-		elif dir.y==1:
-			return cur.north
+		print("get_wall: %s -> %s" % [str(p), str(p2)])
 	return null
 
 

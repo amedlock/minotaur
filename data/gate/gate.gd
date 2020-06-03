@@ -2,7 +2,7 @@ extends Spatial;
 
 const Up = Vector3(0,1,0)
 
-export( String, "blue", "tan", "green" ) var kind = "tan"
+export( String, "magic", "both", "war" ) var kind = "war"
 
 var min_size = 0.02
 var max_size = 0.03
