@@ -18,9 +18,6 @@ onready var item_list = $ItemList  	  # all items are enemies of this node
 enum WallDir  { North, South, East, West } # four movement/wall directions
 
 enum WallPost  { NW, NE, SE, SW }
-enum WallType { None, Wall, Door, SecretDoor, Gate }
-
-enum MazeType { War, Magic, Both }
 
 
 # just the info for the level, no spatials here
@@ -207,12 +204,7 @@ func wall_post_for_wall( cx, cy, walldir ):
 
 
 func add_final( x, y ):
-	grid.get_cell(x, y).item = item_list.treasure
-
-
-
-
-
+	grid.set_item(x, y, item_list.treasure)
 
 
 

@@ -26,6 +26,9 @@ class MazeCell:
 	var gate = null
 	var item = null 
 	var enemy = null
+	
+	var corners = []
+	
 	var active = false # maze building flag
 
 	func _init(xp, yp):
@@ -90,16 +93,14 @@ func add_outer_doors():
 func add_path( from, to ):
 	from.active = true
 	to.active = true
-	if from.x==to.x:
-		if from.y+1==to.y:
-			from.north = null
-		else:
-			to.north= null
-	else:
-		if from.x+1==to.x:
-			from.east = null
-		else:
-			to.east = null
+	if from.x==to.x-1:
+		from.east = null
+	elif from.x==to.x+1:
+		to.east = null
+	elif from.y==to.y-1:
+		from.north = null
+	elif from.y==to.y+1:
+		to.north = null
 
 
 func choose_random( items ):
@@ -158,24 +159,6 @@ func format_num(n, sz):
 		s += ' '
 	return s
 
-func write_maze(name: String):
-	var f = File.new()
-	f.open(name, File.WRITE)
-	for y in range(dungeon.WIDTH-1, -1, -1):
-		f.store_string("\n%s " % format_num(y,3))
-		for x in range(dungeon.HEIGHT):
-			var mc = maze_cell(x,y)
-			if mc.north:
-				if mc.east:
-					f.store_string("+ ")
-				else:
-					f.store_string("- ")
-			elif mc.east:
-				f.store_string("| ")
-			else:
-				f.store_string(". ")
-	f.close()
-
 
 func add_walls(mc : MazeCell):
 	if mc.x==dungeon.WIDTH-1 or mc.y==dungeon.HEIGHT-1:
@@ -229,7 +212,7 @@ func check_wall( x, y, dir ):
 		return c.east=="wall"
 		
 # prims algo makes maze too twisty, add some strategic doorways
-func more_doors():
+func add_more_doors():
 	if check_wall( 3,3, "east" ):  
 		maze_cell( 3, 3 ).east  = "door" 
 	if check_wall( 8,4, "north" ):  
@@ -396,22 +379,22 @@ func add_minotaur(info, coords):
 
 func add_cell_corner( cx, cy ):
 	var c = maze_cell( cx, cy )
-	if c==null: return
-	var cw = maze_cell(cx-1,cy ) 
+	if c==null: 
+		return
+	var cw = maze_cell(cx-1,cy)
 	var ne = false
 	var se = false
-	if c.north!=null: 
+	if c.north or (cw and cw.north):
 		ne = true
-	if cw!=null and cw.north!=null: 
-		ne = true
-	if c.east!=null: 
+	if c.east:
 		ne = true
 		se = true
-	if ne and cy>0: 
-		dungeon.grid.add_corner( cx, cy, "ne" )
-	if se and cx < dungeon.WIDTH-1: 
-		dungeon.grid.add_corner( cx, cy, "se" )
-		
+	if ne and cy>0:
+		c.corners.append("ne")
+	if se and cx< dungeon.WIDTH-1:
+		c.corners.append("se")
+
+
 func add_all_corners():
 	for x in range(0,dungeon.WIDTH-1):
 		for y in range(0,dungeon.HEIGHT-1):
@@ -426,6 +409,9 @@ func build_dungeon_grid():
 			grid.set_wall(c, "north", c.north)
 		if c.east:
 			grid.set_wall(c, "east", c.east)
+		for post in c.corners:
+			if post:
+				grid.set_corner(c.x, c.y, post)
 		if c.item:
 			grid.set_item(c.x, c.y, c.item)
 		if c.enemy:
@@ -448,32 +434,6 @@ func all_empty_cells():
 	return coords;
 
 
-func test_maze():
-	var max_x = dungeon.WIDTH-1
-	var max_y = dungeon.HEIGHT-1
-	for x in range(1,max_x):
-		assert(maze_cell(x,10).north)
-		assert(maze_cell(x,0).north)
-	for y in range(1,max_y):
-		assert(maze_cell(10,y).east)
-		assert(maze_cell(0,y).east)
-
-
-func save_maze():
-	var f = File.new()
-	f.open("map_cell.json", File.WRITE)
-	f.store_string("[")
-	var first = true
-	for m in maze:
-		if first:
-			first = false
-		else:
-			f.store_string(",\n")
-		f.store_string( m.json() )
-	f.store_string("]")
-	f.close()
-
-
 
 func build_maze(level_info):
 	maze.clear()
@@ -487,13 +447,14 @@ func build_maze(level_info):
 	level_info.war_monsters = monster_kind < 40 or monster_kind > 80
 	level_info.magic_monsters = monster_kind >=40
 	build_maze_prim()
-	more_doors()
+	add_more_doors()
 	add_exit()
 	add_gates(level_info)
 	var empty_cells = all_empty_cells()	
 	add_enemies(level_info, empty_cells)
 	add_items( level_info, empty_cells)
 	add_minotaur( level_info, empty_cells )
+	add_all_corners()
 	build_dungeon_grid() # build the actual geometry
 	set_mural_color(level_info)	
 	maze.clear()

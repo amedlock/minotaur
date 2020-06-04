@@ -10,10 +10,10 @@ var y
 
 var smoke = preload("smoke.tscn")
 
-var enemies
+var cell
 
 func _ready():
-	enemies = self.get_parent()
+	cell = self.get_parent()
 
 
 func configure(xp, yp, enemy):
@@ -37,19 +37,12 @@ func dead():
 	
 func die():
 	if not self.visible: 
-		print("Not visible!")
 		return # this might get called twice
 	self.hide()	
 	var sm = smoke.instance()
-	enemies.add_child( sm )
-	var anim = sm.find_node("Animation")
-	anim.connect("animation_finished", self, "remove_me", [sm] )
 	sm.translation =  self.translation - Vector3( 0, 0.6, 0 ) 
-	sm.show()	
-	anim.play( "Puff" )
-	enemies.get_parent().set_enemy( x, y, null )
+	cell.add_child( sm )
+	sm.start()
+	cell.set_enemy( null )
 
-
-func remove_me(_which, sm):
-	sm.queue_free()
 

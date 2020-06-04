@@ -303,8 +303,7 @@ func enter_gate(kind:String):
 		audio.stream = load("res://data/sounds/magic.wav")
 		audio.play()
 		dungeon.load_gate_level(cell.gate)
-	cell.set_gate(null)
-	print("Entered gate:" + kind)
+		cell.set_gate(null)
 
 
 func can_see( wall ):
@@ -458,8 +457,8 @@ func retreat():
 	if last_loc==null: return false
 	set_pos( last_loc.x, last_loc.y ); last_loc = null
 	set_dir( last_dir ); last_dir = null
-	if active_action: 
-		active_action.complete()
+	active_action = null
+	self.hud.update()
 	return true
 
 

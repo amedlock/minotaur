@@ -34,9 +34,6 @@ func configure(w: int, h: int, cell_sz: float):
 	self.cell_size = cell_sz
 	var total = width * height
 	cells.resize(total)
-	var cell_file = File.new()
-	cell_file.open("cell_file.txt", File.WRITE)
-	cell_file.store_string("start = %s\n" % str(dungeon.translation))
 	for yp in range(0,height):
 		for xp in range(0,width):
 			var index = xp + (yp * width)
@@ -46,8 +43,6 @@ func configure(w: int, h: int, cell_sz: float):
 			node.name = "Cell_%d_%d" % [xp, yp]
 			node.translation = Vector3(xp * cell_sz, 0, -(yp * cell_sz))
 			cells[index] = node
-			cell_file.store_string("Cell %d,%d = %s\n" % [xp, yp, str(node.translation)])			
-	cell_file.close()
 
 
 func reset_all():
@@ -77,15 +72,19 @@ func get_wall(p : Vector2, p2: Vector2):
 		return cur.east
 	elif p2.y > p.y:
 		return cur.north
-	else:
-		print("get_wall: %s -> %s" % [str(p), str(p2)])
 	return null
 
 
-func add_corner(x, y, which):
+func set_corner(x, y, which):
 	var cell = get_cell(x,y)
 	if cell:
-		cell.add_corner(which)
+		cell.set_corner(which)
+
+
+func clear_corner(x,y,which):
+	var cell = get_cell(x,y)
+	if cell:
+		cell.clear_corner(which)
 
 
 func set_gate( x,y , kind):
@@ -103,8 +102,6 @@ func set_item(x, y, item):
 
 func set_enemy(x, y, enemy):
 	var cell = get_cell(x,y)
-	if x==6 and y==1:
-		print("Stop")
 	if cell:
 		cell.set_enemy(enemy)
 

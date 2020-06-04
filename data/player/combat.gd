@@ -97,7 +97,7 @@ func process(dt):
 	elif retreating:
 		player.retreat()
 
-	
+
 func turn_player(dt):
 	timer = timer+dt
 	var ratio = min(timer, turn_time) / turn_time;
@@ -180,7 +180,7 @@ func enemy_fire():
 	enemy_weapon.set_region_rect( enemy_item.img ) #Rect2( Vector2(0,0), Vector2(32,32)))
 	enemy_weapon.set_modulate( enemy_item.color )
 	var fx = get_sound_fx( enemy_item )
-	if fx!=null : 
+	if fx!=null:
 		enemy_audio.stream = fx
 		enemy_audio.play()
 	if enemy_item.name in ["axe", "dagger", "fireball", "small_fireball"]:

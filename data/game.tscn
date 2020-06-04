@@ -216,9 +216,6 @@ visible = false
 [node name="StartPos" type="Position3D" parent="Dungeon"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.25, 16.5 )
 
-[node name="Pos_11_11" type="Position3D" parent="Dungeon"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 1.25, -16.5 )
-
 [node name="Player" type="Spatial" parent="Dungeon"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21 )
 script = ExtResource( 9 )

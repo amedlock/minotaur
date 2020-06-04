@@ -4,8 +4,9 @@ extends Spatial
 var x = 0
 var y = 0
 
-var north 
-var east 
+# walls
+var north : Spatial
+var east  : Spatial
 
 var item : Spatial 
 var enemy : Spatial
@@ -97,19 +98,14 @@ func free_child(it):
 		it.queue_free()
 
 func reset():
-	if gate:
-		free_child(gate)
-		gate = null
-	if north:
-		free_child(north)
-		north = null
-	if item!=null:
-		free_child(item)
-		item = null
-	if self.enemy!=null:
-		free_child(enemy)
-		enemy = null
-
+	gate = null
+	north = null
+	east = null
+	item = null
+	enemy = null
+	for x in self.get_children():
+		self.remove_child(x)
+		x.queue_free()
 
 
 
@@ -175,7 +171,20 @@ var wall_post_offset = {
 	"sw": Vector3( 0, 0.25, 3 )
 }
 
-func add_corner( which ):
-	var it = corner_prefab.instance();
-	self.add_child(it)
-	it.translation = wall_post_offset[which]
+func clear_corner( which ):
+	var n = find_node("corner_" + which, false, false)
+	if n:
+		remove_child(n)
+		n.queue_free()
+
+
+func set_corner( which ):
+	var cur = find_node("corner_" + which)
+	if cur:
+		return
+	if which in wall_post_offset:
+		var it = corner_prefab.instance();
+		it.translation = wall_post_offset[which]
+		it.name = "corner_" + which
+		self.add_child(it)
+	

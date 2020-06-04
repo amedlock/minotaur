@@ -22,28 +22,28 @@ const Red = Color( 0xcc2a2aff )
 
 const ImageSize = Vector2(32,32);
 
-func grid_cell(x,y):
+func ss_cell(x,y):
 	return Rect2( Vector2(x * 32, y * 32), ImageSize )
 
 
 
 var icons = {
-	"skeleton" : grid_cell(0,0),
-	"skeleton_shield":  grid_cell(1,1),
-	"cloaked_skel":  grid_cell(2,0),
-	"cloaked_shield":  grid_cell(3,1),
-	"giant":  grid_cell(4,0),
-	"giant_shield":  grid_cell(5,1),
-	"dwarf":  grid_cell(6,0),
-	"dwarf_shield":  grid_cell(7,1),
-	"wraith": grid_cell(0,2),
-	"wraith_shield":  grid_cell(2,2),
-	"snake":  grid_cell(6,2),
-	"alligator":  grid_cell(7,3),
-	"dragon":  grid_cell(1,3),
-	"giant_ant":  grid_cell(3,3),
-	"scorpion" :  grid_cell(4,2),
-	"minotaur":  grid_cell(5,3)
+	"skeleton" : ss_cell(0,0),
+	"skeleton_shield":  ss_cell(1,1),
+	"cloaked_skel":  ss_cell(2,0),
+	"cloaked_shield":  ss_cell(3,1),
+	"giant":  ss_cell(4,0),
+	"giant_shield":  ss_cell(5,1),
+	"dwarf":  ss_cell(6,0),
+	"dwarf_shield":  ss_cell(7,1),
+	"wraith": ss_cell(0,2),
+	"wraith_shield":  ss_cell(2,2),
+	"snake":  ss_cell(6,2),
+	"alligator":  ss_cell(7,3),
+	"dragon":  ss_cell(1,3),
+	"giant_ant":  ss_cell(3,3),
+	"scorpion" :  ss_cell(4,2),
+	"minotaur":  ss_cell(5,3)
 }
 
 class Enemy:
