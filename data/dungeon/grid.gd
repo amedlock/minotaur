@@ -64,7 +64,7 @@ func get_wall(p : Vector2, p2: Vector2):
 	elif p.y>p2.y: # south
 		return get_wall(p2, p)
 		
-	var cur = get_cell(p.x, p.y)
+	var cur = get_cell(int(p.x), int(p.y))
 	if cur==null:
 		return outer_wall
 	

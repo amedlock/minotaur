@@ -3,7 +3,7 @@ extends Spatial;
 
 var loc = Vector2(0, 0)  # coordinates of player x and z
 var dir = 270;
-
+var glance  = 0
 
 # these are Item references, not nodes
 var left_hand ;
@@ -14,7 +14,6 @@ var inventory = {1:null, 2:null, 3:null, 4:null, 5:null, 6:null, 7:null, 8:null,
 
 var last_loc
 var last_dir
-var active_action = null
 
 
 # references to game, hud and dungeon nodes
@@ -26,13 +25,16 @@ var item_list
 
 var start_pos  # starting position for player
 
+var state = "normal" # player state: normal, combat, dead
+
+onready var combat = $Combat
 onready var hud = $Camera/HUD
 onready var audio = $Audio
-onready var glance = $Glance
-onready var combat = $Combat
-onready var turn = $Turn
-onready var move = $Move
 onready var show_map = $ShowMap
+
+
+# used for move, turn and glance
+onready var tween: Tween = $Tween
 
 
 func _ready():
@@ -43,10 +45,6 @@ func _ready():
 	item_list = dungeon.find_node("ItemList")	
 	map_view = game.find_node("MapView")
 	self.hide()
-	# connect all "action" nodes
-	for n in self.get_children():
-		if n.is_in_group("action"):
-			n.connect("action_complete", self, "action_complete")
 
 
 func enable():
@@ -60,27 +58,35 @@ func disable():
 	self.set_process_input( false )
 
 
+# updates direction based on dir and glance
 func set_dir( d ):
 	d = 0 if d==null else int(d)
-	d = wrapi(d,0,360)
-	self.rotation_degrees = Vector3( 0, d, 0 )
-	self.dir = d
+	self.dir = wrapi(d,0,360)
+	update_rotation()
 	hud.update_compass()
+
+
+func set_glance( g ):
+	self.glance = g
+	update_rotation()
+
+
+func update_rotation():
+	self.rotation_degrees = Vector3( 0, self.dir + glance, 0 )
 
 
 func coord_to_world(p):
 	return start_pos.translation + Vector3(p.x * 3, 0, -p.y * 3)
 
 
-func set_pos( cx, cy ):
-	loc.x = cx
-	loc.y = cy
+func set_pos( v: Vector2 ):
+	loc.x = v.x
+	loc.y = v.y
 	self.translation = coord_to_world(loc)
 
-	
 
 func reset_location():
-	set_pos( 0, 0 ); last_loc = null
+	set_pos( Vector2(0, 0) ); last_loc = null
 	set_dir( 270 ); last_dir = null
 
 
@@ -88,15 +94,12 @@ func over_exit() -> bool:
 	if dungeon.current_level.depth <1 : 
 		return false
 	var cell = dungeon.grid.get_cell(loc.x, loc.y)
-	return cell.item and cell.item.item.name=="ladder"
+	return cell.item and cell.item.item_info.name=="ladder"
 
-
-func is_fighting(): 
-	return active_action and active_action.get_name()=="Combat"
 
 
 func is_moving(): 
-	return active_action and active_action.get_name()=="Move"
+	return tween.is_active()
 
 
 func dead(): 
@@ -113,57 +116,120 @@ func dir_name() -> String:
 
 
 func _input(evt):
-	if active_action:
-		active_action.input(evt)
+	if not (evt is InputEventKey): 
 		return
-	if not (evt is InputEventKey and evt.pressed): 
+	if evt.echo or tween.is_active():
 		return
+	if not evt.pressed:
+		on_key_up(evt)
+	else:
+		on_key_down(evt)
+		
+
+func on_key_up(evt):
+	if evt.scancode in [KEY_Q, KEY_E]:
+		self.glance_at(0)
+
+
+func on_key_down(evt):
 	match evt.scancode:
-		KEY_Q: glance.start(90)
-		KEY_E: glance.start(-90)
-		KEY_TAB: show_map.start()
-		KEY_X: 
+		KEY_TAB: 
+			show_map.start()
+		KEY_X:
 			if over_exit():
 				dungeon.use_exit()
-		KEY_R: rest()
-		KEY_T: use_item()
-		KEY_F5: reset_location()
-		KEY_F6: dungeon.go_next_level()
+		KEY_R: 
+			rest()
+		KEY_T: 
+			use_item()
+		KEY_F5: 
+			reset_location()
+		KEY_F6: 
+			dungeon.go_next_level()
 		KEY_F7: 
 			self.health = 1; 
 			self.mind = 1
-		KEY_SPACE: open_door()
-		KEY_W: move.forward()
-		KEY_S: move.backward()
-		KEY_A: turn.start( 90 )
-		KEY_D: turn.start( -90 )
-		KEY_F: self.attack()
-
-
-
-func _process(delta):
-	if active_action:
-		active_action.process(delta)
-
-
-func action_complete( kind ):
-	active_action = null
-	match kind:
-		"Move":
-			dungeon.grid.get_cell(loc.x, loc.y).on_enter(game.player)
-			close_doors()
-			check_for_monster()
-		"Turn": 
-			check_for_monster()
-		"Glance": 
-			check_for_monster()
-		"die": 
-			if dead() and not cheat_death(): 
-				game.game_over()
-		"win": 
-			needs_rest = true
-	hud.update()
+		KEY_SPACE: 
+			open_door()
+		KEY_Q:
+			self.glance_at(90)
+		KEY_E: 
+			self.glance_at(-90)
+		KEY_W: 
+			move_forward()
+		KEY_S:
+			if state=="combat":
+				combat.player_retreat()
+			else:
+				move_backward()
+		KEY_A: 
+			turn(90)
+		KEY_D: 
+			turn(-90)
+		KEY_F: 
+			self.attack()
+		_:
+			return
+	check_for_monster()
 	
+
+func turn( amt ):
+	tween.interpolate_method(self, "set_dir", self.dir, self.dir+amt, 0.75)
+	tween.start()
+	yield(tween, "tween_completed")
+	
+func glance_at( amt ):
+	amt = clamp(amt, -90, 90)
+	tween.interpolate_method(self, "set_glance", glance, amt, 0.5)
+	tween.start()
+	yield(tween, "tween_completed")
+	self.glance = amt
+
+
+func move_forward():
+	var wall = wall_ahead()
+	if wall and wall.is_blocked():
+		return
+	var cell = cell_ahead()
+	if not cell:
+		return
+	if cell.enemy:
+		start_combat(cell)
+		return
+	last_loc = self.loc
+	last_dir = self.dir
+	var dest = self.loc + self.face_vector()
+	tween.interpolate_method(self, "set_pos", self.loc, dest, 0.5)
+	tween.start()
+	yield(tween, "tween_all_completed")
+	cell.on_enter(self)
+	hud.update()
+	check_for_monster()
+	
+
+
+func move_backward():
+	var wall = wall_behind()
+	if wall and wall.is_blocked():
+		return
+	var cell = cell_behind()
+	if not cell:
+		return
+	if cell.enemy:
+		turn(180)
+		start_combat(cell)
+		return
+	last_loc = self.loc
+	last_dir = self.dir
+	var dest = self.loc - self.face_vector()
+	tween.interpolate_method(self, "set_pos", self.loc, dest, 0.5)
+	tween.start()
+	yield(tween, "tween_all_completed")
+	cell.on_enter(self)
+	hud.update()
+	check_for_monster()
+	
+
 
 
 func close_doors():
@@ -177,14 +243,13 @@ func cheat_death():
 		hud.update_pack()
 		health = health_max
 		mind = mind_max
-		active_action = null
 		reset_location()
 		return true
 	return false
 
 
 func set_item_at_feet(item):
-	if is_moving(): 
+	if is_moving():
 		return null
 	grid.set_item( loc.x, loc.y , item)
 
@@ -193,7 +258,7 @@ func item_at_feet():
 	if is_moving(): 
 		return null
 	var item_node = grid.get_cell( loc.x, loc.y ).item
-	return item_node.item if item_node else null
+	return item_node.item_info if item_node else null
 
 
 func has_key_for(item):
@@ -219,20 +284,24 @@ func open_container(item):
 
 
 # can the item be used/consumed?
-func take_item( item ):
-	if item:
-		if item.kind=="container" and open_container(item):
-			return true
-		match item.kind:
-			"treasure": win()
-			"money": 	
-				gold += item.stat1
-			"quiver": 	arrows += 6
-			"food":		food += 6
-			_: return false
-		set_item_at_feet(null)
-		return true
-	return false
+func take_item( item ) -> bool:
+	if not item:
+		return false
+	match item.kind:
+		"ladder": return false
+		"container":
+			return open_container(item)
+		"treasure": 
+			self.win()
+			self.disable()
+		"money": 	
+			gold += item.stat1
+		"quiver": 	arrows += 6
+		"food":		food += 6
+		_: return false
+	set_item_at_feet(null)
+	return true
+
 
 var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
 
@@ -240,47 +309,25 @@ var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
 var magic_sound = preload("res://data/sounds/magic.wav")
 
 
+func use(item):
+	if item.name in ["potion", "small_potion"]:
+		return true
+
+func wear(item):
+	if item.name in ["ring", "breastplate", "helmet"]:
+		return true
+
+
 func use_item():
 	if not right_hand:
 		return
 	var at_feet = item_at_feet()
-	if right_hand.name=="small_potion":
-		if right_hand.power in [1,3]:
-			health = health_max
-		if right_hand.power in [2,3]:
-			mind = mind_max
-		play_sound(magic_sound)
-		right_hand = null
-	elif right_hand.name=="potion":
-		if right_hand.power in [1,3]:
-			health_max += 10
-		if right_hand.power in [2,3]:
-			mind_max += 5
-		play_sound(magic_sound)
+	if self.use(right_hand) or self.wear(right_hand):
 		right_hand = null
 	elif right_hand.name=="tome": # does nothing right now :/
 		if right_hand.power==1: pass
 		if right_hand.power==2: pass
 		if right_hand.power==3: pass
-	elif right_hand.name=="key":
-		if at_feet and at_feet.can_open_with(right_hand):
-			open_container(at_feet)
-	elif right_hand.name=="ring":  # make armor items actually wearable and not just used
-		if right_hand.power in [1,3]:
-			m_armor += 5
-		elif right_hand.power in [2,3]:
-			m_armor += 5
-		right_hand = null
-	elif right_hand.name=="ring":
-		if right_hand.power in [1,3]:
-			m_armor += 5
-		elif right_hand.power in [2,3]:
-			m_armor += 7
-		right_hand = null
-	elif right_hand.name in [ "helmet", "breastplate" ]: 
-		armor = max( armor, right_hand.stat1 )
-		m_armor = max( m_armor, right_hand.stat2 )
-		right_hand= null
 	hud.update_pack()
 	hud.update_stats()
 
@@ -297,13 +344,13 @@ func open_door():
 		w.activate()
 
 
-func enter_gate(kind:String):
-	var cell = grid.get_cell(loc.x, loc.y)
-	if cell.gate:
+func enter_gate(cell):
+	if cell and cell.gate:
 		audio.stream = load("res://data/sounds/magic.wav")
 		audio.play()
 		dungeon.load_gate_level(cell.gate)
 		cell.set_gate(null)
+		self.needs_rest = true
 
 
 func can_see( wall ):
@@ -324,20 +371,6 @@ func face_vector():
 	assert(false)
 
 
-func cell_ahead():
-	var p = loc + face_vector()
-	return dungeon.grid.get_cell(p.x, p.y)
-
-func cell_behind():
-	var p = loc + (-face_vector())
-	return dungeon.grid.get_cell(p.x, p.y)
-
-func wall_ahead():
-	return dungeon.grid.get_wall(loc, coord_ahead() )
-
-func wall_behind():
-	return dungeon.grid.get_wall(loc, coord_behind() )
-
 func coord_ahead() -> Vector2: 
 	return loc + face_vector() 
 	
@@ -353,27 +386,91 @@ func coord_left() -> Vector2:
 	return loc + Vector2( -f.y, f.x )
 
 
-func start_combat( pos: Vector2 ) -> bool:
+func cell_ahead():
+	var p = loc + face_vector()
+	return dungeon.grid.get_cell(p.x, p.y)
+
+func cell_behind():
+	var p = loc + (-face_vector())
+	return dungeon.grid.get_cell(p.x, p.y)
+
+func cell_left():
+	var p = coord_left()
+	return dungeon.grid.get_cell(p.x, p.y)
+
+func cell_right():
+	var p = coord_right()
+	return dungeon.grid.get_cell(p.x, p.y)
+
+func wall_ahead():
+	return dungeon.grid.get_wall(loc, coord_ahead() )
+
+func wall_behind():
+	return dungeon.grid.get_wall(loc, coord_behind() )
+
+
+
+func start_combat( cell ) -> bool:
+	if not (cell and cell.enemy):
+		return false
+	if state!="normal":
+		return false
+	var pos = cell.grid_pos();
 	var wall = dungeon.grid.get_wall(loc, pos)
 	if wall and wall.is_blocked():
 		return false
-	var cell = dungeon.grid.get_cell(pos.x ,pos.y)
-	if cell and cell.enemy:
-		var ang = int(-rad2deg( (pos - loc).angle_to(face_vector()) ))
-		assert( ang in [90, 0, -90])
-		combat.fight(cell.enemy, ang)
-		return true
-	return false
+	state = "combat"
+	var ang = int(-rad2deg( (pos - loc).angle_to(face_vector()) ))
+	assert( ang in [90, 0, -90])
+	if ang!=0:
+		turn(ang)
+	
+	combat.start(cell)
+	return true
 
 
+func end_combat(outcome,enemy):
+	state = "normal"
+	match outcome:
+		"won": 
+			killed(enemy)
+			needs_rest = true
+		"lost": 
+			if dead() and not cheat_death(): 
+				game.game_over()
+	hud.update()
+
+func retreat():
+	if last_loc==null: return false
+	set_pos( last_loc ); last_loc = null
+	set_dir( last_dir ); last_dir = null
+	self.hud.update()
+	return true
+
+
+# attack
+func attack():
+	if state=="combat":
+		combat.player_attack()
+	else:
+		var cell_ahead = cell_ahead()
+		if cell_ahead==null or cell_ahead.enemy==null:
+			return
+		var wall = wall_ahead()
+		if can_see(wall):
+			start_combat( cell_ahead )
+			combat.player_attack()
+			
+
+# start combat if monster is nearby
 func check_for_monster():
-	if start_combat(coord_ahead()):
+	if start_combat(cell_ahead()):
 		return
-	if (randi() % 7)<4: 
+	if rand_range(0,99) < 30: 
 		return
-	if start_combat(coord_left()):
+	if start_combat(cell_left()):
 		return
-	if start_combat(coord_right()):
+	if start_combat(cell_right()):
 		return
 
 	
@@ -381,46 +478,37 @@ func win():
 	game.show_map()
 	audio.stream = load("res://data/sounds/win2.wav")
 	audio.play()
+	self.state = "won"
 
-func attack():
-	if is_fighting():
-		self.attacking = true 
-		return
-	elif active_action!=null:
-		return
-	var cell_ahead = cell_ahead()
-	if cell_ahead==null or cell_ahead.enemy==null:
-		return
-	var wall = wall_ahead()
-	if can_see(wall):
-		combat.fight( cell_ahead.enemy, 0 )
+
 
 func rest():
 	if food<1 or (not needs_rest): return
 	needs_rest = false
-	health_max += (war_exp / 2)
+	health_max += int(war_exp / 2)
 	war_exp = war_exp % 2
-	mind_max += (mind_exp / 2)
+	mind_max += int(mind_exp / 2)
 	mind_exp = mind_exp % 2
 	var health_gain = food * 3
 	var mind_gain = food * 2	
 	health = min( health+health_gain, health_max )
 	mind = min( mind + mind_gain, mind_max )
-	food -= 1	
+	food -= 1
 	hud.update_stats()
 
 
 
 func killed ( enemy ):
 	if enemy.monster.kind=="war":
-		war_exp += enemy.monster.power
+		war_exp += int(enemy.monster.power)
 	elif enemy.monster.kind=="magic":
-		mind_exp += enemy.monster.power
+		mind_exp += int(enemy.monster.power)
 	elif enemy.monster.kind=="both":
-		war_exp += enemy.monster.power 
-		mind_exp += enemy.monster.power 
+		war_exp += int(enemy.monster.power)
+		mind_exp += int(enemy.monster.power)
 	if enemy.monster.name=="minotaur": 
 		dungeon.add_final( enemy.x, enemy.y )
+
 
 func percentage( val , pct ):
 	return (val * ( 100 - pct ) ) / 100;
@@ -430,6 +518,7 @@ func vary_amount( a, pct ):
 	var p = pct[ randi() % pct.size() ]
 	return a * ( 100 - p ) / 100
 
+
 func apply_armor( dmg, arm ): 
 	var prot = percentage( dmg, arm )
 	if prot==0: return dmg
@@ -438,9 +527,7 @@ func apply_armor( dmg, arm ):
 
 
 func damage( enemy, weap ):
-	var maxdmg = enemy.monster.max_damage
-	if skill==1: maxdmg /= 4
-	elif skill==2: maxdmg /=2
+	var maxdmg = int(enemy.monster.power * 8) * skill
 	var dmg = vary_amount( maxdmg, [ 5, 10, 15, 20 ] )
 	var war_amt = apply_armor( dmg, war_armor() )
 	var mind_amt = apply_armor( dmg, mind_armor() )
@@ -449,43 +536,14 @@ func damage( enemy, weap ):
 	elif weap.name in ["fireball", "lightning", "small_fireball"]:
 		mind = max( self.mind - mind_amt, 0 )
 
-func mark_last():
-	last_loc = loc
-	last_dir = dir
-
-func retreat():
-	if last_loc==null: return false
-	set_pos( last_loc.x, last_loc.y ); last_loc = null
-	set_dir( last_dir ); last_dir = null
-	active_action = null
-	self.hud.update()
-	return true
 
 
-
-func transport_player(cell):
-	match cell.gate.kind:
-		"green":
-			health_max += int(health_max / 2)
-			mind_max = int(mind_max/2)	
-		"blue":
-			health_max = int(health_max/2)
-			mind_max += int(mind_max / 2)	
-	mind = min( mind, mind_max )
-	health = min(health,health_max)
-	needs_rest = true
-	dungeon.enter_gate(cell.gate)
-	reset_location()
-	hud.update_stats()
-
-var food = 6;
-var arrows = 12;
-var health = 20
-var health_max = 20
-var mind = 8
-var mind_max = 8
-var armor = 0       # this is base war armor
-var m_armor = 0     # this is base magic armor
+var food : int = 6;
+var arrows : int = 12;
+var health : int = 20
+var health_max : int = 20
+var mind : int = 8
+var mind_max : int = 8
 var gold = 0
 
 var war_exp = 0  # experience since last rest
@@ -495,25 +553,27 @@ var needs_rest = false # can we rest and recover health/mind?
 
 var resurrected = false # has this player cheated death
 
-var attacking = false  # is the player attempting to attack?
-
 var skill = 1
+
+
+# these are Items from item_list.gd
+var helmet = null
+var breastplate = null
+var ring = null 
 
 
 func init( difficulty ):
 	self.skill = difficulty
 	gold = 0
-	armor = 0
-	m_armor = 0
 	war_exp = 0
 	mind_exp = 0
 	food = 6
-	arrows = 6 + 6 * (4 - skill)
-	resurrected = false	
+	arrows = 6 + 5 * (5 - skill) # 11-25 arrows
+	resurrected = false
 	for n in range(10): inventory[n] = null;
 	right_hand = dungeon.item_list.find_item("bow")
-	if skill==1: left_hand = dungeon.item_list.find_item("small_shield")
 	if skill==1: 
+		left_hand = dungeon.item_list.find_item("small_shield")
 		health = 18
 		mind = 12
 	elif skill==2: 
@@ -531,16 +591,18 @@ func init( difficulty ):
 
 
 func war_armor(): 
-	var result = armor 
-	if left_hand and left_hand.name in ["shield", "small_shield"]:
+	var result = 0
+	if helmet : 
+		result += helmet.stat1
+	if breastplate: 
+		result += breastplate
+	if left_hand and left_hand in ["shield", "small_shield"]:
 		result += left_hand.stat1
 	return result
 
 func mind_armor(): 
-	var result = m_armor 
-	if left_hand and left_hand.name in ["shield", "small_shield"]:
-		result += left_hand.stat2
-	return result
+	return ring.stat1 if ring else 0
+
 
 func war_dmg():
 	if right_hand and right_hand.kind=="weapon":

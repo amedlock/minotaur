@@ -7,6 +7,7 @@
 [node name="enemy" type="Sprite3D"]
 material_override = ExtResource( 1 )
 pixel_size = 0.04
+billboard = 2
 texture = ExtResource( 2 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 32, 32 )

@@ -248,12 +248,6 @@ func add_exit():
 
 func add_enemies(info, coords):
 	var num = randint(6) + 12
-	var powers = []
-	match info.depth:
-		[1,2]: powers = [1]
-		[3,4]: powers = [1,2]
-		[5,6]: powers = [2,3]
-		_: powers= [3]
 	var kinds  = []
 	if info.war_monsters:
 		kinds.append("war")
@@ -261,7 +255,17 @@ func add_enemies(info, coords):
 		kinds.append("magic")
 	if info.special_monsters:
 		kinds.append("both")
-	var allowed = enemy_list.find_enemies( kinds, powers, info.depth )
+	var power = []
+	match info.depth:
+		1: power = [1,2]
+		2: power = [1,2,3]
+		3: power = [2,3,4]
+		4: power = [3,4,5]
+		5: power = [4,5,6]
+		6: power = [5,6]
+		7: power = [6,7]
+		_: power = [6,7,8]
+	var allowed = enemy_list.find_enemies( info, power )
 	for _n in range(num):
 		if allowed.empty() or coords.empty(): return
 		var c = take_random( coords )

@@ -1,6 +1,7 @@
 extends Node
 
-signal action_complete
+const Enemy_Delay = 2
+const Player_Delay = 1
 
 var player
 var dungeon
@@ -8,29 +9,28 @@ var game
 var item_list
 var audio
 
-var player_anim
-var player_weapon
-var player_item # actual item being fired
+onready var player_anim = $PlayerAnim
+onready var player_timer = $PlayerTimer
+onready var player_weapon = $PlayerWeapon
+onready var player_audio = $PlayerWeapon/Audio
 
-var enemy_anim 
-var enemy_weapon
-var enemy_audio
+
+onready var enemy_anim = $EnemyAnim
+onready var enemy_timer = $EnemyTimer
+onready var enemy_weapon = $EnemyWeapon
+onready var enemy_audio = $EnemyWeapon/Audio
+
+
+var attack = false
+var retreat = false
+
+
+var player_item # player item being fired
 var enemy_item # enemy item being fired
 
-var loc 
-
-var turn_time = 0.5
-var timer = 0.0  # can player attack yet?
-var timer2 = 0.0 # can enemy attack yet
-var enemy = null # which enemy
-var retreating = false # retreat from combat?
-
-
-# for turning the player to face enemy
-var turning = null
-var facing = null 
-var delta  = null
-
+var cell : Spatial = null
+var enemy : Spatial = null # which enemy, set in start(...)
+var monster 
 
 func _ready():
 	player = get_parent()
@@ -45,68 +45,59 @@ func _ready():
 	player_anim = player.find_node("PlayerAnim")
 	player_anim.connect("animation_finished", self, "player_fire_done" )
 	player_weapon = player.find_node("PlayerWeapon")
+	enemy_weapon.visible = false
+	player_weapon.visible = false
 
 
 
-func fight( _enemy, dir_change ):
-	if _enemy==null: 
+func start(e_cell):
+	self.cell = e_cell
+	self.enemy = e_cell.enemy
+	monster = enemy.monster
+	enemy_weapon.visible = false
+	player_weapon.visible = false
+	attack = false
+	retreat = false
+	self.set_process(true)
+
+
+func player_attack():
+	self.attack = (not retreat)
+
+
+func player_retreat():
+	self.attack = false
+	self.retreat = true
+	self.player_timer.start(Enemy_Delay)
+
+
+func enemy_turn():
+	if player.dead() or enemy.dead():
 		return
-	timer = 0
-	timer2 = 0	
-	player.active_action = self
-	retreating = false
-	self.enemy = _enemy
-	if dir_change!=0:
-		self.facing = player.dir
-		self.delta = dir_change
-		turning = true
-		timer = 0
+	enemy_fire()
+	enemy_timer.start(Enemy_Delay)
 
 
-func input(evt):
-	if not (evt is InputEventKey and evt.pressed):
-		return
-	if self.timer>0:
-		return
-	if retreating==false and evt.scancode==KEY_S:
-		self.retreating = true
-		self.timer = 0.75 
-	if evt.scancode==KEY_F:
-		self.timer = 0.75
-		player.attacking = true
 
-	
-func process(dt):
-	if turning:
-		turn_player(dt)
-		return 
-	timer = max( self.timer - dt, 0 )
-	timer2 = max( self.timer2 - dt, 0 )			
-	if player_anim.is_playing() or enemy_anim.is_playing():
+func _process(_dt):
+	if player.state!="combat":
 		return
 	if player.dead():
-		emit_signal("action_complete", "die")
-	if enemy.dead():
+		self.set_process(false)
+		player.end_combat("lost", enemy)
+	elif enemy.dead():
 		enemy.die()
-		player.killed( enemy )
-		emit_signal("action_complete", "win")
-	if timer==0 and player.attacking and player.has_weapon():
-		player_fire()
-	if timer2==0:
-		enemy_fire()
-	elif retreating:
-		player.retreat()
-
-
-func turn_player(dt):
-	timer = timer+dt
-	var ratio = min(timer, turn_time) / turn_time;
-	player.set_dir( facing + (delta * ratio) )
-	if timer >= turn_time: 
-		timer = 0
-		turning = false
-		delta = null
-		facing = null
+		self.set_process(false)
+		player.end_combat("won", enemy)
+	elif retreat:
+		if player_timer.is_stopped():
+			player.retreat()
+	if enemy_timer.is_stopped() and not enemy_anim.is_playing():
+		enemy_turn()
+	if player_timer.is_stopped() and not player_anim.is_playing():
+		if attack:
+			player_fire()
+	
 
 
 var broken
@@ -116,25 +107,26 @@ func get_sound_fx( item ):
 	if item==null: return null;
 	if item.name in ["fireball", "small_fireball"]:
 		return load("res://data/sounds/fireball.wav")
-	if item.name in ["small_wand", "large_wand", "scroll", "book"]:
+	if item.name in ["wand", "staff", "scroll", "book"]:
 		return load("res://data/sounds/lightning.wav")
 	return null
 
 
 func player_fire():
-	if player.dead() or enemy.dead(): return 
-	if player_anim.is_playing(): return
+	attack = false
 	player_item = player.right_hand
-	if player_item==null or player_item.kind!="weapon": return
+	if player_item==null or player_item.kind!="weapon": 
+		return
 	broken = false
+	var missile = item_list.missile_for(player_item)
 	var fx = get_sound_fx( player_item )
 	if player_item.name in ["bow", "crossbow"]:
 		if player.arrows<1: return
-		player_weapon.set_region_rect( player_item.missile )	
+		player_weapon.set_region_rect( missile )	
 		player.arrows -= 1
 		broken = (randi() % 30) == 29
-	elif player_item.name in ["scroll", "book", "small_wand", "large_wand"]:
-		player_weapon.set_region_rect( player_item.missile )
+	elif player_item.name in ["scroll", "book", "wand", "staff"]:
+		player_weapon.set_region_rect( missile )
 		broken = (randi() % 25) == 24
 	else:
 		player.right_hand = null
@@ -150,7 +142,7 @@ func player_fire():
 	if fx!=null:
 		audio.stream = fx
 		audio.play()
-	timer = 1.5	
+	player_timer.start(Player_Delay)
 	
 
 func player_fire_done(_which):
@@ -159,10 +151,9 @@ func player_fire_done(_which):
 	enemy.damage( player_item ) 	# remove it
 	if broken: player_item = null
 	player_item = null
-	player.attacking = false
 
 
-func choose_enemy_weapon(monster):
+func choose_enemy_weapon():
 	var items = []
 	if monster.kind in ["magic", "both"]:
 		items = item_list.find_items("weapon", ["lighting", "fireball", "small_fireball"], [1,2] )
@@ -171,13 +162,10 @@ func choose_enemy_weapon(monster):
 	assert( items.size() > 0 )
 	return items[ randi() % items.size() ]
 
-				
+
 func enemy_fire():
-	enemy_item = choose_enemy_weapon(enemy.monster)
-	if player.dead() or enemy.dead(): return
-	if enemy_anim.is_playing(): return
-	timer2 = 2
-	enemy_weapon.set_region_rect( enemy_item.img ) #Rect2( Vector2(0,0), Vector2(32,32)))
+	enemy_item = choose_enemy_weapon()
+	enemy_weapon.set_region_rect( enemy_item.img )
 	enemy_weapon.set_modulate( enemy_item.color )
 	var fx = get_sound_fx( enemy_item )
 	if fx!=null:
@@ -187,14 +175,15 @@ func enemy_fire():
 		enemy_anim.play("SpinFire")
 	else:
 		enemy_anim.play("Fire")
+	enemy_timer.start(Enemy_Delay)
+		
 
 func enemy_fire_done(_which):
 	enemy_audio.stream = load("res://data/sounds/hit.wav")
 	enemy_audio.play()
 	player.damage( enemy, enemy_item )
 	player.hud.update_stats()
-	if retreating and not player.dead():
-		player.retreat()
+
 
 
 	

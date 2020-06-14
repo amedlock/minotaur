@@ -4,6 +4,7 @@
 flags_transparent = true
 flags_unshaded = true
 flags_do_not_receive_shadows = true
-params_diffuse_mode = 4
+params_diffuse_mode = 2
 params_specular_mode = 4
 params_billboard_mode = 2
+albedo_color = Color( 0.709804, 0.709804, 0.709804, 1 )

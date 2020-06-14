@@ -1,21 +1,20 @@
 extends Node2D;
 
-var hp_disp ;
-var mind_disp ;
-var armor_disp;
-var damage_disp;
-var gold_disp;
+onready var hp_disp = $Stats/HPDisplay;
+onready var mind_disp =$Stats/MindDisplay;
+onready var armor_disp = $Stats/ArmorDisplay;
+onready var damage_disp = $Stats/DamageDisplay;
+onready var gold_disp = $Stats/GoldDisplay;
 
-var food_disp;
-var level_disp;
-var arrow_disp;
-var left_hand_sprite ;
-var at_feet_sprite;
-var right_hand_sprite;
+onready var food_disp = $Hands/FoodDisplay;
+onready var level_disp = $Hands/LevelDisplay;
+onready var arrow_disp = $Hands/ArrowsDisplay;
+onready var left_hand_sprite  = $Hands/background/Left/Sprite;
+onready var at_feet_sprite = $Hands/background/Feet/Sprite;
+onready var right_hand_sprite = $Hands/background/Right/Sprite;
 
-var pack ;
-var hands
-var stats
+onready var pack = $Pack;
+
 var player ;
 var item_list;
 var dungeon ;
@@ -29,23 +28,22 @@ func _ready():
 	player = game.find_node("Player")
 	dungeon = game.find_node("Dungeon")
 	item_list = dungeon.find_node("ItemList")
-	stats = find_node("Stats")
-	hands = find_node("Hands")
-	hp_disp = stats.find_node("HPDisplay" )
-	mind_disp = stats.find_node("MindDisplay" )
-	armor_disp = stats.find_node("ArmorDisplay" )
-	damage_disp = stats.find_node("DamageDisplay" )
-	gold_disp = stats.find_node("GoldDisplay")
-	level_disp = hands.find_node("LevelDisplay" )
-	arrow_disp = hands.find_node("ArrowsDisplay")
-	food_disp = hands.find_node("FoodDisplay")	
-	left_hand_sprite = hands.find_node("Left").find_node("Sprite")
-	right_hand_sprite = hands.find_node("Right").find_node("Sprite")
-	at_feet_sprite = hands.find_node("Feet").find_node("Sprite")
-	pack = find_node( "Pack" )
-	hands.get_node("background/Feet").connect("input_event", self, "clicked_feet" )
-	hands.get_node("background/Left").connect("input_event", self, "clicked_left" )
-	hands.get_node("background/Right").connect("input_event", self, "clicked_right" )
+	$Hands/background/Feet.connect("input_event", self, "clicked_feet")
+	$Hands/background/Left.connect("input_event", self, "clicked_left")
+	$Hands/background/Right.connect("input_event", self, "clicked_right")
+
+#	hands = find_node("Hands")
+#	hp_disp = stats.find_node("HPDisplay" )
+#	mind_disp = stats.find_node("MindDisplay" )
+#	armor_disp = stats.find_node("ArmorDisplay" )
+#	damage_disp = stats.find_node("DamageDisplay" )
+#	gold_disp = stats.find_node("GoldDisplay")
+#	level_disp = hands.find_node("LevelDisplay" )
+#	arrow_disp = hands.find_node("ArrowsDisplay")
+#	food_disp = hands.find_node("FoodDisplay")	
+#	left_hand_sprite = hands.find_node("Left").find_node("Sprite")
+#	right_hand_sprite = hands.find_node("Right").find_node("Sprite")
+#	at_feet_sprite = hands.find_node("Feet").find_node("Sprite")
 	
 
 
@@ -127,7 +125,6 @@ func pack_slot_clicked( slot , button ):
 	elif button==BUTTON_LEFT:
 		player.inventory[ slot ] = player.left_hand
 		player.left_hand = cur
-	player.attacking = false
 	update_stats()
 	update_pack()
 
@@ -139,9 +136,7 @@ func clicked_feet( _viewport, event, _shape_idx ):
 	if player.is_moving(): 
 		return 
 	var item = player.item_at_feet()
-	if not item:
-		return
-	if item.name=="ladder":
+	if item and item.name=="ladder":
 		return
 	if item and player.take_item(item):
 		pass
@@ -153,7 +148,6 @@ func clicked_feet( _viewport, event, _shape_idx ):
 		var right_item = player.right_hand
 		player.right_hand = item
 		player.set_item_at_feet(right_item)
-	player.attacking = false
 	update()
 
 
@@ -169,7 +163,6 @@ func clicked_right( _viewport, event, _shape_idx ):
 		var left = player.left_hand
 		player.left_hand = player.right_hand
 		player.right_hand = left
-		player.attacking = false
 	update()
 
 
@@ -185,7 +178,6 @@ func clicked_left( _viewport, event, _shape_idx ):
 		var left = player.left_hand
 		player.left_hand = player.right_hand
 		player.right_hand = left
-		player.attacking = false
 	update()
 	
 

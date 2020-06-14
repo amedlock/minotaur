@@ -15,8 +15,8 @@ func _ready():
 	show_menu()
 
 func start_game( skill ):
-	var sn = randi() # seed num
-	dungeon.init_maze( skill, sn )
+	var seednum = randi() # seed num
+	dungeon.init_maze( skill, seednum )
 	player.init( skill )
 	show_game()
 	help.show()

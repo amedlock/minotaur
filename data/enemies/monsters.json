@@ -1,0 +1,40 @@
+{
+  "war":{
+    "skeleton":["skeleton", 1, 5, 12, 3, 6],
+    "ghoul":["ghoul", 1, 5, 14, 4, 7],
+    "skeleton_shield":["skeleton_shield", 1, 6, 15, 4, 8],
+    "spider":["spider", 2, 8, 12, 4, 9],
+		"giant_frog":["giant_frog", 2, 8, 14, 5, 10],
+		"dwarf":["dwarf", 3, 10, 18, 9, 15],
+		"snake":["snake", 4, 12, 17, 9, 13],
+    "dwarf_shield":["dwarf_shield", 4, 15, 20, 12, 17],
+    "scorpion":["scorpion", 5, 17, 22, 9, 14],    
+		"giant":["giant", 6, 20, 30, 10, 20],
+		"giant_shield":["giant_shield", 6, 20, 35, 10, 25],
+		"knight":["knight", 7, 25, 40, 15, 30]
+  },
+  "magic":{
+    "hornet":["hornet", 1, 5, 10, 4, 8],
+    "wasp":["wasp", 1, 5, 9, 5, 9],
+    "cloaked_skel":["cloaked_skel", 2, 6, 12, 4, 10],    
+    "wraith":["wraith", 3, 8, 14, 6, 12],
+    "wraith_shield":["wraith_shield", 4, 9, 15, 8, 14],
+    "drake":["drake", 5, 12, 17, 14, 20],
+    "enchantress":["enchantress", 6, 15, 25, 20, 30],
+    "wizard":["wizard", 7, 25, 35, 35, 60],
+    "lich":["lich", 7, 35, 50, 40, 70]
+  },
+  "both":{
+    "green_dragon":["green_dragon", 4, 20, 30, 18, 35],
+    "dwarf_warrior":["dwarf_warrior", 5, 25, 30, 20, 28],
+    "red_dragon":["red_dragon", 6, 30, 50, 25, 45],
+    "vampire":["vampire", 7, 40, 75, 50, 80]
+  },
+  "special":{
+    "undead_dragon":["undead_dragon", 8, 50, 85, 40, 60],
+    "evil_eye":["evil_eye", 8, 40, 60, 55, 75],
+    "golem":["golem", 8, 70, 90, 50, 70],
+    "minotaur":["minotaur", 6, 50, 70, 40, 65]
+  }
+}
+

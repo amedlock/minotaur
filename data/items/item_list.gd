@@ -27,8 +27,8 @@ var icons = {
 	"fireball" : Rect2( Vector2(0,4), ImageSize ),
 	"small_lightning" : Rect2( Vector2(1,4), ImageSize ),
 	"small_fireball" : Rect2( Vector2(2,4), ImageSize ),
-	"small_wand" : Rect2( Vector2(4,4), ImageSize ),
-	"large_wand" : Rect2( Vector2(6,4), ImageSize ),
+	"wand" : Rect2( Vector2(4,4), ImageSize ),
+	"staff" : Rect2( Vector2(6,4), ImageSize ),
 	"ring" : Rect2( Vector2(1,5), ImageSize ),
 	"small_bag" : Rect2( Vector2(3,5), ImageSize ),
 	"bag" : Rect2( Vector2(5,5), ImageSize ),
@@ -46,6 +46,43 @@ var icons = {
 }
 
 
+
+class Item:
+	var name = ""
+	var kind = ""
+	var img: Rect2
+	var color = null
+	var power = 0
+	var needs_key
+	var stat1  
+	var stat2
+	var offset = Vector3(0,0,0)   # Vector3 offset for items in maze
+
+	func json() -> Dictionary:
+		var fields = ['name', 'kind', 'img', 'color', 'power', 
+					  'offset', 'stat1', 'stat2']
+		var result = {}
+		for key in fields:
+			var val = self.get(key)
+			if val:
+				result[key] = val
+		return result
+
+	func can_open_with( other ):
+		if other==null or self.kind!="container":
+			return false
+		if not self.needs_key:
+			return true
+		return other.name=="key" and other.power >= self.power
+
+
+
+var treasure 	# final treasure
+
+
+
+# A list of every item in the game
+var items = []
 
 
 
@@ -67,56 +104,13 @@ const Green = Color( 0x00b300ff )
 const Yellow = Color( 0xf4fc58ff )
 
 
-class Item:
-	var name = ""
-	var kind ;
-	var img ;
-	var color
-	var power
-	var needs_key
-	var missile; # bows, scrolls, etc	
-	var stat1  
-	var stat2
-	var offset = Vector3(0,0,0)   # Vector3 offset for items in maze
-
-	func json() -> Dictionary:
-		var fields = ['name', 'kind', 'img', 'color', 'power', 
-					  'offset', 'stat1', 'stat2', 'missile']
-		var result = {}
-		for key in fields:
-			var val = self.get(key)
-			if val:
-				result[key] = val
-		return result
-
-	func can_open_with( other ):
-		if other==null or self.kind!="container":
-			return false
-		if not self.needs_key:
-			return true
-		return other.name=="key" and other.power >= self.power
-
-
-
-var exit  	 	# exit ladder
-var treasure 	# final treasure
-
-
-# A list of every item in the game
-var items = []
-
 func define_item( item_type, icon_name, power, col, stat1, stat2 ):
 	var it = Item.new()
 	it.kind = item_type
 	it.name = icon_name
 	it.img = icons[icon_name]
 	it.needs_key = icon_name in ["box", "pack", "chest" ]
-	if icon_name in ["bow", "crossbow"]:
-		it.missile = icons["arrow"]
-	if icon_name in ["large_wand", "book"]:
-		it.missile = icons["small_fireball"]
-	elif icon_name in ["small_wand", "scroll"]:
-		it.missile = icons["small_lightning"]
+	
 	it.color = col
 	it.power = power
 	it.stat1 = stat1
@@ -125,8 +119,19 @@ func define_item( item_type, icon_name, power, col, stat1, stat2 ):
 	return it
 
 
+func missile_for(item):
+	match item.name:
+		"bow", "crossbow":
+			return icons["arrow"]
+		"staff", "book":
+			return icons["small_fireball"]
+		"wand", "scroll":
+			return icons["small_lightning"]
+		_:
+			return icons[item.name]
 
-func add_containers( ):
+	
+func add_containers():
 	var container_colors = [Tan,Orange,Blue]
 	for index in range(3):
 		var power = index+1
@@ -138,13 +143,13 @@ func add_containers( ):
 		define_item( "container", "chest", power, col, 0, 0 )
 
 func add_potions():
-	var potion_colors = [Blue, Pink, Purple ]
-	for index in range(3):
-		var power = index + 1
-		var col = potion_colors[index]
-		define_item( "item", "small_potion", power, col, 0, 0 )
-		define_item( "item", "potion", power, col, 0, 0 )
-		
+	define_item("War Dmg Potion", "small_potion", 1, Orange, 7, 2)
+	define_item("Magic Dmg Potion", "small_potion", 1, Yellow, 5, 2)
+	define_item("Health Potion", "potion", 1, Green, 5, 0)
+	define_item("Mind Potion", "potion", 1, Blue, 5, 0)
+	define_item("Renew Potion", "potion", 1, Purple, 5, 0)
+
+
 func add_money():		
 	var money_colors = [Orange, Grey, Yellow, White ]
 	for index in range(4):
@@ -192,12 +197,16 @@ func add_weapons():
 	add_war_weapons("armor", "shield", [8, 16, 24, 32, 40, 48] )
 	add_magic_weapons("weapon", "scroll", [3,5,9,13,17,21] )
 	add_magic_weapons("weapon", "book", [11,15,19,23,27,65] )
-	add_magic_weapons("weapon", "small_wand", [9,13,17,23,33,43] )
-	add_magic_weapons("weapon", "large_wand", [17,21,29,45,55,65] )
+	add_magic_weapons("weapon", "wand", [9,13,17,23,33,43] )
+	add_magic_weapons("weapon", "staff", [17,21,29,45,55,65] )
 	add_magic_weapons("weapon", "small_fireball", [5,9,13,23,33,39] )
 	add_magic_weapons("weapon", "fireball", [13,17,25,33,39,48] )
 	add_war_weapons( "armor", "helmet", [5,10,15,20,25,30] )
 	add_war_weapons( "armor", "breastplate", [10,17,24,31,38,45] )
+	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
+	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
+	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
+	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
 
 
 
@@ -221,8 +230,7 @@ func add_all_items():
 	add_money()
 	add_weapons()
 	treasure = define_item("treasure", "treasure", 1, Yellow, 0, 0 )
-	exit = define_item("exit", "ladder", 1, Tan, 0, 0)
-	#exit.offset = Vector3( 0, 0.45, 0 )
+	define_item("exit", "ladder", 1, Tan, 0, 0)
 
 
 var dungeon

@@ -2,26 +2,33 @@ extends Sprite3D;
 
 var monster;  # reference to the Enemy object from enemy_list.gd  monsters[]
 var health;  # hit points
-var mind ;   # magic hit points
-# var drops; # item dropped when killed, from item_list.gd  items[]
+var mind    # magic hit points
 
-var x      # grid coordinates
-var y 
 
-var smoke = preload("smoke.tscn")
+#var drops 
 
-var cell
+const smoke = preload("smoke.tscn")
+
+var cell : Spatial
 
 func _ready():
 	cell = self.get_parent()
 
 
-func configure(xp, yp, enemy):
+func roll_die(sides: int, num : int) -> int:
+	var total = 0
+	var m = sides+1
+	for n in num:
+		total += (randi() % m)
+	return total
+
+
+func configure(enemy, dungeon):
+	var skill = dungeon.skill_level
+	var depth = dungeon.current_level.depth
 	monster = enemy
-	x = xp
-	y = yp
-	health = enemy.health
-	mind = enemy.mind
+	health = rand_range(enemy.min_hp, enemy.max_hp)
+	mind = rand_range(enemy.min_mind, enemy.max_mind)
 	self.name = enemy.name
 	set_region_rect( monster.img )
 	self.translation.y = 0.9

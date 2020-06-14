@@ -46,13 +46,17 @@ func configure(xp, yp):
 	self.y = yp
 
 
+func grid_pos() -> Vector2:
+	return Vector2(x,y)
+
+
 func get_index() -> int:
 	return x + (y * grid.width)
 
 
 func on_enter(player):
 	if self.gate:
-		player.enter_gate(self.gate.kind)
+		player.enter_gate(self)
 
 
 var green_gate = preload("res://data/gate/green_gate.tscn")
@@ -159,7 +163,8 @@ func set_enemy(e):
 	if e!=null:
 		var node = enemy_prefab.instance()
 		self.add_child( node )
-		node.configure(x, y, e)
+		node.owner = self		
+		node.configure(e, grid.dungeon)
 		node.translation = Vector3( 1.5, 0.9, -1.5 )
 		self.enemy = node
 

@@ -76,6 +76,7 @@ func init_maze( skill, seednum ):
 	player.map_view.update_map(current_level.depth)
 
 
+
 func enable():
 	self.show()
 	
@@ -139,7 +140,7 @@ func load_gate_level(gate):
 	current_level.magic_monsters = gate.kind != 'war'
 	current_level.war_monsters = gate.kind != 'magic'
 	grid.reset_all()
-	builder.build_maze()
+	builder.build_maze(current_level)
 
 
 func world_pos( cx, cy ):

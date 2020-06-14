@@ -1,22 +1,20 @@
 extends Sprite3D
 
-var item ; # reference to the Item instance in item_list
-var color ;
+var item_info ; # reference to the Item instance in item_list
 
 
 var magic_sound = preload("res://data/sounds/magic.wav")
 
 
 func debug_info():
-	return item.name
+	return item_info.name
 
 
-func configure(item_info):
-	self.item = item_info
-	color = item_info.color
-	set_region_rect( item_info.img )
-	if item_info.color!=null:
-		set_modulate( item_info.color )
+func configure(info):
+	self.item_info = info
+	set_region_rect( info.img )
+	if info.color!=null:
+		set_modulate( info.color )
 	else:
 		set_modulate( Color( 0xFFFFFFFF ) )
 
