@@ -23,9 +23,9 @@ func roll_die(sides: int, num : int) -> int:
 	return total
 
 
-func configure(enemy, dungeon):
-	var skill = dungeon.skill_level
-	var depth = dungeon.current_level.depth
+func configure(enemy, _dungeon):
+	#var skill = dungeon.skill_level
+	#var depth = dungeon.current_level.depth
 	monster = enemy
 	health = rand_range(enemy.min_hp, enemy.max_hp)
 	mind = rand_range(enemy.min_mind, enemy.max_mind)

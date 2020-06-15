@@ -2,7 +2,6 @@ extends Sprite3D
 
 var item_info ; # reference to the Item instance in item_list
 
-
 var magic_sound = preload("res://data/sounds/magic.wav")
 
 

@@ -7,7 +7,7 @@ var icons = {
 	"small_potion" : Rect2( Vector2(0,0), ImageSize ),
 	"arrow" : Rect2( Vector2(1,0), ImageSize ),
 	"potion" : Rect2( Vector2(2,0), ImageSize ),
-	"ladder" : Rect2( Vector2(3,0), ImageSize ) ,	
+	"ladder" : Rect2( Vector2(3,0), ImageSize ) ,
 	"small_shield" : Rect2( Vector2(4,0), ImageSize ),
 	"breastplate" : Rect2( Vector2(6,0), ImageSize ),
 	"bomb" :Rect2( Vector2(0,1), ImageSize ),
@@ -38,8 +38,8 @@ var icons = {
 	"chest" : Rect2( Vector2(2,6), ImageSize ),
 	"lamp" : Rect2( Vector2(0,6), ImageSize ),
 	"horn" : Rect2( Vector2(1,7), ImageSize ),
-	"coins" : Rect2( Vector2(3,7), ImageSize ),	
-	"necklace" : Rect2( Vector2(4,7), ImageSize ),	
+	"coins" : Rect2( Vector2(3,7), ImageSize ),
+	"necklace" : Rect2( Vector2(4,7), ImageSize ),
 	"chalice" : Rect2( Vector2(5,7), ImageSize ),
 	"crown" : Rect2( Vector2(6,7), ImageSize ),
 	"treasure" : Rect2( Vector2(7,7), ImageSize )
@@ -53,13 +53,14 @@ class Item:
 	var img: Rect2
 	var color = null
 	var power = 0
+	var uses = 10  # min uses before item could break
 	var needs_key
-	var stat1  
+	var stat1
 	var stat2
 	var offset = Vector3(0,0,0)   # Vector3 offset for items in maze
 
 	func json() -> Dictionary:
-		var fields = ['name', 'kind', 'img', 'color', 'power', 
+		var fields = ['name', 'kind', 'img', 'color', 'power',
 					  'offset', 'stat1', 'stat2']
 		var result = {}
 		for key in fields:
@@ -80,10 +81,8 @@ class Item:
 var treasure 	# final treasure
 
 
-
 # A list of every item in the game
 var items = []
-
 
 
 # levels of war monsters
@@ -110,7 +109,7 @@ func define_item( item_type, icon_name, power, col, stat1, stat2 ):
 	it.name = icon_name
 	it.img = icons[icon_name]
 	it.needs_key = icon_name in ["box", "pack", "chest" ]
-	
+
 	it.color = col
 	it.power = power
 	it.stat1 = stat1
@@ -130,7 +129,7 @@ func missile_for(item):
 		_:
 			return icons[item.name]
 
-	
+
 func add_containers():
 	var container_colors = [Tan,Orange,Blue]
 	for index in range(3):
@@ -150,10 +149,10 @@ func add_potions():
 	define_item("Renew Potion", "potion", 1, Purple, 5, 0)
 
 
-func add_money():		
+func add_money():
 	var money_colors = [Orange, Grey, Yellow, White ]
 	for index in range(4):
-		var col = money_colors[index]		
+		var col = money_colors[index]
 		var power = index + 1
 		define_item( "money", "coins", power, col,  power * 10, 0 )
 		define_item( "money", "ring", power, col,  power * 15, 0 )
@@ -163,7 +162,7 @@ func add_money():
 		define_item( "money", "chalice", power, col,  power * 40, 0 )
 		define_item( "money", "crown", power, col,  power * 50, 0 )
 
-						
+
 var war_colors = [ Tan, Orange, Blue, Grey, Yellow, White ]
 
 func add_war_weapons( kind, name, dmg ):
@@ -221,7 +220,7 @@ func add_all_items():
 	define_item( "item", "amulet", 3, Purple,  0, 0 )
 	#define_item( "item", "small_ring", 1, Blue,  0, 0 )
 	#define_item( "item", "small_ring", 2, Pink,  0, 0 )
-	#define_item( "item", "small_ring", 3, Purple,  0, 0 )	
+	#define_item( "item", "small_ring", 3, Purple,  0, 0 )
 	#define_item( "item", "tome", 3, Blue,  1, 0 )
 	#define_item( "item", "tome", 3, Pink,  2, 0 )
 	#define_item( "item", "tome", 3, Purple,  3, 0 )
@@ -243,28 +242,28 @@ func _ready():
 		r.position *= 32
 		icons[name] =  r
 	add_all_items()
-	
+
 
 func find_items(kind, names, powers):
 	var result = []
 	for x in items:
-		if x.kind!=kind: 
+		if x.kind!=kind:
 			continue
 		if names==null or (x.name in names):
 			if powers==null or (x.power in powers ):
 				result.append( x )
 	return result
-	
+
 func all_items( kind, name ):
 	var result = []
 	for n in items:
-		if n.name==name and n.kind==kind: 
+		if n.name==name and n.kind==kind:
 			result.append( n )
 	return result
 
 func find_item( name ):
 	for n in items:
-		if n.name==name: 
+		if n.name==name:
 			return n
 	return null;
 
@@ -295,18 +294,18 @@ func choose_random_item( kind, names, powers ):
 
 
 func get_special_loot( _item, _depth ):
-	return  choose_random_item( "armor", null, null )
+	return choose_random_item( "armor", null, null )
 
 
 # this needs to take depth into account
 func get_container_loot(item, depth):
-	var result  
+	var result
 	if item.needs_key:
 		result = get_special_loot(item,depth)
 		if result!=null: return result
 	var levels = [1]
-	if depth <=5: levels = [depth-1,depth]					
-	if randi() % 20<2: 
+	if depth <=5: levels = [depth-1,depth]
+	if randi() % 20<2:
 		result = choose_random_item("item", ["potion", "ring"], levels )
 		if result:
 			return result
@@ -316,5 +315,5 @@ func get_container_loot(item, depth):
 		for nl in level_money[n]:
 			names.append( nl )
 	return choose_random_item( "money", names, levels )
-	
+
 

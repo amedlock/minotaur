@@ -148,8 +148,9 @@ func load_enemies():
 		print( "On line: %d: %s" % [data.error_line, data.error_string] )
 	else:
 		for kind in data.result:
+			if kind=="comment": continue
 			var mlist = data.result[kind]
-			for name in mlist:
+			for name in mlist:				
 				var stats = mlist[name]
 				add_enemy(kind, name, stats[0], int(stats[1]),
 						  int(stats[2]), int(stats[3]),
