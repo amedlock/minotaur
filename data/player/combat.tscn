@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://data/player/combat.gd" type="Script" id=1]
 [ext_resource path="res://data/items/item_sheet.png" type="Texture" id=2]
+[ext_resource path="res://data/sounds/hit.wav" type="AudioStream" id=3]
 
 [sub_resource type="Animation" id=1]
 resource_name = "Fire"
@@ -40,6 +41,20 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ -28.3319 ]
+}
+tracks/3/type = "audio"
+tracks/3/path = NodePath("PlayerWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 3 )
+} ],
+"times": PoolRealArray( 0.7 )
 }
 
 [sub_resource type="Animation" id=2]
@@ -80,6 +95,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [ 0.0, -90.0, -180.0, -270.0, -335.0 ]
 }
+tracks/3/type = "audio"
+tracks/3/path = NodePath("PlayerWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 3 )
+} ],
+"times": PoolRealArray( 0.7 )
+}
 
 [sub_resource type="Animation" id=3]
 resource_name = "Fire"
@@ -118,6 +147,20 @@ tracks/2/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ 42.7473 ]
+}
+tracks/3/type = "audio"
+tracks/3/path = NodePath("EnemyWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 3 )
+} ],
+"times": PoolRealArray( 0.7 )
 }
 
 [sub_resource type="Animation" id=4]
@@ -158,6 +201,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [ 0.0, 135.0, 360.0 ]
 }
+tracks/3/type = "audio"
+tracks/3/path = NodePath("EnemyWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 3 )
+} ],
+"times": PoolRealArray( 0.7 )
+}
 
 [node name="Combat" type="Node"]
 script = ExtResource( 1 )
@@ -170,22 +227,23 @@ anims/SpinFire = SubResource( 2 )
 one_shot = true
 
 [node name="PlayerWeapon" type="Sprite" parent="."]
-position = Vector2( 1360, 585 )
-rotation = -0.494485
+position = Vector2( 680, 400 )
+rotation = -5.84685
 scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 2 )
 region_enabled = true
 region_rect = Rect2( 224, 96, 32, 32 )
 
 [node name="Audio" type="AudioStreamPlayer" parent="PlayerWeapon"]
+stream = ExtResource( 3 )
 
 [node name="EnemyAnim" type="AnimationPlayer" parent="."]
 anims/Fire = SubResource( 3 )
 anims/SpinFire = SubResource( 4 )
 
 [node name="EnemyWeapon" type="Sprite" parent="."]
-position = Vector2( 680, 400 )
-rotation = 0.746082
+position = Vector2( 1284.22, 727.875 )
+rotation = 5.62869
 scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 2 )
 flip_h = true
@@ -193,6 +251,7 @@ region_enabled = true
 region_rect = Rect2( 32, 0, 32, 32 )
 
 [node name="Audio" type="AudioStreamPlayer" parent="EnemyWeapon"]
+stream = ExtResource( 3 )
 
 [node name="EnemyTimer" type="Timer" parent="."]
 one_shot = true

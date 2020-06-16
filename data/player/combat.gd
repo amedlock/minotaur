@@ -153,8 +153,6 @@ func player_fire():
 
 
 func player_fire_done(_which):
-	audio.stream = preload("res://data/sounds/hit.wav")
-	audio.play()
 	enemy.damage( player_item ) 	# remove it
 	if broken:
 		player_item = null
@@ -186,8 +184,6 @@ func enemy_fire():
 		
 
 func enemy_fire_done(_which):
-	enemy_audio.stream = load("res://data/sounds/hit.wav")
-	enemy_audio.play()
 	player.damage( monster, enemy_item )
 	player.hud.update_stats()
 

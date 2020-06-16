@@ -1,7 +1,5 @@
 # Tarmin remake 
 
-* BUG: damage should register/death on weapon impact .. slight delay
-
 ? add usable stat boost books
 ? original mazes option (4 different 5x5 maps were combined each level, 16 total + mirroring )
 ? slowly reveal map
@@ -10,12 +8,12 @@
 ! bombs!
 ! BUG: monster always attacks first
 + Remove coloring for most items, add more items
-- Revamp internal map layout
-+ show ladder at feet when over exit
 
 
 
-
+X Revamp internal map layout
+X show ladder at feet when over exit
+X BUG: damage should register/death on weapon impact .. slight delay
 X correct monster weapons/damage/hp - work in progress
 X retro graphics option
 X win page
