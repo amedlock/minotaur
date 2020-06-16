@@ -4,7 +4,6 @@ var monster;  # reference to the Enemy object from enemy_list.gd  monsters[]
 var health;  # hit points
 var mind    # magic hit points
 
-
 #var drops 
 
 const smoke = preload("smoke.tscn")
@@ -41,11 +40,12 @@ func damage( item ):
 
 func dead():
 	return mind < 1 or health<1
-	
+
+
 func die():
 	if not self.visible: 
 		return # this might get called twice
-	self.hide()	
+	self.hide()
 	var sm = smoke.instance()
 	sm.translation =  self.translation - Vector3( 0, 0.6, 0 ) 
 	cell.add_child( sm )

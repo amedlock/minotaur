@@ -12,6 +12,7 @@ var action = null 		 # input action
 var left_hand ;
 var right_hand ;
 
+
 # item references for each slot
 var inventory = {1:null, 2:null, 3:null,
 				 4:null, 5:null, 6:null,
@@ -547,6 +548,7 @@ func killed ( enemy ):
 		dungeon.add_final( enemy.x, enemy.y )
 
 
+
 func percentage( val , pct ):
 	return (val * ( 100 - pct ) ) / 100;
 
@@ -563,8 +565,8 @@ func apply_armor( dmg, arm ):
 	return max( dmg-prot, 0 )
 
 
-func damage( enemy, weap ):
-	var maxdmg = int(enemy.monster.power * 8) * skill
+func damage( monster, weap ):
+	var maxdmg = int(monster.power * 8) * skill
 	var dmg = vary_amount( maxdmg, [ 5, 10, 15, 20 ] )
 	var war_amt = apply_armor( dmg, war_armor() )
 	var mind_amt = apply_armor( dmg, mind_armor() )

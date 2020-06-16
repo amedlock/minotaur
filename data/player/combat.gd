@@ -188,7 +188,7 @@ func enemy_fire():
 func enemy_fire_done(_which):
 	enemy_audio.stream = load("res://data/sounds/hit.wav")
 	enemy_audio.play()
-	player.damage( enemy, enemy_item )
+	player.damage( monster, enemy_item )
 	player.hud.update_stats()
 
 
