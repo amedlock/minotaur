@@ -10,6 +10,7 @@
 [ext_resource path="res://data/enemies/enemy_list.gd" type="Script" id=8]
 [ext_resource path="res://data/player/player.gd" type="Script" id=9]
 [ext_resource path="res://data/player/combat.tscn" type="PackedScene" id=10]
+[ext_resource path="res://data/debug/debug.tscn" type="PackedScene" id=11]
 [ext_resource path="res://data/player/viewmap.gd" type="Script" id=14]
 [ext_resource path="res://data/game_env.tres" type="Environment" id=16]
 [ext_resource path="res://data/hud/hud.tscn" type="PackedScene" id=17]
@@ -19,7 +20,6 @@
 [ext_resource path="res://data/map/mapview.tscn" type="PackedScene" id=21]
 [ext_resource path="res://data/help/help.png" type="Texture" id=22]
 [ext_resource path="res://data/dungeon/grid.gd" type="Script" id=23]
-[ext_resource path="res://data/debug/debug.gd" type="Script" id=24]
 
 [node name="Game" type="Spatial"]
 script = ExtResource( 1 )
@@ -78,22 +78,7 @@ current = true
 
 [node name="HUD" parent="Dungeon/Player/Camera" instance=ExtResource( 17 )]
 
-[node name="debug" type="Label" parent="Dungeon/Player/Camera"]
-margin_left = 24.0
-margin_top = 19.0
-margin_right = 489.0
-margin_bottom = 302.0
-rect_scale = Vector2( 1.75, 1.75 )
-text = "sdfsdf
-sdfsdf
-sdfsdf
-
-sdfdsf
-sfddsf"
-script = ExtResource( 24 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="debug" parent="Dungeon/Player/Camera" instance=ExtResource( 11 )]
 
 [node name="Audio" type="AudioStreamPlayer" parent="Dungeon/Player"]
 stream = ExtResource( 18 )

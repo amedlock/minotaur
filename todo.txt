@@ -1,12 +1,16 @@
 # Tarmin remake 
 
-? add usable stat boost books
+? add usable stat boost potions
 ? original mazes option (4 different 5x5 maps were combined each level, 16 total + mirroring )
 ? slowly reveal map
 ? hidden doors
 ? enemy doors
 ! bombs!
 ! BUG: monster always attacks first
+
+
++ more doors in maze
++ stat rework of items
 + Remove coloring for most items, add more items
 
 

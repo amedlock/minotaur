@@ -529,8 +529,10 @@ func rest():
 	var mind_gain = (magic_exp / 5)
 	war_exp = war_exp % 4
 	magic_exp = magic_exp % 5
-	health = int( min( health + hp_gain, health_max ))
-	mind = int( min( mind + mind_gain, mind_max ))
+	health_max += hp_gain;
+	mind_max += mind_gain
+	health = int( min( health + (health_max * 2 / 3), health_max ))
+	mind = int( min( mind + (mind_max * 2 / 3), mind_max ))
 	food -= 1
 	hud.update_stats()
 
