@@ -204,8 +204,8 @@ func wall_post_for_wall( cx, cy, walldir ):
 	return  maze_origin + wall_post_offset[ which ] + Vector3( cx*3, 0, cy*3 )
 
 
-func add_final( x, y ):
-	grid.set_item(x, y, item_list.treasure)
+func add_final( enemy ):
+	grid.set_item(enemy.cell.x, enemy.cell.y, item_list.treasure)
 
 
 

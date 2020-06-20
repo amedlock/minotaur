@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://data/game.gd" type="Script" id=1]
 [ext_resource path="res://data/dungeon/dungeon.gd" type="Script" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://data/player/player.gd" type="Script" id=9]
 [ext_resource path="res://data/player/combat.tscn" type="PackedScene" id=10]
 [ext_resource path="res://data/debug/debug.tscn" type="PackedScene" id=11]
+[ext_resource path="res://data/player/normal.gd" type="Script" id=12]
 [ext_resource path="res://data/player/viewmap.gd" type="Script" id=14]
 [ext_resource path="res://data/game_env.tres" type="Environment" id=16]
 [ext_resource path="res://data/hud/hud.tscn" type="PackedScene" id=17]
@@ -59,6 +60,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.25, 16.5 )
 [node name="Player" type="Spatial" parent="Dungeon"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21 )
 script = ExtResource( 9 )
+
+[node name="PlayerState" type="Node" parent="Dungeon/Player"]
+script = ExtResource( 12 )
 
 [node name="Tween" type="Tween" parent="Dungeon/Player"]
 

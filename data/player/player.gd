@@ -19,6 +19,34 @@ var inventory = {1:null, 2:null, 3:null,
 				 7:null, 8:null, 9:null }
 
 
+
+var food : int = 6;
+var arrows : int = 12;
+var health : int = 20
+var health_max : int = 20
+var mind : int = 8
+var mind_max : int = 8
+var gold = 0
+
+var war_exp = 0  # experience since last rest
+var magic_exp = 0  # experience since last rest
+
+var needs_rest = false # can we rest and recover health/mind?
+
+var resurrected = false # has this player cheated death
+
+var skill = 1
+
+
+# these are Items from item_list.gd
+var helmet = null
+var breastplate = null
+var ring = null
+
+var potion = null  		# active potion?
+var potion_turns = 0	# how many turns before it vanishes
+
+
 # saved for retreat during combat
 var last_loc
 var last_dir
@@ -228,6 +256,7 @@ func move_forward():
 	cell.on_enter(self)
 	hud.update()
 	check_for_monster()
+	reduce_potion_turn()
 
 
 
@@ -251,7 +280,7 @@ func move_backward():
 	cell.on_enter(self)
 	hud.update()
 	check_for_monster()
-
+	reduce_potion_turn()
 
 
 
@@ -485,6 +514,7 @@ func retreat():
 	set_pos( last_loc ); last_loc = null
 	set_dir( last_dir ); last_dir = null
 	self.hud.update()
+	self.in_combat = false
 	return true
 
 
@@ -497,6 +527,7 @@ func attack():
 		in_combat = true
 		start_combat( cell_ahead )
 		action = "attack"
+		reduce_potion_turn()
 
 
 # start combat if monster is nearby
@@ -517,6 +548,11 @@ func win():
 	audio.play()
 	self.state = "won"
 
+
+func reduce_potion_turn():
+	potion_turns = max( potion_turns-1, 0 )
+	if potion_turns<1:
+		potion = null
 
 
 func rest():
@@ -547,7 +583,9 @@ func killed ( enemy ):
 		war_exp += int(enemy.monster.power)
 		magic_exp += int(enemy.monster.power)
 	if enemy.monster.name=="minotaur":
-		dungeon.add_final( enemy.x, enemy.y )
+		dungeon.add_final( enemy )
+	if self.dead():
+		dungeon.game.game_over()
 
 
 
@@ -577,30 +615,6 @@ func damage( monster, weap ):
 	elif weap.name in ["fireball", "lightning", "small_fireball"]:
 		mind = int( max( self.mind - mind_amt, 0 ))
 
-
-
-var food : int = 6;
-var arrows : int = 12;
-var health : int = 20
-var health_max : int = 20
-var mind : int = 8
-var mind_max : int = 8
-var gold = 0
-
-var war_exp = 0  # experience since last rest
-var magic_exp = 0  # experience since last rest
-
-var needs_rest = false # can we rest and recover health/mind?
-
-var resurrected = false # has this player cheated death
-
-var skill = 1
-
-
-# these are Items from item_list.gd
-var helmet = null
-var breastplate = null
-var ring = null
 
 
 func init( difficulty ):
@@ -642,7 +656,12 @@ func war_armor():
 	return result
 
 func mind_armor():
-	return ring.stat1 if ring else 0
+	var result = 0
+	if ring:
+		result += ring.stat1
+	if potion:
+		result += potion.stat1
+	return result
 
 
 func war_dmg():

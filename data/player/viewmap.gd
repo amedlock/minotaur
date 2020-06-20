@@ -11,13 +11,10 @@ func _ready():
 
 func start():
 	game.show_map()
-	player.active_action = self
 
 	
-func input(evt):
+func _input(evt):
 	if evt is InputEventKey and evt.pressed==false and evt.scancode==KEY_TAB:
 		game.show_game()
 		emit_signal("action_complete", self.name)
 
-func process(_delta):
-	pass

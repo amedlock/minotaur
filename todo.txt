@@ -7,14 +7,19 @@
 ? enemy doors
 ! bombs!
 ! BUG: monster always attacks first
-
-
 + more doors in maze
 + stat rework of items
 + Remove coloring for most items, add more items
 
 
+glance bug: can walk sideways
+combat bug: player can fire too often
+combat bug: animations are skipped
+combat bug: can rest before combat is over (monster weapon still animating)
 
+
+
+X combat bug: After retreat monster keeps attacking
 X Revamp internal map layout
 X show ladder at feet when over exit
 X BUG: damage should register/death on weapon impact .. slight delay

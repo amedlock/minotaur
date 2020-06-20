@@ -386,12 +386,16 @@ func add_cell_corner( cx, cy ):
 	if c==null: 
 		return
 	var cw = maze_cell(cx-1,cy)
+	var cs = maze_cell(cx, cy -1)
 	var ne = false
 	var se = false
 	if c.north and not c.east:
 		ne = true
 	if c.north or (cw and cw.north):
 		ne = true
+	if cs:
+		if cs.north or cs.east:
+			se = true
 	if c.east:
 		ne = true
 		se = true
