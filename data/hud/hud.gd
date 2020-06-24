@@ -25,25 +25,12 @@ var pack_slots = ["Slot1", "Slot2", "Slot3", "Slot4", "Slot5",
 func _ready():
 	var game = get_tree().get_root().get_node("Game")
 	assert( game != null )
-	player = game.find_node("Player")
-	dungeon = game.find_node("Dungeon")
+	player = game.find_node("Player", true, false)
+	dungeon = game.find_node("Dungeon", true, false )
 	item_list = dungeon.find_node("ItemList")
 	$Hands/background/Feet.connect("input_event", self, "clicked_feet")
 	$Hands/background/Left.connect("input_event", self, "clicked_left")
 	$Hands/background/Right.connect("input_event", self, "clicked_right")
-
-#	hands = find_node("Hands")
-#	hp_disp = stats.find_node("HPDisplay" )
-#	mind_disp = stats.find_node("MindDisplay" )
-#	armor_disp = stats.find_node("ArmorDisplay" )
-#	damage_disp = stats.find_node("DamageDisplay" )
-#	gold_disp = stats.find_node("GoldDisplay")
-#	level_disp = hands.find_node("LevelDisplay" )
-#	arrow_disp = hands.find_node("ArrowsDisplay")
-#	food_disp = hands.find_node("FoodDisplay")	
-#	left_hand_sprite = hands.find_node("Left").find_node("Sprite")
-#	right_hand_sprite = hands.find_node("Right").find_node("Sprite")
-#	at_feet_sprite = hands.find_node("Feet").find_node("Sprite")
 	
 
 
@@ -158,7 +145,7 @@ func clicked_right( _viewport, event, _shape_idx ):
 	if !event.pressed: 
 		return;
 	if event.button_index == BUTTON_LEFT:
-		player.attack()
+		player.attack_ahead()
 	elif event.button_index == BUTTON_RIGHT:
 		var left = player.left_hand
 		player.left_hand = player.right_hand

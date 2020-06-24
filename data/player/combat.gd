@@ -1,8 +1,5 @@
 extends Node
 
-const Enemy_Delay = 2
-const Player_Delay = 1
-
 var player
 var dungeon
 var game
@@ -10,13 +7,11 @@ var item_list
 var audio
 
 onready var player_anim = $PlayerAnim
-onready var player_timer = $PlayerTimer
 onready var player_weapon = $PlayerWeapon
 onready var player_audio = $PlayerWeapon/Audio
 
 
 onready var enemy_anim = $EnemyAnim
-onready var enemy_timer = $EnemyTimer
 onready var enemy_weapon = $EnemyWeapon
 onready var enemy_audio = $EnemyWeapon/Audio
 
@@ -24,11 +19,18 @@ onready var enemy_audio = $EnemyWeapon/Audio
 var player_item # player item being fired
 var enemy_item # enemy item being fired
 
-var cell : Spatial = null
+var enemy_cell : Spatial = null
 var enemy : Spatial = null # which enemy, set in start(...)
-var monster 
+var monster
 
-var retreating = false # has player started a retreat
+var attacking = false
+var retreating = false
+
+const Enemy_Delay = 2
+const Player_Delay = 1
+
+var player_cooldown = 0
+var enemy_cooldown = 0
 
 
 func _ready():
@@ -49,61 +51,66 @@ func _ready():
 
 
 
-func start(e_cell):
-	self.cell = e_cell
+func init(e_cell):
+	self.enemy_cell = e_cell
 	self.enemy = e_cell.enemy
 	monster = enemy.monster
 	enemy_weapon.visible = false
 	player_weapon.visible = false
-	player.action = null
-	retreating = false
 
 
-func player_turn():
-	if enemy.dead():
+
+func input(evt):
+	if not (evt is InputEventKey):
 		return
-	if player_anim.is_playing():
-		return
-	match player.action:
-		"attack": 
-			player_fire()
-		"retreat":
-			player.action  = null
-			retreating = true
-			player_timer.start(Enemy_Delay)
+	if evt.pressed and (not evt.echo):
+		match evt.scancode:
+			KEY_F: 
+				attacking = not retreating
+			KEY_S:
+				retreating = true
+				attacking = false
+				player_cooldown += Player_Delay
+
+
+func player_turn(delta):
+	if player_cooldown>0:
+		player_cooldown = max(player_cooldown - delta,0)
+	if not player_anim.is_playing():
+		if player_cooldown<=0:
+			if retreating:
+				player.retreat()
+			elif attacking:
+				attacking = false
+				player_fire()
+				player_cooldown = Player_Delay			
+
+
+func enemy_turn(delta):
+	if enemy_cooldown>0:
+		enemy_cooldown = max(enemy_cooldown - delta,0)
+	if not enemy_anim.is_playing():
+		if enemy_cooldown <= 0:
+			enemy_fire()
+			enemy_cooldown = Enemy_Delay
+		
+		
+func animating():
+	return player_anim.is_playing() or enemy_anim.is_playing()
+
+func process(delta):
+	if not animating():
+		if player.is_dead():
+			player.end_combat("die", enemy_cell.enemy)
+			return
+		elif enemy.is_dead():
+			player.end_combat("win", enemy_cell.enemy)
+			return
+	player_turn(delta)
+	enemy_turn(delta)
 	
-
-func enemy_turn():
-	if player.dead():
-		return
-	if enemy_anim.is_playing():
-		return
-	enemy_fire()
-	enemy_timer.start(Enemy_Delay)
-
-
-
-# called by player.gd
-func next_turn():
-	if player.tween.is_active():
-		return
-	if player.dead():
-		player.end_combat("lost", enemy)
-		return
-	if enemy.dead():
-		enemy.die()
-		player.end_combat("won", enemy)
-		return
-
-	if enemy_timer.is_stopped():
-		enemy_turn()
 	
-	if player_timer.is_stopped():
-		if retreating:
-			player.retreat()
-		else:
-			player_turn()
-
+	
 
 var broken
 
@@ -118,9 +125,6 @@ func get_sound_fx( item ):
 
 
 func player_fire():
-	if not player_timer.is_stopped() or player_anim.is_playing():
-		return
-	player.action  = null
 	player_item = player.right_hand
 	if player_item==null or player_item.kind!="weapon": 
 		return
@@ -149,13 +153,12 @@ func player_fire():
 	if fx!=null:
 		audio.stream = fx
 		audio.play()
-	player_timer.start(Player_Delay)
 
 
 func player_fire_done(_which):
-	enemy.damage( player_item ) 	# remove it
+	enemy.damage( player_item )
 	if broken:
-		player_item = null
+		player_item = null # remove it
 
 
 func choose_enemy_weapon():
@@ -180,8 +183,7 @@ func enemy_fire():
 		enemy_anim.play("SpinFire")
 	else:
 		enemy_anim.play("Fire")
-	enemy_timer.start(Enemy_Delay)
-		
+
 
 func enemy_fire_done(_which):
 	player.damage( monster, enemy_item )

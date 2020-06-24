@@ -41,7 +41,7 @@ func _process(_delta):
 	var cell_ahead = player.cell_ahead()
 	var cell = grid.get_cell(loc.x, loc.y)
 	var info = [
-		"Position: %s" % str(coord),
+		"Position: %s, state: %s" % [ str(coord), player.player_state ],
 		"Cell: %s" % str(cell.debug_info()),
 		"World pos: %s" % [str(player.translation)],
 		"Facing: %s %s" % [str(player.dir), str(player.dir_name())],

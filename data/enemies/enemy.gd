@@ -38,7 +38,7 @@ func damage( item ):
 		self.health = max( self.health-item.stat1, 0 )
 		self.mind = max( self.mind-item.stat2, 0 )
 
-func dead():
+func is_dead():
 	return mind < 1 or health<1
 
 

@@ -44,18 +44,15 @@ var current_level : LevelInfo;
 var minotaur_appears = { 1: 3, 2:6, 3:10, 4:16 } # you can go deeper but minotaur appears here
 
 
-var player ;
+onready var player = $Player;
 onready var builder = $Builder;
-var hud ;
-var audio
+onready var hud = $Player/Camera/HUD
+onready var audio = $Player/Audio
 
 onready var grid = $Grid
 
 func _ready():
 	find_node("ceiling").show()
-	player = get_parent().find_node("Player")
-	audio = player.find_node("Audio")
-	hud = player.find_node("HUD")
 	self.translation = maze_origin
 	grid.configure(WIDTH,HEIGHT,CELL_SIZE)
 
@@ -70,8 +67,10 @@ func init_maze( skill, seednum ):
 	current_level = level_info[1]
 	grid.reset_all()
 	builder.build_maze(current_level)
-	hud.update_stats()
 	enable()
+	audio = player.find_node("Audio")
+	hud = player.find_node("HUD")	
+	hud.update_stats()	
 	player.reset_location()
 	player.map_view.update_map(current_level.depth)
 

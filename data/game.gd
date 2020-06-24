@@ -6,7 +6,7 @@ enum GameMode { Menu, Game, Map, GameOver, GameWon };
 var mode = GameMode.Menu
 
 onready var dungeon = $Dungeon
-onready var player = $Dungeon/Player
+var player : Spatial
 onready var menu = $MainMenu
 onready var map_view = $MapView
 onready var help = $Help
@@ -15,6 +15,7 @@ func _ready():
 	show_menu()
 
 func start_game( skill ):
+	player = dungeon.player
 	var seednum = randi() # seed num
 	dungeon.init_maze( skill, seednum )
 	player.init( skill )
@@ -28,7 +29,6 @@ func game_over():
 	mode = GameMode.GameOver
 			
 func  show_game():
-	player.enable()
 	dungeon.show()
 	menu.disable()
 	map_view.hide()
@@ -38,7 +38,6 @@ func  show_menu():
 	mode = GameMode.Menu
 	map_view.hide()
 	dungeon.hide()
-	player.disable()
 	menu.enable()	
 	
 func show_map():

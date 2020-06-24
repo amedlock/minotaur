@@ -3,9 +3,7 @@ extends Spatial;
 
 var loc = Vector2(0, 0)  # coordinates of player x and z
 var dir = 270;
-var glance = 0			 # if glancing, add this angle
-
-var action = null 		 # input action
+var glance_amt = 0			 # if glancing, add this angle
 
 
 # these are Item references, not nodes
@@ -61,16 +59,16 @@ var game
 var map_view
 var item_list
 
-onready var combat = $Combat
+onready var idle = $idle
+onready var move = $move
+onready var glance = $glance
+onready var combat = $combat
+onready var viewMap = $viewMap
 onready var hud = $Camera/HUD
 onready var audio = $Audio
-onready var show_map = $ShowMap
 
 
-var in_combat = false
-
-# used for move, turn and glance
-onready var tween: Tween = $Tween
+var player_state = "idle"
 
 
 func _ready():
@@ -82,18 +80,15 @@ func _ready():
 	map_view = game.find_node("MapView")
 	self.disable()
 
+	
 
 func enable():
 	self.show()
-	self.set_process_input( true )
-	self.set_process( true )
 	hud.update()
 
 
 func disable():
 	self.hide()
-	self.set_process_input( false )
-	self.set_process( false )
 
 
 # updates direction based on dir and glance
@@ -105,12 +100,12 @@ func set_dir( d ):
 
 
 func set_glance( g ):
-	self.glance = g
+	self.glance_amt = g
 	update_rotation()
 
 
 func update_rotation():
-	self.rotation_degrees = Vector3( 0, self.dir + glance, 0 )
+	self.rotation_degrees = Vector3( 0, self.dir + glance_amt, 0 )
 
 
 func coord_to_world(p):
@@ -129,7 +124,7 @@ func reset_location():
 
 
 func over_exit() -> bool:
-	if dungeon.current_level.depth <1 :
+	if dungeon.current_level.depth<1:
 		return false
 	var cell = dungeon.grid.get_cell(loc.x, loc.y)
 	return cell.item and cell.item.item_info.name=="ladder"
@@ -137,12 +132,11 @@ func over_exit() -> bool:
 
 
 func is_moving():
-	return tween.is_active()
+	return player_state=="move"
 
 
-func dead():
+func is_dead() -> bool:
 	return health<1 or mind<1
-
 
 
 func dir_name() -> String:
@@ -154,87 +148,53 @@ func dir_name() -> String:
 
 
 func _input(evt):
-	if tween.is_active():
-		return
-	if (evt is InputEventKey):
-		if evt.echo:
-			return
-		if not evt.pressed:
-			on_key_up(evt)
-		else:
-			on_key_down(evt)
+	match player_state:
+		"idle" : idle.input(evt)
+		"combat": combat.input(evt)
+		"glance": glance.input(evt)
+		"move": move.input(evt)
+		"viewMap": viewMap.input(evt)
+	if evt is InputEventKey:
+		debug_keys(evt)
 
 
-func on_key_up(evt):
-	if evt.scancode in [KEY_Q, KEY_E]:
-		self.glance_at(0)
-
-
-func on_key_down(evt):
-	if in_combat:
-		match evt.scancode:
-			KEY_F:
-				action = "attack"
-			KEY_S:
-				action = "retreat"
-		return
-
-	# non combat keys
-	match evt.scancode:
-		KEY_TAB:
-			show_map.start()
-		KEY_X:
-			if over_exit():
-				dungeon.use_exit()
-		KEY_R:
-			rest()
-		KEY_T:
-			use_item()
-		KEY_F5:
-			reset_location()
-		KEY_F6:
-			dungeon.go_next_level()
-		KEY_F7:
-			self.health = 1;
-			self.mind = 1
-		KEY_SPACE:
-			open_door()
-		KEY_Q:
-			self.glance_at(90)
-		KEY_E:
-			self.glance_at(-90)
-		KEY_W:
-			move_forward()
-		KEY_S:
-			move_backward()
-		KEY_A:
-			turn_to(90)
-		KEY_D:
-			turn_to(-90)
-		KEY_F:
-			self.attack()
-		_:
-			return
+func _process(delta):
+	match player_state:
+		"idle" : idle.process(delta)
+		"combat": combat.process(delta)
+		"glance": glance.process(delta)
+		"move": move.process(delta)
+		"viewMap": viewMap.process(delta)
 
 
 
-func _process(_delta):
-	if in_combat:
-		combat.next_turn()
+	
+func script_changed():
+	player_state.player = self
 
 
 
-func turn_to( amt: int ):
-	tween.interpolate_method(self, "set_dir", self.dir, self.dir+amt, 0.75)
-	tween.start()
+func use_exit():
+	if over_exit():
+		dungeon.use_exit()
 
 
-func glance_at( amt: int ):
-	amt = int( clamp(amt, -90, 90))
-	tween.interpolate_method(self, "set_glance", glance, amt, 0.5)
-	tween.start()
-	yield(tween, "tween_completed")
-	self.glance = amt
+func show_map():
+	pass
+
+
+func debug_keys(evt):
+	if evt is InputEventKey:
+		if evt.pressed and not evt.echo:
+			match evt.scancode:
+				KEY_F5:
+					reset_location()
+				KEY_F6:
+					dungeon.go_next_level()
+				KEY_F7:
+					self.health = 1;
+					self.mind = 1
+
 
 
 func move_forward():
@@ -249,14 +209,7 @@ func move_forward():
 		return
 	last_loc = self.loc
 	last_dir = self.dir
-	var dest = self.loc + self.face_vector()
-	tween.interpolate_method(self, "set_pos", self.loc, dest, 0.5)
-	tween.start()
-	yield(tween, "tween_all_completed")
-	cell.on_enter(self)
-	hud.update()
-	check_for_monster()
-	reduce_potion_turn()
+	move.start( cell )
 
 
 
@@ -268,20 +221,12 @@ func move_backward():
 	if not cell:
 		return
 	if cell.enemy:
-		turn_to(180)
-		start_combat(cell)
+		idle.turn_to(180)
+		#start_combat(cell)
 		return
 	last_loc = self.loc
 	last_dir = self.dir
-	var dest = self.loc - self.face_vector()
-	tween.interpolate_method(self, "set_pos", self.loc, dest, 0.5)
-	tween.start()
-	yield(tween, "tween_all_completed")
-	cell.on_enter(self)
-	hud.update()
-	check_for_monster()
-	reduce_potion_turn()
-
+	move.start( cell )
 
 
 func close_doors():
@@ -491,22 +436,25 @@ func start_combat( cell ) -> bool:
 	var ang = int(-rad2deg( (pos - loc).angle_to(face_vector()) ))
 	assert( ang in [90, 0, -90])
 	if ang!=0:
-		turn_to(ang)
-	combat.start(cell)
-	in_combat = true
+		idle.turn_to(ang)
+	self.player_state="combat"
+	combat.init(cell)
 	return true
 
 
 func end_combat(outcome,enemy):
-	in_combat = false
 	match outcome:
-		"won":
+		"win":
 			killed(enemy)
+			enemy.die()
 			needs_rest = true
-		"lost":
-			if dead() and not cheat_death():
-				game.game_over()
+			self.player_state="idle"
+		"die":
+			if is_dead() and not cheat_death():
+				player_state ="lost"
+		_: assert(false)
 	hud.update()
+	
 
 
 func retreat():
@@ -518,15 +466,16 @@ func retreat():
 	return true
 
 
-func attack():
-	var cell_ahead = cell_ahead()
-	if cell_ahead==null or cell_ahead.enemy==null:
+# tries to initiate combat ahead of player
+func attack_ahead():
+	combat.attacking = true
+	var ahead = cell_ahead()
+	if ahead==null or ahead.enemy==null:
 		return
 	var wall = wall_ahead()
 	if can_see(wall):
-		in_combat = true
-		start_combat( cell_ahead )
-		action = "attack"
+		self.player_state= "combat"
+		combat.init(ahead)
 		reduce_potion_turn()
 
 
@@ -534,7 +483,7 @@ func attack():
 func check_for_monster():
 	if start_combat(cell_ahead()):
 		return
-	if rand_range(0,99) < 30:
+	if rand_range(0,99) < 40:
 		return
 	if start_combat(cell_left()):
 		return
@@ -584,7 +533,7 @@ func killed ( enemy ):
 		magic_exp += int(enemy.monster.power)
 	if enemy.monster.name=="minotaur":
 		dungeon.add_final( enemy )
-	if self.dead():
+	if self.is_dead():
 		dungeon.game.game_over()
 
 

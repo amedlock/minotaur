@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://data/game.gd" type="Script" id=1]
 [ext_resource path="res://data/dungeon/dungeon.gd" type="Script" id=2]
@@ -9,10 +9,12 @@
 [ext_resource path="res://data/items/item_list.gd" type="Script" id=7]
 [ext_resource path="res://data/enemies/enemy_list.gd" type="Script" id=8]
 [ext_resource path="res://data/player/player.gd" type="Script" id=9]
-[ext_resource path="res://data/player/combat.tscn" type="PackedScene" id=10]
+[ext_resource path="res://data/items/item_sheet.png" type="Texture" id=10]
 [ext_resource path="res://data/debug/debug.tscn" type="PackedScene" id=11]
-[ext_resource path="res://data/player/normal.gd" type="Script" id=12]
-[ext_resource path="res://data/player/viewmap.gd" type="Script" id=14]
+[ext_resource path="res://data/player/idle.gd" type="Script" id=12]
+[ext_resource path="res://data/player/viewmap.gd" type="Script" id=13]
+[ext_resource path="res://data/player/glance.gd" type="Script" id=14]
+[ext_resource path="res://data/player/move.gd" type="Script" id=15]
 [ext_resource path="res://data/game_env.tres" type="Environment" id=16]
 [ext_resource path="res://data/hud/hud.tscn" type="PackedScene" id=17]
 [ext_resource path="res://data/sounds/hit.wav" type="AudioStream" id=18]
@@ -21,6 +23,219 @@
 [ext_resource path="res://data/map/mapview.tscn" type="PackedScene" id=21]
 [ext_resource path="res://data/help/help.png" type="Texture" id=22]
 [ext_resource path="res://data/dungeon/grid.gd" type="Script" id=23]
+[ext_resource path="res://data/player/combat.gd" type="Script" id=24]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Fire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("PlayerWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1360, 585 ), Vector2( 680, 400 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PlayerWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PlayerWeapon:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ -28.3319 ]
+}
+tracks/3/type = "audio"
+tracks/3/path = NodePath("PlayerWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 18 )
+} ],
+"times": PoolRealArray( 0.7 )
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "SpinFire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("PlayerWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1265, 703 ), Vector2( 680, 400 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PlayerWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.9 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PlayerWeapon:rotation_degrees")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.7, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, -90.0, -180.0, -270.0, -335.0, -367.044 ]
+}
+tracks/3/type = "audio"
+tracks/3/path = NodePath("PlayerWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 18 )
+} ],
+"times": PoolRealArray( 0.7 )
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "Fire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("EnemyWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 680, 400 ), Vector2( 1360, 585 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("EnemyWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("EnemyWeapon:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 42.7473 ]
+}
+tracks/3/type = "audio"
+tracks/3/path = NodePath("EnemyWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 18 )
+} ],
+"times": PoolRealArray( 0.7 )
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "SpinFire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("EnemyWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 680, 400 ), Vector2( 1360, 585 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("EnemyWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("EnemyWeapon:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 135.0, 360.0 ]
+}
+tracks/3/type = "audio"
+tracks/3/path = NodePath("EnemyWeapon/Audio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 18 )
+} ],
+"times": PoolRealArray( 0.7 )
+}
 
 [node name="Game" type="Spatial"]
 script = ExtResource( 1 )
@@ -61,15 +276,53 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.25, 16.5 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21 )
 script = ExtResource( 9 )
 
-[node name="PlayerState" type="Node" parent="Dungeon/Player"]
+[node name="idle" type="Node" parent="Dungeon/Player"]
 script = ExtResource( 12 )
 
-[node name="Tween" type="Tween" parent="Dungeon/Player"]
+[node name="move" type="Node" parent="Dungeon/Player"]
+script = ExtResource( 15 )
 
-[node name="Combat" parent="Dungeon/Player" instance=ExtResource( 10 )]
+[node name="combat" type="Node" parent="Dungeon/Player"]
+script = ExtResource( 24 )
 
-[node name="ShowMap" type="Node" parent="Dungeon/Player"]
+[node name="PlayerAnim" type="AnimationPlayer" parent="Dungeon/Player/combat"]
+anims/Fire = SubResource( 1 )
+anims/SpinFire = SubResource( 2 )
+
+[node name="PlayerWeapon" type="Sprite" parent="Dungeon/Player/combat"]
+position = Vector2( 680, 400 )
+rotation = -6.40613
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 10 )
+region_enabled = true
+region_rect = Rect2( 224, 96, 32, 32 )
+
+[node name="Audio" type="AudioStreamPlayer" parent="Dungeon/Player/combat/PlayerWeapon"]
+stream = ExtResource( 18 )
+
+[node name="EnemyAnim" type="AnimationPlayer" parent="Dungeon/Player/combat"]
+anims/Fire = SubResource( 3 )
+anims/SpinFire = SubResource( 4 )
+
+[node name="EnemyWeapon" type="Sprite" parent="Dungeon/Player/combat"]
+position = Vector2( 1360, 585 )
+rotation = 0.746081
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 10 )
+flip_h = true
+region_enabled = true
+region_rect = Rect2( 32, 0, 32, 32 )
+
+[node name="Audio" type="AudioStreamPlayer" parent="Dungeon/Player/combat/EnemyWeapon"]
+stream = ExtResource( 18 )
+
+[node name="glance" type="Node" parent="Dungeon/Player"]
 script = ExtResource( 14 )
+
+[node name="viewMap" type="Node" parent="Dungeon/Player"]
+script = ExtResource( 13 )
+
+[node name="Tween" type="Tween" parent="Dungeon/Player"]
 
 [node name="Light" type="OmniLight" parent="Dungeon/Player"]
 light_color = Color( 0.796875, 0.796875, 0.796875, 1 )

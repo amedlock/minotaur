@@ -61,7 +61,7 @@ func update():
 	var loc = player.loc
 	marker.visible = true
 	marker.position = tile_position(loc.x, loc.y)
-	if player.dead():
+	if player.is_dead():
 		marker.modulate = Color.gray
 		marker.region_rect = tombstone_tile
 		marker.rotation_degrees = 0

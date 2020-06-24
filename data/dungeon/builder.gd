@@ -240,7 +240,9 @@ func add_gates(info ):
 
 
 
-func add_exit():
+func add_exit(info):
+	if info.depth>99:
+		return
 	var exit_loc = [Vector2(3,4), Vector2(7,4), Vector2(4,3), Vector2(4,7) ]
 	var result : Vector2 = choose_random( exit_loc ) 
 	maze_cell(result.x, result.y).item = item_list.find_item("ladder")
@@ -458,7 +460,7 @@ func build_maze(level_info):
 	level_info.magic_monsters = monster_kind >=40
 	build_maze_prim()
 	add_more_doors()
-	add_exit()
+	add_exit(level_info)
 	add_gates(level_info)
 	var empty_cells = all_empty_cells()	
 	add_enemies(level_info, empty_cells)
