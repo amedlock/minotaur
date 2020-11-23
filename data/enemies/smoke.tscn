@@ -1,15 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://data/enemies/smoke.png" type="Texture" id=1]
 [ext_resource path="res://data/enemies/smoke.gd" type="Script" id=2]
 
-[sub_resource type="SpatialMaterial" id=1]
-flags_transparent = true
-params_specular_mode = 4
-params_billboard_mode = 2
-roughness = 0.0
-
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=1]
 length = 1.7
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:frame")
@@ -49,7 +43,6 @@ tracks/2/keys = {
 }
 
 [node name="Sprite3D" type="Sprite3D"]
-material_override = SubResource( 1 )
 offset = Vector2( 0, 16 )
 modulate = Color( 1, 1, 1, 0.345098 )
 opacity = 0.5
@@ -59,4 +52,4 @@ hframes = 3
 script = ExtResource( 2 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Puff = SubResource( 2 )
+anims/Puff = SubResource( 1 )

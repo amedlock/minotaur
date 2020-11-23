@@ -46,7 +46,7 @@ func show_map():
 	dungeon.disable()
 	mode = GameMode.Map
 
-			
+
 func _input(evt):
 	if evt is InputEventKey:
 		if evt.echo or (not evt.pressed): 

@@ -1,0 +1,26 @@
+
+dagger = 6 + 4/level
+bow = 6 + 3/level
+xbow = 9 + 4/level
+axe = 9 + 3/level
+spear = 12 + 5/level
+
+scroll = 6 + 3/level
+book = 9 + 4/level
+staff = 12 + 4/level
+
+green ring = 10 mind armor
+blue ring = 15 mind armor
+purp ring = 20 mind armor
+red ring = 30 mind armor
+
+helmet = 5, 8, 12, 20  armor
+breastplate = 10, 20, 30, 45 armor
+
+blue potion = full mind
+green potion = full health
+purple potion = both full
+
+# time(turn) limited potions
+orange potion = war damage increase
+yellow potion = magic damage increase

@@ -1,4 +1,8 @@
-extends Sprite3D
+#extends Sprite3D
+
+extends BaseItem
+
+
 
 var item_info ; # reference to the Item instance in item_list
 

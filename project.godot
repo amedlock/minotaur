@@ -19,6 +19,10 @@ config/name="minotaur"
 run/main_scene="res://data/game.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+BaseItem="*res://data/BaseItem.gd"
+
 [debug]
 
 gdscript/warnings/return_value_discarded=false

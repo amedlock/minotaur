@@ -107,9 +107,9 @@ func reset():
 	east = null
 	item = null
 	enemy = null
-	for x in self.get_children():
-		self.remove_child(x)
-		x.queue_free()
+	for ch in self.get_children():
+		self.remove_child(ch)
+		ch.queue_free()
 
 
 

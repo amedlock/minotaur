@@ -83,9 +83,9 @@ func disable():
 	self.hide()	
 
 var mural_colors = {
-	"war":preload("res://data/dungeon/green_mat.tres"),
-	"magic" :preload("res://data/dungeon/blue_mat.tres"),
-	"both"  :preload("res://data/dungeon/tan_mat.tres")
+	"war": preload("res://data/dungeon/green_mat.tres"),
+	"magic": preload("res://data/dungeon/blue_mat.tres"),
+	"both": preload("res://data/dungeon/tan_mat.tres")
 }
 
 func set_mural_color(kind):

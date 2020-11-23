@@ -1,9 +1,9 @@
 extends Spatial;
 
 
-var loc = Vector2(0, 0)  # coordinates of player x and z
+var loc = Vector2(0, 0)  # grid coordinates of player x and z
 var dir = 270;
-var glance_amt = 0			 # if glancing, add this angle
+var glance_amt = 0		 # if glancing, add this angle
 
 
 # these are Item references, not nodes

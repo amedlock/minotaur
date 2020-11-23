@@ -28,7 +28,7 @@ func process(delta):
 	if time>=Move_Time:
 		player.set_pos( v_end )
 		player.player_state ="idle"
-		cell.on_enter(self)
+		cell.on_enter(player)
 		player.hud.update()
 		player.check_for_monster()
 		player.reduce_potion_turn()
