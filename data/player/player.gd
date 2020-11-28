@@ -436,8 +436,7 @@ func start_combat( cell ) -> bool:
 	assert( ang in [90, 0, -90])
 	if ang!=0:
 		idle.turn_to(ang)
-	self.player_state="combat"
-	combat.init(cell)
+	combat.start(cell)
 	return true
 
 
@@ -474,7 +473,7 @@ func attack_ahead():
 	var wall = wall_ahead()
 	if can_see(wall):
 		self.player_state= "combat"
-		combat.init(ahead)
+		combat.start(ahead)
 		reduce_potion_turn()
 
 

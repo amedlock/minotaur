@@ -51,9 +51,10 @@ func _ready():
 
 
 
-func init(e_cell):
+func start(e_cell):
 	self.enemy_cell = e_cell
 	self.enemy = e_cell.enemy
+	player.player_state = "combat"
 	monster = enemy.monster
 	enemy_weapon.visible = false
 	player_weapon.visible = false
