@@ -80,7 +80,6 @@ func _ready():
 	map_view = game.find_node("MapView")
 	self.disable()
 
-	
 
 func enable():
 	self.show()
@@ -168,7 +167,7 @@ func _process(delta):
 
 
 
-	
+
 func script_changed():
 	player_state.player = self
 
@@ -591,6 +590,7 @@ func init( difficulty ):
 		mind = 7
 	mind_max = mind
 	health_max = health
+	hud.update()
 
 
 

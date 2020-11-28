@@ -1,6 +1,4 @@
-#extends Sprite3D
-
-extends BaseItem
+extends Sprite3D
 
 
 

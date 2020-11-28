@@ -6,7 +6,7 @@ enum GameMode { Menu, Game, Map, GameOver, GameWon };
 var mode = GameMode.Menu
 
 onready var dungeon = $Dungeon
-var player : Spatial
+onready var player = $Dungeon/Player
 onready var menu = $MainMenu
 onready var map_view = $MapView
 onready var help = $Help

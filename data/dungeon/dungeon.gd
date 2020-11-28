@@ -78,6 +78,7 @@ func init_maze( skill, seednum ):
 
 func enable():
 	self.show()
+	player.enable()
 	
 func disable():
 	self.hide()	

@@ -22,8 +22,6 @@
 [ext_resource path="res://data/items/item_prefab.tscn" type="PackedScene" id=23]
 [ext_resource path="res://data/enemies/enemy_prefab.tscn" type="PackedScene" id=24]
 
-
-
 [sub_resource type="Animation" id=1]
 resource_name = "Fire"
 tracks/0/type = "value"
@@ -315,7 +313,6 @@ region_rect = Rect2( 96, 96, 32, 32 )
 
 [node name="enemy4" parent="." instance=ExtResource( 24 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.00341, 0.9, 10.5 )
-material_override = null
 flip_h = true
 modulate = Color( 0.427451, 0.427451, 0.427451, 1 )
 region_rect = Rect2( 96, 96, 32, 32 )
