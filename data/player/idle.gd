@@ -6,6 +6,8 @@ var player
 
 var turning = false
 
+signal completed;
+
 
 func _ready():
 	player = self.get_parent()
@@ -54,6 +56,7 @@ func turn_to( d : int ):
 	dir_start = player.dir
 	turn_amount = d
 	turning = true
+	player.player_state="idle"
 
 func process(delta):
 	if turning:		
@@ -61,6 +64,7 @@ func process(delta):
 		if time >= Turn_Time:
 			player.set_dir( dir_start + turn_amount )
 			turning = false			
+			emit_signal("completed")
 		else:
 			var t = time / Turn_Time
 			player.set_dir( dir_start + (turn_amount * t) )

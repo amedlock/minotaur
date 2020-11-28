@@ -436,7 +436,7 @@ func start_combat( cell ) -> bool:
 	assert( ang in [90, 0, -90])
 	if ang!=0:
 		idle.turn_to(ang)
-	combat.start(cell)
+		idle.connect('completed', combat, 'start', [cell], CONNECT_ONESHOT)
 	return true
 
 
