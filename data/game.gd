@@ -5,55 +5,48 @@ enum GameMode { Menu, Game, Map, GameOver, GameWon };
 
 var mode = GameMode.Menu
 
-var dungeon = null
-var player = null
-var menu = null
-var map = null
-var help = null;
+onready var dungeon = $Dungeon
+onready var player = $Dungeon/Player
+onready var menu = $MainMenu
+onready var map_view = $MapView
+onready var help = $Help
 
 func _ready():
-	help = find_node("Help")
-	dungeon = find_node("Dungeon")
-	player = find_node("Player")
-	menu = find_node("MainMenu")
-	map = find_node("Map")
-	set_process_input( true )
 	show_menu()
 
 func start_game( skill ):
-	var sn = randi() # seed num
-	dungeon.init_maze( skill, sn )
+	player = dungeon.player
+	var seednum = randi() # seed num
+	dungeon.init_maze( skill, seednum )
 	player.init( skill )
-	map.update()
 	show_game()
 	help.show()
 
 func game_over():
+	map_view.update()
 	show_map()
 	player.disable()	
 	mode = GameMode.GameOver
 			
 func  show_game():
-	player.enable()
 	dungeon.show()
 	menu.disable()
-	map.hide()
+	map_view.hide()
 	mode = GameMode.Game	
 				
 func  show_menu():
 	mode = GameMode.Menu
-	map.hide()
+	map_view.hide()
 	dungeon.hide()
-	player.disable()
 	menu.enable()	
 	
 func show_map():
-	map.show()
+	map_view.update()
+	map_view.show()
 	dungeon.disable()
-	#player.disable()
 	mode = GameMode.Map
 
-			
+
 func _input(evt):
 	if evt is InputEventKey:
 		if evt.echo or (not evt.pressed): 

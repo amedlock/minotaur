@@ -1,13 +1,17 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://data/gate/gate_mat.tres" type="Material" id=1]
 [ext_resource path="res://data/gate/gate.png" type="Texture" id=2]
+[ext_resource path="res://data/gate/gate.gd" type="Script" id=3]
 
 [node name="gate" type="Spatial"]
+script = ExtResource( 3 )
+kind = "blue"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 material_override = ExtResource( 1 )
+cast_shadow = 0
 offset = Vector2( 0, 32 )
 modulate = Color( 0.319061, 0.434399, 0.960938, 1 )
-pixel_size = 0.025
+pixel_size = 0.03
 texture = ExtResource( 2 )

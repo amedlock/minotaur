@@ -4,14 +4,15 @@ extends Area2D;
 export(int) var  slot_num;
 
 
-onready var hud = get_parent().get_parent();
-onready var sprite = find_node("Sprite")
+var hud;
+onready var sprite = $Sprite
 
 func _ready():
+	hud = find_parent("HUD")
 	connect("input_event", self, "clicked_slot" )
 	sprite.hide()
 	
-func clicked_slot(view, evt, shape_idx ):
+func clicked_slot(_view, evt, _shape_idx ):
 	if evt is InputEventMouseButton and evt.pressed:
 		hud.pack_slot_clicked( slot_num, evt.button_index )
 

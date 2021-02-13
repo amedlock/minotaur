@@ -1,34 +1,39 @@
-extends "action.gd"
+extends Node
+
+var glance_time = 0.4
+
+var player
+
+func _ready():
+	player = self.get_parent()
 
 
-export(float) var glance_time = 0.5;
+var target = 0
+var time = 0
 
-onready var player = get_parent()
+func start(amt : int):
+	target = amt
+	time = 0
+	player.player_state = "glance"
 
-var done = false
-
-var start 
-var delta 
-var timer = 0.0
-
-func start( amt ):
-	start = player.dir
-	delta = amt
-	timer = 0.0;
-	player.active_action= self 
-
-func process(dt):
-	if timer>=glance_time:
-		player.set_dir(start+delta)
-		return
-	timer+= dt
-	var ratio = timer / glance_time
-	player.set_dir(start + (ratio*delta) )
-	
 
 func input(evt):
-	if evt is InputEventKey and evt.pressed==false and evt.scancode in [KEY_Q, KEY_E]:
-		player.set_dir( start )
-		complete()
+	if evt is InputEventKey:
+		if (not evt.pressed) and evt.scancode in [KEY_Q, KEY_E]:
+			player.set_glance(0)
+			player.player_state ="idle"
+
+func process(delta):
+	time += delta
+	if time < glance_time:
+		var ang = target * (time / glance_time)
+		player.set_glance(ang)
+
+
+
+
+
+
+
 
 

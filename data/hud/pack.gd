@@ -3,7 +3,7 @@ extends Area2D;
 var slots = []  # what is in each slot (0-8)
 
 var war_colors = {
-  	"Wood": Color( 0xb7b666 ),
+	"Wood": Color( 0xb7b666 ),
 	"Iron": Color( 0xbc7812 ),
 	"Steel": Color( 0x1d89b7 ),
 	"Silver": Color( 0x92aab5  ),
@@ -12,7 +12,7 @@ var war_colors = {
 }
 
 var magic_colors = {
-  	"Blue": Color( 0x5b97f7 ),  # blue
+	"Blue": Color( 0x5b97f7 ),  # blue
 	"Grey": Color( 0xadb2ba ),  # grey
 	"White": Color( 0xffffff ), # white
 	"Pink": Color( 0xf25cdb ),  # pink
@@ -32,7 +32,6 @@ func scale_sprite( spr, img , w, h ):
 	
 
 func _ready():
-	#scale_sprite( find_node("slot1"), ace, 50, 50 )
 	for n in range(1,10):
 		var which = find_node("slot" + str(n) )
 		slots.append( which )

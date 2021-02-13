@@ -1,18 +1,17 @@
-extends "action.gd"
+extends Node
 
+# This is the "view map" state
 
-onready var player = get_parent()
+var player
 var game
 
 func _ready():
-	game = player.get_parent()
-
-func start():
-	game.show_map()
-	player.active_action = self
+	player = get_parent()
+	game = player.find_parent("Game")
 
 	
-func _input(evt):
+func input(evt):
 	if evt is InputEventKey and evt.pressed==false and evt.scancode==KEY_TAB:
 		game.show_game()
-		complete()
+		emit_signal("action_complete", self.name)
+

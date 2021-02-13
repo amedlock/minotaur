@@ -1,43 +1,37 @@
-extends "action.gd"
+extends Node
 
-onready var player = get_parent()
+var Move_Time = 0.6
 
-var timer = null
-var start = null
-var dir = null
+var player
 
-export(float)  var move_time = 0.5 ;
-	
-func forward( loc, vdir ):
-	if player.wall_ahead and player.wall_ahead.is_blocked():
-		return
-	if player.outer_wall_ahead or player.enemy_near[0]!=null:
-		return
-	timer = 0
-	start = loc
-	dir = vdir
-	player.mark_last()
-	player.active_action = self
-	
-func backward( loc, vdir ):
-	if player.wall_behind and player.wall_behind.is_blocked():
-		return
-	if player.outer_wall_behind:
-		return
-	timer = 0
-	start = loc
-	dir = -vdir
-	player.mark_last()
-	player.active_action = self	
-	
-func process(dt):
-	timer  += dt
-	if timer>= move_time:
-		var np = start + dir
-		player.set_pos( np.x, np.y )
-		complete()
+func _ready():
+	self.player = get_parent()
+
+var cell : Spatial
+var v_start : Vector2
+var v_end : Vector2
+var time
+
+func start(target):
+	cell = target
+	time = 0
+	v_start = player.loc
+	v_end = cell.grid_pos()
+	player.player_state = "move"
+
+func input(_evt):
+	pass
+
+
+func process(delta):
+	time += delta
+	if time>=Move_Time:
+		player.set_pos( v_end )
+		player.player_state ="idle"
+		cell.on_enter(player)
+		player.hud.update()
+		player.check_for_monster()
+		player.reduce_potion_turn()
 	else:
-		var ratio = timer / move_time;
-		var loc = start + (ratio * dir)
-		player.set_pos( loc.x, loc.y )		
-
+		var t = (time / Move_Time)
+		player.set_pos( v_start.linear_interpolate(v_end, t) )

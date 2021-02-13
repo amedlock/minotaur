@@ -1,0 +1,342 @@
+[gd_scene load_steps=26 format=2]
+
+[ext_resource path="res://data/game_env.tres" type="Environment" id=1]
+[ext_resource path="res://data/sounds/hit.wav" type="AudioStream" id=2]
+[ext_resource path="res://data/items/item_list.gd" type="Script" id=3]
+[ext_resource path="res://data/player/combat.gd" type="Script" id=5]
+[ext_resource path="res://data/dungeon/dungeon_wall.tscn" type="PackedScene" id=7]
+[ext_resource path="res://data/player/viewmap.gd" type="Script" id=9]
+[ext_resource path="res://data/enemies/enemy_list.gd" type="Script" id=10]
+[ext_resource path="res://data/dungeon/floor.tscn" type="PackedScene" id=11]
+[ext_resource path="res://data/dungeon/outer_wall.tscn" type="PackedScene" id=12]
+[ext_resource path="res://data/dungeon/ceiling.tscn" type="PackedScene" id=13]
+[ext_resource path="res://data/hud/hud.tscn" type="PackedScene" id=14]
+[ext_resource path="res://data/dungeon/builder.gd" type="Script" id=15]
+[ext_resource path="res://data/dungeon/dungeon.gd" type="Script" id=16]
+[ext_resource path="res://data/dungeon/grid.gd" type="Script" id=17]
+[ext_resource path="res://data/dungeon/cell.tscn" type="PackedScene" id=18]
+[ext_resource path="res://data/player/player.gd" type="Script" id=19]
+[ext_resource path="res://data/debug/debug.gd" type="Script" id=20]
+[ext_resource path="res://data/items/item_sheet.png" type="Texture" id=21]
+[ext_resource path="res://data/door/door_prefab.tscn" type="PackedScene" id=22]
+[ext_resource path="res://data/items/item_prefab.tscn" type="PackedScene" id=23]
+[ext_resource path="res://data/enemies/enemy_prefab.tscn" type="PackedScene" id=24]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Fire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("PlayerWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1265, 703 ), Vector2( 680, 400 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PlayerWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PlayerWeapon:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "SpinFire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("PlayerWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1265, 703 ), Vector2( 680, 400 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PlayerWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PlayerWeapon:rotation_degrees")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.7 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, -90.0, -180.0, -270.0, -335.0 ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "Fire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("EnemyWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 680, 400 ), Vector2( 1277.42, 721.073 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("EnemyWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("EnemyWeapon:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "SpinFire"
+tracks/0/type = "value"
+tracks/0/path = NodePath("EnemyWeapon:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 680, 400 ), Vector2( 1284.22, 727.875 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("EnemyWeapon:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("EnemyWeapon:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.2, 0.8 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 135.0, 360.0 ]
+}
+
+[node name="TestDungeon" type="Spatial"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -18 )
+script = ExtResource( 16 )
+
+[node name="Builder" type="Spatial" parent="."]
+script = ExtResource( 15 )
+
+[node name="floor" parent="." instance=ExtResource( 11 )]
+
+[node name="outer_wall" parent="." instance=ExtResource( 12 )]
+transform = Transform( 1.48, 0, 0, 0, 1, 0, 0, 0, 1.48, 0, 0, 0 )
+
+[node name="Grid" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 18 )
+script = ExtResource( 17 )
+
+[node name="Cell" parent="Grid" instance=ExtResource( 18 )]
+
+[node name="dungeon_wall" parent="Grid/Cell" instance=ExtResource( 7 )]
+transform = Transform( 1.19249e-08, 0, -1, 0, 1, 0, 1, 0, 1.19249e-08, 3, 0.26, -3 )
+
+[node name="door_prefab" parent="Grid/Cell" instance=ExtResource( 22 )]
+transform = Transform( -1, 0, -3.25841e-07, 0, 1, 0, 3.25841e-07, 0, -1, 3, 0.26, -3 )
+visible = false
+
+[node name="item" parent="Grid/Cell" instance=ExtResource( 23 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.55, -1.5 )
+
+[node name="Cell2" parent="Grid" instance=ExtResource( 18 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -3 )
+
+[node name="item" parent="Grid/Cell2" instance=ExtResource( 23 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.55, -1.5 )
+
+[node name="ItemList" type="Spatial" parent="."]
+script = ExtResource( 3 )
+
+[node name="Enemies" type="Spatial" parent="."]
+script = ExtResource( 10 )
+
+[node name="ceiling" parent="." instance=ExtResource( 13 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.51846, 0 )
+visible = false
+
+[node name="StartPos" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.25, 16.5 )
+
+[node name="Pos_11_11" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 1.25, -16.5 )
+
+[node name="Player" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21 )
+script = ExtResource( 19 )
+
+[node name="ShowMap" type="Node" parent="Player" groups=[
+"action",
+]]
+script = ExtResource( 9 )
+
+[node name="Combat" type="Node" parent="Player" groups=[
+"action",
+]]
+script = ExtResource( 5 )
+
+[node name="PlayerAnim" type="AnimationPlayer" parent="Player"]
+anims/Fire = SubResource( 1 )
+anims/SpinFire = SubResource( 2 )
+
+[node name="PlayerWeapon" type="Sprite" parent="Player"]
+visible = false
+position = Vector2( 680, 400 )
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 21 )
+region_enabled = true
+region_rect = Rect2( 224, 96, 32, 32 )
+
+[node name="EnemyAnim" type="AnimationPlayer" parent="Player"]
+anims/Fire = SubResource( 3 )
+anims/SpinFire = SubResource( 4 )
+
+[node name="EnemyWeapon" type="Sprite" parent="Player"]
+visible = false
+position = Vector2( 1284.22, 727.875 )
+rotation = 6.28319
+scale = Vector2( 2.5, 2.5 )
+texture = ExtResource( 21 )
+region_enabled = true
+region_rect = Rect2( 32, 0, 32, 32 )
+
+[node name="Audio" type="AudioStreamPlayer" parent="Player/EnemyWeapon"]
+
+[node name="Light" type="OmniLight" parent="Player"]
+light_color = Color( 0.796875, 0.796875, 0.796875, 1 )
+shadow_enabled = true
+omni_range = 15.0
+
+[node name="Camera" type="Camera" parent="Player"]
+environment = ExtResource( 1 )
+current = true
+
+[node name="HUD" parent="Player/Camera" instance=ExtResource( 14 )]
+
+[node name="debug" type="Label" parent="Player/Camera"]
+margin_left = 24.0
+margin_top = 19.0
+margin_right = 489.0
+margin_bottom = 302.0
+rect_scale = Vector2( 1.75, 1.75 )
+text = "sdfsdf
+sdfsdf
+sdfsdf
+
+sdfdsf
+sfddsf"
+script = ExtResource( 20 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Audio" type="AudioStreamPlayer" parent="Player"]
+stream = ExtResource( 2 )
+
+[node name="enemy" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 0.895455, 13.5 )
+
+[node name="enemy2" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -10.5, 0.9, 13.5 )
+region_rect = Rect2( 32, 64, 32, 32 )
+
+[node name="enemy3" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.00341, 0.9, 13.5 )
+region_rect = Rect2( 96, 96, 32, 32 )
+
+[node name="enemy4" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -9.00341, 0.9, 10.5 )
+flip_h = true
+modulate = Color( 0.427451, 0.427451, 0.427451, 1 )
+region_rect = Rect2( 96, 96, 32, 32 )
+
+[node name="dragon" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.00341, 0.91738, 13.5 )
+region_rect = Rect2( 32, 96, 32, 32 )
+
+[node name="dragon2" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.00341, 0.949342, 11.5 )
+region_rect = Rect2( 0, 96, 32, 32 )
+
+[node name="wolf" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.00341, 0.977694, 11.0522 )
+region_rect = Rect2( 224, 96, 32, 32 )
+
+[node name="wolf2" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.00341, 0.977694, 11.0522 )
+region_rect = Rect2( 96, 64, 32, 32 )
+
+[node name="spider" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.00341, 0.901762, 13.5 )
+region_rect = Rect2( 64, 96, 32, 32 )
+
+[node name="snake" parent="." instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.00341, 0.901762, 13.5 )
+region_rect = Rect2( 192, 64, 32, 32 )
