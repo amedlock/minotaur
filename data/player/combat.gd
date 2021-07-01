@@ -52,6 +52,8 @@ func _ready():
 
 
 func start(e_cell):
+	if (not e_cell.enemy) or (not e_cell.enemy.monster):
+		return
 	self.enemy_cell = e_cell
 	self.enemy = e_cell.enemy
 	player.player_state = "combat"
@@ -84,7 +86,7 @@ func player_turn(delta):
 			elif attacking:
 				attacking = false
 				player_fire()
-				player_cooldown = Player_Delay			
+				player_cooldown = Player_Delay
 
 
 func enemy_turn(delta):

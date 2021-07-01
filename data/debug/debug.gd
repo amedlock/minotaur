@@ -9,6 +9,7 @@ var grid
 
 var enabled = false
 
+
 func _ready():
 	player = find_parent("Player")
 	game = player.find_parent("Game")
@@ -33,18 +34,17 @@ func join_str( items: Array) -> String:
 		result += str(items[n])
 	return result
 
+
 func _process(_delta):
 	if not enabled:
 		return
-	var coord = Vector2( int(player.loc.x), int(player.loc.y))
-	var loc = player.loc
+	var coord = player.get_coord()
 	var cell_ahead = player.cell_ahead()
-	var cell = grid.get_cell(loc.x, loc.y)
+	var cell = grid.get_cell(coord.x, coord.y)
 	var info = [
-		"Position: %s, state: %s" % [ str(coord), player.player_state ],
 		"Cell: %s" % str(cell.debug_info()),
-		"World pos: %s" % [str(player.translation)],
-		"Facing: %s %s" % [str(player.dir), str(player.dir_name())],
+		"World pos: %s" % [str(player.get_coord())],
+		"Facing: %s %s" % [str(player.get_facing()), str(player.dir_name())],
 		"Cell Ahead: %s" % str(cell_ahead.debug_info() if cell_ahead else "")
 	]
 	var item = player.item_at_feet()
@@ -55,4 +55,5 @@ func _process(_delta):
 	if wall:
 		info.append("Wall: %s" % wall.name )
 	self.text = join_str(info)
+
 

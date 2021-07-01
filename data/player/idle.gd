@@ -58,6 +58,10 @@ func turn_to( d : int ):
 	turning = true
 	player.player_state="idle"
 
+
+func tween_complete():
+	$PlayerControl.enable()
+
 func process(delta):
 	if turning:		
 		time += delta

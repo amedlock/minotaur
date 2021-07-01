@@ -1,7 +1,7 @@
 extends Spatial;
 
 
-# width and height of the dungeon map
+# width and length of the dungeon map
 const WIDTH = 12;
 const HEIGHT = 12;
 const CELL_SIZE = 3.0;
@@ -51,10 +51,13 @@ onready var audio = $Player/Audio
 
 onready var grid = $Grid
 
+
+
 func _ready():
 	find_node("ceiling").show()
 	self.translation = maze_origin
 	grid.configure(WIDTH,HEIGHT,CELL_SIZE)
+
 
 
 func init_maze( skill, seednum ):
@@ -68,9 +71,7 @@ func init_maze( skill, seednum ):
 	grid.reset_all()
 	builder.build_maze(current_level)
 	enable()
-	audio = player.find_node("Audio")
-	hud = player.find_node("HUD")	
-	hud.update_stats()	
+	hud.update_stats()
 	player.reset_location()
 	player.map_view.update_map(current_level.depth)
 
@@ -89,12 +90,11 @@ var mural_colors = {
 	"both": preload("res://data/dungeon/tan_mat.tres")
 }
 
+
 func set_mural_color(kind):
 	var mat = mural_colors[kind]
-	for m in find_node("floor").get_children():
-		if m.is_in_group("murals"):
-			m.get_node("Mesh").set_surface_material( 0, mat )
-	
+	for m in get_tree().get_nodes_in_group("murals"):
+		m.get_node("Mesh").set_surface_material( 0, mat )
 
 
 
@@ -151,28 +151,6 @@ func world_pos( cx, cy ):
 func cell_at_offset(loc,x,y):
 	return grid.get_cell( loc.x + x, loc.y + y )
 
-
-func find_walls(loc):
-	var result = [
-		cell_at_offset(loc,0,1),
-		cell_at_offset(loc,1,0),
-		cell_at_offset(loc,0,-1),
-		cell_at_offset(loc,-1,0) ]
-
-	match player.dir:
-		0: return result
-		1: return result
-		2: return result
-		3: return result
-
-
-func quick_rotate_90(v: Vector2, amt: int):
-	while amt > 0:
-		var tmp = v.y
-		v.y = -v.y
-		v.x = tmp
-		amt -= 1
-	return v
 
 	
 var wall_post = {

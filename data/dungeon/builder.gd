@@ -10,8 +10,8 @@ var rng = RandomNumberGenerator.new()
 
 func _ready():
 	dungeon = get_parent()
-	enemy_list = dungeon.find_node("Enemies")
-	item_list = dungeon.find_node("ItemList")
+	enemy_list = dungeon.get_node("Enemies")
+	item_list = dungeon.get_node("ItemList")
 
 
 func randint( hi ):
@@ -21,9 +21,9 @@ func randint( hi ):
 class MazeCell:
 	var x
 	var y
-	var north = null
-	var east = null
-	var gate = null
+	var north = null  # wall or door
+	var east = null	  # wall or door
+	var gate = null   # magic, war, both or null
 	var item = null 
 	var enemy = null
 	
@@ -59,13 +59,14 @@ class MazeCell:
 
 var maze = []
 
-func maze_cell(x, y) -> MazeCell:
-	if x<0 or x>=dungeon.WIDTH:
-		return null
-	if y<0 or y>=dungeon.HEIGHT:
-		return null
-	return maze[x + (y * dungeon.WIDTH)]
+func valid(x,y) -> bool:
+	return x>=0 and x<dungeon.WIDTH and y>=0 and y<dungeon.HEIGHT
 
+func maze_cell(x, y) -> MazeCell:
+	if not valid(x,y):
+		return null
+	else:
+		return maze[x + (y * dungeon.WIDTH)]
 
 
 func clear_outer_wall():
@@ -160,6 +161,7 @@ func format_num(n, sz):
 	return s
 
 
+# add walls adjacent to outer corridor
 func add_walls(mc : MazeCell):
 	if mc.x==dungeon.WIDTH-1 or mc.y==dungeon.HEIGHT-1:
 		return

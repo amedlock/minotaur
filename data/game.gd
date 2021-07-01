@@ -48,6 +48,10 @@ func show_map():
 
 
 func _input(evt):
+	if mode==GameMode.Game and Input.is_action_just_pressed("view map"):
+		show_map()
+	elif mode==GameMode.Map and Input.is_action_just_released("view map"):
+		show_game()
 	if evt is InputEventKey:
 		if evt.echo or (not evt.pressed): 
 			return
@@ -55,6 +59,4 @@ func _input(evt):
 			help.visible = !help.visible
 		elif evt.scancode==KEY_F10:
 			get_tree().quit()
-	
-		
-		
+

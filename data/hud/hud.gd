@@ -19,12 +19,16 @@ var player ;
 var item_list;
 var dungeon ;
 
+onready var compass = find_node("Compass")
+
 var pack_slots = ["Slot1", "Slot2", "Slot3", "Slot4", "Slot5", 
-					"Slot6", "Slot7", "Slot8", "Slot9" ]
+				  "Slot6", "Slot7", "Slot8", "Slot9" ]
+
 
 func _ready():
 	var game = get_tree().get_root().get_node("Game")
 	assert( game != null )
+	assert( compass != null )
 	player = game.find_node("Player", true, false)
 	dungeon = game.find_node("Dungeon", true, false )
 	item_list = dungeon.find_node("ItemList")
@@ -39,13 +43,9 @@ func calc_sprite_scale( src_w, src_h, dest_w, dest_h ):
 	var hr = float(dest_h) / float(src_h)
 	return Vector2(wr, hr)
 
-onready var compass = find_node("Compass")
-				
-func update_compass():
-	compass.rotation_degrees = -player.dir 
-								
 
-func update_stats( ):
+
+func update_stats():
 	level_disp.set_text( "Level: " + str( dungeon.current_level.depth ) )
 	arrow_disp.set_text( "Arrows: " + str( player.arrows ) )
 	food_disp.set_text( "Food: " + str( player.food ) )
@@ -97,7 +97,6 @@ func update_hand_slot( dest, item ):
 
 
 func update():
-	update_compass()
 	update_pack()
 	update_stats()
 
