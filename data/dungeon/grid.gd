@@ -50,25 +50,24 @@ func get_cell(x : int, y: int):
 	return cells[x + (y * width)]
 
 
-func get_wall(p : Vector2, p2: Vector2):
-	print_debug("get_wall " + str(p) + str(p2))
+func get_wall(x: int, y: int, ang: int) -> Spatial:
+	assert(ang in [0, 90, 180, 270])
 
-	var cell
+	if ang==90:
+		var prev = get_cell(x-1, y)
+		if prev==null:
+			return outer_wall
+		return prev.east
+	elif ang==180:
+		var prev = get_cell(x, y-1)
+		if prev==null:
+			return outer_wall
+		return prev.north
+	elif ang==270:
+		return get_cell(x, y).east
+	else:
+		return get_cell(x, y).north
 
-	if p2.x > p.x:
-		cell = get_cell(p.x, p.y)
-		return outer_wall if not cell else cell.east
-	elif p.x > p2.x:
-		return get_wall(p2, p)
-	
-	if p.y < p2.y:
-		cell = get_cell(p.x, p.y)
-		return outer_wall if not cell else cell.north
-	elif p2.y < p.y:
-		return get_wall(p2, p)
-	return outer_wall
-
-	
 
 func set_corner(x, y, which):
 	var cell = get_cell(x,y)

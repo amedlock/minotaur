@@ -73,6 +73,24 @@ func _ready():
 	map_view = game.find_node("MapView")
 	reset_location()
 	self.disable()
+	test()
+
+
+func test():
+	assert(round_ang(360) == 0)
+	assert(round_ang(0) == 0)
+	assert(round_ang(95) == 90)
+	assert(round_ang(179) == 180)
+	assert(round_ang(271.5) == 270)
+	assert(round_ang(180.005) == 180)
+	assert(round_ang(450) == 90)
+	assert(round_ang(540.1) == 180)
+	assert(round_ang(720) == 0)
+	
+func round_ang(n) -> int:
+	var val = stepify( fposmod(n, 359), 90)
+	var ang = int(val)
+	return ang
 
 
 func enable():
@@ -103,7 +121,8 @@ func get_coord() -> Vector2:
 
 #player direction in degrees
 func get_dir() -> int:
-	return int(fposmod(rotation_degrees.y, 360))
+	var val = stepify( fposmod(rotation_degrees.y, 359), 90)
+	return int(val)
 
 
 func get_forward_vector() -> Vector2:
@@ -129,17 +148,18 @@ func is_dead() -> bool:
 
 
 func dir_name() -> String:
-	var dir = get_dir()
-	if dir > 315 or dir < 45: return "north"
-	if dir >= 45 and dir < 135: return "west"
-	if dir >= 135 and dir < 225: return "south"
-	return "east"
+	match get_dir():
+		0: return "north"
+		90: return "west"
+		180: return "south"
+		_: return "east"
 
 
 
 func _input(evt):
 	if evt is InputEventKey:
 		debug_keys(evt)
+
 
 
 func _process(delta):
@@ -175,8 +195,6 @@ func debug_keys(evt):
 					self.mind = 1
 
 
-func close_doors():
-	pass
 
 func cheat_death():
 	if resurrected: return false
@@ -215,6 +233,7 @@ func has_key_for(item):
 	if left_hand and left_hand.name=="key" and left_hand.power >= item.power:
 		return true
 	return false
+
 
 func open_container(item):
 	if item.needs_key:
@@ -362,14 +381,17 @@ func cell_left():
 	return dungeon.grid.get_cell(p.x, p.y)
 
 func cell_right():
-	var p = coord_right()
-	return dungeon.grid.get_cell(p.x, p.y)
+	var c = coord_right()
+	return dungeon.grid.get_cell(c.x, c.y)
 
-func wall_ahead():
-	return dungeon.grid.get_wall(get_coord(), coord_ahead() )
+func wall_ahead() -> Spatial:
+	var c = get_coord()
+	return dungeon.grid.get_wall(c.x, c.y, get_dir())
 
-func wall_behind():
-	return dungeon.grid.get_wall(get_coord(), coord_behind() )
+func wall_behind() -> Spatial:
+	var c = get_coord()
+	var rdir = posmod(get_dir()-180, 360)
+	return dungeon.grid.get_wall(c.x, c.y, rdir)
 
 
 

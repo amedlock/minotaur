@@ -5,6 +5,9 @@ extends Spatial
 # time to move one square forward or back
 const MoveTime = 0.75
 
+const GlanceTime = 0.35
+
+
 onready var player = get_parent()
 onready var dungeon = player.get_parent()
 onready var hud = player.get_node("Camera/HUD")
@@ -29,14 +32,8 @@ func disable():
 
 func tween_complete(_obj, _path):
 	hud.update()
-#	var pc = player.current_cell()
-#	print("Player:" + str(pc.x) +"," +str( pc.y))
-#	var left = player.cell_left()
-#	var right = player.cell_right()
-#	if left:
-#		print("Left:" + str(left.x) + "," + str(left.y))
-#	if right:
-#		print("Right:" + str(right.x) + "," + str(right.y))
+	# if new_cell ? current_cell.enter() 
+	# check for monsters
 
 
 func move_back():
@@ -49,13 +46,14 @@ func move_back():
 	tween.interpolate_property(player, "translation", pos, pos - pvec, MoveTime)
 	tween.start()
 
+
 func move_forward():
 	var wall = player.wall_ahead()
 	if wall and wall.is_blocked():
 		return
 
 	var pos = player.translation
-	var pvec = player.transform.basis.z * -3 
+	var pvec = player.transform.basis.z * -3
 	tween.interpolate_property(player, "translation", pos, pos + pvec, MoveTime)
 	tween.start()
 
@@ -73,12 +71,13 @@ var glance_amt = 0
 func glance(amt: float):
 	var rot = player.get_dir()
 	glance_amt = amt
-	tween.interpolate_property(player, "rotation_degrees:y", rot, rot + amt, 0.5 )
+	tween.interpolate_property(player, "rotation_degrees:y", rot, rot + amt, GlanceTime )
 	tween.start()
+
 
 func unglance():
 	var rot = player.get_dir()
-	tween.interpolate_property(player, "rotation_degrees:y", rot, rot - glance_amt, 0.5 )
+	tween.interpolate_property(player, "rotation_degrees:y", rot, rot - glance_amt, GlanceTime )
 	glance_amt = 0
 	tween.start()
 
@@ -112,4 +111,5 @@ func _input(_event):
 		player.rest()	
 	elif Input.is_action_just_pressed("open"):
 		player.open_door()
-	
+
+
