@@ -61,7 +61,7 @@ onready var hud = $Camera/HUD
 onready var audio = $Audio
 
 
-var player_state = "idle"
+var player_state = "idle"  # idle, combat, moving, "won", "lost"
 
 
 func _ready():
@@ -73,24 +73,6 @@ func _ready():
 	map_view = game.find_node("MapView")
 	reset_location()
 	self.disable()
-	test()
-
-
-func test():
-	assert(round_ang(360) == 0)
-	assert(round_ang(0) == 0)
-	assert(round_ang(95) == 90)
-	assert(round_ang(179) == 180)
-	assert(round_ang(271.5) == 270)
-	assert(round_ang(180.005) == 180)
-	assert(round_ang(450) == 90)
-	assert(round_ang(540.1) == 180)
-	assert(round_ang(720) == 0)
-	
-func round_ang(n) -> int:
-	var val = stepify( fposmod(n, 359), 90)
-	var ang = int(val)
-	return ang
 
 
 func enable():
@@ -109,7 +91,7 @@ func reset_location():
 	self.rotation_degrees.y = 270
 
 
-func coord_to_world(p):
+func coord_to_world(p : Vector2) -> Vector3:
 	return start_pos.translation + Vector3(p.x * 3, 0, -p.y * 3)
 
 
@@ -121,8 +103,10 @@ func get_coord() -> Vector2:
 
 #player direction in degrees
 func get_dir() -> int:
-	var val = stepify( fposmod(rotation_degrees.y, 359), 90)
-	return int(val)
+	var val = int( fposmod(rotation_degrees.y, 360))
+	if not val in [0,90,180,270]:
+		print_debug("Dir=" + str(val))	
+	return val
 
 
 func get_forward_vector() -> Vector2:
@@ -140,7 +124,7 @@ func over_exit() -> bool:
 
 
 func is_moving():
-	return player_state=="move"
+	return player_state=="moving"
 
 
 func is_dead() -> bool:
@@ -162,19 +146,8 @@ func _input(evt):
 
 
 
-func _process(delta):
-	match player_state:
-		"combat": combat.process(delta)
-
-
-
-func script_changed():
-	player_state.player = self
-
-
-
 func use_exit():
-	if over_exit():
+	if player_state=="idle" and over_exit():
 		dungeon.use_exit()
 
 
@@ -427,24 +400,19 @@ func end_combat(outcome,enemy):
 
 
 func retreat():
-#	if last_loc==null: return false
-#	set_pos( last_loc ); last_loc = null
-#	set_dir( last_dir ); last_dir = null
-#	self.hud.update()
-	self.in_combat = false
-	return true
+	$PlayerControl.flee()
 
 
 # tries to initiate combat ahead of player
 func attack_ahead():
-	combat.attacking = true
 	var ahead = cell_ahead()
 	if ahead==null or ahead.enemy==null:
 		return
 	var wall = wall_ahead()
 	if can_see(wall):
+		combat.attacking = true
 		self.player_state= "combat"
-		combat.start(ahead)
+		combat.start(ahead, true)
 		reduce_potion_turn()
 
 

@@ -8,6 +8,12 @@ const MoveTime = 0.75
 const GlanceTime = 0.35
 
 
+# keep a local copy of dir
+var dir = 270
+
+var prev_coord
+
+
 onready var player = get_parent()
 onready var dungeon = player.get_parent()
 onready var hud = player.get_node("Camera/HUD")
@@ -23,6 +29,7 @@ func _ready():
 	tween.connect("tween_completed", self, "tween_complete")
 
 
+
 func enable():
 	self.enabled = true
 
@@ -32,6 +39,8 @@ func disable():
 
 func tween_complete(_obj, _path):
 	hud.update()
+	dir = fposmod(dir, 360)
+	player.rotation_degrees.y = dir
 	# if new_cell ? current_cell.enter() 
 	# check for monsters
 
@@ -52,15 +61,17 @@ func move_forward():
 	if wall and wall.is_blocked():
 		return
 
+	prev_coord = player.get_coord()
 	var pos = player.translation
 	var pvec = player.transform.basis.z * -3
 	tween.interpolate_property(player, "translation", pos, pos + pvec, MoveTime)
 	tween.start()
 
 
-func turn_player(amt: float ):
-	var rot = player.rotation_degrees
-	tween.interpolate_property(player, "rotation_degrees", rot, rot + Vector3(0,amt,0), 1.0 )
+func turn_player(amt: int):
+	dir += amt
+	var rot = player.get_dir()
+	tween.interpolate_property(player, "rotation_degrees:y", rot, rot + amt, 1.0 )
 	var crot = hud.compass.rotation_degrees
 	tween.interpolate_property(hud.compass, "rotation_degrees", crot, crot - amt, 1.0 )
 	tween.start()
@@ -68,18 +79,28 @@ func turn_player(amt: float ):
 
 var glance_amt = 0
 
-func glance(amt: float):
+func glance(amt: int):
 	var rot = player.get_dir()
 	glance_amt = amt
+	dir += amt
 	tween.interpolate_property(player, "rotation_degrees:y", rot, rot + amt, GlanceTime )
 	tween.start()
 
 
 func unglance():
 	var rot = player.get_dir()
+	dir -= glance_amt
 	tween.interpolate_property(player, "rotation_degrees:y", rot, rot - glance_amt, GlanceTime )
 	glance_amt = 0
 	tween.start()
+
+
+func flee():
+	if not prev_coord:
+		self.move_back()
+	else:
+		player.translation = player.coord_to_world(prev_coord)
+		prev_coord = null
 
 
 func _input(_event):
@@ -111,5 +132,7 @@ func _input(_event):
 		player.rest()	
 	elif Input.is_action_just_pressed("open"):
 		player.open_door()
+	elif Input.is_action_just_pressed("use"):
+		player.use_item()
 
 

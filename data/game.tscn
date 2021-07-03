@@ -255,6 +255,9 @@ transform = Transform( 1.48, 0, 0, 0, 1, 0, 0, 0, 1.48, 0, 0, 0 )
 [node name="Grid" type="Spatial" parent="Dungeon"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 18 )
 script = ExtResource( 23 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="ItemList" type="Spatial" parent="Dungeon"]
 script = ExtResource( 7 )
@@ -268,6 +271,9 @@ visible = false
 
 [node name="StartPos" type="Position3D" parent="Dungeon"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.25, 16.5 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Player" type="Spatial" parent="Dungeon"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21 )
@@ -279,6 +285,9 @@ script = ExtResource( 25 )
 
 [node name="combat" type="Node" parent="Dungeon/Player"]
 script = ExtResource( 24 )
+
+[node name="PlayerTimer" type="Timer" parent="Dungeon/Player/combat"]
+one_shot = true
 
 [node name="PlayerAnim" type="AnimationPlayer" parent="Dungeon/Player/combat"]
 anims/Fire = SubResource( 1 )
@@ -299,8 +308,11 @@ stream = ExtResource( 18 )
 anims/Fire = SubResource( 3 )
 anims/SpinFire = SubResource( 4 )
 
+[node name="EnemyTimer" type="Timer" parent="Dungeon/Player/combat"]
+one_shot = true
+
 [node name="EnemyWeapon" type="Sprite" parent="Dungeon/Player/combat"]
-position = Vector2( 1360, 585 )
+position = Vector2( 680, 400 )
 rotation = 0.746081
 scale = Vector2( 2.5, 2.5 )
 texture = ExtResource( 10 )
