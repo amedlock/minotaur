@@ -8,6 +8,8 @@ const MoveTime = 0.75
 const GlanceTime = 0.35
 
 
+var glance_amt = 0
+
 # keep a local copy of dir
 var dir = 270
 
@@ -35,6 +37,10 @@ func enable():
 
 func disable():
 	self.enabled = false
+
+
+func reset():
+	self.dir = 270
 
 
 func tween_complete(_obj, _path):
@@ -77,7 +83,6 @@ func turn_player(amt: int):
 	tween.start()
 
 
-var glance_amt = 0
 
 func glance(amt: int):
 	var rot = player.get_dir()

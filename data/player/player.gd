@@ -148,7 +148,8 @@ func _input(evt):
 
 func use_exit():
 	if player_state=="idle" and over_exit():
-		dungeon.use_exit()
+		if dungeon.use_exit():
+			$PlayerControl.reset()
 
 
 func show_map():
@@ -307,6 +308,7 @@ func enter_gate(cell):
 		dungeon.load_gate_level(cell.gate)
 		cell.set_gate(null)
 		self.needs_rest = true
+		$PlayerControl.reset()
 
 
 func can_see( wall ):

@@ -82,10 +82,11 @@ func _process(_delta):
 func check_combat_over():
 	if player.is_dead():
 		player.end_combat("die", enemy_cell.enemy)
-		return
+		self.set_process(false)
 	elif enemy.is_dead():
 		player.end_combat("win", enemy_cell.enemy)
-		return
+		self.set_process(false)
+
 
 func player_turn():
 	if not player_timer.is_stopped() or player_anim.is_playing():
@@ -153,7 +154,6 @@ func player_fire():
 
 
 func player_fire_done(_which):
-	print("Player Fire done")
 	enemy.damage( player_item )
 	if broken:
 		player_item = null # remove it
