@@ -152,7 +152,7 @@ func cell_at_offset(loc,x,y):
 	return grid.get_cell( loc.x + x, loc.y + y )
 
 
-	
+
 var wall_post = {
 	"north": WallPost.NW,
 	"east": WallPost.NE,

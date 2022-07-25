@@ -108,7 +108,7 @@ func define_item( item_type, icon_name, power, col, stat1, stat2 ):
 	it.kind = item_type
 	it.name = icon_name
 	it.img = icons[icon_name]
-	it.needs_key = icon_name in ["box", "pack", "chest" ]
+	it.needs_key = item_type in ["box", "pack", "chest" ]
 
 	it.color = col
 	it.power = power
@@ -141,12 +141,13 @@ func add_containers():
 		define_item( "container", "pack", power, col, 0, 0 )
 		define_item( "container", "chest", power, col, 0, 0 )
 
+
 func add_potions():
-	define_item("War Dmg Potion", "small_potion", 1, Orange, 7, 2)
-	define_item("Magic Dmg Potion", "small_potion", 1, Yellow, 5, 2)
-	define_item("Health Potion", "potion", 1, Green, 5, 0)
-	define_item("Mind Potion", "potion", 1, Blue, 5, 0)
-	define_item("Renew Potion", "potion", 1, Purple, 5, 0)
+	define_item("small_potion", "War Dmg Potion", 1, Orange, 7, 2)
+	define_item("small_potion", "Magic Dmg Potion", 1, Yellow, 5, 2)
+	define_item("potion", "Health Potion", 1, Green, 5, 0)
+	define_item("potion", "Mind Potion", 1, Blue, 5, 0)
+	define_item("potion", "Renew Potion", 1, Purple, 5, 0)
 
 
 func add_money():
@@ -202,10 +203,6 @@ func add_weapons():
 	add_magic_weapons("weapon", "fireball", [13,17,25,33,39,48] )
 	add_war_weapons( "armor", "helmet", [5,10,15,20,25,30] )
 	add_war_weapons( "armor", "breastplate", [10,17,24,31,38,45] )
-	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
-	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
-	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
-	add_war_weapons( "ring", "breastplate", [10,17,24,31,38,45] )
 
 
 
@@ -225,7 +222,7 @@ func add_all_items():
 	#define_item( "item", "tome", 3, Pink,  2, 0 )
 	#define_item( "item", "tome", 3, Purple,  3, 0 )
 	add_containers()
-	add_potions()
+	#add_potions()
 	add_money()
 	add_weapons()
 	treasure = define_item("treasure", "treasure", 1, Yellow, 0, 0 )

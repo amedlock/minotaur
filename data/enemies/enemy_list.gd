@@ -22,6 +22,8 @@ const Red = Color( 0xcc2a2aff )
 
 const ImageSize = Vector2(32,32);
 
+
+# sprite sheet cell offset calc
 func ss_cell(x,y):
 	return Rect2( Vector2(x * 32, y * 32), ImageSize )
 
