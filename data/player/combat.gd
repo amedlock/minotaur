@@ -58,7 +58,7 @@ func start(e_cell, attack: bool):
 	self.enemy_cell = e_cell
 	self.enemy = e_cell.enemy
 	assert( self.enemy != null )
-	player.player_state = "combat"
+	player.player_state = player.PlayerState.COMBAT
 	attacking = attack
 	retreat = false
 	monster = enemy.monster

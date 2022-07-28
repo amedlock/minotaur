@@ -1,5 +1,21 @@
 extends Spatial;
 
+enum PlayerState {
+	IDLE,  		# default state
+	TURNING,
+	MOVING,
+	GLANCING,
+	COMBAT,
+	WAITING,
+	WON,
+	LOST
+}
+
+
+var player_state = PlayerState.IDLE;
+
+
+
 var glance_amt = 0		 # if glancing, add this angle
 
 
@@ -61,8 +77,6 @@ onready var hud = $Camera/HUD
 onready var audio = $Audio
 
 
-var player_state = "idle"  # idle, combat, moving, "won", "lost"
-
 
 func _ready():
 	dungeon = get_parent()
@@ -72,18 +86,68 @@ func _ready():
 	item_list = dungeon.find_node("ItemList")
 	map_view = game.find_node("MapView")
 	reset_location()
+	self.player_state = PlayerState.IDLE
 	self.disable()
 
 
 func enable():
 	self.show()	
-	$PlayerControl.enable()
 	hud.update()
 
 
 func disable():
-	$PlayerControl.disable()
 	self.hide()
+
+
+
+func _input(evt):
+	if $PlayerControl.tween.is_active():
+		return
+		
+	match player_state:
+		PlayerState.IDLE:
+			if Input.is_action_just_pressed("forward"):
+				$PlayerControl.move_forward()
+			elif Input.is_action_just_pressed("left"):
+				$PlayerControl.turn_player(90)
+			elif Input.is_action_just_pressed("right"):
+				$PlayerControl.turn_player(-90)
+			elif Input.is_action_just_pressed("back"):
+				$PlayerControl.move_back()
+			elif Input.is_action_just_pressed("look_left"):
+				$PlayerControl.glance(90)
+			elif Input.is_action_just_pressed("look_right"):
+				$PlayerControl.glance(-90)
+			elif Input.is_action_just_pressed("open"):
+				self.open_door()
+			elif Input.is_action_just_pressed("rest"):
+				self.rest()
+			elif Input.is_action_just_pressed("use"):
+				self.use_item()
+			elif Input.is_action_just_pressed("descend"):
+				self.use_exit()
+							
+		PlayerState.TURNING: 
+			pass
+			
+		PlayerState.MOVING:
+			# allow rest here?
+			pass
+			
+		PlayerState.GLANCING:
+			if !Input.is_action_pressed("look_left") and !Input.is_action_pressed("look_right"):
+				$PlayerControl.unglance()
+			
+		PlayerState.COMBAT:
+			pass
+			
+		PlayerState.WAITING:
+			pass
+			
+			
+	if evt is InputEventKey:
+		debug_keys(evt)
+
 
 
 func reset_location():
@@ -123,10 +187,6 @@ func over_exit() -> bool:
 
 
 
-func is_moving():
-	return player_state=="moving"
-
-
 func is_dead() -> bool:
 	return health<1 or mind<1
 
@@ -140,14 +200,12 @@ func dir_name() -> String:
 
 
 
-func _input(evt):
-	if evt is InputEventKey:
-		debug_keys(evt)
+
 
 
 
 func use_exit():
-	if player_state=="idle" and over_exit():
+	if player_state==PlayerState.IDLE and over_exit():
 		if dungeon.use_exit():
 			$PlayerControl.reset()
 
@@ -171,7 +229,8 @@ func debug_keys(evt):
 
 
 func cheat_death():
-	if resurrected: return false
+	if resurrected: 
+		return false
 	if gold > 500:
 		resurrected = true
 		for n in range(1,10): self.inventory[n] = null
@@ -184,15 +243,11 @@ func cheat_death():
 
 
 func set_item_at_feet(item):
-	if is_moving():
-		return null
 	var coord = get_coord()
 	grid.set_item( coord.x, coord.y , item)
 
 
 func item_at_feet():
-	if is_moving():
-		return null
 	var coord = get_coord()
 	var item_node = grid.get_cell( coord.x,coord.y ).item
 	return item_node.item_info if item_node else null
@@ -371,9 +426,9 @@ func wall_behind() -> Spatial:
 
 
 func start_combat( cell ) -> bool:
-	if not (cell and cell.enemy):
+	if player_state!=PlayerState.IDLE:
 		return false
-	return true
+	return (cell and cell.enemy)
 #	var pos = cell.grid_pos();
 #	var wall = dungeon.grid.get_wall(loc, pos)
 #	if wall and wall.is_blocked():
@@ -392,10 +447,10 @@ func end_combat(outcome,enemy):
 			killed(enemy)
 			enemy.die()
 			needs_rest = true
-			self.player_state="idle"
+			self.player_state=PlayerState.IDLE
 		"die":
 			if is_dead() and not cheat_death():
-				self.player_state ="lost"
+				self.player_state = PlayerState.LOST
 		_: assert(false)
 	hud.update()
 	
@@ -407,13 +462,15 @@ func retreat():
 
 # tries to initiate combat ahead of player
 func attack_ahead():
+	if player_state != PlayerState.IDLE:
+		return
 	var ahead = cell_ahead()
 	if ahead==null or ahead.enemy==null:
 		return
 	var wall = wall_ahead()
 	if can_see(wall):
 		combat.attacking = true
-		self.player_state= "combat"
+		self.player_state= PlayerState.COMBAT
 		combat.start(ahead, true)
 		reduce_potion_turn()
 
@@ -434,7 +491,7 @@ func win():
 	game.show_map()
 	audio.stream = load("res://data/sounds/win2.wav")
 	audio.play()
-	self.player_state = "won"
+	self.player_state = PlayerState.WON
 
 
 func reduce_potion_turn():

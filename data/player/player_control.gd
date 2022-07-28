@@ -1,18 +1,19 @@
 extends Spatial
 
-# Handle player movement and input except Combat
+# Handle player movement, this is called from player.gd
+
 
 # time to move one square forward or back
 const MoveTime = 0.75
 
 const GlanceTime = 0.35
 
-
 var glance_amt = 0
 
 # keep a local copy of dir
 var dir = 270
 
+# keep for retreat
 var prev_coord
 
 
@@ -20,23 +21,14 @@ onready var player = get_parent()
 onready var dungeon = player.get_parent()
 onready var hud = player.get_node("Camera/HUD")
 
-var enabled = false;
 var tween : Tween
 
 func _ready():
 	tween = Tween.new()
 	tween.name = "MovementTween"
+	tween.connect("tween_completed", self, "tween_complete")
 	self.add_child(tween)
 	tween.set_active(true)
-	tween.connect("tween_completed", self, "tween_complete")
-
-
-
-func enable():
-	self.enabled = true
-
-func disable():
-	self.enabled = false
 
 
 func reset():
@@ -44,6 +36,7 @@ func reset():
 
 
 func tween_complete(_obj, _path):
+	player.player_state = player.PlayerState.IDLE
 	hud.update()
 	dir = fposmod(dir, 360)
 	player.rotation_degrees.y = dir
@@ -66,12 +59,12 @@ func move_forward():
 	var wall = player.wall_ahead()
 	if wall and wall.is_blocked():
 		return
-
 	prev_coord = player.get_coord()
 	var pos = player.translation
 	var pvec = player.transform.basis.z * -3
 	tween.interpolate_property(player, "translation", pos, pos + pvec, MoveTime)
 	tween.start()
+	player.player_state = player.PlayerState.MOVING
 
 
 func turn_player(amt: int):
@@ -81,7 +74,7 @@ func turn_player(amt: int):
 	var crot = hud.compass.rotation_degrees
 	tween.interpolate_property(hud.compass, "rotation_degrees", crot, crot - amt, 1.0 )
 	tween.start()
-
+	player.player_state = player.PlayerState.TURNING
 
 
 func glance(amt: int):
@@ -90,6 +83,7 @@ func glance(amt: int):
 	dir += amt
 	tween.interpolate_property(player, "rotation_degrees:y", rot, rot + amt, GlanceTime )
 	tween.start()
+	player.player_state=player.PlayerState.GLANCING
 
 
 func unglance():
@@ -116,28 +110,28 @@ func _input(_event):
 		if Input.is_action_just_released("look_left") or Input.is_action_just_released("look_right"):
 			unglance()
 		return
-		
-	if Input.is_action_just_pressed("forward"):
-		self.move_forward()
-	elif Input.is_action_just_pressed("back"):
-		self.move_back()
-	elif Input.is_action_just_pressed("left"):
-		self.turn_player(90)
-	elif Input.is_action_just_pressed("right"):
-		self.turn_player(-90)
-	elif Input.is_action_just_pressed("look_left"):
-		glance(90)
-	elif Input.is_action_just_pressed("look_right"):
-		glance(-90)
-	elif Input.is_action_just_pressed("attack"):
-		player.attack_ahead()
-	elif Input.is_action_just_pressed("descend"):
-		player.use_exit()
-	elif Input.is_action_just_pressed("rest"):
-		player.rest()	
-	elif Input.is_action_just_pressed("open"):
-		player.open_door()
-	elif Input.is_action_just_pressed("use"):
-		player.use_item()
+#
+#	if Input.is_action_just_pressed("forward"):
+#		self.move_forward()
+#	elif Input.is_action_just_pressed("back"):
+#		self.move_back()
+#	elif Input.is_action_just_pressed("left"):
+#		self.turn_player(90)
+#	elif Input.is_action_just_pressed("right"):
+#		self.turn_player(-90)
+#	elif Input.is_action_just_pressed("look_left"):
+#		glance(90)
+#	elif Input.is_action_just_pressed("look_right"):
+#		glance(-90)
+#	elif Input.is_action_just_pressed("attack"):
+#		player.attack_ahead()
+#	elif Input.is_action_just_pressed("descend"):
+#		player.use_exit()
+#	elif Input.is_action_just_pressed("rest"):
+#		player.rest()	
+#	elif Input.is_action_just_pressed("open"):
+#		player.open_door()
+#	elif Input.is_action_just_pressed("use"):
+#		player.use_item()
 
 

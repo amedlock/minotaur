@@ -24,8 +24,8 @@ margin_left = 5.0
 margin_top = 6.0
 margin_right = 149.0
 margin_bottom = 36.0
-custom_fonts/font = ExtResource( 2 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = ExtResource( 2 )
 text = "Health:"
 
 [node name="HPDisplay" type="Label" parent="Stats"]
@@ -152,8 +152,8 @@ margin_left = -125.0
 margin_top = 12.0
 margin_right = -50.0
 margin_bottom = 32.0
-custom_fonts/font = ExtResource( 6 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = ExtResource( 6 )
 text = "Arrows:6"
 align = 1
 valign = 1
@@ -186,9 +186,6 @@ margin_left = 39.6668
 margin_top = 591.829
 margin_right = 39.6668
 margin_bottom = 591.829
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="bg" type="Sprite" parent="Pack"]
 position = Vector2( 61, 28 )

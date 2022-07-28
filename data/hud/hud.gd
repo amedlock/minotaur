@@ -119,8 +119,6 @@ func pack_slot_clicked( slot , button ):
 func clicked_feet( _viewport, event, _shape_idx ):
 	if not(event is InputEventMouseButton) or not event.pressed: 
 		return
-	if player.is_moving(): 
-		return 
 	var item = player.item_at_feet()
 	if item and item.name=="ladder":
 		return
