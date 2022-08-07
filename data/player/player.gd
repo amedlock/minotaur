@@ -15,19 +15,16 @@ enum PlayerState {
 var player_state = PlayerState.IDLE;
 
 
-
-var glance_amt = 0		 # if glancing, add this angle
-
-
 # these are Item references, not nodes
 var left_hand ;
 var right_hand ;
 
 
 # item references for each slot
-var inventory = {1:null, 2:null, 3:null,
-				 4:null, 5:null, 6:null,
-				 7:null, 8:null, 9:null }
+var inventory = {
+	1:null, 2:null, 3:null,
+	4:null, 5:null, 6:null,
+	7:null, 8:null, 9:null }
 
 
 
