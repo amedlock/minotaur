@@ -1,0 +1,69 @@
+{
+  "Colors":{
+    "White": "ffffff",
+    "Grey": "999999",
+    "Orange": "FF8400",
+    "Blue": "436FA8",
+    "Pink": "E843A0",
+    "Purple": "5A1E96",
+    "Red": "CC2A2A",
+    "Tan": "DBB592",
+    "Green": "00B300",
+    "Yellow": "F4FC58"
+  },
+  "Weapons":{
+    "War":{
+      "bow": [6,9,15,21,27,33],
+      "crossbow": [18,24,30,36,42,99],
+      "spear": [21,27,33,42,57,75],
+      "dagger": [9,15,21,30,42,57],
+      "axe": [15,21,27,36,57,66]
+    },
+    "Magic":{
+      "scroll" : [3,5,9,13,17,21],
+      "book" : [11,15,19,23,27,65],
+      "wand" :[9,13,17,23,33,43] ,
+      "staff" : [17,21,29,45,55,65],
+      "small_fireball" :[5,9,13,23,33,39],
+      "fireball" :[13,17,25,33,39,48]
+    }
+  },
+  "Armor":{
+    "small_shield": [6,12,18,24,30,36] ,
+    "helmet": [5,10,15,20,25,30],
+    "breastplate": [10,17,24,31,38,45],    
+    "shield": [8,16,24,32,40,48]
+  },
+  "Containers":{
+    "small_bag": 1,
+    "bag": 2,
+    "box": 3,
+    "pack": 4,
+    "chest": 5
+  },
+  "Money":{
+    "coins": 10,
+    "ring": 15,
+    "necklace": 20,
+    "horn": 25,
+    "lamp": 30,
+    "chalice": 40,
+    "crown": 50
+  },
+  "Items":{
+    "quiver": ["quiver", 1, "Tan", 6, 0],
+    "food": ["food", 1, "Tan", 3, 0],
+    "treasure": ["treasure", 1, "Yellow", 0, 0],
+    "ladder" : ["exit", 1, "Tan", 0, 0],
+    "keys": { 
+      "Tan": 1,
+      "Orange": 2,
+      "Blue":3
+    },
+    "amulets":{
+      "Blue": 1,
+      "Pink": 2,
+      "Purple": 3
+    }
+  }
+}

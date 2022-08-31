@@ -47,6 +47,7 @@ var icons = {
 
 
 
+
 class Item:
 	var name = ""
 	var kind = ""
@@ -85,24 +86,6 @@ var treasure 	# final treasure
 var items = []
 
 
-# levels of war monsters
-const White = Color( 0xffffffff );
-const Grey = Color( 0x999999ff );
-const Orange = Color( 0xFF8400ff )
-
-# levels of magic monsters
-const Blue = Color( 0x436fa8ff )
-const Pink = Color( 0xe843a0ff )
-const Purple = Color( 0x5a1e96ff )
-const Red = Color( 0xcc2a2aff )
-
-
-#levels of hybrid monsters
-const Tan =  Color( 0xdbb592ff )
-const Green = Color( 0x00b300ff )
-const Yellow = Color( 0xf4fc58ff )
-
-
 func define_item( item_type, icon_name, power, col, stat1, stat2 ):
 	var it = Item.new()
 	it.kind = item_type
@@ -130,105 +113,6 @@ func missile_for(item):
 			return icons[item.name]
 
 
-func add_containers():
-	var container_colors = [Tan,Orange,Blue]
-	for index in range(3):
-		var power = index+1
-		var col = container_colors[index]
-		define_item( "container", "small_bag", power, col, 0, 0 )
-		define_item( "container", "bag", power, col,  0, 0 )
-		define_item( "container", "box", power, col, 0, 0 )
-		define_item( "container", "pack", power, col, 0, 0 )
-		define_item( "container", "chest", power, col, 0, 0 )
-
-
-func add_potions():
-	define_item("small_potion", "War Dmg Potion", 1, Orange, 7, 2)
-	define_item("small_potion", "Magic Dmg Potion", 1, Yellow, 5, 2)
-	define_item("potion", "Health Potion", 1, Green, 5, 0)
-	define_item("potion", "Mind Potion", 1, Blue, 5, 0)
-	define_item("potion", "Renew Potion", 1, Purple, 5, 0)
-
-
-func add_money():
-	var money_colors = [Orange, Grey, Yellow, White ]
-	for index in range(4):
-		var col = money_colors[index]
-		var power = index + 1
-		define_item( "money", "coins", power, col,  power * 10, 0 )
-		define_item( "money", "ring", power, col,  power * 15, 0 )
-		define_item( "money", "necklace", power, col, power * 20, 0 )
-		define_item( "money", "horn", power, col,  power * 25, 0 )
-		define_item( "money", "lamp", power, col,  power * 30, 0 )
-		define_item( "money", "chalice", power, col,  power * 40, 0 )
-		define_item( "money", "crown", power, col,  power * 50, 0 )
-
-
-var war_colors = [ Tan, Orange, Blue, Grey, Yellow, White ]
-
-func add_war_weapons( kind, name, dmg ):
-	var index = 0
-	for value in dmg:
-		var col = war_colors[index];
-		define_item(kind, name, index+1, col, dmg[index], 0 )
-		index = index + 1
-
-
-
-
-var magic_colors = [ Blue, Grey, White, Pink, Red, Purple ]
-
-func add_magic_weapons( kind, name, dmg ):
-	var index = 0
-	for value in dmg:
-		var col = magic_colors[index];
-		define_item(kind, name, index+1, col, 0, dmg[index] )
-		index = index + 1
-
-
-
-func add_weapons():
-	add_war_weapons("weapon", "bow", [6,9,15,21,27,33] )
-	add_war_weapons("weapon", "crossbow", [18,24,30,36,42,99] )
-	add_war_weapons("weapon", "spear", [21,27,33,42,57,75] )
-	add_war_weapons("weapon", "dagger", [9,15,21,30,42,57] )
-	add_war_weapons("weapon", "axe", [15,21,27,36,57,66] )
-	add_war_weapons("armor", "small_shield", [6, 12, 18, 24, 30, 36] )
-	add_war_weapons("armor", "shield", [8, 16, 24, 32, 40, 48] )
-	add_magic_weapons("weapon", "scroll", [3,5,9,13,17,21] )
-	add_magic_weapons("weapon", "book", [11,15,19,23,27,65] )
-	add_magic_weapons("weapon", "wand", [9,13,17,23,33,43] )
-	add_magic_weapons("weapon", "staff", [17,21,29,45,55,65] )
-	add_magic_weapons("weapon", "small_fireball", [5,9,13,23,33,39] )
-	add_magic_weapons("weapon", "fireball", [13,17,25,33,39,48] )
-	add_war_weapons( "armor", "helmet", [5,10,15,20,25,30] )
-	add_war_weapons( "armor", "breastplate", [10,17,24,31,38,45] )
-
-
-
-func add_all_items():
-	define_item( "quiver", "quiver", 1, Tan,  6, 0 )
-	define_item( "food", "food", 1, Tan, 3, 0 )
-	define_item( "item", "key", 1, Tan,  3, 0 )
-	define_item( "item", "key", 2, Orange,  3, 0 )
-	define_item( "item", "key", 3, Blue,  3, 0 )
-	define_item( "item", "amulet", 1, Blue,  0, 0 )
-	define_item( "item", "amulet", 2, Pink,  0, 0 )
-	define_item( "item", "amulet", 3, Purple,  0, 0 )
-	#define_item( "item", "small_ring", 1, Blue,  0, 0 )
-	#define_item( "item", "small_ring", 2, Pink,  0, 0 )
-	#define_item( "item", "small_ring", 3, Purple,  0, 0 )
-	#define_item( "item", "tome", 3, Blue,  1, 0 )
-	#define_item( "item", "tome", 3, Pink,  2, 0 )
-	#define_item( "item", "tome", 3, Purple,  3, 0 )
-	add_containers()
-	#add_potions()
-	add_money()
-	add_weapons()
-	treasure = define_item("treasure", "treasure", 1, Yellow, 0, 0 )
-	define_item("exit", "ladder", 1, Tan, 0, 0)
-
-
 var dungeon
 
 
@@ -238,7 +122,105 @@ func _ready():
 		var r = icons[name]
 		r.position *= 32
 		icons[name] =  r
-	add_all_items()
+	# add_all_items()
+	
+	load_all_items()
+
+
+# equivalent to [data[n] for n in names.split(",")]
+func select_names(data: Dictionary, names: String) -> Array:
+	var result = []
+	for n in names.split(",", false):
+		var item = data.get(n.strip_edges())
+		if item == null:
+			print("Missing entry: {0} in {1}".format([n, data]))
+		else:
+			result.push_back(item)
+	return result
+
+
+func load_colors(data) -> Dictionary:
+	var colors = {}
+	for name in data:
+		colors[name] = Color(data[name])
+	return colors
+
+
+func add_item_types(kind, name, dmg, colors):
+	var index = 0
+	for value in dmg:
+		var col = colors[index];
+		define_item(kind, name, index+1, col, dmg[index], 0 )
+		index = index + 1
+
+
+func load_weapons(data, colors):
+	var war_colors = select_names( colors ,"Tan, Orange, Blue, Grey, Yellow, White")
+	var war = data["War"]
+	for name in war:
+		add_item_types("weapon", name, war[name], war_colors)
+		
+	var magic_colors = select_names( colors ,"Blue, Grey, White, Pink, Red, Purple")
+	var magic = data["Magic"]
+	for name in magic:
+		add_item_types("weapon", name, magic[name], magic_colors)
+
+
+func load_armor(data, colors):
+	var armor_colors = select_names( colors ,"Tan, Orange, Blue, Grey, Yellow, White")
+	for name in data:
+		add_item_types("armor", name, data[name], armor_colors)
+
+func load_money(data, colors):
+	var money_colors = select_names(colors, "Orange, Grey, Yellow, White")
+	for name in data:
+		for power in range(4):
+			var stat1 = data[name] * power
+			define_item("money", name, power, money_colors[power], stat1, 0)
+
+func load_containers(data, colors):
+	var cont_colors = select_names(colors, "Tan,Orange,Blue")
+	for name in data:
+		for index in range(3):
+			define_item("container", name, index+1, cont_colors[index], 0, 0)
+
+	
+func define_special(name, data, color):
+	var item = data[name]
+	return define_item(item[0], name, item[1], color[item[2]], item[3], item[4])
+	
+func load_items(data, colors):
+	define_special("quiver", data, colors)
+	define_special("food", data, colors)
+	treasure = define_special("treasure", data, colors)
+	define_special("ladder", data, colors)
+	var keys = data["keys"]
+	for name in keys:
+		var power = keys[name]
+		define_item("item", "key", power, colors[name], 3, 0)
+	var amulets = data["amulets"]
+	for name in amulets:
+		var power = amulets[name]
+		define_item("item", "amulet", power, colors[name], 0, 0)
+
+
+func load_all_items():
+	var src = File.new()
+	src.open( 'data/items/items.json', File.READ )
+	var txt = src.get_as_text() ;
+	src.close()
+	var data = JSON.parse(txt);
+	if data.error:
+		print("Error reading item list:")
+		print( "On line: %d: %s" % [data.error_line, data.error_string] )
+	else:
+		var colors = load_colors( data.result["Colors"])
+		load_weapons(data.result["Weapons"], colors)
+		load_armor(data.result["Armor"], colors)
+		load_containers(data.result["Containers"], colors)
+		load_items(data.result["Items"], colors)
+		load_money(data.result["Money"], colors)
+
 
 
 func find_items(kind, names, powers):
