@@ -459,8 +459,6 @@ func retreat():
 
 # tries to initiate combat ahead of player
 func attack_ahead():
-	if player_state != PlayerState.IDLE:
-		return
 	var ahead = cell_ahead()
 	if ahead==null or ahead.enemy==null:
 		return

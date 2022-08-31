@@ -110,28 +110,5 @@ func _input(_event):
 		if Input.is_action_just_released("look_left") or Input.is_action_just_released("look_right"):
 			unglance()
 		return
-#
-#	if Input.is_action_just_pressed("forward"):
-#		self.move_forward()
-#	elif Input.is_action_just_pressed("back"):
-#		self.move_back()
-#	elif Input.is_action_just_pressed("left"):
-#		self.turn_player(90)
-#	elif Input.is_action_just_pressed("right"):
-#		self.turn_player(-90)
-#	elif Input.is_action_just_pressed("look_left"):
-#		glance(90)
-#	elif Input.is_action_just_pressed("look_right"):
-#		glance(-90)
-#	elif Input.is_action_just_pressed("attack"):
-#		player.attack_ahead()
-#	elif Input.is_action_just_pressed("descend"):
-#		player.use_exit()
-#	elif Input.is_action_just_pressed("rest"):
-#		player.rest()	
-#	elif Input.is_action_just_pressed("open"):
-#		player.open_door()
-#	elif Input.is_action_just_pressed("use"):
-#		player.use_item()
 
 
