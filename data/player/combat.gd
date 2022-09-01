@@ -7,11 +7,13 @@ var item_list
 var audio
 
 onready var player_anim = $PlayerAnim
+onready var player_timer = $PlayerTimer
 onready var player_weapon = $PlayerWeapon
 onready var player_audio = $PlayerWeapon/Audio
 
 
 onready var enemy_anim = $EnemyAnim
+onready var enemy_timer = $EnemyTimer
 onready var enemy_weapon = $EnemyWeapon
 onready var enemy_audio = $EnemyWeapon/Audio
 
@@ -23,14 +25,12 @@ var enemy_cell : Spatial = null
 var enemy : Spatial = null # which enemy, set in start(...)
 var monster
 
+
 var attacking = false
-var retreating = false
+var retreat = false
 
 const Enemy_Delay = 2
 const Player_Delay = 1
-
-var player_cooldown = 0
-var enemy_cooldown = 0
 
 
 func _ready():
@@ -48,70 +48,66 @@ func _ready():
 	player_weapon = player.find_node("PlayerWeapon")
 	enemy_weapon.visible = false
 	player_weapon.visible = false
+	set_process(false)
 
 
 
-func start(e_cell):
+func start(e_cell, attack: bool):
+	if (not e_cell.enemy) or (not e_cell.enemy.monster):
+		return
 	self.enemy_cell = e_cell
 	self.enemy = e_cell.enemy
-	player.player_state = "combat"
+	assert( self.enemy != null )
+	player.player_state = player.PlayerState.COMBAT
+	attacking = attack
+	retreat = false
 	monster = enemy.monster
 	enemy_weapon.visible = false
 	player_weapon.visible = false
+	set_process(true)
+	
 
 
+func _process(_delta):
+	if Input.is_action_just_pressed("attack"):
+		attacking = true
+	elif Input.is_action_just_pressed("back"):
+		retreat = true
+		
+	player_turn()
+	enemy_turn()
+	check_combat_over()
 
-func input(evt):
-	if not (evt is InputEventKey):
+
+func check_combat_over():
+	if player.is_dead():
+		player.end_combat("die", enemy_cell.enemy)
+		self.set_process(false)
+	elif enemy.is_dead():
+		player.end_combat("win", enemy_cell.enemy)
+		self.set_process(false)
+
+
+func player_turn():
+	if not player_timer.is_stopped() or player_anim.is_playing():
 		return
-	if evt.pressed and (not evt.echo):
-		match evt.scancode:
-			KEY_F: 
-				attacking = not retreating
-			KEY_S:
-				retreating = true
-				attacking = false
-				player_cooldown += Player_Delay
+	if retreat:
+		player.retreat()
+	elif attacking:
+		attacking = false
+		player_fire()
 
 
-func player_turn(delta):
-	if player_cooldown>0:
-		player_cooldown = max(player_cooldown - delta,0)
-	if not player_anim.is_playing():
-		if player_cooldown<=0:
-			if retreating:
-				player.retreat()
-			elif attacking:
-				attacking = false
-				player_fire()
-				player_cooldown = Player_Delay			
-
-
-func enemy_turn(delta):
-	if enemy_cooldown>0:
-		enemy_cooldown = max(enemy_cooldown - delta,0)
-	if not enemy_anim.is_playing():
-		if enemy_cooldown <= 0:
-			enemy_fire()
-			enemy_cooldown = Enemy_Delay
+func enemy_turn():
+	if enemy_timer.is_stopped() and not enemy_anim.is_playing():
+		enemy_fire()
 		
 		
 func animating():
 	return player_anim.is_playing() or enemy_anim.is_playing()
 
-func process(delta):
-	if not animating():
-		if player.is_dead():
-			player.end_combat("die", enemy_cell.enemy)
-			return
-		elif enemy.is_dead():
-			player.end_combat("win", enemy_cell.enemy)
-			return
-	player_turn(delta)
-	enemy_turn(delta)
-	
-	
-	
+
+
 
 var broken
 
@@ -154,6 +150,7 @@ func player_fire():
 	if fx!=null:
 		audio.stream = fx
 		audio.play()
+	player_timer.start(Player_Delay)
 
 
 func player_fire_done(_which):
@@ -184,6 +181,7 @@ func enemy_fire():
 		enemy_anim.play("SpinFire")
 	else:
 		enemy_anim.play("Fire")
+	enemy_timer.start(Enemy_Delay)
 
 
 func enemy_fire_done(_which):
@@ -192,4 +190,3 @@ func enemy_fire_done(_which):
 
 
 
-	

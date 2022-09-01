@@ -1,11 +1,10 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://data/game_env.tres" type="Environment" id=1]
 [ext_resource path="res://data/sounds/hit.wav" type="AudioStream" id=2]
 [ext_resource path="res://data/items/item_list.gd" type="Script" id=3]
 [ext_resource path="res://data/player/combat.gd" type="Script" id=5]
 [ext_resource path="res://data/dungeon/dungeon_wall.tscn" type="PackedScene" id=7]
-[ext_resource path="res://data/player/viewmap.gd" type="Script" id=9]
 [ext_resource path="res://data/enemies/enemy_list.gd" type="Script" id=10]
 [ext_resource path="res://data/dungeon/floor.tscn" type="PackedScene" id=11]
 [ext_resource path="res://data/dungeon/outer_wall.tscn" type="PackedScene" id=12]
@@ -231,11 +230,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 1.25, -16.5 )
 [node name="Player" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21 )
 script = ExtResource( 19 )
-
-[node name="ShowMap" type="Node" parent="Player" groups=[
-"action",
-]]
-script = ExtResource( 9 )
 
 [node name="Combat" type="Node" parent="Player" groups=[
 "action",

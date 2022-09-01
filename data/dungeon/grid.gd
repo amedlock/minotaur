@@ -10,17 +10,11 @@ var gates = []
 var cell_prefab = preload("res://data/dungeon/cell.tscn")
 
 
-var outer_wall 
+onready var dungeon = get_parent()
 
-var cell_size
+onready var outer_wall = dungeon.find_node("outer_wall")
 
-var dungeon
-
-
-func _ready():
-	dungeon = get_parent()
-	outer_wall = dungeon.find_node("outer_wall")
-
+var cell_size : float
 
 
 func index(x,y) -> int:
@@ -32,17 +26,15 @@ func configure(w: int, h: int, cell_sz: float):
 	self.width = w
 	self.height = h
 	self.cell_size = cell_sz
-	var total = width * height
-	cells.resize(total)
+	cells.resize(width * height)
 	for yp in range(0,height):
 		for xp in range(0,width):
-			var index = xp + (yp * width)
 			var node = cell_prefab.instance()
 			self.add_child(node)
 			node.configure(xp, yp)
 			node.name = "Cell_%d_%d" % [xp, yp]
 			node.translation = Vector3(xp * cell_sz, 0, -(yp * cell_sz))
-			cells[index] = node
+			cells[self.index(xp,yp)] = node
 
 
 func reset_all():
@@ -58,21 +50,23 @@ func get_cell(x : int, y: int):
 	return cells[x + (y * width)]
 
 
-func get_wall(p : Vector2, p2: Vector2):
-	if p.x>p2.x: # west
-		return get_wall(p2, p)
-	elif p.y>p2.y: # south
-		return get_wall(p2, p)
-		
-	var cur = get_cell(int(p.x), int(p.y))
-	if cur==null:
-		return outer_wall
-	
-	if p2.x > p.x:
-		return cur.east
-	elif p2.y > p.y:
-		return cur.north
-	return null
+func get_wall(x: int, y: int, ang: int) -> Spatial:
+	assert(ang in [0, 90, 180, 270])
+
+	if ang==90:
+		var prev = get_cell(x-1, y)
+		if prev==null:
+			return outer_wall
+		return prev.east
+	elif ang==180:
+		var prev = get_cell(x, y-1)
+		if prev==null:
+			return outer_wall
+		return prev.north
+	elif ang==270:
+		return get_cell(x, y).east
+	else:
+		return get_cell(x, y).north
 
 
 func set_corner(x, y, which):
@@ -89,9 +83,8 @@ func clear_corner(x,y,which):
 
 func set_gate( x,y , kind):
 	var cell = get_cell(x,y)
-	if not cell:
-		return
-	cell.set_gate(kind)
+	if cell:
+		cell.set_gate(kind)
 	
 
 func set_item(x, y, item):

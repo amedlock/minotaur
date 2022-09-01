@@ -1,9 +1,18 @@
 extends Spatial;
 
+enum PlayerState {
+	IDLE,  		# default state
+	TURNING,
+	MOVING,
+	GLANCING,
+	COMBAT,
+	WAITING,
+	WON,
+	LOST
+}
 
-var loc = Vector2(0, 0)  # grid coordinates of player x and z
-var dir = 270;
-var glance_amt = 0		 # if glancing, add this angle
+
+var player_state = PlayerState.IDLE;
 
 
 # these are Item references, not nodes
@@ -12,9 +21,10 @@ var right_hand ;
 
 
 # item references for each slot
-var inventory = {1:null, 2:null, 3:null,
-				 4:null, 5:null, 6:null,
-				 7:null, 8:null, 9:null }
+var inventory = {
+	1:null, 2:null, 3:null,
+	4:null, 5:null, 6:null,
+	7:null, 8:null, 9:null }
 
 
 
@@ -59,16 +69,10 @@ var game
 var map_view
 var item_list
 
-onready var idle = $idle
-onready var move = $move
-onready var glance = $glance
 onready var combat = $combat
-onready var viewMap = $viewMap
 onready var hud = $Camera/HUD
 onready var audio = $Audio
 
-
-var player_state = "idle"
 
 
 func _ready():
@@ -78,11 +82,13 @@ func _ready():
 	grid = dungeon.find_node("Grid")
 	item_list = dungeon.find_node("ItemList")
 	map_view = game.find_node("MapView")
+	reset_location()
+	self.player_state = PlayerState.IDLE
 	self.disable()
 
 
 func enable():
-	self.show()
+	self.show()	
 	hud.update()
 
 
@@ -90,48 +96,92 @@ func disable():
 	self.hide()
 
 
-# updates direction based on dir and glance
-func set_dir( d ):
-	d = 0 if d==null else int(d)
-	self.dir = wrapi(d,0,360)
-	update_rotation()
-	hud.update_compass()
 
+func _input(evt):
+	if $PlayerControl.tween.is_active():
+		return
+		
+	match player_state:
+		PlayerState.IDLE:
+			if Input.is_action_just_pressed("forward"):
+				$PlayerControl.move_forward()
+			elif Input.is_action_just_pressed("left"):
+				$PlayerControl.turn_player(90)
+			elif Input.is_action_just_pressed("right"):
+				$PlayerControl.turn_player(-90)
+			elif Input.is_action_just_pressed("back"):
+				$PlayerControl.move_back()
+			elif Input.is_action_just_pressed("look_left"):
+				$PlayerControl.glance(90)
+			elif Input.is_action_just_pressed("look_right"):
+				$PlayerControl.glance(-90)
+			elif Input.is_action_just_pressed("open"):
+				self.open_door()
+			elif Input.is_action_just_pressed("rest"):
+				self.rest()
+			elif Input.is_action_just_pressed("use"):
+				self.use_item()
+			elif Input.is_action_just_pressed("descend"):
+				self.use_exit()
+							
+		PlayerState.TURNING: 
+			pass
+			
+		PlayerState.MOVING:
+			# allow rest here?
+			pass
+			
+		PlayerState.GLANCING:
+			if !Input.is_action_pressed("look_left") and !Input.is_action_pressed("look_right"):
+				$PlayerControl.unglance()
+			
+		PlayerState.COMBAT:
+			pass
+			
+		PlayerState.WAITING:
+			pass
+			
+			
+	if evt is InputEventKey:
+		debug_keys(evt)
 
-func set_glance( g ):
-	self.glance_amt = g
-	update_rotation()
-
-
-func update_rotation():
-	self.rotation_degrees = Vector3( 0, self.dir + glance_amt, 0 )
-
-
-func coord_to_world(p):
-	return start_pos.translation + Vector3(p.x * 3, 0, -p.y * 3)
-
-
-func set_pos( v: Vector2 ):
-	loc.x = v.x
-	loc.y = v.y
-	self.translation = coord_to_world(loc)
 
 
 func reset_location():
-	set_pos( Vector2(0, 0) ); last_loc = null
-	set_dir( 270 ); last_dir = null
+	self.translation = start_pos.translation
+	self.rotation_degrees.y = 270
+
+
+func coord_to_world(p : Vector2) -> Vector3:
+	return start_pos.translation + Vector3(p.x * 3, 0, -p.y * 3)
+
+
+# get the world coords for the player
+func get_coord() -> Vector2:
+	var loc = (self.translation - start_pos.translation).abs()
+	return Vector2(round(loc.x / 3.0), round(loc.z / 3.0))
+
+
+#player direction in degrees
+func get_dir() -> int:
+	var val = int( fposmod(rotation_degrees.y, 360))
+	if not val in [0,90,180,270]:
+		print_debug("Dir=" + str(val))	
+	return val
+
+
+func get_forward_vector() -> Vector2:
+	var bz = transform.basis.z
+	return Vector2(round(bz.x), round(bz.z))
 
 
 func over_exit() -> bool:
 	if dungeon.current_level.depth<1:
 		return false
-	var cell = dungeon.grid.get_cell(loc.x, loc.y)
+	var coord = get_coord()
+	var cell = dungeon.grid.get_cell(coord.x, coord.y)
 	return cell.item and cell.item.item_info.name=="ladder"
 
-
-
-func is_moving():
-	return player_state=="move"
 
 
 func is_dead() -> bool:
@@ -139,47 +189,26 @@ func is_dead() -> bool:
 
 
 func dir_name() -> String:
-	if dir > 315 or dir < 45: return "north"
-	if dir >= 45 and dir < 135: return "west"
-	if dir >= 135 and dir < 225: return "south"
-	return "east"
-
-
-
-func _input(evt):
-	match player_state:
-		"idle" : idle.input(evt)
-		"combat": combat.input(evt)
-		"glance": glance.input(evt)
-		"move": move.input(evt)
-		"viewMap": viewMap.input(evt)
-	if evt is InputEventKey:
-		debug_keys(evt)
-
-
-func _process(delta):
-	match player_state:
-		"idle" : idle.process(delta)
-		"combat": combat.process(delta)
-		"glance": glance.process(delta)
-		"move": move.process(delta)
-		"viewMap": viewMap.process(delta)
+	match get_dir():
+		0: return "north"
+		90: return "west"
+		180: return "south"
+		_: return "east"
 
 
 
 
-func script_changed():
-	player_state.player = self
 
 
 
 func use_exit():
-	if over_exit():
-		dungeon.use_exit()
+	if player_state==PlayerState.IDLE and over_exit():
+		if dungeon.use_exit():
+			$PlayerControl.reset()
 
 
 func show_map():
-	pass
+	game.show_map()
 
 
 func debug_keys(evt):
@@ -196,43 +225,9 @@ func debug_keys(evt):
 
 
 
-func move_forward():
-	var wall = wall_ahead()
-	if wall and wall.is_blocked():
-		return
-	var cell = cell_ahead()
-	if not cell:
-		return
-	if cell.enemy:
-		start_combat(cell)
-		return
-	last_loc = self.loc
-	last_dir = self.dir
-	move.start( cell )
-
-
-
-func move_backward():
-	var wall = wall_behind()
-	if wall and wall.is_blocked():
-		return
-	var cell = cell_behind()
-	if not cell:
-		return
-	if cell.enemy:
-		idle.turn_to(180)
-		#start_combat(cell)
-		return
-	last_loc = self.loc
-	last_dir = self.dir
-	move.start( cell )
-
-
-func close_doors():
-	pass
-
 func cheat_death():
-	if resurrected: return false
+	if resurrected: 
+		return false
 	if gold > 500:
 		resurrected = true
 		for n in range(1,10): self.inventory[n] = null
@@ -245,15 +240,13 @@ func cheat_death():
 
 
 func set_item_at_feet(item):
-	if is_moving():
-		return null
-	grid.set_item( loc.x, loc.y , item)
+	var coord = get_coord()
+	grid.set_item( coord.x, coord.y , item)
 
 
 func item_at_feet():
-	if is_moving():
-		return null
-	var item_node = grid.get_cell( loc.x, loc.y ).item
+	var coord = get_coord()
+	var item_node = grid.get_cell( coord.x,coord.y ).item
 	return item_node.item_info if item_node else null
 
 
@@ -266,6 +259,7 @@ func has_key_for(item):
 	if left_hand and left_hand.name=="key" and left_hand.power >= item.power:
 		return true
 	return false
+
 
 func open_container(item):
 	if item.needs_key:
@@ -366,6 +360,7 @@ func enter_gate(cell):
 		dungeon.load_gate_level(cell.gate)
 		cell.set_gate(null)
 		self.needs_rest = true
+		$PlayerControl.reset()
 
 
 func can_see( wall ):
@@ -376,37 +371,36 @@ func has_weapon():
 	return right_hand!=null and right_hand.kind=="weapon"
 
 
-func face_vector():
-	dir = wrapi(dir, 0, 360);
-	match int( dir / 90 ):
-		0 : return Vector2(0,1)  # north
-		1 : return Vector2(-1,0) # west
-		2 : return Vector2(0,-1) # south
-		3 : return Vector2(1,0)  # east
-	assert(false)
+func face_vector() -> Vector2:
+	var fwd = -transform.basis.z.normalized()
+	return  Vector2(round(fwd.x), -round(fwd.z))
 
 
 func coord_ahead() -> Vector2:
-	return loc + face_vector()
+	return get_coord() + face_vector()
 
 func coord_behind() -> Vector2:
-	return loc + -face_vector()
+	return get_coord() - face_vector()
 
 func coord_right() -> Vector2:
-	var f = face_vector()
-	return loc + Vector2( f.y, -f.x )
+	var fv = face_vector()
+	return get_coord() + Vector2(fv.y, -fv.x)
 
 func coord_left() -> Vector2:
-	var f = face_vector()
-	return loc + Vector2( -f.y, f.x )
+	var fv = face_vector()
+	return get_coord() - Vector2(fv.y, -fv.x)
+
+func current_cell():
+	var p = get_coord()
+	return dungeon.grid.get_cell(p.x, p.y)
 
 
 func cell_ahead():
-	var p = loc + face_vector()
+	var p = coord_ahead()
 	return dungeon.grid.get_cell(p.x, p.y)
 
 func cell_behind():
-	var p = loc + (-face_vector())
+	var p = coord_behind()
 	return dungeon.grid.get_cell(p.x, p.y)
 
 func cell_left():
@@ -414,30 +408,34 @@ func cell_left():
 	return dungeon.grid.get_cell(p.x, p.y)
 
 func cell_right():
-	var p = coord_right()
-	return dungeon.grid.get_cell(p.x, p.y)
+	var c = coord_right()
+	return dungeon.grid.get_cell(c.x, c.y)
 
-func wall_ahead():
-	return dungeon.grid.get_wall(loc, coord_ahead() )
+func wall_ahead() -> Spatial:
+	var c = get_coord()
+	return dungeon.grid.get_wall(c.x, c.y, get_dir())
 
-func wall_behind():
-	return dungeon.grid.get_wall(loc, coord_behind() )
+func wall_behind() -> Spatial:
+	var c = get_coord()
+	var rdir = posmod(get_dir()-180, 360)
+	return dungeon.grid.get_wall(c.x, c.y, rdir)
 
 
 
 func start_combat( cell ) -> bool:
-	if not (cell and cell.enemy):
+	if player_state!=PlayerState.IDLE:
 		return false
-	var pos = cell.grid_pos();
-	var wall = dungeon.grid.get_wall(loc, pos)
-	if wall and wall.is_blocked():
-		return false
-	var ang = int(-rad2deg( (pos - loc).angle_to(face_vector()) ))
-	assert( ang in [90, 0, -90])
-	if ang!=0:
-		idle.turn_to(ang)
-		idle.connect('completed', combat, 'start', [cell], CONNECT_ONESHOT)
-	return true
+	return (cell and cell.enemy)
+#	var pos = cell.grid_pos();
+#	var wall = dungeon.grid.get_wall(loc, pos)
+#	if wall and wall.is_blocked():
+#		return false
+#	var ang = int(-rad2deg( (pos - loc).angle_to(face_vector()) ))
+#	assert( ang in [90, 0, -90])
+#	if ang!=0:
+#		idle.turn_to(ang)
+#		idle.connect('completed', combat, 'start', [cell], CONNECT_ONESHOT)
+#	return true
 
 
 func end_combat(outcome,enemy):
@@ -446,34 +444,31 @@ func end_combat(outcome,enemy):
 			killed(enemy)
 			enemy.die()
 			needs_rest = true
-			self.player_state="idle"
+			self.player_state=PlayerState.IDLE
 		"die":
 			if is_dead() and not cheat_death():
-				player_state ="lost"
+				self.player_state = PlayerState.LOST
 		_: assert(false)
 	hud.update()
 	
 
 
 func retreat():
-	if last_loc==null: return false
-	set_pos( last_loc ); last_loc = null
-	set_dir( last_dir ); last_dir = null
-	self.hud.update()
-	self.in_combat = false
-	return true
+	$PlayerControl.flee()
 
 
 # tries to initiate combat ahead of player
 func attack_ahead():
-	combat.attacking = true
+	if not [PlayerState.IDLE, PlayerState.COMBAT].has(player_state):
+		return
 	var ahead = cell_ahead()
 	if ahead==null or ahead.enemy==null:
 		return
 	var wall = wall_ahead()
 	if can_see(wall):
-		self.player_state= "combat"
-		combat.start(ahead)
+		combat.attacking = true
+		self.player_state= PlayerState.COMBAT
+		combat.start(ahead, true)
 		reduce_potion_turn()
 
 
@@ -493,7 +488,7 @@ func win():
 	game.show_map()
 	audio.stream = load("res://data/sounds/win2.wav")
 	audio.play()
-	self.state = "won"
+	self.player_state = PlayerState.WON
 
 
 func reduce_potion_turn():
@@ -514,8 +509,8 @@ func rest():
 	magic_exp = magic_exp % 5
 	health_max += hp_gain;
 	mind_max += mind_gain
-	health = int( min( health + (health_max * 2 / 3), health_max ))
-	mind = int( min( mind + (mind_max * 2 / 3), mind_max ))
+	health = int( min( health + int(health_max * 2.0 / 3.0), health_max ))
+	mind = int( min( mind + int(mind_max * 2.0 / 3.0), mind_max ))
 	food -= 1
 	hud.update_stats()
 

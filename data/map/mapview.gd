@@ -58,7 +58,7 @@ func index( x, y ):
 
 
 func update():
-	var loc = player.loc
+	var loc = player.get_coord()
 	marker.visible = true
 	marker.position = tile_position(loc.x, loc.y)
 	if player.is_dead():
@@ -68,7 +68,7 @@ func update():
 	else:
 		marker.modulate = Color.black
 		marker.region_rect = arrow_tile
-		marker.rotation_degrees = 360-player.dir
+		marker.rotation_degrees = fposmod(360-player.get_dir(), 360)
 
 
 func  map_tile(x : int, y : int) -> Rect2:

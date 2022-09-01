@@ -1,6 +1,6 @@
 extends Spatial;
 
-enum GameMode { Menu, Game, Map, GameOver, GameWon };
+enum GameMode { Menu, Dungeon, Map, GameOver, GameWon };
 
 
 var mode = GameMode.Menu
@@ -32,7 +32,7 @@ func  show_game():
 	dungeon.show()
 	menu.disable()
 	map_view.hide()
-	mode = GameMode.Game	
+	mode = GameMode.Dungeon	
 				
 func  show_menu():
 	mode = GameMode.Menu
@@ -48,6 +48,15 @@ func show_map():
 
 
 func _input(evt):
+	match mode:
+		GameMode.Dungeon:
+			if Input.is_action_just_pressed("view map"):
+				show_map()
+		GameMode.Map:
+			if Input.is_action_just_released("view map"):
+				show_game()
+		_:
+				pass
 	if evt is InputEventKey:
 		if evt.echo or (not evt.pressed): 
 			return
@@ -55,6 +64,4 @@ func _input(evt):
 			help.visible = !help.visible
 		elif evt.scancode==KEY_F10:
 			get_tree().quit()
-	
-		
-		
+

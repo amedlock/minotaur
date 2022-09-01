@@ -34,6 +34,7 @@ func configure(enemy, _dungeon):
 
 
 func damage( item ):
+	assert(item != null)
 	if item!=null:
 		self.health = max( self.health-item.stat1, 0 )
 		self.mind = max( self.mind-item.stat2, 0 )
