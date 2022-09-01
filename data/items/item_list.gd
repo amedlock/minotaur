@@ -3,49 +3,7 @@ extends Spatial;
 
 const ImageSize = Vector2(32,32);
 
-var icons = {
-	"small_potion" : Rect2( Vector2(0,0), ImageSize ),
-	"arrow" : Rect2( Vector2(1,0), ImageSize ),
-	"potion" : Rect2( Vector2(2,0), ImageSize ),
-	"ladder" : Rect2( Vector2(3,0), ImageSize ) ,
-	"small_shield" : Rect2( Vector2(4,0), ImageSize ),
-	"breastplate" : Rect2( Vector2(6,0), ImageSize ),
-	"bomb" :Rect2( Vector2(0,1), ImageSize ),
-	"food" : Rect2( Vector2(1,1), ImageSize ),
-	"quiver" : Rect2( Vector2(3,1), ImageSize ),
-	"shield" : Rect2( Vector2(5,1), ImageSize ),
-	"helmet" : Rect2( Vector2(7,1), ImageSize ),
-	"bow" : Rect2( Vector2(0,2), ImageSize ),
-	"crossbow" : Rect2( Vector2(2,2), ImageSize ),
-	"axe" : Rect2( Vector2(4,2), ImageSize ),
-	"dagger" : Rect2( Vector2(6,2), ImageSize ),
-	"tome" : Rect2( Vector2(0,3), ImageSize ),
-	"book" : Rect2( Vector2(1,3), ImageSize ),
-	"scroll" : Rect2( Vector2(3,3), ImageSize ),
-	"amulet" : Rect2( Vector2(5,3), ImageSize ),
-	"spear" : Rect2( Vector2(7,3), ImageSize ),
-	"fireball" : Rect2( Vector2(0,4), ImageSize ),
-	"small_lightning" : Rect2( Vector2(1,4), ImageSize ),
-	"small_fireball" : Rect2( Vector2(2,4), ImageSize ),
-	"wand" : Rect2( Vector2(4,4), ImageSize ),
-	"staff" : Rect2( Vector2(6,4), ImageSize ),
-	"ring" : Rect2( Vector2(1,5), ImageSize ),
-	"small_bag" : Rect2( Vector2(3,5), ImageSize ),
-	"bag" : Rect2( Vector2(5,5), ImageSize ),
-	"key" : Rect2( Vector2(7,5), ImageSize ),
-	"box" : Rect2( Vector2(6,6), ImageSize ),
-	"pack" : Rect2( Vector2(4,6), ImageSize ),
-	"chest" : Rect2( Vector2(2,6), ImageSize ),
-	"lamp" : Rect2( Vector2(0,6), ImageSize ),
-	"horn" : Rect2( Vector2(1,7), ImageSize ),
-	"coins" : Rect2( Vector2(3,7), ImageSize ),
-	"necklace" : Rect2( Vector2(4,7), ImageSize ),
-	"chalice" : Rect2( Vector2(5,7), ImageSize ),
-	"crown" : Rect2( Vector2(6,7), ImageSize ),
-	"treasure" : Rect2( Vector2(7,7), ImageSize )
-}
-
-
+var icons : Dictionary 
 
 
 class Item:
@@ -122,8 +80,6 @@ func _ready():
 		var r = icons[name]
 		r.position *= 32
 		icons[name] =  r
-	# add_all_items()
-	
 	load_all_items()
 
 
@@ -144,6 +100,14 @@ func load_colors(data) -> Dictionary:
 	for name in data:
 		colors[name] = Color(data[name])
 	return colors
+
+
+func load_icons(data) -> Dictionary:
+	var result = {}
+	for name in data:
+		var v = data[name]
+		result[name] = Rect2(Vector2(v[0]*32, v[1]*32), ImageSize)
+	return result
 
 
 func add_item_types(kind, name, dmg, colors):
@@ -215,6 +179,7 @@ func load_all_items():
 		print( "On line: %d: %s" % [data.error_line, data.error_string] )
 	else:
 		var colors = load_colors( data.result["Colors"])
+		icons = load_icons(data.result["Icons"])
 		load_weapons(data.result["Weapons"], colors)
 		load_armor(data.result["Armor"], colors)
 		load_containers(data.result["Containers"], colors)

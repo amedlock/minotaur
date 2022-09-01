@@ -12,9 +12,8 @@
 + Remove coloring for most items, add more items
 
 
-glance bug: can walk sideways
-combat bug: player can fire too often
-combat bug: animations are skipped
+combat bug: player can fire after combat is over
+combat bug: smoke (death) animations are skipped
 combat bug: can rest before combat is over (monster weapon still animating)
 
 
