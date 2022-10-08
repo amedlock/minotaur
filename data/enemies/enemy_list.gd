@@ -58,7 +58,6 @@ func _ready():
 	dungeon = get_parent()
 	item_list = dungeon.find_node("Items");
 	load_enemies()
-	#minotaur = add_enemy( "special", "Minotaur", "minotaur", 6, 60, 90, 40, 60 )
 	minotaur = monsters.special.minotaur
 
 
