@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/win2.wav-2040214526a5aec16e841e060dbd27a8.sample"
+type="AudioStreamWAV"
+uid="uid://4r65m3j81f8g"
+path="res://.godot/imported/win2.wav-2040214526a5aec16e841e060dbd27a8.sample"
 
 [deps]
 
 source_file="res://data/sounds/win2.wav"
-dest_files=[ "res://.import/win2.wav-2040214526a5aec16e841e060dbd27a8.sample" ]
+dest_files=["res://.godot/imported/win2.wav-2040214526a5aec16e841e060dbd27a8.sample"]
 
 [params]
 
@@ -17,5 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=true
 edit/normalize=true
-edit/loop=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
 compress/mode=0

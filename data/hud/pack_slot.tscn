@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://data/hud/pack_slot.gd" type="Script" id=1]
-[ext_resource path="res://data/items/item_sheet.png" type="Texture" id=2]
+[ext_resource path="res://data/items/item_sheet.png" type="Texture2D" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 25.1821, 24.9649 )
+size = Vector2( 25.1821, 24.9649 )
 
 [node name="Icon" type="Area2D"]
 script = ExtResource( 1 )
@@ -13,7 +13,7 @@ script = ExtResource( 1 )
 position = Vector2( 3.1777, 5.95821 )
 shape = SubResource( 1 )
 
-[node name="Sprite" type="Sprite" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2( 2.6, 5.3 )
 scale = Vector2( 1.5, 1.5 )
 texture = ExtResource( 2 )

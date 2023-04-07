@@ -1,15 +1,15 @@
 extends Area2D;
 
 
-export(int) var  slot_num;
+@export var slot_num: int;
 
 
 var hud;
-onready var sprite = $Sprite
+@onready var sprite = $Sprite2D
 
 func _ready():
 	hud = find_parent("HUD")
-	connect("input_event", self, "clicked_slot" )
+	connect("input_event", Callable(self, "clicked_slot"))
 	sprite.hide()
 	
 func clicked_slot(_view, evt, _shape_idx ):

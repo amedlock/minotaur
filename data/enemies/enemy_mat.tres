@@ -1,10 +1,11 @@
-[gd_resource type="SpatialMaterial" format=2]
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dqlu37mas0imx"]
 
 [resource]
-flags_transparent = true
-flags_unshaded = true
-flags_do_not_receive_shadows = true
-params_diffuse_mode = 2
-params_specular_mode = 4
-params_billboard_mode = 2
-albedo_color = Color( 0.709804, 0.709804, 0.709804, 1 )
+transparency = 1
+shading_mode = 0
+diffuse_mode = 2
+specular_mode = 4
+albedo_color = Color(0.709804, 0.709804, 0.709804, 1)
+texture_filter = 2
+disable_receive_shadows = true
+billboard_mode = 2

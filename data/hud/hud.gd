@@ -1,40 +1,40 @@
 extends Node2D;
 
-onready var hp_disp = $Stats/HPDisplay;
-onready var mind_disp =$Stats/MindDisplay;
-onready var armor_disp = $Stats/ArmorDisplay;
-onready var damage_disp = $Stats/DamageDisplay;
-onready var gold_disp = $Stats/GoldDisplay;
+@onready var hp_disp = $Stats/HPDisplay;
+@onready var mind_disp =$Stats/MindDisplay;
+@onready var armor_disp = $Stats/ArmorDisplay;
+@onready var damage_disp = $Stats/DamageDisplay;
+@onready var gold_disp = $Stats/GoldDisplay;
 
-onready var food_disp = $Hands/FoodDisplay;
-onready var level_disp = $Hands/LevelDisplay;
-onready var arrow_disp = $Hands/ArrowsDisplay;
-onready var left_hand_sprite  = $Hands/background/Left/Sprite;
-onready var at_feet_sprite = $Hands/background/Feet/Sprite;
-onready var right_hand_sprite = $Hands/background/Right/Sprite;
+@onready var food_disp = $Hands/FoodDisplay;
+@onready var level_disp = $Hands/LevelDisplay;
+@onready var arrow_disp = $Hands/ArrowsDisplay;
+@onready var left_hand_sprite  = $Hands/background/Left/Sprite2D;
+@onready var at_feet_sprite = $Hands/background/Feet/Sprite2D;
+@onready var right_hand_sprite = $Hands/background/Right/Sprite2D;
 
-onready var pack = $Pack;
+@onready var pack = $Pack;
 
 var player ;
 var item_list;
 var dungeon ;
 
-onready var compass = find_node("Compass")
+@onready var compass = find_child("Compass")
 
 var pack_slots = ["Slot1", "Slot2", "Slot3", "Slot4", "Slot5", 
-				  "Slot6", "Slot7", "Slot8", "Slot9" ]
+					"Slot6", "Slot7", "Slot8", "Slot9" ]
 
 
 func _ready():
 	var game = get_tree().get_root().get_node("Game")
 	assert( game != null )
 	assert( compass != null )
-	player = game.find_node("Player", true, false)
-	dungeon = game.find_node("Dungeon", true, false )
-	item_list = dungeon.find_node("ItemList")
-	$Hands/background/Feet.connect("input_event", self, "clicked_feet")
-	$Hands/background/Left.connect("input_event", self, "clicked_left")
-	$Hands/background/Right.connect("input_event", self, "clicked_right")
+	player = game.find_child("Player", true, false)
+	dungeon = game.find_child("Dungeon", true, false )
+	item_list = dungeon.find_child("ItemList")
+	$Hands/background/Feet.connect("input_event", Callable(self, "clicked_feet"))
+	$Hands/background/Left.connect("input_event", Callable(self, "clicked_left"))
+	$Hands/background/Right.connect("input_event", Callable(self, "clicked_right"))
 	
 
 
@@ -76,8 +76,8 @@ func update_pack():
 	update_hand_slot( at_feet_sprite, at_feet )
 	update_damage()
 	var index = 1
-	for name in pack_slots:
-		var p = pack.find_node( name )
+	for i_name in pack_slots:
+		var p = pack.find_child( i_name )
 		if player.inventory.has( index ):
 			p.set_item( player.inventory[index] )
 		else:
@@ -105,10 +105,10 @@ func update():
 
 func pack_slot_clicked( slot , button ):
 	var cur = player.inventory[ slot ]
-	if button==BUTTON_RIGHT:
+	if button==MOUSE_BUTTON_RIGHT:
 		player.inventory[ slot ] = player.right_hand
 		player.right_hand = cur
-	elif button==BUTTON_LEFT:
+	elif button==MOUSE_BUTTON_LEFT:
 		player.inventory[ slot ] = player.left_hand
 		player.left_hand = cur
 	update_stats()
@@ -124,11 +124,11 @@ func clicked_feet( _viewport, event, _shape_idx ):
 		return
 	if item and player.take_item(item):
 		pass
-	elif event.button_index == BUTTON_LEFT:
+	elif event.button_index == MOUSE_BUTTON_LEFT:
 		var left_item = player.left_hand
 		player.left_hand = item
 		player.set_item_at_feet(left_item)
-	elif event.button_index == BUTTON_RIGHT:
+	elif event.button_index == MOUSE_BUTTON_RIGHT:
 		var right_item = player.right_hand
 		player.right_hand = item
 		player.set_item_at_feet(right_item)
@@ -141,9 +141,9 @@ func clicked_right( _viewport, event, _shape_idx ):
 		return
 	if !event.pressed: 
 		return;
-	if event.button_index == BUTTON_LEFT:
+	if event.button_index == MOUSE_BUTTON_LEFT:
 		player.attack_ahead()
-	elif event.button_index == BUTTON_RIGHT:
+	elif event.button_index == MOUSE_BUTTON_RIGHT:
 		var left = player.left_hand
 		player.left_hand = player.right_hand
 		player.right_hand = left
@@ -156,9 +156,9 @@ func clicked_left( _viewport, event, _shape_idx ):
 		return
 	if !event.pressed: 
 		return;
-	if event.button_index == BUTTON_LEFT:
+	if event.button_index == MOUSE_BUTTON_LEFT:
 		pass
-	elif event.button_index==BUTTON_RIGHT:
+	elif event.button_index==MOUSE_BUTTON_RIGHT:
 		var left = player.left_hand
 		player.left_hand = player.right_hand
 		player.right_hand = left

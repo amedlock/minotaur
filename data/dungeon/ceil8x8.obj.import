@@ -1,17 +1,21 @@
 [remap]
 
 importer="wavefront_obj"
+importer_version=1
 type="Mesh"
-path="res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh"
+uid="uid://bm6fipxt6n0w8"
+path="res://.godot/imported/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh"
 
 [deps]
 
-files=[ "res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh" ]
+files=["res://.godot/imported/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh"]
 
 source_file="res://data/dungeon/ceil8x8.obj"
-dest_files=[ "res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh", "res://.import/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh" ]
+dest_files=["res://.godot/imported/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh", "res://.godot/imported/ceil8x8.obj-54d7a6fa3792f75829d59a2379fba4a6.mesh"]
 
 [params]
 
 generate_tangents=true
-scale_mesh=Vector3( 1, 1, 1 )
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

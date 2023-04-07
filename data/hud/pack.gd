@@ -22,7 +22,7 @@ var magic_colors = {
 
 var item_sheet = preload("res://data/items/item_sheet.png" )
 
-onready var hands_node = get_parent().find_node("Hands")
+@onready var hands_node = get_parent().find_child("Hands")
 
 func scale_sprite( spr, img , w, h ):
 	var img_size = img.get_size()
@@ -33,6 +33,6 @@ func scale_sprite( spr, img , w, h ):
 
 func _ready():
 	for n in range(1,10):
-		var which = find_node("slot" + str(n) )
+		var which = find_child("slot" + str(n) )
 		slots.append( which )
 

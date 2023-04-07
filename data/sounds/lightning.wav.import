@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/lightning.wav-6e7f8bfe8f617da70796e318ed86098d.sample"
+type="AudioStreamWAV"
+uid="uid://cv2kmpsc52vv4"
+path="res://.godot/imported/lightning.wav-6e7f8bfe8f617da70796e318ed86098d.sample"
 
 [deps]
 
 source_file="res://data/sounds/lightning.wav"
-dest_files=[ "res://.import/lightning.wav-6e7f8bfe8f617da70796e318ed86098d.sample" ]
+dest_files=["res://.godot/imported/lightning.wav-6e7f8bfe8f617da70796e318ed86098d.sample"]
 
 [params]
 
@@ -17,5 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=true
 edit/normalize=true
-edit/loop=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
 compress/mode=0

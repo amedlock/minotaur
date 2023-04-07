@@ -1,4 +1,4 @@
-extends Spatial;
+extends Node3D;
 
 
 const ImageSize = Vector2(32,32);
@@ -19,8 +19,7 @@ class Item:
 	var offset = Vector3(0,0,0)   # Vector3 offset for items in maze
 
 	func json() -> Dictionary:
-		var fields = ['name', 'kind', 'img', 'color', 'power',
-					  'offset', 'stat1', 'stat2']
+		var fields = ['name', 'kind', 'img', 'color', 'power', 'offset', 'stat1', 'stat2']
 		var result = {}
 		for key in fields:
 			var val = self.get(key)
@@ -76,10 +75,10 @@ var dungeon
 
 func _ready():
 	dungeon = get_parent()
-	for name in icons:
-		var r = icons[name]
+	for i_name in icons:
+		var r = icons[i_name]
 		r.position *= 32
-		icons[name] =  r
+		icons[i_name] =  r
 	load_all_items()
 
 
@@ -97,61 +96,61 @@ func select_names(data: Dictionary, names: String) -> Array:
 
 func load_colors(data) -> Dictionary:
 	var colors = {}
-	for name in data:
-		colors[name] = Color(data[name])
+	for c_name in data:
+		colors[c_name] = Color(data[c_name])
 	return colors
 
 
 func load_icons(data) -> Dictionary:
 	var result = {}
-	for name in data:
-		var v = data[name]
-		result[name] = Rect2(Vector2(v[0]*32, v[1]*32), ImageSize)
+	for i_name in data:
+		var v = data[i_name]
+		result[i_name] = Rect2(Vector2(v[0]*32, v[1]*32), ImageSize)
 	return result
 
 
-func add_item_types(kind, name, dmg, colors):
+func add_item_types(kind, i_name, dmg, colors):
 	var index = 0
 	for value in dmg:
 		var col = colors[index];
-		define_item(kind, name, index+1, col, dmg[index], 0 )
+		define_item(kind, i_name, index+1, col, dmg[index], 0 )
 		index = index + 1
 
 
 func load_weapons(data, colors):
 	var war_colors = select_names( colors ,"Tan, Orange, Blue, Grey, Yellow, White")
 	var war = data["War"]
-	for name in war:
-		add_item_types("weapon", name, war[name], war_colors)
+	for w_name in war:
+		add_item_types("weapon", w_name, war[w_name], war_colors)
 		
 	var magic_colors = select_names( colors ,"Blue, Grey, White, Pink, Red, Purple")
 	var magic = data["Magic"]
-	for name in magic:
-		add_item_types("weapon", name, magic[name], magic_colors)
+	for w_name in magic:
+		add_item_types("weapon", w_name, magic[w_name], magic_colors)
 
 
 func load_armor(data, colors):
 	var armor_colors = select_names( colors ,"Tan, Orange, Blue, Grey, Yellow, White")
-	for name in data:
-		add_item_types("armor", name, data[name], armor_colors)
+	for w_name in data:
+		add_item_types("armor", w_name, data[w_name], armor_colors)
 
 func load_money(data, colors):
 	var money_colors = select_names(colors, "Orange, Grey, Yellow, White")
-	for name in data:
+	for w_name in data:
 		for power in range(4):
-			var stat1 = data[name] * power
-			define_item("money", name, power, money_colors[power], stat1, 0)
+			var stat1 = data[w_name] * power
+			define_item("money", w_name, power, money_colors[power], stat1, 0)
 
 func load_containers(data, colors):
 	var cont_colors = select_names(colors, "Tan,Orange,Blue")
-	for name in data:
+	for w_name in data:
 		for index in range(3):
-			define_item("container", name, index+1, cont_colors[index], 0, 0)
+			define_item("container", w_name, index+1, cont_colors[index], 0, 0)
 
 	
-func define_special(name, data, color):
-	var item = data[name]
-	return define_item(item[0], name, item[1], color[item[2]], item[3], item[4])
+func define_special(w_name, data, color):
+	var item = data[w_name]
+	return define_item(item[0], w_name, item[1], color[item[2]], item[3], item[4])
 	
 func load_items(data, colors):
 	define_special("quiver", data, colors)
@@ -159,32 +158,35 @@ func load_items(data, colors):
 	treasure = define_special("treasure", data, colors)
 	define_special("ladder", data, colors)
 	var keys = data["keys"]
-	for name in keys:
-		var power = keys[name]
-		define_item("item", "key", power, colors[name], 3, 0)
+	for w_name in keys:
+		var power = keys[w_name]
+		define_item("item", "key", power, colors[w_name], 3, 0)
 	var amulets = data["amulets"]
-	for name in amulets:
-		var power = amulets[name]
-		define_item("item", "amulet", power, colors[name], 0, 0)
+	for w_name in amulets:
+		var power = amulets[w_name]
+		define_item("item", "amulet", power, colors[w_name], 0, 0)
 
 
 func load_all_items():
-	var src = File.new()
-	src.open( 'data/items/items.json', File.READ )
+	var src = FileAccess.open('data/items/items.json', FileAccess.READ)
+	if src.get_error():
+		print("Could not open items file")
+		return
 	var txt = src.get_as_text() ;
 	src.close()
-	var data = JSON.parse(txt);
-	if data.error:
+	var parser = JSON.new();
+	var json = parser.parse(txt)
+	if json!=OK:
 		print("Error reading item list:")
-		print( "On line: %d: %s" % [data.error_line, data.error_string] )
-	else:
-		var colors = load_colors( data.result["Colors"])
-		icons = load_icons(data.result["Icons"])
-		load_weapons(data.result["Weapons"], colors)
-		load_armor(data.result["Armor"], colors)
-		load_containers(data.result["Containers"], colors)
-		load_items(data.result["Items"], colors)
-		load_money(data.result["Money"], colors)
+		print( "On line: %d: %s" % [parser.get_error_line(), parser.get_error_message()] )
+	var data = parser.data
+	var colors = load_colors( data["Colors"])
+	icons = load_icons(data["Icons"])
+	load_weapons(data["Weapons"], colors)
+	load_armor(data["Armor"], colors)
+	load_containers(data["Containers"], colors)
+	load_items(data["Items"], colors)
+	load_money(data["Money"], colors)
 
 
 
@@ -198,16 +200,16 @@ func find_items(kind, names, powers):
 				result.append( x )
 	return result
 
-func all_items( kind, name ):
+func all_items( kind, i_name ):
 	var result = []
 	for n in items:
-		if n.name==name and n.kind==kind:
+		if n.name==i_name and n.kind==kind:
 			result.append( n )
 	return result
 
-func find_item( name ):
+func find_item( i_name ):
 	for n in items:
-		if n.name==name:
+		if n.name==i_name:
 			return n
 	return null;
 

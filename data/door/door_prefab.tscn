@@ -1,51 +1,58 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=3 uid="uid://csq6llv7jm4sp"]
 
-[ext_resource path="res://data/door/door.gd" type="Script" id=1]
-[ext_resource path="res://data/door/dungeon_arch.tscn" type="PackedScene" id=2]
-[ext_resource path="res://data/door/door_mat.tres" type="Material" id=3]
-[ext_resource path="res://data/door/dungeon_door.obj" type="ArrayMesh" id=4]
+[ext_resource type="Script" path="res://data/door/door.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://0gd43ywtcxhl" path="res://data/door/dungeon_arch.tscn" id="2"]
+[ext_resource type="Material" uid="uid://txagr6mpho06" path="res://data/door/door_mat.tres" id="3"]
+[ext_resource type="ArrayMesh" uid="uid://d27taoxtrm745" path="res://data/door/dungeon_door.obj" id="4"]
 
-[sub_resource type="Animation" id=1]
+[sub_resource type="Animation" id="1"]
 resource_name = "Lower"
 tracks/0/type = "value"
-tracks/0/path = NodePath("door:translation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
+tracks/0/path = NodePath("door:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.8 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [ Vector3( 0, 1.8639, 0 ), Vector3( 0, 0, 0 ) ]
+"values": [Vector3(0, 1.8639, 0), Vector3(0, 0, 0)]
 }
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id="2"]
 resource_name = "Raise"
 tracks/0/type = "value"
-tracks/0/path = NodePath("door:translation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
+tracks/0/path = NodePath("door:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.8 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [ Vector3( 0, 0, 0 ), Vector3( 0, 1.8639, 0 ) ]
+"values": [Vector3(0, 0, 0), Vector3(0, 1.8639, 0)]
 }
 
-[node name="door_prefab" type="Spatial"]
-script = ExtResource( 1 )
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oaqxh"]
+_data = {
+"Lower": SubResource("1"),
+"Raise": SubResource("2")
+}
 
-[node name="dungeon_arch" parent="." instance=ExtResource( 2 )]
+[node name="door_prefab" type="Node3D"]
+script = ExtResource("1")
 
-[node name="door" type="Spatial" parent="."]
+[node name="dungeon_arch" parent="." instance=ExtResource("2")]
 
-[node name="Mesh" type="MeshInstance" parent="door"]
-mesh = ExtResource( 4 )
-material/0 = ExtResource( 3 )
+[node name="door" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="door"]
+mesh = ExtResource("4")
+surface_material_override/0 = ExtResource("3")
 
 [node name="anim" type="AnimationPlayer" parent="."]
-anims/Lower = SubResource( 1 )
-anims/Raise = SubResource( 2 )
+libraries = {
+"": SubResource("AnimationLibrary_oaqxh")
+}

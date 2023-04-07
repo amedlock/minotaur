@@ -13,14 +13,14 @@ var enabled = false
 func _ready():
 	player = find_parent("Player")
 	game = player.find_parent("Game")
-	dungeon = game.find_node("Dungeon")
-	grid = dungeon.find_node("Grid")
+	dungeon = game.find_child("Dungeon")
+	grid = dungeon.find_child("Grid")
 	visible = enabled
 
 
 func _input(event):
 	if event is InputEventKey and event.pressed:
-		if event.scancode==KEY_F2:
+		if event.keycode==KEY_F2:
 			enabled = !enabled
 			visible = enabled
 		

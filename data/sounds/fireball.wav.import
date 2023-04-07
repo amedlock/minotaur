@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/fireball.wav-f6ef359ad9ad31effbf1e32908a19e3a.sample"
+type="AudioStreamWAV"
+uid="uid://by1l7u2di61oa"
+path="res://.godot/imported/fireball.wav-f6ef359ad9ad31effbf1e32908a19e3a.sample"
 
 [deps]
 
 source_file="res://data/sounds/fireball.wav"
-dest_files=[ "res://.import/fireball.wav-f6ef359ad9ad31effbf1e32908a19e3a.sample" ]
+dest_files=["res://.godot/imported/fireball.wav-f6ef359ad9ad31effbf1e32908a19e3a.sample"]
 
 [params]
 
@@ -17,5 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=true
 edit/normalize=true
-edit/loop=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
 compress/mode=0

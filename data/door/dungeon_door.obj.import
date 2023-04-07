@@ -1,17 +1,21 @@
 [remap]
 
 importer="wavefront_obj"
+importer_version=1
 type="Mesh"
-path="res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh"
+uid="uid://d27taoxtrm745"
+path="res://.godot/imported/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh"
 
 [deps]
 
-files=[ "res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh" ]
+files=["res://.godot/imported/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh"]
 
 source_file="res://data/door/dungeon_door.obj"
-dest_files=[ "res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh", "res://.import/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh" ]
+dest_files=["res://.godot/imported/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh", "res://.godot/imported/dungeon_door.obj-171cbc80b8537315f0fb9438aef17b4e.mesh"]
 
 [params]
 
 generate_tangents=true
-scale_mesh=Vector3( 1, 1, 1 )
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

@@ -1,12 +1,12 @@
-extends Spatial
+extends Node3D
 
-onready var anim = find_node("anim");
+@onready var anim = find_child("anim");
 var raised = false
 
 
 func _ready():
 	raised = false;
-	anim.connect("animation_finished", self, "anim_done" )
+	anim.connect("animation_finished", Callable(self, "anim_done"))
 	
 func is_moving(): 
 	return anim.is_playing()
@@ -36,7 +36,7 @@ func add_timer():
 	timer = Timer.new()
 	self.add_child(timer)
 	timer.one_shot = true
-	timer.connect("timeout", self, "remove_timer")
+	timer.connect("timeout", Callable(self, "remove_timer"))
 	timer.start(5.0)
 	
 

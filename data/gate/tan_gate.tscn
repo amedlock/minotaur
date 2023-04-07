@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://data/gate/gate_mat.tres" type="Material" id=1]
-[ext_resource path="res://data/gate/gate.png" type="Texture" id=2]
+[ext_resource path="res://data/gate/gate.png" type="Texture2D" id=2]
 [ext_resource path="res://data/gate/gate.gd" type="Script" id=3]
 
-[node name="gate" type="Spatial"]
+[node name="gate" type="Node3D"]
 script = ExtResource( 3 )
 kind = "both"
 

@@ -1,4 +1,4 @@
-extends Spatial;
+extends Node3D;
 
 
 # levels of war monsters
@@ -56,17 +56,17 @@ var minotaur
 
 func _ready():
 	dungeon = get_parent()
-	item_list = dungeon.find_node("Items");
+	item_list = dungeon.find_child("Items");
 	load_enemies()
 	minotaur = monsters.special.minotaur
 
 
 
-func add_enemy(kind, name, icon_name, min_lvl, hp1, hp2, mind1, mind2):
+func add_enemy(kind, e_name, icon_name, min_lvl, hp1, hp2, mind1, mind2):
 	assert( kind in monsters.keys() )
-	assert( not(name in monsters[kind] ) )
+	assert( not(e_name in monsters[kind] ) )
 	var e = Enemy.new()
-	e.name = name
+	e.name = e_name
 	e.kind = kind
 	e.img = icons[icon_name]
 	e.power = min_lvl
@@ -74,7 +74,7 @@ func add_enemy(kind, name, icon_name, min_lvl, hp1, hp2, mind1, mind2):
 	e.max_hp = hp2
 	e.min_mind = mind1
 	e.max_mind = mind2
-	monsters[kind][name] = e
+	monsters[kind][e_name] = e
 	return e
 
 
@@ -88,8 +88,8 @@ func find_enemies(info, powers):
 	var result =[]
 	for k in kinds:
 		var mgroup = monsters[k]
-		for name in mgroup:
-			var e = mgroup[name]
+		for e_name in mgroup:
+			var e = mgroup[e_name]
 			if e.power in powers:
 				result.append( e )
 	return result
@@ -97,9 +97,9 @@ func find_enemies(info, powers):
 
 func load_icons(data) -> Dictionary:
 	var result = {}
-	for name in data:
-		var v = data[name]
-		result[name] = Rect2( Vector2(v[0] * 32, v[1] * 32), ImageSize )
+	for i_name in data:
+		var v = data[i_name]
+		result[i_name] = Rect2( Vector2(v[0] * 32, v[1] * 32), ImageSize )
 	return result
 
 
@@ -107,22 +107,23 @@ func load_icons(data) -> Dictionary:
 # load enemies from external JSON file
 # name : icon, min_lvl, min_hp, max_hp, min_mind, max_mind
 func load_enemies():
-	var monster_list = File.new()
-	monster_list.open( 'data/enemies/monsters.json', File.READ )
+	var monster_list = FileAccess.open('data/enemies/monsters.json', FileAccess.READ)
+	if monster_list.get_error():
+		print("Could not open enemies json")
+		return
 	var txt = monster_list.get_as_text() ;
 	monster_list.close()
-	var data = JSON.parse(txt);
-	if data.error:
+	var parser = JSON.new()
+	if parser.parse(txt) != OK:
 		print("Error reading monster list:")
-		print( "On line: %d: %s" % [data.error_line, data.error_string] )
-	else:
-		icons = load_icons(data.result["icons"])
-		for kind in data.result:
-			if ["comment", "icons"].has(kind):
-				continue
-			var mlist = data.result[kind]
-			for name in mlist:
-				var stats = mlist[name]
-				add_enemy(kind, name, stats[0], int(stats[1]),
-						  int(stats[2]), int(stats[3]),
-						  int(stats[4]), int(stats[5]) )
+		print( "On line: %d: %s" % [parser.error_line, parser.error_string] )
+	var data = parser.data
+	icons = load_icons(data["icons"])
+	for kind in data:
+		if ["comment", "icons"].has(kind):
+			continue
+		var mlist = data[kind]
+		for enemy_name in mlist:
+			var stats = mlist[enemy_name]
+			add_enemy(kind, enemy_name, stats[0], int(stats[1]), \
+				int(stats[2]), int(stats[3]), int(stats[4]), int(stats[5]) )

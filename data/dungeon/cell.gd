@@ -1,16 +1,16 @@
-extends Spatial
+extends Node3D
 
 
 var x = 0
 var y = 0
 
 # walls
-var north : Spatial
-var east  : Spatial
+var north : Node3D
+var east  : Node3D
 
-var item : Spatial 
-var enemy : Spatial
-var gate : Spatial 
+var item : Node3D 
+var enemy : Node3D
+var gate : Node3D 
 
 var wall_prefab = preload("res://data/dungeon/dungeon_wall.tscn")
 var corner_prefab = preload("res://data/dungeon/wall_corner.tscn")
@@ -28,15 +28,15 @@ var grid
 func _ready():
 	grid = self.get_parent()
 
-
+const _none = StringName("none")
 func debug_info() -> String:
 	var args = [
 		self.name, 
 		Vector2(x,y),
 		self.item.debug_info() if self.item else "none",
-		self.enemy.name if self.enemy else "none",
-		self.north.name if self.north else "none",
-		self.east.name if self.east else "none"
+		self.enemy.name if self.enemy else _none,
+		self.north.name if self.north else _none,
+		self.east.name if self.east else _none
 	]
 	return "(%s %s - item:%s en:%s, doors:%s, %s)" % args
 
@@ -50,7 +50,7 @@ func grid_pos() -> Vector2:
 	return Vector2(x,y)
 
 
-func get_index() -> int:
+func get_cell_index() -> int:
 	return x + (y * grid.width)
 
 
@@ -69,11 +69,11 @@ func set_gate(kind):
 		self.gate = null
 	var node 
 	match kind:
-		"war": node = green_gate.instance()
-		"magic": node = blue_gate.instance()
-		"both": node = tan_gate.instance()
+		"war": node = green_gate.instantiate()
+		"magic": node = blue_gate.instantiate()
+		"both": node = tan_gate.instantiate()
 		_: return
-	node.translation = Vector3(1.5, 0.25, -1.5)
+	node.position = Vector3(1.5, 0.25, -1.5)
 	self.add_child(node)
 	self.gate = node
 
@@ -129,12 +129,12 @@ func set_wall(dir, kind):
 		prev.queue_free()
 	var node = null
 	match kind:
-		"door": node = door_prefab.instance()
-		"wall": node = wall_prefab.instance()
+		"door": node = door_prefab.instantiate()
+		"wall": node = wall_prefab.instantiate()
 	node.add_to_group(kind)
 	self.add_child(node)
 	node.name = kind
-	node.translation = wall_offset
+	node.position = wall_offset
 	match dir:
 		"north" : node.rotation_degrees = Vector3(0,180,0)
 		"east" : node.rotation_degrees = Vector3(0,270,0)
@@ -148,9 +148,9 @@ func set_item(new_item):
 		item.queue_free();
 	item = null
 	if new_item!=null:
-		var node = item_prefab.instance()
+		var node = item_prefab.instantiate()
 		self.add_child( node )
-		node.translation = Vector3( 1.5, 0.55, -1.5 ) + new_item.offset
+		node.position = Vector3( 1.5, 0.55, -1.5 ) + new_item.offset
 		node.configure(new_item)
 		item = node
 	
@@ -161,11 +161,11 @@ func set_enemy(e):
 		enemy.queue_free()
 	self.enemy = null
 	if e!=null:
-		var node = enemy_prefab.instance()
+		var node = enemy_prefab.instantiate()
 		self.add_child( node )
 		node.owner = self		
 		node.configure(e, grid.dungeon)
-		node.translation = Vector3( 1.5, 0.9, -1.5 )
+		node.position = Vector3( 1.5, 0.9, -1.5 )
 		self.enemy = node
 
 
@@ -177,19 +177,19 @@ var wall_post_offset = {
 }
 
 func clear_corner( which ):
-	var n = find_node("corner_" + which, false, false)
+	var n = find_child("corner_" + which, false, false)
 	if n:
 		remove_child(n)
 		n.queue_free()
 
 
 func set_corner( which ):
-	var cur = find_node("corner_" + which)
+	var cur = find_child("corner_" + which)
 	if cur:
 		return
 	if which in wall_post_offset:
-		var it = corner_prefab.instance();
-		it.translation = wall_post_offset[which]
+		var it = corner_prefab.instantiate();
+		it.position = wall_post_offset[which]
 		it.name = "corner_" + which
 		self.add_child(it)
 	

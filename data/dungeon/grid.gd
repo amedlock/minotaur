@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 var width = 12
 var height = 12
@@ -10,9 +10,9 @@ var gates = []
 var cell_prefab = preload("res://data/dungeon/cell.tscn")
 
 
-onready var dungeon = get_parent()
+@onready var dungeon = get_parent()
 
-onready var outer_wall = dungeon.find_node("outer_wall")
+@onready var outer_wall = dungeon.find_child("outer_wall")
 
 var cell_size : float
 
@@ -29,11 +29,11 @@ func configure(w: int, h: int, cell_sz: float):
 	cells.resize(width * height)
 	for yp in range(0,height):
 		for xp in range(0,width):
-			var node = cell_prefab.instance()
+			var node = cell_prefab.instantiate()
 			self.add_child(node)
 			node.configure(xp, yp)
 			node.name = "Cell_%d_%d" % [xp, yp]
-			node.translation = Vector3(xp * cell_sz, 0, -(yp * cell_sz))
+			node.position = Vector3(xp * cell_sz, 0, -(yp * cell_sz))
 			cells[self.index(xp,yp)] = node
 
 
@@ -50,7 +50,7 @@ func get_cell(x : int, y: int):
 	return cells[x + (y * width)]
 
 
-func get_wall(x: int, y: int, ang: int) -> Spatial:
+func get_wall(x: int, y: int, ang: int) -> Node3D:
 	assert(ang in [0, 90, 180, 270])
 
 	if ang==90:

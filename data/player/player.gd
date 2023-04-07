@@ -1,4 +1,4 @@
-extends Spatial;
+extends Node3D;
 
 enum PlayerState {
 	IDLE,  		# default state
@@ -69,19 +69,19 @@ var game
 var map_view
 var item_list
 
-onready var combat = $combat
-onready var hud = $Camera/HUD
-onready var audio = $Audio
+@onready var combat = $combat
+@onready var hud = $Camera3D/HUD
+@onready var audio = $Audio
 
 
 
 func _ready():
 	dungeon = get_parent()
 	game = dungeon.get_parent()
-	start_pos = dungeon.find_node("StartPos")
-	grid = dungeon.find_node("Grid")
-	item_list = dungeon.find_node("ItemList")
-	map_view = game.find_node("MapView")
+	start_pos = dungeon.find_child("StartPos")
+	grid = dungeon.find_child("Grid")
+	item_list = dungeon.find_child("ItemList")
+	map_view = game.find_child("MapView")
 	reset_location()
 	self.player_state = PlayerState.IDLE
 	self.disable()
@@ -98,9 +98,6 @@ func disable():
 
 
 func _input(evt):
-	if $PlayerControl.tween.is_active():
-		return
-		
 	match player_state:
 		PlayerState.IDLE:
 			if Input.is_action_just_pressed("forward"):
@@ -124,41 +121,31 @@ func _input(evt):
 			elif Input.is_action_just_pressed("descend"):
 				self.use_exit()
 							
-		PlayerState.TURNING: 
-			pass
-			
-		PlayerState.MOVING:
-			# allow rest here?
-			pass
-			
 		PlayerState.GLANCING:
 			if !Input.is_action_pressed("look_left") and !Input.is_action_pressed("look_right"):
 				$PlayerControl.unglance()
 			
-		PlayerState.COMBAT:
+		_: 
 			pass
 			
-		PlayerState.WAITING:
-			pass
-			
-			
+
 	if evt is InputEventKey:
 		debug_keys(evt)
 
 
 
 func reset_location():
-	self.translation = start_pos.translation
+	self.position = start_pos.position
 	self.rotation_degrees.y = 270
 
 
 func coord_to_world(p : Vector2) -> Vector3:
-	return start_pos.translation + Vector3(p.x * 3, 0, -p.y * 3)
+	return start_pos.position + Vector3(p.x * 3, 0, -p.y * 3)
 
 
 # get the world coords for the player
 func get_coord() -> Vector2:
-	var loc = (self.translation - start_pos.translation).abs()
+	var loc = (self.position - start_pos.position).abs()
 	return Vector2(round(loc.x / 3.0), round(loc.z / 3.0))
 
 
@@ -214,7 +201,7 @@ func show_map():
 func debug_keys(evt):
 	if evt is InputEventKey:
 		if evt.pressed and not evt.echo:
-			match evt.scancode:
+			match evt.keycode:
 				KEY_F5:
 					reset_location()
 				KEY_F6:
@@ -411,11 +398,11 @@ func cell_right():
 	var c = coord_right()
 	return dungeon.grid.get_cell(c.x, c.y)
 
-func wall_ahead() -> Spatial:
+func wall_ahead() -> Node3D:
 	var c = get_coord()
 	return dungeon.grid.get_wall(c.x, c.y, get_dir())
 
-func wall_behind() -> Spatial:
+func wall_behind() -> Node3D:
 	var c = get_coord()
 	var rdir = posmod(get_dir()-180, 360)
 	return dungeon.grid.get_wall(c.x, c.y, rdir)
@@ -448,7 +435,8 @@ func end_combat(outcome,enemy):
 		"die":
 			if is_dead() and not cheat_death():
 				self.player_state = PlayerState.LOST
-		_: assert(false)
+		_: 
+			print("Invalid combat outcome!")
 	hud.update()
 	
 
@@ -476,7 +464,7 @@ func attack_ahead():
 func check_for_monster():
 	if start_combat(cell_ahead()):
 		return
-	if rand_range(0,99) < 40:
+	if randf_range(0,99) < 40:
 		return
 	if start_combat(cell_left()):
 		return
@@ -503,8 +491,8 @@ func rest():
 	if health==health_max and mind==mind_max:
 		return
 	needs_rest = false
-	var hp_gain = (war_exp / 4)
-	var mind_gain = (magic_exp / 5)
+	var hp_gain = int(war_exp / 4.0)
+	var mind_gain = int(magic_exp / 5.0)
 	war_exp = war_exp % 4
 	magic_exp = magic_exp % 5
 	health_max += hp_gain;

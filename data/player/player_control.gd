@@ -1,12 +1,10 @@
-extends Spatial
+extends Node3D
 
 # Handle player movement, this is called from player.gd
 
-
-# time to move one square forward or back
 const MoveTime = 0.75
-
-const GlanceTime = 0.35
+const TurnTime = 0.5
+const GlanceTime = 0.25
 
 var glance_amt = 0
 
@@ -17,31 +15,18 @@ var dir = 270
 var prev_coord
 
 
-onready var player = get_parent()
-onready var dungeon = player.get_parent()
-onready var hud = player.get_node("Camera/HUD")
+@onready var player = get_parent()
+@onready var dungeon = player.get_parent()
+@onready var hud = player.get_node("Camera3D/HUD")
 
-var tween : Tween
 
 func _ready():
-	tween = Tween.new()
-	tween.name = "MovementTween"
-	tween.connect("tween_completed", self, "tween_complete")
-	self.add_child(tween)
-	tween.set_active(true)
+	pass
 
 
 func reset():
-	self.dir = 270
+	self.glance_amt = 0
 
-
-func tween_complete(_obj, _path):
-	player.player_state = player.PlayerState.IDLE
-	hud.update()
-	dir = fposmod(dir, 360)
-	player.rotation_degrees.y = dir
-	# if new_cell ? current_cell.enter() 
-	# check for monsters
 
 
 func move_back():
@@ -49,10 +34,13 @@ func move_back():
 	if wall and wall.is_blocked():
 		return
 		
-	var pos = player.translation
-	var pvec = player.transform.basis.z * -3 
-	tween.interpolate_property(player, "translation", pos, pos - pvec, MoveTime)
-	tween.start()
+	var pos = player.position
+	var pvec = player.transform.basis.z * -3
+	player.player_state = player.PlayerState.MOVING
+	await create_tween().tween_property(player, "position", pos - pvec, MoveTime).finished
+	hud.update()
+	player.player_state = player.PlayerState.IDLE
+
 
 
 func move_forward():
@@ -60,52 +48,56 @@ func move_forward():
 	if wall and wall.is_blocked():
 		return
 	prev_coord = player.get_coord()
-	var pos = player.translation
+	var pos = player.position
 	var pvec = player.transform.basis.z * -3
-	tween.interpolate_property(player, "translation", pos, pos + pvec, MoveTime)
-	tween.start()
 	player.player_state = player.PlayerState.MOVING
+	assert( player.position is Vector3)
+	assert( pos is Vector3)
+	assert( (pos+pvec) is Vector3)
+	await create_tween().tween_property(player, "position", pos + pvec, MoveTime).finished
+	hud.update()	
+	player.player_state = player.PlayerState.IDLE
 
 
 func turn_player(amt: int):
 	dir += amt
-	var rot = player.get_dir()
-	tween.interpolate_property(player, "rotation_degrees:y", rot, rot + amt, 1.0 )
 	var crot = hud.compass.rotation_degrees
-	tween.interpolate_property(hud.compass, "rotation_degrees", crot, crot - amt, 1.0 )
-	tween.start()
+	var tween = create_tween().set_parallel();
+	var rot = player.get_dir() + amt
+	tween.tween_property(player, "rotation_degrees:y", rot, TurnTime )
+	tween.tween_property(hud.compass, "rotation_degrees", crot - amt, TurnTime )
 	player.player_state = player.PlayerState.TURNING
+	await tween.finished
+	player.rotation_degrees.y = wrapi(rot, 0, 360)
+	player.player_state = player.PlayerState.IDLE
 
 
 func glance(amt: int):
-	var rot = player.get_dir()
-	glance_amt = amt
-	dir += amt
-	tween.interpolate_property(player, "rotation_degrees:y", rot, rot + amt, GlanceTime )
-	tween.start()
+	var rot = player.get_dir() + amt
+	self.glance_amt = amt
 	player.player_state=player.PlayerState.GLANCING
-
+	await create_tween().tween_property(player, "rotation_degrees:y", rot, GlanceTime ).finished
+	player.rotation_degrees.y = wrapi(rot, 0, 360)	
+	player.player_state=player.PlayerState.IDLE
 
 func unglance():
-	var rot = player.get_dir()
-	dir -= glance_amt
-	tween.interpolate_property(player, "rotation_degrees:y", rot, rot - glance_amt, GlanceTime )
-	glance_amt = 0
-	tween.start()
+	var rot = player.get_dir() - self.glance_amt
+	var tween = create_tween()
+	await tween.tween_property(player, "rotation_degrees:y", rot, GlanceTime ).finished
+	self.glance_amt = 0
+	player.rotation_degrees.y = wrapi(rot, 0, 360)	
+	player.player_state=player.PlayerState.IDLE
 
 
 func flee():
 	if not prev_coord:
 		self.move_back()
 	else:
-		player.translation = player.coord_to_world(prev_coord)
+		player.position = player.coord_to_world(prev_coord)
 		prev_coord = null
 
 
 func _input(_event):
-	if tween.is_active():
-		return
-		
 	if glance_amt:
 		if Input.is_action_just_released("look_left") or Input.is_action_just_released("look_right"):
 			unglance()

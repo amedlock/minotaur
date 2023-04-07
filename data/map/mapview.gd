@@ -9,9 +9,9 @@ var empty_tile  	= map_tile(3,0)
 var arrow_tile 		= map_tile(3,2)
 var tombstone_tile 	= map_tile(1,3)
 
-onready var walls = $Walls
-onready var other = $Other
-onready var marker = $marker
+@onready var walls = $Walls
+@onready var other = $Other
+@onready var marker = $marker
 
 
 var dungeon ;
@@ -22,11 +22,11 @@ var lookup = {}
 
 func _ready():
 	var game = get_parent()
-	dungeon = game.find_node("Dungeon")
-	player = dungeon.find_node("Player")
+	dungeon = game.find_child("Dungeon")
+	player = dungeon.find_child("Player")
 	for y in range( 12 ):
 		for x in range( 12 ):
-			var col = map_cell_prefab.instance()
+			var col = map_cell_prefab.instantiate()
 			self.add_child(col)
 			col.position = tile_position(x,y)
 			col.region_rect = empty_tile
@@ -62,11 +62,11 @@ func update():
 	marker.visible = true
 	marker.position = tile_position(loc.x, loc.y)
 	if player.is_dead():
-		marker.modulate = Color.gray
+		marker.modulate = Color.GRAY
 		marker.region_rect = tombstone_tile
 		marker.rotation_degrees = 0
 	else:
-		marker.modulate = Color.black
+		marker.modulate = Color.BLACK
 		marker.region_rect = arrow_tile
 		marker.rotation_degrees = fposmod(360-player.get_dir(), 360)
 
@@ -95,7 +95,7 @@ func choose_tile(c):
 	
 
 func add_gate(gate, x, y):
-	var icon = gate_icon.instance()
+	var icon = gate_icon.instantiate()
 	icon.modulate = gate.sprite.modulate
 	other.add_child(icon)
 	icon.position = tile_position(x,y)
@@ -109,7 +109,7 @@ func fix_up_corner(cell):
 	var e = dungeon.grid.get_cell(cell.x+1,cell.y)
 	if not (e and e.north ):
 		return
-	var fix = gate_icon.instance()
+	var fix = gate_icon.instantiate()
 	fix.name="fix_%d_%d" % [cell.x, cell.y]
 	fix.region_rect = map_tile(2,2)
 	fix.position = tile_position(cell.x,cell.y)
@@ -120,7 +120,7 @@ func fix_up_corner(cell):
 #rebuilds the map layout, only called when level layout changes
 func update_map(depth):
 	clear_all()
-	find_node("Label").set_text("Level: " + str(depth) )
+	find_child("Label").set_text("Level: " + str(depth) )
 	for y in range( dungeon.HEIGHT ):
 		for x in range( dungeon.WIDTH ):
 			var c = dungeon.grid.get_cell( x, y )

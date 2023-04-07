@@ -1,17 +1,21 @@
 [remap]
 
 importer="wavefront_obj"
+importer_version=1
 type="Mesh"
-path="res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh"
+uid="uid://iqf32hwmxg65"
+path="res://.godot/imported/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh"
 
 [deps]
 
-files=[ "res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh" ]
+files=["res://.godot/imported/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh"]
 
 source_file="res://data/dungeon/outer_wall.obj"
-dest_files=[ "res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh", "res://.import/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh" ]
+dest_files=["res://.godot/imported/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh", "res://.godot/imported/outer_wall.obj-a68d74a57d09ff5b6417d256952e7d64.mesh"]
 
 [params]
 
 generate_tangents=true
-scale_mesh=Vector3( 1, 1, 1 )
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

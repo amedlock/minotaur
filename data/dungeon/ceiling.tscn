@@ -3,9 +3,9 @@
 [ext_resource path="res://data/dungeon/ceil8x8.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://data/dungeon/floor_mat.tres" type="Material" id=2]
 
-[node name="ceiling" type="Spatial"]
+[node name="ceiling" type="Node3D"]
 
-[node name="Plane" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
+[node name="Plane" type="MeshInstance3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
 mesh = ExtResource( 1 )
 material/0 = ExtResource( 2 )

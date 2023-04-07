@@ -1,4 +1,4 @@
-extends Spatial;
+extends Node3D;
 
 
 var enemy_list ;
@@ -55,7 +55,7 @@ class MazeCell:
 			var val = self.get(key)
 			if val!=null:
 				obj[key] = val
-		return to_json(obj)
+		return JSON.stringify(obj)
 
 var maze = []
 
@@ -114,7 +114,7 @@ func take_random( items ):
 	assert( items.size() > 0 )
 	var pos = randint( items.size() )
 	var it = items[pos]
-	items.remove( pos )
+	items.remove_at( pos )
 	return it
 
 
@@ -271,7 +271,7 @@ func add_enemies(info, coords):
 		_: power = [6,7,8]
 	var allowed = enemy_list.find_enemies( info, power )
 	for _n in range(num):
-		if allowed.empty() or coords.empty(): return
+		if allowed.is_empty() or coords.is_empty(): return
 		var c = take_random( coords )
 		var mon = choose_random( allowed )
 		maze_cell( c.x, c.y ).enemy = mon
@@ -285,7 +285,9 @@ func add_key( info, coords ):
 		5,6 : powers = [2,3]
 		_: powers = [3]
 	var keys = item_list.find_items("item",["key"], powers )
-	assert( keys.empty()==false )
+	if keys.is_empty():
+		print("Warning no 'key' items found for powers ", powers)
+		return
 	var c = choose_random( coords )
 	maze_cell(c.x, c.y).item = choose_random(keys)
 
@@ -305,7 +307,7 @@ func add_loot( num, info, coords ):
 		powers = [2,3]
 	var bags = item_list.find_items( "container", names, powers )
 	for _n in range(num):
-		if coords.empty(): return
+		if coords.is_empty(): return
 		var c = take_random( coords )
 		maze_cell(c.x,c.y).item = choose_random( bags )
 
@@ -321,9 +323,9 @@ func add_money(num, info, coords):
 	elif info.depth in [5,6, 7]: powers = [3,4]
 	elif info.depth > 7: powers = [4]
 	var allowed = item_list.find_items("money", names, powers )
-	if allowed.empty(): return  # shouldnt happen
+	if allowed.is_empty(): return  # shouldnt happen
 	for _n in range(num):
-		if coords.empty(): return
+		if coords.is_empty(): return
 		var c = take_random( coords ) 
 		maze_cell(c.x, c.y).item = choose_random( allowed )
 
@@ -331,12 +333,12 @@ func add_money(num, info, coords):
 func add_other(coords):
 	var food = item_list.find_item( "food" )
 	for _n in range(randint(5)):
-		if coords.empty(): return
+		if coords.is_empty(): return
 		var c = take_random( coords )
 		maze_cell(c.x, c.y).item = food
 	var quiver = item_list.find_item("quiver"); 
 	for _n in range(1 + randint(3)):
-		if coords.empty(): return
+		if coords.is_empty(): return
 		var c = take_random( coords )
 		maze_cell(c.x,c.y).item = quiver
 
@@ -353,7 +355,7 @@ func add_weapons( num, info, coords ):
 		maze_cell(c.x,c.y).item = take_random( armor )
 	var allowed = item_list.find_items( "weapon", null, powers )		
 	for _n in range(num):
-		if coords.empty():  return
+		if coords.is_empty():  return
 		var c = take_random( coords )
 		maze_cell(c.x,c.y).item = choose_random( allowed )
 
@@ -393,14 +395,15 @@ func add_cell_corner( cx, cy ):
 	var cs = maze_cell(cx, cy -1)
 	var ne = false
 	var se = false
-	if c.north and not c.east:
-		ne = true
-	if c.north or (cw and cw.north):
-		ne = true
+	if c.north != null:
+		if c.east!=null:
+			ne = true
+		elif cw!=null and cw.east!=null:
+			ne = true
 	if cs:
-		if cs.north or cs.east:
+		if cs.north!=null or cs.east!=null:
 			se = true
-	if c.east:
+	if c.east!=null:
 		ne = true
 		se = true
 	if ne and cy>0:

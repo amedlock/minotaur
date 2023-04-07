@@ -6,23 +6,23 @@ var game
 var item_list
 var audio
 
-onready var player_anim = $PlayerAnim
-onready var player_timer = $PlayerTimer
-onready var player_weapon = $PlayerWeapon
-onready var player_audio = $PlayerWeapon/Audio
+@onready var player_anim = $PlayerAnim
+@onready var player_timer = $PlayerTimer
+@onready var player_weapon = $PlayerWeapon
+@onready var player_audio = $PlayerWeapon/Audio
 
 
-onready var enemy_anim = $EnemyAnim
-onready var enemy_timer = $EnemyTimer
-onready var enemy_weapon = $EnemyWeapon
-onready var enemy_audio = $EnemyWeapon/Audio
+@onready var enemy_anim = $EnemyAnim
+@onready var enemy_timer = $EnemyTimer
+@onready var enemy_weapon = $EnemyWeapon
+@onready var enemy_audio = $EnemyWeapon/Audio
 
 
 var player_item # player item being fired
 var enemy_item # enemy item being fired
 
-var enemy_cell : Spatial = null
-var enemy : Spatial = null # which enemy, set in start(...)
+var enemy_cell : Node3D = null
+var enemy : Node3D = null # which enemy, set in start(...)
 var monster
 
 
@@ -37,15 +37,15 @@ func _ready():
 	player = get_parent()
 	dungeon = player.get_parent()
 	game = player.get_parent()
-	audio = game.find_node("Audio")
-	item_list = dungeon.find_node("ItemList")
-	enemy_anim = player.find_node("EnemyAnim")
-	enemy_anim.connect("animation_finished", self, "enemy_fire_done" )
-	enemy_weapon = player.find_node("EnemyWeapon")
-	enemy_audio = enemy_weapon.find_node("Audio")
-	player_anim = player.find_node("PlayerAnim")
-	player_anim.connect("animation_finished", self, "player_fire_done" )
-	player_weapon = player.find_node("PlayerWeapon")
+	audio = game.find_child("Audio")
+	item_list = dungeon.find_child("ItemList")
+	enemy_anim = player.find_child("EnemyAnim")
+	enemy_anim.connect("animation_finished", Callable(self, "enemy_fire_done"))
+	enemy_weapon = player.find_child("EnemyWeapon")
+	enemy_audio = enemy_weapon.find_child("Audio")
+	player_anim = player.find_child("PlayerAnim")
+	player_anim.connect("animation_finished", Callable(self, "player_fire_done"))
+	player_weapon = player.find_child("PlayerWeapon")
 	enemy_weapon.visible = false
 	player_weapon.visible = false
 	set_process(false)

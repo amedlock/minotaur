@@ -1,13 +1,13 @@
 extends Sprite3D
 
 
-onready var anim = $Animation
+@onready var anim = $Animation
 
 
 func start():
 	self.visible = true
-	anim.connect("animation_finished", self, "done" )
-	anim.connect("animation_changed", self, "changed" )
+	anim.connect("animation_finished", Callable(self, "done"))
+	anim.connect("animation_changed", Callable(self, "changed"))
 	anim.play("Puff")
 
 

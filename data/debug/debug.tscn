@@ -3,11 +3,11 @@
 [ext_resource path="res://data/debug/debug.gd" type="Script" id=1]
 
 [node name="debug" type="Label"]
-margin_left = 24.0
-margin_top = 19.0
-margin_right = 489.0
-margin_bottom = 302.0
-rect_scale = Vector2( 1.75, 1.75 )
+offset_left = 24.0
+offset_top = 19.0
+offset_right = 489.0
+offset_bottom = 302.0
+scale = Vector2( 1.75, 1.75 )
 text = "sdfsdf
 sdfsdf
 sdfsdf

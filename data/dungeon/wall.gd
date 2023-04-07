@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 
 func is_blocked():
 	return true

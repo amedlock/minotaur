@@ -1,13 +1,14 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://cy7eynhhyhdq"]
 
-[ext_resource path="res://data/items/item_sheet.png" type="Texture" id=2]
-[ext_resource path="res://data/items/item.gd" type="Script" id=3]
+[ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="2"]
+[ext_resource type="Script" path="res://data/items/item.gd" id="3"]
 
 [node name="item" type="Sprite3D"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0 )
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 pixel_size = 0.02
 billboard = 1
-texture = ExtResource( 2 )
+texture_filter = 2
+texture = ExtResource("2")
 region_enabled = true
-region_rect = Rect2( 0, 0, 32, 32 )
-script = ExtResource( 3 )
+region_rect = Rect2(0, 0, 32, 32)
+script = ExtResource("3")

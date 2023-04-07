@@ -8,7 +8,7 @@ var mind    # magic hit points
 
 const smoke = preload("smoke.tscn")
 
-var cell : Spatial
+var cell : Node3D
 
 func _ready():
 	cell = self.get_parent()
@@ -26,11 +26,11 @@ func configure(enemy, _dungeon):
 	#var skill = dungeon.skill_level
 	#var depth = dungeon.current_level.depth
 	monster = enemy
-	health = rand_range(enemy.min_hp, enemy.max_hp)
-	mind = rand_range(enemy.min_mind, enemy.max_mind)
+	health = randf_range(enemy.min_hp, enemy.max_hp)
+	mind = randf_range(enemy.min_mind, enemy.max_mind)
 	self.name = enemy.name
 	set_region_rect( monster.img )
-	self.translation.y = 0.9
+	self.position.y = 0.9
 
 
 func damage( item ):
@@ -47,8 +47,8 @@ func die():
 	if not self.visible: 
 		return # this might get called twice
 	self.hide()
-	var sm = smoke.instance()
-	sm.translation =  self.translation - Vector3( 0, 0.6, 0 ) 
+	var sm = smoke.instantiate()
+	sm.position =  self.position - Vector3( 0, 0.6, 0 ) 
 	cell.add_child( sm )
 	sm.start()
 	cell.set_enemy( null )

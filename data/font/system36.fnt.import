@@ -1,0 +1,16 @@
+[remap]
+
+importer="font_data_bmfont"
+type="FontFile"
+uid="uid://0ba6ubjsj10p"
+path="res://.godot/imported/system36.fnt-b03a7c5b298c0cc6ebd689e83ceaaae7.fontdata"
+
+[deps]
+
+source_file="res://data/font/system36.fnt"
+dest_files=["res://.godot/imported/system36.fnt-b03a7c5b298c0cc6ebd689e83ceaaae7.fontdata"]
+
+[params]
+
+fallbacks=[]
+compress=true

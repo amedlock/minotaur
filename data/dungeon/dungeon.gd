@@ -1,4 +1,4 @@
-extends Spatial;
+extends Node3D;
 
 
 # width and length of the dungeon map
@@ -10,9 +10,9 @@ const MAX_LEVEL = 100;
 
 enum GateType { Empty, Tan, Green, Blue }
 
-onready var enemy_list = $Enemies     # all enemies are children of this node
+@onready var enemy_list = $Enemies     # all enemies are children of this node
 
-onready var item_list = $ItemList  	  # all items are enemies of this node
+@onready var item_list = $ItemList  	  # all items are enemies of this node
 
 
 enum WallDir  { North, South, East, West } # four movement/wall directions
@@ -44,18 +44,18 @@ var current_level : LevelInfo;
 var minotaur_appears = { 1: 3, 2:6, 3:10, 4:16 } # you can go deeper but minotaur appears here
 
 
-onready var player = $Player;
-onready var builder = $Builder;
-onready var hud = $Player/Camera/HUD
-onready var audio = $Player/Audio
+@onready var player = $Player;
+@onready var builder = $Builder;
+@onready var hud = $Player/Camera3D/HUD
+@onready var audio = $Player/Audio
 
-onready var grid = $Grid
+@onready var grid = $Grid
 
 
 
 func _ready():
-	find_node("ceiling").show()
-	self.translation = maze_origin
+	find_child("ceiling").show()
+	self.position = maze_origin
 	grid.configure(WIDTH,HEIGHT,CELL_SIZE)
 
 
@@ -94,7 +94,7 @@ var mural_colors = {
 func set_mural_color(kind):
 	var mat = mural_colors[kind]
 	for m in get_tree().get_nodes_in_group("murals"):
-		m.get_node("Mesh").set_surface_material( 0, mat )
+		m.get_node("Mesh").set_surface_override_material( 0, mat )
 
 
 

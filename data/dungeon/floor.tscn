@@ -1,68 +1,37 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3 uid="uid://d4nrionulwu34"]
 
-[ext_resource path="res://data/dungeon/ceil8x8.obj" type="ArrayMesh" id=1]
-[ext_resource path="res://data/dungeon/floor_mat.tres" type="Material" id=2]
-[ext_resource path="res://data/dungeon/mural.tscn" type="PackedScene" id=3]
+[ext_resource type="ArrayMesh" uid="uid://bm6fipxt6n0w8" path="res://data/dungeon/ceil8x8.obj" id="1"]
+[ext_resource type="Material" uid="uid://dnbkupbqtahct" path="res://data/dungeon/floor_mat.tres" id="2"]
+[ext_resource type="PackedScene" uid="uid://wp3q4qtyf83o" path="res://data/dungeon/mural.tscn" id="3"]
 
-[node name="floor" type="Spatial" index="0"]
+[node name="floor" type="Node3D"]
 
-_sections_unfolded = [ "Transform" ]
-
-[node name="Mesh" type="MeshInstance" parent="." index="0"]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0 )
-layers = 1
-material_override = null
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
 cast_shadow = 0
-extra_cull_margin = 0.0
-use_in_baked_light = false
-lod_min_distance = 0.0
-lod_min_hysteresis = 0.0
-lod_max_distance = 0.0
-lod_max_hysteresis = 0.0
-mesh = ExtResource( 1 )
-skeleton = NodePath("..")
-material/0 = ExtResource( 2 )
-_sections_unfolded = [ "Geometry", "Transform", "Visibility", "material" ]
+mesh = ExtResource("1")
+surface_material_override/0 = ExtResource("2")
 
-[node name="mural" parent="." index="1" instance=ExtResource( 3 )]
+[node name="mural" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 0.3, -7.5)
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 0.3, -7.5 )
-_sections_unfolded = [ "Transform" ]
+[node name="mural1" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 0.3, 7.5)
 
-[node name="mural1" parent="." index="2" instance=ExtResource( 3 )]
+[node name="mural2" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0.3, 7.5)
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 0.3, 7.5 )
-_sections_unfolded = [ "Transform" ]
+[node name="mural3" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0.3, -7.5)
 
-[node name="mural2" parent="." index="3" instance=ExtResource( 3 )]
+[node name="mural4" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0.3, -16.5)
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0.3, 7.5 )
-_sections_unfolded = [ "Transform" ]
+[node name="mural5" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.3, -16.5)
 
-[node name="mural3" parent="." index="4" instance=ExtResource( 3 )]
+[node name="mural6" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.3, 16.5)
 
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0.3, -7.5 )
-_sections_unfolded = [ "Transform" ]
-
-[node name="mural4" parent="." index="5" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0.3, -16.5 )
-_sections_unfolded = [ "Transform" ]
-
-[node name="mural5" parent="." index="6" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.3, -16.5 )
-_sections_unfolded = [ "Transform" ]
-
-[node name="mural6" parent="." index="7" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.3, 16.5 )
-_sections_unfolded = [ "Transform" ]
-
-[node name="mural7" parent="." index="8" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0.3, 16.5 )
-_sections_unfolded = [ "Transform" ]
-
-
+[node name="mural7" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0.3, 16.5)

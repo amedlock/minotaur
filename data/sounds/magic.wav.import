@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/magic.wav-d419adceb35b57f5cf4a267518966009.sample"
+type="AudioStreamWAV"
+uid="uid://nvjein5v8vky"
+path="res://.godot/imported/magic.wav-d419adceb35b57f5cf4a267518966009.sample"
 
 [deps]
 
 source_file="res://data/sounds/magic.wav"
-dest_files=[ "res://.import/magic.wav-d419adceb35b57f5cf4a267518966009.sample" ]
+dest_files=["res://.godot/imported/magic.wav-d419adceb35b57f5cf4a267518966009.sample"]
 
 [params]
 
@@ -17,5 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=true
 edit/normalize=true
-edit/loop=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
 compress/mode=0
