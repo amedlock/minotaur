@@ -65,7 +65,8 @@ var tan_gate = preload("res://data/gate/tan_gate.tscn")
 
 func set_gate(kind):
 	if self.gate:
-		free_child(gate)
+		self.remove_child(self.gate)
+		self.gate.queue_free()
 		self.gate = null
 	var node 
 	match kind:
@@ -95,11 +96,6 @@ func check_wall(c):
 			return c.north
 	return null
 
-
-func free_child(it):
-	if it!=null:
-		self.remove_child(it)
-		it.queue_free()
 
 func reset():
 	gate = null

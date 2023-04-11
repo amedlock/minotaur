@@ -7,13 +7,11 @@ var item_list
 var audio
 
 @onready var player_anim = $PlayerAnim
-@onready var player_timer = $PlayerTimer
 @onready var player_weapon = $PlayerWeapon
 @onready var player_audio = $PlayerWeapon/Audio
 
 
 @onready var enemy_anim = $EnemyAnim
-@onready var enemy_timer = $EnemyTimer
 @onready var enemy_weapon = $EnemyWeapon
 @onready var enemy_audio = $EnemyWeapon/Audio
 
@@ -26,8 +24,12 @@ var enemy : Node3D = null # which enemy, set in start(...)
 var monster
 
 
-var attacking = false
-var retreat = false
+enum CombatState { IDLE, ATTACK, ATTACKING, RETREAT }
+
+
+var player_combat_state = CombatState.IDLE
+var enemy_combat_state = CombatState.IDLE
+
 
 const Enemy_Delay = 2
 const Player_Delay = 1
@@ -40,11 +42,9 @@ func _ready():
 	audio = game.find_child("Audio")
 	item_list = dungeon.find_child("ItemList")
 	enemy_anim = player.find_child("EnemyAnim")
-	enemy_anim.connect("animation_finished", Callable(self, "enemy_fire_done"))
 	enemy_weapon = player.find_child("EnemyWeapon")
 	enemy_audio = enemy_weapon.find_child("Audio")
 	player_anim = player.find_child("PlayerAnim")
-	player_anim.connect("animation_finished", Callable(self, "player_fire_done"))
 	player_weapon = player.find_child("PlayerWeapon")
 	enemy_weapon.visible = false
 	player_weapon.visible = false
@@ -57,25 +57,27 @@ func start(e_cell, attack: bool):
 		return
 	self.enemy_cell = e_cell
 	self.enemy = e_cell.enemy
-	assert( self.enemy != null )
 	player.player_state = player.PlayerState.COMBAT
-	attacking = attack
-	retreat = false
+	player_combat_state = CombatState.IDLE
+	enemy_combat_state = CombatState.IDLE
 	monster = enemy.monster
 	enemy_weapon.visible = false
 	player_weapon.visible = false
 	set_process(true)
-	
+	if attack:
+		self.player_fire()
+
 
 
 func _process(_delta):
-	if Input.is_action_just_pressed("attack"):
-		attacking = true
-	elif Input.is_action_just_pressed("back"):
-		retreat = true
-		
-	player_turn()
-	enemy_turn()
+	if player_combat_state==CombatState.IDLE:
+		if Input.is_action_just_pressed("attack"):
+			player_fire()
+		elif Input.is_action_just_pressed("back"):
+			player.retreat()
+			self.set_process(false)
+	if enemy_combat_state == CombatState.IDLE and not player.is_dead():
+		enemy_fire()
 	check_combat_over()
 
 
@@ -85,28 +87,8 @@ func check_combat_over():
 		self.set_process(false)
 	elif enemy.is_dead():
 		player.end_combat("win", enemy_cell.enemy)
+		enemy.queue_free()
 		self.set_process(false)
-
-
-func player_turn():
-	if not player_timer.is_stopped() or player_anim.is_playing():
-		return
-	if retreat:
-		player.retreat()
-	elif attacking:
-		attacking = false
-		player_fire()
-
-
-func enemy_turn():
-	if enemy_timer.is_stopped() and not enemy_anim.is_playing():
-		enemy_fire()
-		
-		
-func animating():
-	return player_anim.is_playing() or enemy_anim.is_playing()
-
-
 
 
 var broken
@@ -144,19 +126,27 @@ func player_fire():
 		player_anim.play("SpinFire")
 	else:	
 		player_anim.play("Fire")
+	
+	player_combat_state = CombatState.ATTACKING
+	if fx!=null:
+		audio.stream = fx
+		audio.play()	
+	await player_anim.animation_finished
+	damage_enemy()
 	if broken and dungeon.current_level.depth > 2:  # clear out of the players hand
 		player.right_hand = null
 	player.hud.update_pack()
-	if fx!=null:
-		audio.stream = fx
-		audio.play()
-	player_timer.start(Player_Delay)
+	await get_tree().create_timer(Player_Delay).timeout
+	player_combat_state = CombatState.IDLE	
 
 
-func player_fire_done(_which):
+	
+
+func damage_enemy():
 	enemy.damage( player_item )
 	if broken:
 		player_item = null # remove it
+		player.hud.update()
 
 
 func choose_enemy_weapon():
@@ -181,12 +171,15 @@ func enemy_fire():
 		enemy_anim.play("SpinFire")
 	else:
 		enemy_anim.play("Fire")
-	enemy_timer.start(Enemy_Delay)
-
-
-func enemy_fire_done(_which):
+	enemy_combat_state = CombatState.ATTACKING
+	await get_tree().create_timer(Enemy_Delay).timeout
 	player.damage( monster, enemy_item )
 	player.hud.update_stats()
+	enemy_combat_state = CombatState.IDLE
+	if player_combat_state==CombatState.RETREAT:
+		player.retreat()
+
+
 
 
 

@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="10"]
 [ext_resource type="PackedScene" path="res://data/debug/debug.tscn" id="11"]
 [ext_resource type="Environment" uid="uid://7fdxmqhwueqc" path="res://data/game_env.tres" id="16"]
-[ext_resource type="PackedScene" path="res://data/hud/hud.tscn" id="17"]
+[ext_resource type="PackedScene" uid="uid://mae22grjwobt" path="res://data/hud/hud.tscn" id="17"]
 [ext_resource type="AudioStream" uid="uid://84gaoppi65w3" path="res://data/sounds/hit.wav" id="18"]
 [ext_resource type="Script" path="res://data/menu/menu.gd" id="19"]
 [ext_resource type="Texture2D" uid="uid://6uqynfa5rs00" path="res://data/menu/title.png" id="20"]

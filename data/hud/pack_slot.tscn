@@ -1,24 +1,22 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3 uid="uid://bkxg8wb87gdgr"]
 
-[ext_resource path="res://data/hud/pack_slot.gd" type="Script" id=1]
-[ext_resource path="res://data/items/item_sheet.png" type="Texture2D" id=2]
+[ext_resource type="Script" path="res://data/hud/pack_slot.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="2"]
 
-[sub_resource type="RectangleShape2D" id=1]
-size = Vector2( 25.1821, 24.9649 )
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(25.1821, 24.9649)
 
 [node name="Icon" type="Area2D"]
-script = ExtResource( 1 )
+texture_filter = 3
+script = ExtResource("1")
 
 [node name="Collision1" type="CollisionShape2D" parent="."]
-position = Vector2( 3.1777, 5.95821 )
-shape = SubResource( 1 )
+position = Vector2(3.1777, 5.95821)
+shape = SubResource("1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2( 2.6, 5.3 )
-scale = Vector2( 1.5, 1.5 )
-texture = ExtResource( 2 )
+position = Vector2(2.6, 5.3)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2")
 region_enabled = true
-region_rect = Rect2( 224, 224, 32, 32 )
-__meta__ = {
-"_edit_lock_": true
-}
+region_rect = Rect2(224, 224, 32, 32)

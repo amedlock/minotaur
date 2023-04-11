@@ -6,11 +6,9 @@ extends Sprite3D
 
 func start():
 	self.visible = true
-	anim.connect("animation_finished", Callable(self, "done"))
-	anim.connect("animation_changed", Callable(self, "changed"))
 	anim.play("Puff")
-
-
-func done(_name):
+	await anim.animation_finished
 	self.get_parent().remove_child(self)
 	self.queue_free()
+
+

@@ -435,6 +435,7 @@ func end_combat(outcome,enemy):
 		"die":
 			if is_dead() and not cheat_death():
 				self.player_state = PlayerState.LOST
+				self.game.game_over()
 		_: 
 			print("Invalid combat outcome!")
 	hud.update()
@@ -443,6 +444,8 @@ func end_combat(outcome,enemy):
 
 func retreat():
 	$PlayerControl.flee()
+	player_state = PlayerState.IDLE
+
 
 
 # tries to initiate combat ahead of player
@@ -454,8 +457,6 @@ func attack_ahead():
 		return
 	var wall = wall_ahead()
 	if can_see(wall):
-		combat.attacking = true
-		self.player_state= PlayerState.COMBAT
 		combat.start(ahead, true)
 		reduce_potion_turn()
 
@@ -541,9 +542,9 @@ func damage( monster, weap ):
 	var war_amt = apply_armor( dmg, war_armor() )
 	var mind_amt = apply_armor( dmg, mind_armor() )
 	if weap.name in ["axe", "dagger", "spear"]:
-		health = int( max( self.health - war_amt, 0 ))
+		health = int( clamp( self.health - war_amt, 0, self.health_max ))
 	elif weap.name in ["fireball", "lightning", "small_fireball"]:
-		mind = int( max( self.mind - mind_amt, 0 ))
+		mind = int( clamp( self.mind - mind_amt, 0, self.mind_max ))
 
 
 
@@ -581,7 +582,7 @@ func war_armor():
 	if helmet :
 		result += helmet.stat1
 	if breastplate:
-		result += breastplate
+		result += breastplate.stat1
 	if left_hand and left_hand in ["shield", "small_shield"]:
 		result += left_hand.stat1
 	return result

@@ -91,7 +91,7 @@ func unglance():
 
 func flee():
 	if not prev_coord:
-		self.move_back()
+		await self.move_back()
 	else:
 		player.position = player.coord_to_world(prev_coord)
 		prev_coord = null
