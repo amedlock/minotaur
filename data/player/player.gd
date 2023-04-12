@@ -61,7 +61,6 @@ var last_dir
 
 var start_pos  # starting position for player
 
-
 # references to game, grid, map, hud, combat, audio and dungeon nodes
 var dungeon
 var grid
@@ -72,7 +71,6 @@ var item_list
 @onready var combat = $combat
 @onready var hud = $Camera3D/HUD
 @onready var audio = $Audio
-
 
 
 func _ready():

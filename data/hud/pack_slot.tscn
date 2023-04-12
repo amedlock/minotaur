@@ -4,14 +4,14 @@
 [ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="2"]
 
 [sub_resource type="RectangleShape2D" id="1"]
-size = Vector2(25.1821, 24.9649)
+size = Vector2(48, 39)
 
 [node name="Icon" type="Area2D"]
 texture_filter = 3
 script = ExtResource("1")
 
 [node name="Collision1" type="CollisionShape2D" parent="."]
-position = Vector2(3.1777, 5.95821)
+position = Vector2(3, 9.5)
 shape = SubResource("1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

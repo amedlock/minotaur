@@ -47,6 +47,10 @@ func move_forward():
 	var wall = player.wall_ahead()
 	if wall and wall.is_blocked():
 		return
+	var cell = player.cell_ahead()
+	if cell.enemy:
+		player.combat.start(cell, true)
+		return
 	prev_coord = player.get_coord()
 	var pos = player.position
 	var pvec = player.transform.basis.z * -3
