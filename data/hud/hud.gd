@@ -16,7 +16,6 @@ extends Node2D;
 @onready var pack = $Pack;
 
 var player ;
-var item_list;
 var dungeon ;
 
 @onready var compass = find_child("Compass")
@@ -31,7 +30,6 @@ func _ready():
 	assert( compass != null )
 	player = game.find_child("Player", true, false)
 	dungeon = game.find_child("Dungeon", true, false )
-	item_list = dungeon.find_child("ItemList")
 	$Hands/background/Feet.connect("input_event", Callable(self, "clicked_feet"))
 	$Hands/background/Left.connect("input_event", Callable(self, "clicked_left"))
 	$Hands/background/Right.connect("input_event", Callable(self, "clicked_right"))
@@ -164,5 +162,3 @@ func clicked_left( _viewport, event, _shape_idx ):
 		player.right_hand = left
 	update()
 	
-
-
