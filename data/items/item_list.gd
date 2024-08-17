@@ -190,21 +190,14 @@ func load_all_items():
 
 
 
-func find_items(kind, names, powers):
+func find_items(kind : String, names : Array, powers : Array) -> Array:
 	var result = []
 	for x in items:
 		if x.kind!=kind:
 			continue
-		if names==null or (x.name in names):
-			if powers==null or (x.power in powers ):
+		if names.is_empty() or (x.name in names):
+			if powers.is_empty() or (x.power in powers ):
 				result.append( x )
-	return result
-
-func all_items( kind, i_name ):
-	var result = []
-	for n in items:
-		if n.name==i_name and n.kind==kind:
-			result.append( n )
 	return result
 
 func find_item( i_name ):
@@ -261,5 +254,3 @@ func get_container_loot(item, depth):
 		for nl in level_money[n]:
 			names.append( nl )
 	return choose_random_item( "money", names, levels )
-
-

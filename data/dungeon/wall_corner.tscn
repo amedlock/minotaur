@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://uygcpafug67a"]
 
 [ext_resource type="ArrayMesh" uid="uid://otse2bktdogr" path="res://data/dungeon/wall_corner.obj" id="1"]
-[ext_resource type="Material" path="res://data/dungeon/corner_mat.tres" id="2"]
+[ext_resource type="Material" uid="uid://lpquld6ykpo7" path="res://data/dungeon/corner_mat.tres" id="2"]
 
 [node name="wall_corner" type="Node3D"]
 

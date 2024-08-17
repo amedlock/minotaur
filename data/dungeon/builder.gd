@@ -104,18 +104,17 @@ func add_path( from, to ):
 		to.north = null
 
 
-func choose_random( items ):
-	assert( items.size() > 0 )
-	var pos = randint( items.size() )
-	return items[pos]
+func choose_random( items: Array ):
+	if items.is_empty():
+		return null
+	return items[randint( items.size() )]
 	
 	
-func take_random( items ):
-	assert( items.size() > 0 )
+func take_random( items: Array ):
+	if items.is_empty():
+		return null
 	var pos = randint( items.size() )
-	var it = items[pos]
-	items.remove_at( pos )
-	return it
+	return items.pop_at(pos)
 
 
 # maze cells adjacent (NSEW) to mc
@@ -349,11 +348,11 @@ func add_weapons( num, info, coords ):
 	if info.depth>4: powers.append( 4 )
 	if info.depth>6: powers.append( 5 )
 	if info.depth>8: powers.append( 6 )
-	var armor = item_list.find_items( "armor", null, powers )
+	var armor = item_list.find_items( "armor", [], powers )
 	for _n in range( randi() % 3 ):
 		var c = take_random( coords )
 		maze_cell(c.x,c.y).item = take_random( armor )
-	var allowed = item_list.find_items( "weapon", null, powers )		
+	var allowed = item_list.find_items( "weapon", [], powers )		
 	for _n in range(num):
 		if coords.is_empty():  return
 		var c = take_random( coords )

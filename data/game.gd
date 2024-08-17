@@ -64,4 +64,3 @@ func _input(evt):
 			help.visible = !help.visible
 		elif evt.keycode==KEY_F10:
 			get_tree().quit()
-

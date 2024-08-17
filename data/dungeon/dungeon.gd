@@ -203,7 +203,3 @@ func is_adjacent( c1 , c2 ):
 
 func clear_maze():
 	grid.reset_all()
-
-
-
-

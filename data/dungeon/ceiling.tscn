@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://dbamw6tvtfh5d"]
 
-[ext_resource path="res://data/dungeon/ceil8x8.obj" type="ArrayMesh" id=1]
-[ext_resource path="res://data/dungeon/floor_mat.tres" type="Material" id=2]
+[ext_resource type="ArrayMesh" uid="uid://bm6fipxt6n0w8" path="res://data/dungeon/ceil8x8.obj" id="1"]
+[ext_resource type="Material" uid="uid://dnbkupbqtahct" path="res://data/dungeon/floor_mat.tres" id="2"]
 
 [node name="ceiling" type="Node3D"]
 
 [node name="Plane" type="MeshInstance3D" parent="."]
-transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
-mesh = ExtResource( 1 )
-material/0 = ExtResource( 2 )
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+mesh = ExtResource("1")
+material/0 = ExtResource("2")

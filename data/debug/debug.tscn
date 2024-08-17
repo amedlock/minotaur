@@ -1,20 +1,20 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://4rjyss6wu3fy"]
 
-[ext_resource path="res://data/debug/debug.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://data/debug/debug.gd" id="1"]
 
 [node name="debug" type="Label"]
 offset_left = 24.0
 offset_top = 19.0
 offset_right = 489.0
 offset_bottom = 302.0
-scale = Vector2( 1.75, 1.75 )
+scale = Vector2(1.75, 1.75)
 text = "sdfsdf
 sdfsdf
 sdfsdf
 
 sdfdsf
 sfddsf"
-script = ExtResource( 1 )
+script = ExtResource("1")
 __meta__ = {
 "_edit_use_anchors_": false
 }

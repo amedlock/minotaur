@@ -178,8 +178,3 @@ func enemy_fire():
 	enemy_combat_state = CombatState.IDLE
 	if player_combat_state==CombatState.RETREAT:
 		player.retreat()
-
-
-
-
-

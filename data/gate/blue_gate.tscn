@@ -1,17 +1,17 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3 uid="uid://mjskacr8jd44"]
 
-[ext_resource path="res://data/gate/gate_mat.tres" type="Material" id=1]
-[ext_resource path="res://data/gate/gate.png" type="Texture2D" id=2]
-[ext_resource path="res://data/gate/gate.gd" type="Script" id=3]
+[ext_resource type="Material" path="res://data/gate/gate_mat.tres" id="1"]
+[ext_resource type="Texture2D" uid="uid://beiwcna1ucnra" path="res://data/gate/gate.png" id="2"]
+[ext_resource type="Script" path="res://data/gate/gate.gd" id="3"]
 
 [node name="gate" type="Node3D"]
-script = ExtResource( 3 )
+script = ExtResource("3")
 kind = "blue"
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-material_override = ExtResource( 1 )
+material_override = ExtResource("1")
 cast_shadow = 0
-offset = Vector2( 0, 32 )
-modulate = Color( 0.319061, 0.434399, 0.960938, 1 )
+offset = Vector2(0, 32)
+modulate = Color(0.319061, 0.434399, 0.960938, 1)
 pixel_size = 0.03
-texture = ExtResource( 2 )
+texture = ExtResource("2")

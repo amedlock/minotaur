@@ -18,7 +18,3 @@ func configure(info):
 		set_modulate( info.color )
 	else:
 		set_modulate( Color( 0xFFFFFFFF ) )
-
-
-
-

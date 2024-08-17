@@ -219,6 +219,7 @@ func cheat_death():
 		hud.update_pack()
 		health = health_max
 		mind = mind_max
+		self.player_state = PlayerState.IDLE
 		reset_location()
 		return true
 	return false
@@ -431,9 +432,11 @@ func end_combat(outcome,enemy):
 			needs_rest = true
 			self.player_state=PlayerState.IDLE
 		"die":
-			if is_dead() and not cheat_death():
-				self.player_state = PlayerState.LOST
-				self.game.game_over()
+			if is_dead():
+				if cheat_death():
+					return
+			self.player_state = PlayerState.LOST
+			self.game.game_over()
 		_: 
 			print("Invalid combat outcome!")
 	hud.update()
@@ -603,5 +606,3 @@ func mind_dmg():
 	if right_hand and right_hand.kind=="weapon":
 		return right_hand.stat2
 	return 0
-
-

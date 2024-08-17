@@ -106,5 +106,3 @@ func _input(_event):
 		if Input.is_action_just_released("look_left") or Input.is_action_just_released("look_right"):
 			unglance()
 		return
-
-
