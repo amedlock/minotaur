@@ -3,6 +3,8 @@
 ? add usable stat boost potions
 ? original mazes option (4 different 5x5 maps were combined each level, 16 total + mirroring )
 ? slowly reveal map
++ map marking?
++ door sound fx
 ? hidden doors
 ? enemy doors
 ! bombs!
@@ -12,10 +14,13 @@
 + Remove coloring for most items, add more items
 
 
-combat bug: player can fire after combat is over
-combat bug: smoke (death) animations are skipped
+can walk through monsters, should attack instead
+can walk into gates, no effect
+missing column on some wall types
+missing key item for power 1 or 2
+combat bug: player can fire after combat is over/enemy is dead
+combat bug: smoke (death) animations are sometimes skipped/not visible
 combat bug: can rest before combat is over (monster weapon still animating)
-
 
 
 X combat bug: After retreat monster keeps attacking

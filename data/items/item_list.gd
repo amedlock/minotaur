@@ -22,7 +22,7 @@ class Item:
 		var fields = ['name', 'kind', 'img', 'color', 'power', 'offset', 'stat1', 'stat2']
 		var result = {}
 		for key in fields:
-			var val = self.get(key)
+			var val = self.get(key) 
 			if val:
 				result[key] = val
 		return result
@@ -78,7 +78,7 @@ func _ready():
 	for i_name in icons:
 		var r = icons[i_name]
 		r.position *= 32
-		icons[i_name] =  r
+		icons[i_name] = r
 	load_all_items()
 
 

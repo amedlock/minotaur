@@ -49,14 +49,11 @@ var monsters = {
 
 
 var dungeon
-var item_list
-
 var minotaur
 
 
 func _ready():
 	dungeon = get_parent()
-	item_list = dungeon.find_child("Items");
 	load_enemies()
 	minotaur = monsters.special.minotaur
 
