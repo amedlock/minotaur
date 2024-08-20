@@ -52,5 +52,3 @@ func die():
 	cell.add_child( sm )
 	sm.start()
 	cell.set_enemy( null )
-
-

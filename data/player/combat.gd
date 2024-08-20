@@ -3,8 +3,10 @@ extends Node
 var player
 var dungeon
 var game
-var item_list
+
 var audio
+
+@export var game_db : Node
 
 @onready var player_anim = $PlayerAnim
 @onready var player_weapon = $PlayerWeapon
@@ -39,8 +41,7 @@ func _ready():
 	player = get_parent()
 	dungeon = player.get_parent()
 	game = player.get_parent()
-	audio = game.find_child("Audio")
-	item_list = dungeon.find_child("ItemList")
+	audio = game.find_child("Audio")	
 	enemy_anim = player.find_child("EnemyAnim")
 	enemy_weapon = player.find_child("EnemyWeapon")
 	enemy_audio = enemy_weapon.find_child("Audio")
@@ -108,7 +109,7 @@ func player_fire():
 	if player_item==null or player_item.kind!="weapon": 
 		return
 	broken = false
-	var missile = item_list.missile_for(player_item)
+	var missile = game_db.missile_for(player_item)
 	var fx = get_sound_fx( player_item )
 	if player_item.name in ["bow", "crossbow"]:
 		if player.arrows<1: return
@@ -152,9 +153,9 @@ func damage_enemy():
 func choose_enemy_weapon():
 	var items = []
 	if monster.kind in ["magic", "both"]:
-		items = item_list.find_items("weapon", ["lighting", "fireball", "small_fireball"], [1,2] )
+		items = game_db.search_items("weapon", ["lighting", "fireball", "small_fireball"], 1 )
 	else:
-		items = item_list.find_items("weapon", ["axe", "dagger", "spear"], [1,2] )
+		items = game_db.search_items("weapon", ["axe", "dagger", "spear"], 1 )
 	assert( items.size() > 0 )
 	return items[ randi() % items.size() ]
 

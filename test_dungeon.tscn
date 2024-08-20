@@ -2,10 +2,8 @@
 
 [ext_resource type="Environment" uid="uid://7fdxmqhwueqc" path="res://data/game_env.tres" id="1"]
 [ext_resource type="AudioStream" uid="uid://84gaoppi65w3" path="res://data/sounds/hit.wav" id="2"]
-[ext_resource type="Script" path="res://data/items/item_list.gd" id="3"]
 [ext_resource type="Script" path="res://data/player/combat.gd" id="5"]
 [ext_resource type="PackedScene" uid="uid://bcbttux3sdgll" path="res://data/dungeon/dungeon_wall.tscn" id="7"]
-[ext_resource type="Script" path="res://data/enemies/enemy_list.gd" id="10"]
 [ext_resource type="PackedScene" uid="uid://d4nrionulwu34" path="res://data/dungeon/floor.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://cy2jqn7lnyq7b" path="res://data/dungeon/outer_wall.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://dbamw6tvtfh5d" path="res://data/dungeon/ceiling.tscn" id="13"]
@@ -99,6 +97,12 @@ tracks/2/keys = {
 "values": [0.0, -90.0, -180.0, -270.0, -335.0]
 }
 
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_flr4j"]
+_data = {
+"Fire": SubResource("1"),
+"SpinFire": SubResource("2")
+}
+
 [sub_resource type="Animation" id="3"]
 resource_name = "Fire"
 tracks/0/type = "value"
@@ -177,6 +181,12 @@ tracks/2/keys = {
 "values": [0.0, 135.0, 360.0]
 }
 
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rvyr4"]
+_data = {
+"Fire": SubResource("3"),
+"SpinFire": SubResource("4")
+}
+
 [node name="TestDungeon" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -18)
 script = ExtResource("16")
@@ -212,10 +222,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.55, -1.5)
 
 [node name="ItemList" type="Node3D" parent="."]
-script = ExtResource("3")
 
 [node name="Enemies" type="Node3D" parent="."]
-script = ExtResource("10")
 
 [node name="ceiling" parent="." instance=ExtResource("13")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.51846, 0)
@@ -235,8 +243,9 @@ script = ExtResource("19")
 script = ExtResource("5")
 
 [node name="PlayerAnim" type="AnimationPlayer" parent="Player"]
-anims/Fire = SubResource("1")
-anims/SpinFire = SubResource("2")
+libraries = {
+"": SubResource("AnimationLibrary_flr4j")
+}
 
 [node name="PlayerWeapon" type="Sprite2D" parent="Player"]
 visible = false
@@ -247,8 +256,9 @@ region_enabled = true
 region_rect = Rect2(224, 96, 32, 32)
 
 [node name="EnemyAnim" type="AnimationPlayer" parent="Player"]
-anims/Fire = SubResource("3")
-anims/SpinFire = SubResource("4")
+libraries = {
+"": SubResource("AnimationLibrary_rvyr4")
+}
 
 [node name="EnemyWeapon" type="Sprite2D" parent="Player"]
 visible = false
@@ -285,9 +295,6 @@ sdfsdf
 sdfdsf
 sfddsf"
 script = ExtResource("20")
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Audio" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("2")

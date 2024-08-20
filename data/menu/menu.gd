@@ -24,4 +24,3 @@ func _input(evt):
 			game.start_game( 3 )
 		if evt.keycode==KEY_4:
 			game.start_game( 4 )
-

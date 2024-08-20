@@ -10,9 +10,7 @@ const MAX_LEVEL = 100;
 
 enum GateType { Empty, Tan, Green, Blue }
 
-@onready var enemy_list = $Enemies     # all enemies are children of this node
-
-@onready var item_list = $ItemList  	  # all items are enemies of this node
+@export var game_db : Node
 
 
 enum WallDir  { North, South, East, West } # four movement/wall directions
@@ -25,9 +23,8 @@ class LevelInfo:
 	var depth = null    			# 1..100
 	var seed_number = null   		# seed used to generate dungeon
 	var used_gate = false    		# used a gate to come here
-	var war_monsters = false		# has war monsters
-	var magic_monsters = false 		# has magic monsters
-	var special_monsters = false 	# has magic monsters
+	var level_type : String			# war, magic or both
+	
 	var has_minotaur = false		# minotaur on this level?
 	var start = null				# starting coord
 	var gate = GateType.Empty   	# what gate type is on this level
@@ -54,6 +51,7 @@ var minotaur_appears = { 1: 3, 2:6, 3:10, 4:16 } # you can go deeper but minotau
 
 
 func _ready():
+	game_db = get_parent().find_child("GameDB")
 	find_child("ceiling").show()
 	self.position = maze_origin
 	grid.configure(WIDTH,HEIGHT,CELL_SIZE)
@@ -127,8 +125,12 @@ func make_dungeon_info(skill:int, num: int, rng: RandomNumberGenerator) -> Level
 	result.depth = num;
 	result.seed_number = rng.randi()
 	var monster_rng = rng.randi_range(0,100)
-	result.war_monsters = monster_rng < 40 or monster_rng > 80
-	result.magic_monsters = monster_rng >= 40 
+	if monster_rng < 40:
+		result.level_type = "war"
+	elif monster_rng < 80:
+		result.level_type = "magic"
+	else:
+		result.level_type = "both"
 	result.has_minotaur = num >= minotaur_appears[skill]
 	return result
 
@@ -183,7 +185,7 @@ func wall_post_for_wall( cx, cy, walldir ):
 
 
 func add_final( enemy ):
-	grid.set_item(enemy.cell.x, enemy.cell.y, item_list.treasure)
+	grid.set_item(enemy.cell.x, enemy.cell.y, game_db.find_item("treasure", -1))
 
 
 

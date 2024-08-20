@@ -66,7 +66,8 @@ var dungeon
 var grid
 var game
 var map_view
-var item_list
+
+@export var game_db : Node
 
 @onready var combat = $combat
 @onready var hud = $Camera3D/HUD
@@ -78,7 +79,6 @@ func _ready():
 	game = dungeon.get_parent()
 	start_pos = dungeon.find_child("StartPos")
 	grid = dungeon.find_child("Grid")
-	item_list = dungeon.find_child("ItemList")
 	map_view = game.find_child("MapView")
 	reset_location()
 	self.player_state = PlayerState.IDLE
@@ -251,7 +251,7 @@ func open_container(item):
 	if item.needs_key:
 		if not self.has_key_for(item):
 			return false
-	var loot = item_list.get_container_loot(item, dungeon.current_level.depth )
+	var loot = game_db.get_container_loot(item, dungeon.current_level.depth )
 	if loot:
 		set_item_at_feet(loot)
 		return true
@@ -263,20 +263,32 @@ func open_container(item):
 func take_item( item ) -> bool:
 	if not item:
 		return false
+
+	# handle special items
+	if item.kind=="special":
+		match item.name:
+			"treasure":
+				self.win()
+				self.disable()
+				return true
+			"quiver":
+				arrows += 6
+			"food":
+				food += 6
+			_:
+				return false
+		set_item_at_feet(null)
+		return true
+	
+	# key, weapon, armor, container, money
 	match item.kind:
-		"ladder": return false
-		"container":
-			return open_container(item)
-		"treasure":
-			self.win()
-			self.disable()
 		"money":
 			gold += item.stat1
-		"quiver":
-			arrows += 6
-		"food":
-			food += 6
-		_: return false
+		"container":
+			if not open_container(item):
+				return false
+		_:
+			return false
 	set_item_at_feet(null)
 	return true
 
@@ -412,16 +424,6 @@ func start_combat( cell ) -> bool:
 	if player_state!=PlayerState.IDLE:
 		return false
 	return (cell and cell.enemy)
-#	var pos = cell.grid_pos();
-#	var wall = dungeon.grid.get_wall(loc, pos)
-#	if wall and wall.is_blocked():
-#		return false
-#	var ang = int(-rad2deg( (pos - loc).angle_to(face_vector()) ))
-#	assert( ang in [90, 0, -90])
-#	if ang!=0:
-#		idle.turn_to(ang)
-#		idle.connect('completed', combat, 'start', [cell], CONNECT_ONESHOT)
-#	return true
 
 
 func end_combat(outcome,enemy):
@@ -537,8 +539,8 @@ func apply_armor( dmg, arm ):
 	return max( dmg-prot, 0 )
 
 
-func damage( monster, weap ):
-	var maxdmg = int(monster.power * 8) * skill
+func damage( _monster, weap ):
+	var maxdmg = int(weap.stat1) * skill
 	var dmg = vary_amount( maxdmg, [ 5, 10, 15, 20 ] )
 	var war_amt = apply_armor( dmg, war_armor() )
 	var mind_amt = apply_armor( dmg, mind_armor() )
@@ -558,9 +560,9 @@ func init( difficulty ):
 	arrows = 6 + 5 * (5 - skill) # 11-25 arrows
 	resurrected = false
 	for n in range(10): inventory[n] = null;
-	right_hand = dungeon.item_list.find_item("bow")
+	right_hand = game_db.find_item("bow")
 	if skill==1:
-		left_hand = dungeon.item_list.find_item("small_shield")
+		left_hand = game_db.find_item("small_shield")
 		health = 18
 		mind = 12
 	elif skill==2:

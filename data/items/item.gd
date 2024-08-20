@@ -12,6 +12,7 @@ func debug_info():
 
 
 func configure(info):
+	assert(info.color is Color)
 	self.item_info = info
 	set_region_rect( info.img )
 	if info.color!=null:

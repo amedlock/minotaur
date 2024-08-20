@@ -1,8 +1,7 @@
 extends Node3D;
 
+@export var game_db : Node
 
-var enemy_list ;
-var item_list;
 var dungeon ;
 
 var rng = RandomNumberGenerator.new()
@@ -10,8 +9,6 @@ var rng = RandomNumberGenerator.new()
 
 func _ready():
 	dungeon = get_parent()
-	enemy_list = dungeon.get_node("Enemies")
-	item_list = dungeon.get_node("ItemList")
 
 
 func randint( hi ):
@@ -229,13 +226,10 @@ func add_gates(info ):
 	if info.depth > 2: return
 	if info.used_gate==true: return
 	var gates = []
-	if info.war_monsters:
-		if info.magic_monsters:
-			gates = ["magic", "war"]
-		else:
-			gates = ["both", "magic"]
-	else:
-		gates = ["both", "war"]
+	match info.level_type:
+		"war": gates = ["magic", "both"]
+		"magic": gates = ["war", "both"]
+		_: gates = ["war", "magic"]
 	maze_cell(dungeon.WIDTH-1, 0).gate = gates[0]
 	maze_cell(0, dungeon.HEIGHT-1).gate = gates[1]
 
@@ -246,29 +240,24 @@ func add_exit(info):
 		return
 	var exit_loc = [Vector2(3,4), Vector2(7,4), Vector2(4,3), Vector2(4,7) ]
 	var result : Vector2 = choose_random( exit_loc ) 
-	maze_cell(result.x, result.y).item = item_list.find_item("ladder")
+	maze_cell(result.x, result.y).item = game_db.find_item("ladder")
+
+
+func enemy_powers(depth: int) -> Array:
+	match depth:
+		1: return [1,2]
+		2: return [1,2,3]
+		3: return [2,3,4]
+		4: return [3,4,5]
+		5: return [4,5,6]
+		6: return [5,6]
+		7: return [6,7]
+		_: return [6,7,8]
 
 
 func add_enemies(info, coords):
 	var num = randint(6) + 12
-	var kinds  = []
-	if info.war_monsters:
-		kinds.append("war")
-	if info.magic_monsters:
-		kinds.append("magic")
-	if info.special_monsters:
-		kinds.append("both")
-	var power = []
-	match info.depth:
-		1: power = [1,2]
-		2: power = [1,2,3]
-		3: power = [2,3,4]
-		4: power = [3,4,5]
-		5: power = [4,5,6]
-		6: power = [5,6]
-		7: power = [6,7]
-		_: power = [6,7,8]
-	var allowed = enemy_list.find_enemies( info, power )
+	var allowed = game_db.find_enemies(info.level_type, info.depth)
 	for _n in range(num):
 		if allowed.is_empty() or coords.is_empty(): return
 		var c = take_random( coords )
@@ -277,34 +266,24 @@ func add_enemies(info, coords):
 
 
 func add_key( info, coords ):
-	var powers ;
-	match info.depth:
-		1,2 : powers = [1]
-		3,4 : powers = [1,2]
-		5,6 : powers = [2,3]
-		_: powers = [3]
-	var keys = item_list.find_items("item",["key"], powers )
+	var keys = game_db.search_items("key", [], info.depth)
 	if keys.is_empty():
-		print("Warning no 'key' items found for powers ", powers)
-		return
-	var c = choose_random( coords )
-	maze_cell(c.x, c.y).item = choose_random(keys)
+		print_debug("Warning no 'key' items found for level ", info.depth)
+	else:
+		var c = choose_random( coords )
+		maze_cell(c.x, c.y).item = choose_random(keys)
 
 
 
 func add_loot( num, info, coords ):
-	var powers = [1]
 	var names = [ "small_bag" ]
 	if info.depth in [2,3,4]: 
-		powers = [1,2]
 		names.append( "bag" )
 	elif info.depth in [4,5]: 
 		names = [ "small_bag", "bag", "box" ]
-		powers = [1,2,3]
 	elif info.depth >= 6:
 		names = [  "small_bag", "bag", "box", "pack", "chest" ]
-		powers = [2,3]
-	var bags = item_list.find_items( "container", names, powers )
+	var bags = game_db.search_items( "container", names, info.depth )
 	for _n in range(num):
 		if coords.is_empty(): return
 		var c = take_random( coords )
@@ -312,16 +291,7 @@ func add_loot( num, info, coords ):
 
 
 func add_money(num, info, coords):
-	var restrict = { "coins":1, "necklace":1 ,"lamp":2, "horn":3, "chalice":4, "crown":6} 
-	var names = []
-	for mname in restrict:
-		if info.depth >= restrict[mname]:
-			names.append( mname )
-	var powers = [1,2];
-	if info.depth in [3,4]: powers = [2,3]
-	elif info.depth in [5,6, 7]: powers = [3,4]
-	elif info.depth > 7: powers = [4]
-	var allowed = item_list.find_items("money", names, powers )
+	var allowed = game_db.search_items("money", [], info.depth )
 	if allowed.is_empty(): return  # shouldnt happen
 	for _n in range(num):
 		if coords.is_empty(): return
@@ -330,12 +300,12 @@ func add_money(num, info, coords):
 
 
 func add_other(coords):
-	var food = item_list.find_item( "food" )
+	var food = game_db.find_item( "food" )
 	for _n in range(randint(5)):
 		if coords.is_empty(): return
 		var c = take_random( coords )
 		maze_cell(c.x, c.y).item = food
-	var quiver = item_list.find_item("quiver"); 
+	var quiver = game_db.find_item("quiver"); 
 	for _n in range(1 + randint(3)):
 		if coords.is_empty(): return
 		var c = take_random( coords )
@@ -343,16 +313,11 @@ func add_other(coords):
 
 
 func add_weapons( num, info, coords ):
-	var powers = [1,2]
-	if info.depth>2: powers.append( 3 )
-	if info.depth>4: powers.append( 4 )
-	if info.depth>6: powers.append( 5 )
-	if info.depth>8: powers.append( 6 )
-	var armor = item_list.find_items( "armor", [], powers )
+	var armor = game_db.search_items( "armor", [], info.depth )
 	for _n in range( randi() % 3 ):
 		var c = take_random( coords )
 		maze_cell(c.x,c.y).item = take_random( armor )
-	var allowed = item_list.find_items( "weapon", [], powers )		
+	var allowed = game_db.search_items( "weapon", [], info.depth )		
 	for _n in range(num):
 		if coords.is_empty():  return
 		var c = take_random( coords )
@@ -371,19 +336,13 @@ func add_items(info, coords):
 
 
 func set_mural_color( info ):
-	if info.war_monsters:
-		if info.magic_monsters:
-			dungeon.set_mural_color("both")
-		else:
-			dungeon.set_mural_color("war")
-	else:
-		dungeon.set_mural_color("magic")
+	dungeon.set_mural_color(info.level_type)
 
 
 func add_minotaur(info, coords):
 	if info.has_minotaur:
 		var c= take_random( coords )
-		maze_cell(c.x, c.y).enemy = enemy_list.minotaur
+		maze_cell(c.x, c.y).enemy = game_db.find_enemy("minotaur")
 
 
 func add_cell_corner( cx, cy ):
@@ -459,9 +418,6 @@ func build_maze(level_info):
 			var n = xp + (yp * dungeon.WIDTH)
 			maze[n] = MazeCell.new(xp, yp)
 	rng.seed = level_info.seed_number
-	var monster_kind = rng.randi_range(0,100)
-	level_info.war_monsters = monster_kind < 40 or monster_kind > 80
-	level_info.magic_monsters = monster_kind >=40
 	build_maze_prim()
 	add_more_doors()
 	add_exit(level_info)
