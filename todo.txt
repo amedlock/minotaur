@@ -3,7 +3,7 @@
 ? add usable stat boost potions
 ? original mazes option (4 different 5x5 maps were combined each level, 16 total + mirroring )
 ? slowly reveal map
-+ map marking?
++ map marking? esp exit
 + door sound fx
 ? hidden doors
 ? enemy doors
@@ -17,10 +17,10 @@
 + better options/menus UI
 + add Castle Map to right of level map
 
+
 [BUGS]
-no keys (Warning no 'key' items found for powers [2, 3])
-shields do nothing?
-some sacks don't open , pick up instead?
+better level loot
+shields do nothing? Fix Stats
 sometimes damage after resting (delayed enemy weapon damage)
 missing column on some wall types
 can walk into gates, no effect
@@ -29,3 +29,7 @@ combat bug: smoke (death) animations are sometimes skipped/not visible
 combat bug: can rest before combat is over (monster weapon still animating)
 
 
+[FIXED]
+* glance occaisionally does not revert view, error when glance again
+* tinting is not working, make icons b/w
+* some sacks don't open , pick up instead?

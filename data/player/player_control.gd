@@ -79,14 +79,15 @@ func turn_player(amt: int):
 func glance(amt: int):
 	var rot = player.get_dir() + amt
 	self.glance_amt = amt
-	player.player_state=player.PlayerState.GLANCING
+	player.player_state=player.PlayerState.TURNING
 	await create_tween().tween_property(player, "rotation_degrees:y", rot, GlanceTime ).finished
 	player.rotation_degrees.y = wrapi(rot, 0, 360)	
-	player.player_state=player.PlayerState.IDLE
+	player.player_state=player.PlayerState.GLANCING
 
 func unglance():
 	var rot = player.get_dir() - self.glance_amt
 	var tween = create_tween()
+	player.player_state=player.PlayerState.TURNING
 	await tween.tween_property(player, "rotation_degrees:y", rot, GlanceTime ).finished
 	self.glance_amt = 0
 	player.rotation_degrees.y = wrapi(rot, 0, 360)	

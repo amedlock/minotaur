@@ -261,7 +261,7 @@ func add_enemies(info, coords):
 	for _n in range(num):
 		if allowed.is_empty() or coords.is_empty(): return
 		var c = take_random( coords )
-		var mon = choose_random( allowed )
+		var mon = take_random( allowed )
 		maze_cell( c.x, c.y ).enemy = mon
 
 

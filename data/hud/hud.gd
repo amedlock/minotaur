@@ -117,19 +117,9 @@ func pack_slot_clicked( slot , button ):
 func clicked_feet( _viewport, event, _shape_idx ):
 	if not(event is InputEventMouseButton) or not event.pressed: 
 		return
-	var item = player.item_at_feet()
-	if item and item.name=="ladder":
-		return
-	if item and player.take_item(item):
-		pass
-	elif event.button_index == MOUSE_BUTTON_LEFT:
-		var left_item = player.left_hand
-		player.left_hand = item
-		player.set_item_at_feet(left_item)
-	elif event.button_index == MOUSE_BUTTON_RIGHT:
-		var right_item = player.right_hand
-		player.right_hand = item
-		player.set_item_at_feet(right_item)
+	
+	var mbutton = event.button_index
+	player.use_or_take_item(mbutton)
 	update()
 
 

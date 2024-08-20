@@ -74,6 +74,7 @@ func add_item(i_name, kind, icon, color, min_lvl, stat1, stat2):
 	item.min_level = int(min_lvl)
 	item.stat1 = int(stat1)
 	item.stat2 = int(stat2)
+	item.needs_key = (i_name in ["box", "pack", "chest"])
 	items.append(item)
 
 func load_game_info():
@@ -140,14 +141,15 @@ func load_keys(node):
 		add_item("key", "key", icons["key"], colors[key_item.key], key_item.value, key_item.value, 0)
 
 
-func load_weapons(weapons, kind, weap_color):
+func load_weapons(weapons, kind, color_names):
 	for weap in weapons.find_child(kind).children():
-		for col in weap_color:
-			var min_lvl = 1
-			for damage in weap.value:
-				var icon = icons[weap.key]
-				add_item(weap.key,"weapon", icon, colors[col], min_lvl, damage, 0)
-				min_lvl += 2
+		var n = 0
+		for damage in weap.value:
+			var min_lvl = (n * 2)+ 1
+			var icon = icons[weap.key]
+			var col = colors[ color_names[n] ]
+			add_item(weap.key,"weapon", icon, col, min_lvl, damage, 0)
+			n += 1
 
 
 func load_armor(armor):

@@ -119,4 +119,3 @@ func set_door(x, y, dir):
 		var cell = get_cell(x,y)
 		if cell:
 			cell.set_door(dir)
-

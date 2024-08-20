@@ -118,7 +118,7 @@ func _input(evt):
 				self.use_item()
 			elif Input.is_action_just_pressed("descend"):
 				self.use_exit()
-							
+
 		PlayerState.GLANCING:
 			if !Input.is_action_pressed("look_left") and !Input.is_action_pressed("look_right"):
 				$PlayerControl.unglance()
@@ -235,62 +235,91 @@ func item_at_feet():
 	var item_node = grid.get_cell( coord.x,coord.y ).item
 	return item_node.item_info if item_node else null
 
+func swap_item(mbutton, item):
+	match mbutton:
+		MOUSE_BUTTON_LEFT:
+			var tmp = self.left_hand
+			self.left_hand = item
+			self.set_item_at_feet(tmp)
+		MOUSE_BUTTON_RIGHT:
+			var tmp = self.right_hand
+			self.right_hand = item
+			self.set_item_at_feet(tmp)
 
-func has_key_for(item):
-	for n in inventory.values():
-		if n and n.name=="key" and n.power >= item.power:
+func use_or_take_item(mbutton):
+	var item = self.item_at_feet()
+	if not item:
+		self.swap_item(mbutton, null)
+		return
+	
+	match item.name:
+		
+		"ladder":
+			# do nothing
+			return
+		"treasure":
+			self.win()
+			self.disable()
+			return
+		"quiver":
+			self.arrows += item.stat1
+			self.set_item_at_feet(null)
+			return
+		"food":
+			self.food += item.stat1
+			self.set_item_at_feet(null)
+			return
+		"key":
+			self.swap_item(mbutton, item)
+			pass
+	
+	match item.kind:
+		"container":
+			if not self.open_container(item):
+				self.swap_item(mbutton, item)
+			return
+		"money":
+			self.gold += item.stat1
+			set_item_at_feet(null)
+			return
+		"potion":
+			# nothing yet
+			set_item_at_feet(null)
+			return
+		"armor", "weapon":
+			self.swap_item(mbutton, item)
+			return
+
+
+func can_open(box, item):
+	if item==null:
+		return false
+	if item.name=="key" and item.stat1 >= box.stat1:
+		return true
+
+func use_key_for(box):
+	for index in self.inventory:
+		var item = self.inventory[index]
+		if can_open(box, item):
+			self.inventory[index] = null
 			return true
-	if right_hand and right_hand.name=="key" and right_hand.power >= item.power:
+	if can_open(box, right_hand):
+		self.right_hand = null
 		return true
-	if left_hand and left_hand.name=="key" and left_hand.power >= item.power:
-		return true
+	if can_open(box, left_hand):
+		self.left_hand = null
 	return false
 
 
 func open_container(item):
 	if item.needs_key:
-		if not self.has_key_for(item):
+		if not self.use_key_for(item):
 			return false
 	var loot = game_db.get_container_loot(item, dungeon.current_level.depth )
 	if loot:
 		set_item_at_feet(loot)
 		return true
 	return false
-
-
-
-# can the item be used/consumed?
-func take_item( item ) -> bool:
-	if not item:
-		return false
-
-	# handle special items
-	if item.kind=="special":
-		match item.name:
-			"treasure":
-				self.win()
-				self.disable()
-				return true
-			"quiver":
-				arrows += 6
-			"food":
-				food += 6
-			_:
-				return false
-		set_item_at_feet(null)
-		return true
-	
-	# key, weapon, armor, container, money
-	match item.kind:
-		"money":
-			gold += item.stat1
-		"container":
-			if not open_container(item):
-				return false
-		_:
-			return false
-	set_item_at_feet(null)
-	return true
 
 
 var magic_items = ["small_ring", "ring", "tome", "potion", "small_potion"]
