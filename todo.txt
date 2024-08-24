@@ -19,15 +19,16 @@
 
 [BUGS]
 - better level loot
-* armor (helmet to a lesser effect) do not have differing colors
-* amulets should pick up, not loot
-* separate GUI place for key/ring/armor/shield
 Fix Stats( shields do nothing!? )
 Fix Combat turns (sometimes damage after resting ,delayed enemy weapon damage)
-missing column on some wall types
 can walk into gates, no effect
 combat bug: player can fire after combat is over/enemy is dead
 combat bug: smoke (death) animations are sometimes skipped/not visible
 combat bug: can rest before combat is over (monster weapon still animating)
 
+
+x armor (helmet to a lesser effect) do not have differing colors
+x amulets should pick up, not loot
+x separate GUI place for key/ring/armor/shield
+x missing column on some wall types
 

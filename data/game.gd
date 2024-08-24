@@ -14,6 +14,8 @@ var mode = GameMode.Menu
 func _ready():
 	show_menu()
 
+
+
 func start_game( skill ):
 	player = dungeon.player
 	var seednum = randi() # seed num

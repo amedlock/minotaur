@@ -204,11 +204,11 @@ position = Vector2(0.700001, -36.7963)
 slot_num = 1
 
 [node name="Slot2" parent="Pack" instance=ExtResource("8")]
-position = Vector2(58, -36.395)
+position = Vector2(58.3332, -36.829)
 slot_num = 2
 
 [node name="Slot3" parent="Pack" instance=ExtResource("8")]
-position = Vector2(116.155, -36.5229)
+position = Vector2(117.333, -36.829)
 slot_num = 3
 
 [node name="Slot4" parent="Pack" instance=ExtResource("8")]
@@ -216,19 +216,19 @@ position = Vector2(-0.59874, 21.5545)
 slot_num = 4
 
 [node name="Slot5" parent="Pack" instance=ExtResource("8")]
-position = Vector2(59.275, 22.1533)
+position = Vector2(58.3332, 22.171)
 slot_num = 5
 
 [node name="Slot6" parent="Pack" instance=ExtResource("8")]
-position = Vector2(116.155, 20.9559)
+position = Vector2(117.333, 21.171)
 slot_num = 6
 
 [node name="Slot7" parent="Pack" instance=ExtResource("8")]
-position = Vector2(0, 80.2308)
+position = Vector2(-0.666801, 82.171)
 slot_num = 7
 
 [node name="Slot8" parent="Pack" instance=ExtResource("8")]
-position = Vector2(58.0775, 80.8295)
+position = Vector2(58.3332, 81.1711)
 slot_num = 8
 
 [node name="Slot9" parent="Pack" instance=ExtResource("8")]

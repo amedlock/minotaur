@@ -30,7 +30,7 @@ class MazeCell:
 	var item = null 
 	var enemy = null
 	
-	var corners = []
+	var corners = {}
 	
 	var active = false # maze building flag
 
@@ -358,25 +358,13 @@ func add_cell_corner( cx, cy ):
 	var c = maze_cell( cx, cy )
 	if c==null: 
 		return
-	var cw = maze_cell(cx-1,cy)
-	var cs = maze_cell(cx, cy -1)
-	var ne = false
-	var se = false
 	if c.north != null:
-		if c.east!=null:
-			ne = true
-		elif cw!=null and cw.east!=null:
-			ne = true
-	if cs:
-		if cs.north!=null or cs.east!=null:
-			se = true
-	if c.east!=null:
-		ne = true
-		se = true
-	if ne and cy>0:
-		c.corners.append("ne")
-	if se and cx< dungeon.WIDTH-1:
-		c.corners.append("se")
+		c.corners["ne"] = true
+		c.corners['nw'] = true
+	if c.east != null:
+		c.corners['ne'] = true
+		c.corners['se'] = true
+
 
 
 func add_all_corners():
