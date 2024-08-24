@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://mae22grjwobt"]
+[gd_scene load_steps=11 format=3 uid="uid://mae22grjwobt"]
 
 [ext_resource type="Script" path="res://data/hud/hud.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://0ba6ubjsj10p" path="res://data/font/system36.fnt" id="2"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://7t1fr8bq62mi" path="res://data/hud/pack_grid.png" id="7"]
 [ext_resource type="PackedScene" uid="uid://bkxg8wb87gdgr" path="res://data/hud/pack_slot.tscn" id="8"]
 [ext_resource type="Texture2D" uid="uid://qyfk4s8mpoyk" path="res://data/hud/compass.png" id="9"]
+[ext_resource type="PackedScene" uid="uid://bev6h8xgfuapk" path="res://data/hud/armor_items.tscn" id="9_pvoon"]
 
 [node name="HUD" type="Node2D"]
 texture_filter = 3
@@ -233,6 +234,12 @@ slot_num = 8
 [node name="Slot9" parent="Pack" instance=ExtResource("8")]
 position = Vector2(117.352, 82.0269)
 slot_num = 9
+
+[node name="ArmorItems" parent="." instance=ExtResource("9_pvoon")]
+offset_left = 196.0
+offset_top = 531.0
+offset_right = 196.0
+offset_bottom = 531.0
 
 [node name="Compass" type="Sprite2D" parent="."]
 position = Vector2(920, 640)

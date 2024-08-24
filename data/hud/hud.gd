@@ -9,11 +9,14 @@ extends Node2D;
 @onready var food_disp = $Hands/FoodDisplay;
 @onready var level_disp = $Hands/LevelDisplay;
 @onready var arrow_disp = $Hands/ArrowsDisplay;
-@onready var left_hand_sprite  = $Hands/background/Left/Sprite2D;
+@onready var shield_sprite  = $Hands/background/Left/Sprite2D;
 @onready var at_feet_sprite = $Hands/background/Feet/Sprite2D;
 @onready var right_hand_sprite = $Hands/background/Right/Sprite2D;
 
 @onready var pack = $Pack;
+
+var armor_slots = {}
+
 
 var player ;
 var dungeon ;
@@ -31,10 +34,14 @@ func _ready():
 	player = game.find_child("Player", true, false)
 	dungeon = game.find_child("Dungeon", true, false )
 	$Hands/background/Feet.connect("input_event", Callable(self, "clicked_feet"))
-	$Hands/background/Left.connect("input_event", Callable(self, "clicked_left"))
+	#$Hands/background/Left.connect("input_event", Callable(self, "clicked_left"))
 	$Hands/background/Right.connect("input_event", Callable(self, "clicked_right"))
-	
-
+	armor_slots['helmet'] = $ArmorItems/HelmetSprite
+	armor_slots['breastplate'] = $ArmorItems/BreastplateSprite
+	armor_slots['amulet'] = $ArmorItems/AmuletSprite
+	armor_slots['shield'] = $Hands/background/Left/Sprite2D
+	armor_slots['hand'] = $Hands/background/Right/Sprite2D
+	armor_slots['feet'] = $Hands/background/Feet/Sprite2D
 
 func calc_sprite_scale( src_w, src_h, dest_w, dest_h ):
 	var wr = float(dest_w) / float(src_w);
@@ -57,21 +64,12 @@ func update_damage():
 	armor_disp.set_text( str( player.war_armor() ) + "/" + str(player.mind_armor()) )
 	damage_disp.set_text( str( player.war_dmg() ) + "/" + str( player.mind_dmg() ) )
 
-	
-func check_money():
-	if player.left_hand and player.left_hand.kind=="money":
-		player.gold += player.left_hand.stat1
-		player.left_hand = null
-	if player.right_hand and player.right_hand.kind=="money":
-		player.gold += player.right_hand.stat1
-		player.right_hand = null
 
 func update_pack():
-	check_money()
-	update_hand_slot( left_hand_sprite, player.left_hand )
-	update_hand_slot( right_hand_sprite, player.right_hand )
+	set_slot_item("hand", player.right_hand)
 	var at_feet = player.item_at_feet()
-	update_hand_slot( at_feet_sprite, at_feet )
+	set_slot_item("feet", at_feet)
+	set_slot_item("shield", player.shield)
 	update_damage()
 	var index = 1
 	for i_name in pack_slots:
@@ -83,32 +81,34 @@ func update_pack():
 		index += 1
 
 
-func update_hand_slot( dest, item ):
-	if not item:
-		dest.hide()
-	else:
-		dest.set_scale( calc_sprite_scale( 32, 32, 50, 50 ) )
-		dest.set_region_rect( item.img )
-		dest.set_modulate( item.color if item.color!=null else Color( 0xffffffff ) )
-		dest.show()
-
-
-
 func update():
 	update_pack()
 	update_stats()
 
 
+func set_slot_item(which: String, item):
+	var target = armor_slots[which]
+	if item==null:
+		target.visible = false
+	else:
+		target.set_scale( calc_sprite_scale( 32, 32, 50, 50 ) )
+		target.set_modulate( item.color if item.color!=null else Color( 0xffffffff ) )
+		target.region_rect = item.img
+		target.visible = true
+		target.region_enabled = true
+
+
 # events 
 
-func pack_slot_clicked( slot , button ):
+func pack_slot_clicked( slot, mbutton ):
 	var cur = player.inventory[ slot ]
-	if button==MOUSE_BUTTON_RIGHT:
-		player.inventory[ slot ] = player.right_hand
-		player.right_hand = cur
-	elif button==MOUSE_BUTTON_LEFT:
-		player.inventory[ slot ] = player.left_hand
-		player.left_hand = cur
+	match mbutton:
+		MOUSE_BUTTON_LEFT:
+			player.inventory[ slot ] = player.item_at_feet()
+			player.set_item_at_feet(cur)
+		MOUSE_BUTTON_RIGHT:
+			player.inventory[ slot ] = player.right_hand
+			player.right_hand = cur
 	update_stats()
 	update_pack()
 
@@ -117,9 +117,7 @@ func pack_slot_clicked( slot , button ):
 func clicked_feet( _viewport, event, _shape_idx ):
 	if not(event is InputEventMouseButton) or not event.pressed: 
 		return
-	
-	var mbutton = event.button_index
-	player.use_or_take_item(mbutton)
+	player.use_or_take_item()
 	update()
 
 
@@ -132,9 +130,7 @@ func clicked_right( _viewport, event, _shape_idx ):
 	if event.button_index == MOUSE_BUTTON_LEFT:
 		player.attack_ahead()
 	elif event.button_index == MOUSE_BUTTON_RIGHT:
-		var left = player.left_hand
-		player.left_hand = player.right_hand
-		player.right_hand = left
+		pass
 	update()
 
 

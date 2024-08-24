@@ -6,9 +6,15 @@ var dungeon ;
 
 var rng = RandomNumberGenerator.new()
 
+var maze = []
 
 func _ready():
 	dungeon = get_parent()
+	maze.resize(dungeon.WIDTH * dungeon.HEIGHT)
+	for yp in range(dungeon.HEIGHT):
+		for xp in range(dungeon.WIDTH):
+			var n = xp + (yp * dungeon.WIDTH)
+			maze[n] = MazeCell.new(xp, yp)
 
 
 func randint( hi ):
@@ -32,6 +38,15 @@ class MazeCell:
 		self.x = xp
 		self.y = yp
 
+	func reset():
+		self.corners.clear()
+		self.active = false
+		self.enemy = null
+		self.item = null
+		self.gate = null
+		self.north = null
+		self.east = null
+
 	func adjacent_to(m2:MazeCell) -> bool:
 		if m2.x==x:
 			return m2.y==y+1 or m2.y==y-1
@@ -54,7 +69,6 @@ class MazeCell:
 				obj[key] = val
 		return JSON.stringify(obj)
 
-var maze = []
 
 func valid(x,y) -> bool:
 	return x>=0 and x<dungeon.WIDTH and y>=0 and y<dungeon.HEIGHT
@@ -236,23 +250,11 @@ func add_gates(info ):
 
 
 func add_exit(info):
-	if info.depth>99:
+	if info.depth>=99:
 		return
 	var exit_loc = [Vector2(3,4), Vector2(7,4), Vector2(4,3), Vector2(4,7) ]
 	var result : Vector2 = choose_random( exit_loc ) 
 	maze_cell(result.x, result.y).item = game_db.find_item("ladder")
-
-
-func enemy_powers(depth: int) -> Array:
-	match depth:
-		1: return [1,2]
-		2: return [1,2,3]
-		3: return [2,3,4]
-		4: return [3,4,5]
-		5: return [4,5,6]
-		6: return [5,6]
-		7: return [6,7]
-		_: return [6,7,8]
 
 
 func add_enemies(info, coords):
@@ -292,7 +294,8 @@ func add_loot( num, info, coords ):
 
 func add_money(num, info, coords):
 	var allowed = game_db.search_items("money", [], info.depth )
-	if allowed.is_empty(): return  # shouldnt happen
+	if allowed.is_empty(): 
+		return  # no money, shouldnt happen :)
 	for _n in range(num):
 		if coords.is_empty(): return
 		var c = take_random( coords ) 
@@ -301,7 +304,7 @@ func add_money(num, info, coords):
 
 func add_other(coords):
 	var food = game_db.find_item( "food" )
-	for _n in range(randint(5)):
+	for _n in range(1 + randint(3)):
 		if coords.is_empty(): return
 		var c = take_random( coords )
 		maze_cell(c.x, c.y).item = food
@@ -312,27 +315,33 @@ func add_other(coords):
 		maze_cell(c.x,c.y).item = quiver
 
 
-func add_weapons( num, info, coords ):
+func add_weapons( weap_count, armor_count, info, coords ):
 	var armor = game_db.search_items( "armor", [], info.depth )
-	for _n in range( randi() % 3 ):
+	for _n in range( armor_count ):
 		var c = take_random( coords )
 		maze_cell(c.x,c.y).item = take_random( armor )
 	var allowed = game_db.search_items( "weapon", [], info.depth )		
-	for _n in range(num):
+	for _n in range(weap_count):
 		if coords.is_empty():  return
 		var c = take_random( coords )
 		maze_cell(c.x,c.y).item = choose_random( allowed )
+		
+	var amulets = game_db.search_items("amulet", [], info.depth)
+	for _n in range(6):
+		var c = take_random(coords)
+		maze_cell(c.x, c.y).item = choose_random(amulets)
 
 
 func add_items(info, coords):
 	var bags = 6 + randint(3)
 	var money = 10 - bags
 	var weapons = 7 + randint( 5 )
+	var armor =  5 # randint(2)
 	add_loot( bags, info, coords )
 	add_key( info, coords )
 	add_money( money, info, coords )
 	add_other( coords )	
-	add_weapons( weapons, info, coords )
+	add_weapons( weapons, armor, info, coords )
 
 
 func set_mural_color( info ):
@@ -411,24 +420,18 @@ func all_empty_cells():
 
 
 func build_maze(level_info):
-	maze.clear()
-	maze.resize(dungeon.WIDTH * dungeon.HEIGHT)
-	for yp in range(dungeon.HEIGHT):
-		for xp in range(dungeon.WIDTH):
-			var n = xp + (yp * dungeon.WIDTH)
-			maze[n] = MazeCell.new(xp, yp)
+	for cell in maze:
+		cell.reset()
 	rng.seed = level_info.seed_number
 	build_maze_prim()
 	add_more_doors()
 	add_exit(level_info)
 	add_gates(level_info)
-	var empty_cells = all_empty_cells()	
+	var empty_cells = all_empty_cells()
+	
 	add_enemies(level_info, empty_cells)
 	add_items( level_info, empty_cells)
 	add_minotaur( level_info, empty_cells )
 	add_all_corners()
 	build_dungeon_grid() # build the actual geometry
 	set_mural_color(level_info)	
-	maze.clear()
-	
-	

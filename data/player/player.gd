@@ -16,7 +16,6 @@ var player_state = PlayerState.IDLE;
 
 
 # these are Item references, not nodes
-var left_hand ;
 var right_hand ;
 
 
@@ -46,10 +45,11 @@ var resurrected = false # has this player cheated death
 var skill = 1
 
 
-# these are Items from item_list.gd
+# these are protective Items from game_db.gd
 var helmet = null
 var breastplate = null
-var ring = null
+var amulet = null
+var shield = null
 
 var potion = null  		# active potion?
 var potion_turns = 0	# how many turns before it vanishes
@@ -235,25 +235,18 @@ func item_at_feet():
 	var item_node = grid.get_cell( coord.x,coord.y ).item
 	return item_node.item_info if item_node else null
 
-func swap_item(mbutton, item):
-	match mbutton:
-		MOUSE_BUTTON_LEFT:
-			var tmp = self.left_hand
-			self.left_hand = item
-			self.set_item_at_feet(tmp)
-		MOUSE_BUTTON_RIGHT:
-			var tmp = self.right_hand
-			self.right_hand = item
-			self.set_item_at_feet(tmp)
+func swap_item(item):
+	var tmp = self.right_hand
+	self.right_hand = item
+	self.set_item_at_feet(tmp)
 
-func use_or_take_item(mbutton):
+func use_or_take_item():
 	var item = self.item_at_feet()
 	if not item:
-		self.swap_item(mbutton, null)
+		self.swap_item(null)
 		return
 	
-	match item.name:
-		
+	match item.name:		
 		"ladder":
 			# do nothing
 			return
@@ -269,14 +262,11 @@ func use_or_take_item(mbutton):
 			self.food += item.stat1
 			self.set_item_at_feet(null)
 			return
-		"key":
-			self.swap_item(mbutton, item)
-			pass
 	
 	match item.kind:
 		"container":
 			if not self.open_container(item):
-				self.swap_item(mbutton, item)
+				self.swap_item(item)
 			return
 		"money":
 			self.gold += item.stat1
@@ -284,12 +274,37 @@ func use_or_take_item(mbutton):
 			return
 		"potion":
 			# nothing yet
-			set_item_at_feet(null)
+			#set_item_at_feet(null)
 			return
-		"armor", "weapon":
-			self.swap_item(mbutton, item)
+		"ring":
+			# nothing yet
+			# set_item_at_feet(null)
+			return
+		"key", "shield", "armor", "amulet":
+			if self.equip_armor(item):
+				self.set_item_at_feet(null)
+				return
+		"weapon":
+			self.swap_item(item)
 			return
 
+func is_better_than(item, prev):
+	if prev==null:
+		return true
+	return item.stat1 > prev.stat1
+
+
+
+func equip_armor(item):
+	var armor_type = item.name
+	
+	match armor_type:
+		"helmet", "breastplate", "amulet", "shield":
+			if is_better_than(item, self[armor_type]):
+				self[armor_type] = item
+				hud.set_slot_item(armor_type, item)
+				return true
+	return false
 
 func can_open(box, item):
 	if item==null:
@@ -297,25 +312,19 @@ func can_open(box, item):
 	if item.name=="key" and item.stat1 >= box.stat1:
 		return true
 
-func use_key_for(box):
+func has_key_for(box):
 	for index in self.inventory:
 		var item = self.inventory[index]
 		if can_open(box, item):
-			self.inventory[index] = null
 			return true
-	if can_open(box, right_hand):
-		self.right_hand = null
-		return true
-	if can_open(box, left_hand):
-		self.left_hand = null
-	return false
+	return can_open(box, right_hand)
 
 
 func open_container(item):
 	if item.needs_key:
-		if not self.use_key_for(item):
+		if not self.has_key_for(item):
 			return false
-	var loot = game_db.get_container_loot(item, dungeon.current_level.depth )
+	var loot = game_db.get_container_loot(item, dungeon.current_level.depth)
 	if loot:
 		set_item_at_feet(loot)
 		return true
@@ -337,35 +346,23 @@ func is_better(it, other):
 
 
 func use(item):
-	match item.name:
+	var i_name = item.name
+	match i_name:
 		"potion", "small_potion":
 			return true
-		"ring":
-			if is_better(self.ring,item):
-				self.ring = item
-				return true
-		"breastplate":
-			if is_better(self.breastplate, item):
-				self.breastplate = item
-				return true
-		"helmet":
-			if is_better(self.helmet, item):
-				self.helmet = item
+		"amulet", "breastplate", "helmet":
+			var curr = self[i_name]
+			if is_better(curr,item):
+				self[i_name] = item
 				return true
 	return false
 
 
 func use_item():
-	if not right_hand:
-		return
-	if self.use(right_hand):
-		right_hand = null
-	elif right_hand.name=="tome": # does nothing right now :/
-		if right_hand.power==1: pass
-		if right_hand.power==2: pass
-		if right_hand.power==3: pass
-	hud.update_pack()
-	hud.update_stats()
+	# does nothing at the moment
+	pass
+	#hud.update_pack()
+	#hud.update_stats()
 
 
 
@@ -591,7 +588,7 @@ func init( difficulty ):
 	for n in range(10): inventory[n] = null;
 	right_hand = game_db.find_item("bow")
 	if skill==1:
-		left_hand = game_db.find_item("small_shield")
+		self.shield = game_db.find_item("small_shield")
 		health = 18
 		mind = 12
 	elif skill==2:
@@ -615,14 +612,12 @@ func war_armor():
 		result += helmet.stat1
 	if breastplate:
 		result += breastplate.stat1
-	if left_hand and left_hand in ["shield", "small_shield"]:
-		result += left_hand.stat1
 	return result
 
 func mind_armor():
 	var result = 0
-	if ring:
-		result += ring.stat1
+	if amulet:
+		result += amulet.stat1
 	if potion:
 		result += potion.stat1
 	return result

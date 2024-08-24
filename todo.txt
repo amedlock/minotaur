@@ -3,7 +3,6 @@
 ? add usable stat boost potions
 ? original mazes option (4 different 5x5 maps were combined each level, 16 total + mirroring )
 ? slowly reveal map
-+ map marking? esp exit
 + door sound fx
 ? hidden doors
 ? enemy doors
@@ -11,17 +10,20 @@
 ! BUG: monster always attacks first
 ? more doors in maze
 + stat rework of items
-+ Remove coloring for most items, add more items
 + add messages (weapon broke, you hit the <enemy>, etc)
 + add exit marker to map once discovered
 + better options/menus UI
++ drag/drop
 + add Castle Map to right of level map
 
 
 [BUGS]
-better level loot
-shields do nothing? Fix Stats
-sometimes damage after resting (delayed enemy weapon damage)
+- better level loot
+* armor (helmet to a lesser effect) do not have differing colors
+* amulets should pick up, not loot
+* separate GUI place for key/ring/armor/shield
+Fix Stats( shields do nothing!? )
+Fix Combat turns (sometimes damage after resting ,delayed enemy weapon damage)
 missing column on some wall types
 can walk into gates, no effect
 combat bug: player can fire after combat is over/enemy is dead
@@ -29,7 +31,3 @@ combat bug: smoke (death) animations are sometimes skipped/not visible
 combat bug: can rest before combat is over (monster weapon still animating)
 
 
-[FIXED]
-* glance occaisionally does not revert view, error when glance again
-* tinting is not working, make icons b/w
-* some sacks don't open , pick up instead?

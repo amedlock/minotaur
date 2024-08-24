@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://bev6h8xgfuapk"]
+
+[ext_resource type="Texture2D" uid="uid://c8x8dk1q336o3" path="res://data/hud/box_1_x_3.png" id="1_7yiym"]
+[ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="3_ljqui"]
+
+[node name="ArmorItems" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.99, 0.99)
+texture = ExtResource("1_7yiym")
+centered = false
+
+[node name="HelmetSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(31, 31)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_ljqui")
+
+[node name="AmuletSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(31, 88)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_ljqui")
+
+[node name="BreastplateSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(31, 151)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_ljqui")

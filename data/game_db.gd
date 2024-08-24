@@ -131,14 +131,15 @@ func load_all_items(node):
 	load_weapons(weapons, "war", war_colors)
 	load_weapons(weapons, "magic", magic_colors)
 	load_armor(node.find_child("armor"))
-	load_keys(node.find_child("keys"))
+	load_key_items(node.find_child("keys"), icons["key"], "key")
+	load_key_items(node.find_child("amulets"), icons["amulet"], "amulet")
 	load_containers(node.find_child("containers"))
 	load_money(node.find_child("money"))
 
 
-func load_keys(node):
+func load_key_items(node, icon, i_name):
 	for key_item in node.children():
-		add_item("key", "key", icons["key"], colors[key_item.key], key_item.value, key_item.value, 0)
+		add_item(i_name, i_name, icon, colors[key_item.key], key_item.value, key_item.value, 0)
 
 
 func load_weapons(weapons, kind, color_names):
