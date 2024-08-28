@@ -29,6 +29,8 @@ class Item:
 	var stat2
 	var offset = Vector3(0,0,0)   # Vector3 offset for items in maze
 
+	func damage():
+		return stat1
 
 
 const ImageSize = Vector2(32,32);

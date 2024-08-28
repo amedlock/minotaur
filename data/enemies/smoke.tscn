@@ -51,6 +51,7 @@ _data = {
 offset = Vector2(0, 16)
 modulate = Color(0.956863, 0.956863, 0.956863, 0.482353)
 pixel_size = 0.03
+billboard = 2
 texture_filter = 2
 texture = ExtResource("1")
 hframes = 3

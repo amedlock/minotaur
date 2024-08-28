@@ -3,7 +3,6 @@ extends Node
 var player
 var dungeon
 var game
-
 var audio
 
 @export var game_db : Node
@@ -26,26 +25,48 @@ var enemy : Node3D = null # which enemy, set in start(...)
 var monster
 
 
-enum CombatState { IDLE, ATTACK, ATTACKING, RETREAT }
+# max time for each turn, in seconds
+const Turn_Time = 2
+
+# delay in a turn before enemy attacks
+const Enemy_Delay = 0.75
 
 
-var player_combat_state = CombatState.IDLE
-var enemy_combat_state = CombatState.IDLE
+# combat is a series of turns
+
+# time in turn so far
+var turn_elapsed = 0
+
+#has player attacked this turn
+var player_attack = false
+
+#has player retreated this turn
+var player_retreat = false
+
+# enemy can only do one thing: attack
+var enemy_attack = false
 
 
-const Enemy_Delay = 2
-const Player_Delay = 1
+
+func reset_turn():
+	turn_elapsed = 0
+	player_attack = false
+	enemy_attack = false
+	player_retreat = false
+
 
 
 func _ready():
 	player = get_parent()
-	dungeon = player.get_parent()
-	game = player.get_parent()
+	dungeon = player.find_parent("Dungeon")
+	game = player.find_parent("Game")
 	audio = game.find_child("Audio")	
 	enemy_anim = player.find_child("EnemyAnim")
+	enemy_anim.connect("animation_finished", self.damage_player)
 	enemy_weapon = player.find_child("EnemyWeapon")
 	enemy_audio = enemy_weapon.find_child("Audio")
 	player_anim = player.find_child("PlayerAnim")
+	player_anim.connect("animation_finished", self.damage_enemy)
 	player_weapon = player.find_child("PlayerWeapon")
 	enemy_weapon.visible = false
 	player_weapon.visible = false
@@ -53,43 +74,57 @@ func _ready():
 
 
 
-func start(e_cell, attack: bool):
+func start(e_cell, _attack: bool):
 	if (not e_cell.enemy) or (not e_cell.enemy.monster):
 		return
 	self.enemy_cell = e_cell
 	self.enemy = e_cell.enemy
 	player.player_state = player.PlayerState.COMBAT
-	player_combat_state = CombatState.IDLE
-	enemy_combat_state = CombatState.IDLE
 	monster = enemy.monster
 	enemy_weapon.visible = false
 	player_weapon.visible = false
+	reset_turn()
 	set_process(true)
-	if attack:
-		self.player_fire()
+	if _attack:
+		self.attack_monster()
 
 
-
-func _process(_delta):
-	if player_combat_state==CombatState.IDLE:
-		if Input.is_action_just_pressed("attack"):
-			player_fire()
-		elif Input.is_action_just_pressed("back"):
-			player.retreat()
-			self.set_process(false)
-	if enemy_combat_state == CombatState.IDLE and not player.is_dead():
-		enemy_fire()
-	check_combat_over()
-
-
-func check_combat_over():
+func end_turn():
+	if player_anim.is_playing() or enemy_anim.is_playing():
+		return
 	if player.is_dead():
-		player.end_combat("die", enemy_cell.enemy)
+		game.game_over()
 		self.set_process(false)
 	elif enemy.is_dead():
-		player.end_combat("win", enemy_cell.enemy)
-		enemy.queue_free()
+		enemy_cell.set_enemy( null )
 		self.set_process(false)
+		player.won_combat(enemy)
+	elif player_retreat:
+		player.retreat()
+		self.set_process(false)
+	else:
+		reset_turn()
+
+
+func _process(delta):
+	turn_elapsed += delta
+	if turn_elapsed >= Turn_Time or player.is_dead():
+		end_turn()
+		return
+
+	if (not enemy_attack): # and (turn_elapsed >= Enemy_Delay):
+		enemy_attack = true
+		enemy_fire()
+
+	if not (player_retreat or player_attack):
+		if Input.is_action_just_pressed("back"):
+			player_retreat = true
+
+func attack_monster():
+	if player_attack or player_retreat:
+		return
+	player_attack = true
+	player_fire()
 
 
 var broken
@@ -103,6 +138,9 @@ func get_sound_fx( item ):
 		return load("res://data/sounds/lightning.wav")
 	return null
 
+
+func can_attack():
+	return player.right_hand!=null and player.right_hand.kind=="weapon"
 
 func player_fire():
 	player_item = player.right_hand
@@ -127,26 +165,27 @@ func player_fire():
 		player_anim.play("SpinFire")
 	else:	
 		player_anim.play("Fire")
-	
-	player_combat_state = CombatState.ATTACKING
+
 	if fx!=null:
 		audio.stream = fx
-		audio.play()	
-	await player_anim.animation_finished
-	damage_enemy()
+		audio.play()
 	if broken and dungeon.current_level.depth > 2:  # clear out of the players hand
 		player.right_hand = null
 	player.hud.update_pack()
-	await get_tree().create_timer(Player_Delay).timeout
-	player_combat_state = CombatState.IDLE	
 
+
+func damage_player(_anim):
+	if enemy_item:
+		player.damage(monster, enemy_item)
 
 	
-
-func damage_enemy():
+func damage_enemy(_anim):
 	enemy.damage( player_item )
+	if enemy.is_dead():
+		enemy.die()
 	if broken:
 		player_item = null # remove it
+		player.right_hand = null
 		player.hud.update()
 
 
@@ -172,10 +211,5 @@ func enemy_fire():
 		enemy_anim.play("SpinFire")
 	else:
 		enemy_anim.play("Fire")
-	enemy_combat_state = CombatState.ATTACKING
-	await get_tree().create_timer(Enemy_Delay).timeout
 	player.damage( monster, enemy_item )
 	player.hud.update_stats()
-	enemy_combat_state = CombatState.IDLE
-	if player_combat_state==CombatState.RETREAT:
-		player.retreat()

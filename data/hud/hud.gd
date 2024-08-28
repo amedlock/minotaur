@@ -123,10 +123,8 @@ func clicked_feet( _viewport, event, _shape_idx ):
 
 # alternate attack method, press F otherwise
 func clicked_right( _viewport, event, _shape_idx ):
-	if not (event is InputEventMouseButton): 
+	if not (event is InputEventMouseButton and event.pressed):
 		return
-	if !event.pressed: 
-		return;
 	if event.button_index == MOUSE_BUTTON_LEFT:
 		player.attack_ahead()
 	elif event.button_index == MOUSE_BUTTON_RIGHT:

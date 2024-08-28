@@ -255,11 +255,11 @@ func use_or_take_item():
 			self.disable()
 			return
 		"quiver":
-			self.arrows += item.stat1
+			self.arrows = min( self.arrows + item.stat1, 99)
 			self.set_item_at_feet(null)
 			return
 		"food":
-			self.food += item.stat1
+			self.food = min(self.food + item.stat1, 99)
 			self.set_item_at_feet(null)
 			return
 	
@@ -446,31 +446,14 @@ func wall_behind() -> Node3D:
 
 
 
-func start_combat( cell ) -> bool:
-	if player_state!=PlayerState.IDLE:
-		return false
-	return (cell and cell.enemy)
 
-
-func end_combat(outcome,enemy):
-	match outcome:
-		"win":
-			killed(enemy)
-			enemy.die()
-			needs_rest = true
-			self.player_state=PlayerState.IDLE
-		"die":
-			if is_dead():
-				if cheat_death():
-					return
-			self.player_state = PlayerState.LOST
-			self.game.game_over()
-		_: 
-			print("Invalid combat outcome!")
+	
+func won_combat(enemy):
+	killed(enemy)
+	needs_rest = true
+	self.player_state=PlayerState.IDLE
 	hud.update()
 	
-
-
 func retreat():
 	$PlayerControl.flee()
 	player_state = PlayerState.IDLE
@@ -479,8 +462,14 @@ func retreat():
 
 # tries to initiate combat ahead of player
 func attack_ahead():
-	if not [PlayerState.IDLE, PlayerState.COMBAT].has(player_state):
-		return
+	match player_state:
+		PlayerState.IDLE:
+			start_combat()
+		PlayerState.COMBAT:
+			self.combat.attack_monster()
+			
+
+func start_combat():
 	var ahead = cell_ahead()
 	if ahead==null or ahead.enemy==null:
 		return
@@ -488,19 +477,6 @@ func attack_ahead():
 	if can_see(wall):
 		combat.start(ahead, true)
 		reduce_potion_turn()
-
-
-# start combat if monster is nearby
-func check_for_monster():
-	if start_combat(cell_ahead()):
-		return
-	if randf_range(0,99) < 40:
-		return
-	if start_combat(cell_left()):
-		return
-	if start_combat(cell_right()):
-		return
-
 
 func win():
 	game.show_map()
@@ -578,30 +554,32 @@ func damage( _monster, weap ):
 
 
 func init( difficulty ):
-	self.skill = difficulty
+	skill = difficulty
 	gold = 0
 	war_exp = 0
 	magic_exp = 0
-	food = 6
-	arrows = 6 + 5 * (5 - skill) # 11-25 arrows
+	food = 10 - difficulty
+	arrows = 9 - difficulty
 	resurrected = false
-	for n in range(10): inventory[n] = null;
+	for n in range(10): 
+		inventory[n] = null;
 	right_hand = game_db.find_item("bow")
-	if skill==1:
-		self.shield = game_db.find_item("small_shield")
-		health = 18
-		mind = 12
-	elif skill==2:
-		health = 16
-		mind = 10
-	elif skill==3:
-		health = 14
-		mind = 8
-	elif skill==4:
-		health = 12
-		mind = 7
-	mind_max = mind
-	health_max = health
+	match difficulty:
+		1:
+			health = 18
+			mind = 9
+			self.shield = game_db.find_item("small_shield")
+		2:
+			health = 16
+			mind = 8
+		3:
+			health = 14
+			mind = 7
+		4:
+			health = 12
+			mind = 6
+	self.mind_max = mind
+	self.health_max = health
 	hud.update()
 
 

@@ -1,6 +1,6 @@
 extends Sprite3D;
 
-var monster;  # reference to the Enemy object from enemy_list.gd  monsters[]
+var monster;  # reference to the Enemy object from game_db.gd  monsters[]
 var health;  # hit points
 var mind    # magic hit points
 
@@ -44,11 +44,11 @@ func is_dead() -> bool:
 
 
 func die():
-	if not self.visible: 
+	if not self.visible:
 		return # this might get called twice
 	self.hide()
 	var sm = smoke.instantiate()
-	sm.position =  self.position - Vector3( 0, 0.6, 0 ) 
+	sm.position =  self.position - Vector3( 0, 0.6, 0 )
+	sm.visible = true
 	cell.add_child( sm )
 	sm.start()
-	cell.set_enemy( null )

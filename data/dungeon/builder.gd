@@ -333,14 +333,12 @@ func add_weapons( weap_count, armor_count, info, coords ):
 
 
 func add_items(info, coords):
-	var bags = 6 + randint(3)
-	var money = 10 - bags
+	var bags = 7 + randint(3)
 	var weapons = 7 + randint( 5 )
-	var armor =  5 # randint(2)
+	var armor =  randint(2)
 	add_loot( bags, info, coords )
 	add_key( info, coords )
-	add_money( money, info, coords )
-	add_other( coords )	
+	add_other( coords )
 	add_weapons( weapons, armor, info, coords )
 
 

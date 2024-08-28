@@ -38,7 +38,7 @@ var level_info = {}  # for maze 1 , others built from this one
 
 var current_level : LevelInfo;
 
-var minotaur_appears = { 1: 3, 2:6, 3:10, 4:16 } # you can go deeper but minotaur appears here
+var minotaur_appears = { 1:3, 2:6, 3:10, 4:15 } # (skill_level: dungeon level) minotaur first appears here
 
 
 @onready var player = $Player;

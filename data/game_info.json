@@ -12,7 +12,7 @@
 		"Yellow": "F4FC58"
   },
   "item_icons":{
-	"small_potion" : [0,0],
+		"small_potion" : [0,0],
 		"arrow" : [1,0],
 		"potion" : [2,0],
 		"ladder" : [3,0] ,
@@ -53,132 +53,132 @@
 		"treasure" : [7,7]
   },
   "enemy_icons":{
-	"skeleton" : [0,0],
-	"skeleton_shield":  [1,0],
-	"cloaked_skel":  [2,0],
-	"ghoul":  [3,0],
-	"wraith": [4,0],
-	"vampire" : [5,0],
-	"wraith_shield":  [6,0],
-	"lich":  [7,0],
-	"giant":  [0,1],
-	"giant_shield":  [1,1],
-	"dwarf":  [2,1],
-	"dwarf_warrior":  [3,1],
-	"dwarf_shield":  [4,1],
-	"knight" : [5,1],
-	"enchantress" :  [6,1],
-	"wizard" :  [7,1],
-	"spider":  [0,2],
-	"wasp":  [1,2],
-	"hornet":  [2,2],	
-	"scorpion" :  [3,2],
-	"wolf" : [4,2],
-	"golem": [7,2],
-	"green_dragon":  [0,3],
-	"red_dragon":  [1,3],
-	"drake":  [2,3],	
-	"giant_frog": [3,3],
-	"snake":  [4,3],
-	"undead_dragon": [5,3],
-	"evil_eye" :  [6,2],
-	"minotaur":  [7,3]
+		"skeleton" : [0,0],
+		"skeleton_shield":  [1,0],
+		"cloaked_skel":  [2,0],
+		"ghoul":  [3,0],
+		"wraith": [4,0],
+		"vampire" : [5,0],
+		"wraith_shield":  [6,0],
+		"lich":  [7,0],
+		"giant":  [0,1],
+		"giant_shield":  [1,1],
+		"dwarf":  [2,1],
+		"dwarf_warrior":  [3,1],
+		"dwarf_shield":  [4,1],
+		"knight" : [5,1],
+		"enchantress" :  [6,1],
+		"wizard" :  [7,1],
+		"spider":  [0,2],
+		"wasp":  [1,2],
+		"hornet":  [2,2],	
+		"scorpion" :  [3,2],
+		"wolf" : [4,2],
+		"golem": [7,2],
+		"green_dragon":  [0,3],
+		"red_dragon":  [1,3],
+		"drake":  [2,3],	
+		"giant_frog": [3,3],
+		"snake":  [4,3],
+		"undead_dragon": [5,3],
+		"evil_eye" :  [6,2],
+		"minotaur":  [7,3]
   },
   "enemies":{
-	"comment": "name : icon_name, min_level, min_hp, max_hp, min_mind, max_mind",
-	"war":{
-	  "skeleton":["skeleton", 1, 5, 12, 4, 6],
-	  "ghoul":["ghoul", 1, 6, 12, 7, 9],
-	  "cloaked_skel":["cloaked_skel", 2, 9, 15, 4, 10],    
-	  "skeleton_shield":["skeleton_shield", 2, 12, 18, 4, 8],
-	  "giant_frog":["giant_frog", 3, 11, 16, 5, 10],
-	  "dwarf":["dwarf", 3, 14, 20, 9, 15],
-	  "snake":["snake", 4, 9, 16, 9, 13],
-	  "dwarf_shield":["dwarf_shield", 4, 15, 25, 12, 17],
-	  "giant":["giant", 5, 20, 30, 10, 20],
-	  "giant_shield":["giant_shield", 6, 25, 35, 10, 25],
-	  "knight":["knight", 7, 30, 40, 15, 30]
-	},
-	"magic":{
-	  "hornet":["hornet", 1, 5, 8, 5, 8],
-	  "wasp":["wasp", 1, 5, 10, 5, 9],
-	  "spider":["spider", 2, 11, 16, 4, 9],      
-	  "wraith":["wraith", 3, 14, 18, 6, 12],
-	  "scorpion":["scorpion", 4, 14, 20, 9, 14],          
-	  "wraith_shield":["wraith_shield", 4, 17, 22, 8, 14],
-	  "drake":["drake", 5, 20, 35, 14, 20],
-	  "enchantress":["enchantress", 6, 24, 34, 20, 30],
-	  "wizard":["wizard", 7, 30, 35, 40, 60],
-	  "lich":["lich", 7, 35, 50, 45, 75]
-	},
-	"both":{
-	  "green_dragon":["green_dragon", 5, 35, 35, 18, 35],
-	  "dwarf_warrior":["dwarf_warrior", 5, 25, 36, 20, 28],
-	  "red_dragon":["red_dragon", 6, 35, 42, 25, 45],
-	  "vampire":["vampire", 7, 40, 75, 50, 80]
-	},
-	"special":{
-	  "undead_dragon":["undead_dragon", 8, 50, 85, 40, 60],
-	  "evil_eye":["evil_eye", 8, 30, 48, 55, 75],
-	  "golem":["golem", 8, 70, 90, 30, 40],
-	  "minotaur":["minotaur", 6, 40, 80, 40, 65]
-	}
+		"comment": "name : icon_name, min_level, min_hp, max_hp, min_mind, max_mind",
+		"war":{
+			"skeleton":["skeleton", 1, 5, 12, 4, 6],
+			"ghoul":["ghoul", 1, 6, 12, 7, 9],
+			"cloaked_skel":["cloaked_skel", 2, 9, 15, 4, 10],    
+			"skeleton_shield":["skeleton_shield", 2, 12, 18, 4, 8],
+			"giant_frog":["giant_frog", 3, 11, 16, 5, 10],
+			"dwarf":["dwarf", 3, 14, 20, 9, 15],
+			"snake":["snake", 4, 9, 16, 9, 13],
+			"dwarf_shield":["dwarf_shield", 4, 15, 25, 12, 17],
+			"giant":["giant", 5, 20, 30, 10, 20],
+			"giant_shield":["giant_shield", 6, 25, 35, 10, 25],
+			"knight":["knight", 7, 30, 40, 15, 30]
+		},
+		"magic":{
+			"hornet":["hornet", 1, 5, 8, 5, 8],
+			"wasp":["wasp", 1, 5, 10, 5, 9],
+			"spider":["spider", 2, 11, 16, 4, 9],      
+			"wraith":["wraith", 3, 14, 18, 6, 12],
+			"scorpion":["scorpion", 4, 14, 20, 9, 14],          
+			"wraith_shield":["wraith_shield", 4, 17, 22, 8, 14],
+			"drake":["drake", 5, 20, 35, 14, 20],
+			"enchantress":["enchantress", 6, 24, 34, 20, 30],
+			"wizard":["wizard", 7, 30, 35, 40, 60],
+			"lich":["lich", 7, 35, 50, 45, 75]
+		},
+		"both":{
+			"green_dragon":["green_dragon", 5, 35, 35, 18, 35],
+			"dwarf_warrior":["dwarf_warrior", 5, 25, 36, 20, 28],
+			"red_dragon":["red_dragon", 6, 35, 42, 25, 45],
+			"vampire":["vampire", 7, 40, 75, 50, 80]
+		},
+		"special":{
+			"undead_dragon":["undead_dragon", 8, 50, 85, 40, 60],
+			"evil_eye":["evil_eye", 8, 30, 48, 55, 75],
+			"golem":["golem", 8, 70, 90, 30, 40],
+			"minotaur":["minotaur", 6, 40, 80, 40, 65]
+		}
   },
   "items":{
-	"weapons":{
-	  "war":{
-		"bow": [6,9,15,21,27,33],
-		"crossbow": [18,24,30,36,42,99],
-		"spear": [21,27,33,42,57,75],
-		"dagger": [9,15,21,30,42,57],
-		"axe": [15,21,27,36,57,66]
-	  },
-	  "magic":{
-		"scroll" : [3,5,9,13,17,21],
-		"book" : [11,15,19,23,27,65],
-		"wand" :[9,13,17,23,33,43] ,
-		"staff" : [17,21,29,45,55,65],
-		"small_fireball" :[5,9,13,23,33,39],
-		"fireball" :[13,17,25,33,39,48]
-	  }
-	},
-	"armor":{
-	  "small_shield": [6,12,18,24,30,36] ,
-	  "helmet": [5,10,15,20,25,30],
-	  "breastplate": [10,17,24,31,38,45],    
-	  "shield": [8,16,24,32,40,48]
-	},
-	"containers":{
-	  "small_bag": 4,
-	  "bag": 4,
-	  "box": 1,
-	  "pack": 5,
-	  "chest": 6
-	  },
-	"money":{
-	  "coins": [1, 10],
-	  "necklace": [1, 20],
-	  "ring": [2, 15],
-	  "horn": [3, 25],
-	  "lamp": [2, 30],
-	  "chalice": [4, 40],
-	  "crown": [6, 70]
-	},
-	"keys": { 
-	  "Tan": 1,
-	  "Orange": 2,
-	  "Blue":3
-	},
-	"amulets":{
-	  "Blue": 1,
-	  "Pink": 2,
-	  "Purple": 3
-	},    
-	"specials":{
-	  "quiver": ["quiver", 1, "Tan", 6, 0],
-	  "food": ["food", 1, "Tan", 3, 0],
-	  "treasure": ["treasure", 1, "Yellow", 0, 0],
-	  "ladder" : ["ladder", 1, "Tan", 0, 0]
-	}
+		"weapons":{
+			"war":{
+			"bow": [6,9,15,21,27,33],
+			"crossbow": [18,24,30,36,42,99],
+			"spear": [21,27,33,42,57,75],
+			"dagger": [9,15,21,30,42,57],
+			"axe": [15,21,27,36,57,66]
+			},
+			"magic":{
+			"scroll" : [3,5,9,13,17,21],
+			"book" : [11,15,19,23,27,65],
+			"wand" :[9,13,17,23,33,43] ,
+			"staff" : [17,21,29,45,55,65],
+			"small_fireball" :[5,9,13,23,33,39],
+			"fireball" :[13,17,25,33,39,48]
+			}
+		},
+		"armor":{
+			"small_shield": [6,12,18,24,30,36] ,
+			"helmet": [5,10,15,20,25,30],
+			"breastplate": [10,17,24,31,38,45],    
+			"shield": [8,16,24,32,40,48]
+		},
+		"containers":{
+			"small_bag": 4,
+			"bag": 4,
+			"box": 1,
+			"pack": 5,
+			"chest": 6
+			},
+		"money":{
+			"coins": [1, 10],
+			"necklace": [1, 20],
+			"ring": [2, 15],
+			"horn": [3, 25],
+			"lamp": [2, 30],
+			"chalice": [4, 40],
+			"crown": [6, 70]
+		},
+		"keys": { 
+			"Tan": 1,
+			"Orange": 2,
+			"Blue":3
+		},
+		"amulets":{
+			"Blue": 1,
+			"Pink": 2,
+			"Purple": 3
+		},    
+		"specials":{
+			"quiver": ["quiver", 1, "Tan", 6, 0],
+			"food": ["food", 1, "Tan", 3, 0],
+			"treasure": ["treasure", 1, "Yellow", 0, 0],
+			"ladder" : ["ladder", 1, "Tan", 0, 0]
+		}
   }
 }
