@@ -177,14 +177,17 @@ func player_fire():
 func damage_player(_anim):
 	if enemy_item:
 		player.damage(monster, enemy_item)
+		enemy_item = null
 
 	
 func damage_enemy(_anim):
+	if not player_item:
+		return
 	enemy.damage( player_item )
+	player_item = null
 	if enemy.is_dead():
 		enemy.die()
 	if broken:
-		player_item = null # remove it
 		player.right_hand = null
 		player.hud.update()
 

@@ -74,6 +74,8 @@
 		"hornet":  [2,2],	
 		"scorpion" :  [3,2],
 		"wolf" : [4,2],
+		"alligator" : [5,2],
+		"kobold" : [6,2],
 		"golem": [7,2],
 		"green_dragon":  [0,3],
 		"red_dragon":  [1,3],
@@ -81,7 +83,7 @@
 		"giant_frog": [3,3],
 		"snake":  [4,3],
 		"undead_dragon": [5,3],
-		"evil_eye" :  [6,2],
+		"evil_eye" :  [6,3],
 		"minotaur":  [7,3]
   },
   "enemies":{

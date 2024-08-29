@@ -276,10 +276,6 @@ func use_or_take_item():
 			# nothing yet
 			#set_item_at_feet(null)
 			return
-		"ring":
-			# nothing yet
-			# set_item_at_feet(null)
-			return
 		"key", "shield", "armor", "amulet":
 			if self.equip_armor(item):
 				self.set_item_at_feet(null)
