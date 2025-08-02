@@ -2,7 +2,7 @@
 
 [ext_resource type="ArrayMesh" uid="uid://iqf32hwmxg65" path="res://data/dungeon/outer_wall.obj" id="1"]
 [ext_resource type="Material" uid="uid://dc0d6jwenkfsi" path="res://data/dungeon/wall_mat.tres" id="2"]
-[ext_resource type="Script" path="res://data/dungeon/outer_wall.gd" id="3"]
+[ext_resource type="Script" uid="uid://dtjkn2jqvigga" path="res://data/dungeon/outer_wall.gd" id="3"]
 
 [node name="outer_wall" type="Node3D"]
 script = ExtResource("3")

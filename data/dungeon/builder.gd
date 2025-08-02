@@ -263,7 +263,7 @@ func add_enemies(info, coords):
 	for _n in range(num):
 		if allowed.is_empty() or coords.is_empty(): return
 		var c = take_random( coords )
-		var mon = take_random( allowed )
+		var mon = choose_random( allowed )
 		maze_cell( c.x, c.y ).enemy = mon
 
 
@@ -323,7 +323,7 @@ func add_weapons( weap_count, armor_count, info, coords ):
 	var allowed = game_db.search_items( "weapon", [], info.depth )		
 	for _n in range(weap_count):
 		if coords.is_empty():  return
-		var c = take_random( coords )
+		var c = choose_random( coords )
 		maze_cell(c.x,c.y).item = choose_random( allowed )
 		
 	var amulets = game_db.search_items("amulet", [], info.depth)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bcbttux3sdgll"]
 
-[ext_resource type="Script" path="res://data/dungeon/wall.gd" id="1"]
+[ext_resource type="Script" uid="uid://blgn1jyy07y78" path="res://data/dungeon/wall.gd" id="1"]
 [ext_resource type="ArrayMesh" uid="uid://nrcxywk4rckf" path="res://data/dungeon/dungeon_wall.obj" id="2"]
 [ext_resource type="Material" uid="uid://dc0d6jwenkfsi" path="res://data/dungeon/wall_mat.tres" id="3"]
 

@@ -6,7 +6,7 @@ const InfoTree = preload("res://data/info_tree.gd").InfoTree
 class Enemy:
 	var name
 	var kind
-	var min_level = 1
+	var min_level
 	var power
 	var min_hp
 	var max_hp
@@ -238,9 +238,12 @@ func find_enemies(type: String, depth: int) -> Array:
 			continue
 		if not(type=="both" or e.kind==type):
 			continue
-		var curr = result.get_or_add(e.name, e)
-		if curr.min_level < e.min_level:
+		if not result.has(e.name):
 			result[e.name] = e
+		else:
+			var curr = result.get(e.name)
+			if curr.min_level < e.min_level:
+				result[e.name] = e
 	return result.values()
 
 

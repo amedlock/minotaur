@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dv0qvbhllbsf1"]
 
 [ext_resource type="Texture2D" uid="uid://calcd2lx04cv6" path="res://data/enemies/enemy_sheet.png" id="2"]
-[ext_resource type="Script" path="res://data/enemies/enemy.gd" id="3"]
+[ext_resource type="Script" uid="uid://c4em1kq6ae2dp" path="res://data/enemies/enemy.gd" id="3"]
 
 [node name="enemy" type="Sprite3D"]
 pixel_size = 0.04

@@ -19,14 +19,15 @@
 
 [BUGS]
 - better level loot
+- better monsters
 Fix Stats( shields do nothing!? )
-Fix Combat turns (sometimes damage after resting ,delayed enemy weapon damage)
 can walk into gates, no effect
-combat bug: player can fire after combat is over/enemy is dead
-combat bug: smoke (death) animations are sometimes skipped/not visible
-combat bug: can rest before combat is over (monster weapon still animating)
+can put arrows/food into pack
 
 
+x combat bug: player can fire after combat is over/enemy is dead
+x combat bug: can rest before combat is over (monster weapon still animating)
+x combat bug: smoke (death) animations are sometimes skipped/not visible
 x armor (helmet to a lesser effect) do not have differing colors
 x amulets should pick up, not loot
 x separate GUI place for key/ring/armor/shield

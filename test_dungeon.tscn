@@ -2,18 +2,18 @@
 
 [ext_resource type="Environment" uid="uid://7fdxmqhwueqc" path="res://data/game_env.tres" id="1"]
 [ext_resource type="AudioStream" uid="uid://84gaoppi65w3" path="res://data/sounds/hit.wav" id="2"]
-[ext_resource type="Script" path="res://data/player/combat.gd" id="5"]
+[ext_resource type="Script" uid="uid://du45ydgob660m" path="res://data/player/combat.gd" id="5"]
 [ext_resource type="PackedScene" uid="uid://bcbttux3sdgll" path="res://data/dungeon/dungeon_wall.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://d4nrionulwu34" path="res://data/dungeon/floor.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://cy2jqn7lnyq7b" path="res://data/dungeon/outer_wall.tscn" id="12"]
 [ext_resource type="PackedScene" uid="uid://dbamw6tvtfh5d" path="res://data/dungeon/ceiling.tscn" id="13"]
 [ext_resource type="PackedScene" uid="uid://mae22grjwobt" path="res://data/hud/hud.tscn" id="14"]
-[ext_resource type="Script" path="res://data/dungeon/builder.gd" id="15"]
-[ext_resource type="Script" path="res://data/dungeon/dungeon.gd" id="16"]
-[ext_resource type="Script" path="res://data/dungeon/grid.gd" id="17"]
+[ext_resource type="Script" uid="uid://4e4hh6hvuat6" path="res://data/dungeon/builder.gd" id="15"]
+[ext_resource type="Script" uid="uid://pxeacod0f1ic" path="res://data/dungeon/dungeon.gd" id="16"]
+[ext_resource type="Script" uid="uid://cug27fhdn2w4o" path="res://data/dungeon/grid.gd" id="17"]
 [ext_resource type="PackedScene" uid="uid://brv4vhgukvlum" path="res://data/dungeon/cell.tscn" id="18"]
-[ext_resource type="Script" path="res://data/player/player.gd" id="19"]
-[ext_resource type="Script" path="res://data/debug/debug.gd" id="20"]
+[ext_resource type="Script" uid="uid://c36gw2x1oyf3m" path="res://data/player/player.gd" id="19"]
+[ext_resource type="Script" uid="uid://cd1qiqar764h5" path="res://data/debug/debug.gd" id="20"]
 [ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="21"]
 [ext_resource type="PackedScene" uid="uid://csq6llv7jm4sp" path="res://data/door/door_prefab.tscn" id="22"]
 [ext_resource type="PackedScene" uid="uid://cy7eynhhyhdq" path="res://data/items/item_prefab.tscn" id="23"]
@@ -99,8 +99,8 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_flr4j"]
 _data = {
-"Fire": SubResource("1"),
-"SpinFire": SubResource("2")
+&"Fire": SubResource("1"),
+&"SpinFire": SubResource("2")
 }
 
 [sub_resource type="Animation" id="3"]
@@ -183,8 +183,8 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_rvyr4"]
 _data = {
-"Fire": SubResource("3"),
-"SpinFire": SubResource("4")
+&"Fire": SubResource("3"),
+&"SpinFire": SubResource("4")
 }
 
 [node name="TestDungeon" type="Node3D"]
@@ -248,8 +248,7 @@ libraries = {
 }
 
 [node name="PlayerWeapon" type="Sprite2D" parent="Player"]
-visible = false
-position = Vector2(680, 400)
+position = Vector2(1265, 703)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("21")
 region_enabled = true
@@ -262,8 +261,7 @@ libraries = {
 
 [node name="EnemyWeapon" type="Sprite2D" parent="Player"]
 visible = false
-position = Vector2(1284.22, 727.875)
-rotation = 6.28319
+position = Vector2(1277.42, 721.073)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("21")
 region_enabled = true
