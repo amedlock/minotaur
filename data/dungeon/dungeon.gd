@@ -20,8 +20,8 @@ enum WallPost  { NW, NE, SE, SW }
 
 # just the info for the level, no spatials here
 class LevelInfo:
-	var depth = null    			# 1..100
-	var seed_number = null   		# seed used to generate dungeon
+	var depth : int = 0    			# 1..100
+	var seed_number : int = 0 		# seed used to generate dungeon
 	var used_gate = false    		# used a gate to come here
 	var level_type : String			# war, magic or both
 	
@@ -30,15 +30,15 @@ class LevelInfo:
 	var gate = GateType.Empty   	# what gate type is on this level
 
 
-var skill_level = 1   # 1,2,3,4
+var skill_level: int = 1   # 1,2,3,4
 
-var seed_number = 0xdeadd00d  # starting seed number
+var seed_number: int = 0xdeadd00d  # starting seed number
 
-var level_info = {}  # for maze 1 , others built from this one 
+var level_info : Dictionary[int,LevelInfo] = {}  # for maze 1 , others built from this one 
 
 var current_level : LevelInfo;
 
-var minotaur_appears = { 1:3, 2:6, 3:10, 4:15 } # (skill_level: dungeon level) minotaur first appears here
+var minotaur_appears :Dictionary[int,int] = { 1:3, 2:6, 3:10, 4:15 } # (skill_level: dungeon level) minotaur first appears here
 
 
 @onready var player = $Player;
@@ -82,7 +82,7 @@ func enable():
 func disable():
 	self.hide()	
 
-var mural_colors = {
+var mural_colors : Dictionary[String, Resource] = {
 	"war": preload("res://data/dungeon/green_mat.tres"),
 	"magic": preload("res://data/dungeon/blue_mat.tres"),
 	"both": preload("res://data/dungeon/tan_mat.tres")
@@ -90,14 +90,14 @@ var mural_colors = {
 
 
 func set_mural_color(kind):
-	var mat = mural_colors[kind]
+	var mat : Resource = mural_colors[kind]
 	for m in get_tree().get_nodes_in_group("murals"):
 		m.get_node("Mesh").set_surface_override_material( 0, mat )
 
 
 
 func go_next_level():
-	var next = current_level.depth+1
+	var next : int = current_level.depth+1
 	if not level_info.has(next):
 		return
 	current_level = level_info[next]
@@ -170,14 +170,14 @@ var wall_post_offset = {
 	WallPost.SW: Vector3( 0, 0.25, 3 )
 }
 
-var wall_angle = {
+var wall_angle : Dictionary[String, int] = {
 	"north": 0,
 	"east": 270,
 	"south": 180,
 	"west": 90
 }
 
-const maze_origin = Vector3( -18, 0, -18 )
+const maze_origin : Vector3 = Vector3( -18, 0, -18 )
 
 func wall_post_for_wall( cx, cy, walldir ):
 	var which = wall_post[walldir]
@@ -186,7 +186,6 @@ func wall_post_for_wall( cx, cy, walldir ):
 
 func add_final( enemy ):
 	grid.set_item(enemy.cell.x, enemy.cell.y, game_db.find_item("treasure", -1))
-
 
 
 func add_neighbors( items, frontier, seen ):
