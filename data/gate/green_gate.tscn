@@ -1,11 +1,11 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxand8yuia342"]
 
 [ext_resource type="Material" path="res://data/gate/gate_mat.tres" id="1"]
+[ext_resource type="Script" uid="uid://doeckvo6frgq5" path="res://dungeon/DungeonGate.cs" id="1_l7uvo"]
 [ext_resource type="Texture2D" uid="uid://beiwcna1ucnra" path="res://data/gate/gate.png" id="2"]
-[ext_resource type="Script" uid="uid://bf6rsuarwvmes" path="res://data/gate/gate.gd" id="3"]
 
 [node name="gate" type="Node3D"]
-script = ExtResource("3")
+script = ExtResource("1_l7uvo")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 material_override = ExtResource("1")

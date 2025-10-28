@@ -1,25 +1,27 @@
-[gd_scene load_steps=27 format=3 uid="uid://co2vu1jhjxhem"]
+[gd_scene load_steps=29 format=3 uid="uid://co2vu1jhjxhem"]
 
-[ext_resource type="Script" uid="uid://va8fu3fmdwnm" path="res://data/game.gd" id="1"]
-[ext_resource type="Script" uid="uid://pxeacod0f1ic" path="res://data/dungeon/dungeon.gd" id="2"]
-[ext_resource type="Script" uid="uid://dtl1kytm0uauy" path="res://data/game_db.gd" id="2_uk3hk"]
-[ext_resource type="Script" uid="uid://4e4hh6hvuat6" path="res://data/dungeon/builder.gd" id="3"]
+[ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://MainGame.cs" id="1_tig81"]
+[ext_resource type="Script" uid="uid://dje4dtcs656c8" path="res://GameDb.cs" id="2_jtqey"]
+[ext_resource type="Script" uid="uid://biyepob8xqtcl" path="res://dungeon/Dungeon.cs" id="3_jtqey"]
 [ext_resource type="PackedScene" uid="uid://d4nrionulwu34" path="res://data/dungeon/floor.tscn" id="4"]
+[ext_resource type="Script" uid="uid://drif34kaoqm1n" path="res://dungeon/LevelBuilder.cs" id="4_jtqey"]
 [ext_resource type="PackedScene" uid="uid://cy2jqn7lnyq7b" path="res://data/dungeon/outer_wall.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://dbamw6tvtfh5d" path="res://data/dungeon/ceiling.tscn" id="6"]
-[ext_resource type="Script" uid="uid://c36gw2x1oyf3m" path="res://data/player/player.gd" id="9"]
+[ext_resource type="Script" uid="uid://ch0r2o7n4fdhw" path="res://dungeon/OuterWall.cs" id="7_6ut8u"]
+[ext_resource type="Script" uid="uid://cwmjxgk8m0a3g" path="res://dungeon/DungeonGrid.cs" id="7_n2e6y"]
+[ext_resource type="Script" uid="uid://cey2mgaomcpu2" path="res://player/Player.cs" id="9_6ut8u"]
 [ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="10"]
 [ext_resource type="PackedScene" uid="uid://4rjyss6wu3fy" path="res://data/debug/debug.tscn" id="11"]
+[ext_resource type="Script" uid="uid://c7duykreddg3" path="res://player/PlayerInput.cs" id="11_jtqey"]
 [ext_resource type="Environment" uid="uid://7fdxmqhwueqc" path="res://data/game_env.tres" id="16"]
 [ext_resource type="PackedScene" uid="uid://mae22grjwobt" path="res://data/hud/hud.tscn" id="17"]
+[ext_resource type="Script" uid="uid://7cpioka38l87" path="res://menu/MainMenu.cs" id="17_jtqey"]
 [ext_resource type="AudioStream" uid="uid://84gaoppi65w3" path="res://data/sounds/hit.wav" id="18"]
-[ext_resource type="Script" uid="uid://canxblqh0apfj" path="res://data/menu/menu.gd" id="19"]
 [ext_resource type="Texture2D" uid="uid://6uqynfa5rs00" path="res://data/menu/title.png" id="20"]
 [ext_resource type="PackedScene" uid="uid://brx0ix11p2bl7" path="res://data/map/mapview.tscn" id="21"]
+[ext_resource type="Script" uid="uid://c43a0qpyw16hw" path="res://help/Help.cs" id="21_tig81"]
 [ext_resource type="Texture2D" uid="uid://cbqdoeam4ohxh" path="res://data/help/help.png" id="22"]
-[ext_resource type="Script" uid="uid://cug27fhdn2w4o" path="res://data/dungeon/grid.gd" id="23"]
 [ext_resource type="Script" uid="uid://du45ydgob660m" path="res://data/player/combat.gd" id="24"]
-[ext_resource type="Script" uid="uid://cjgxp0fn34bug" path="res://data/player/player_control.gd" id="25"]
 
 [sub_resource type="Animation" id="1"]
 resource_name = "Fire"
@@ -250,31 +252,30 @@ _data = {
 }
 
 [node name="Game" type="Node3D"]
-script = ExtResource("1")
+script = ExtResource("1_tig81")
 
 [node name="GameDB" type="Node" parent="."]
-script = ExtResource("2_uk3hk")
+script = ExtResource("2_jtqey")
 
 [node name="WorldStart" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 1.25, 0)
 
-[node name="Dungeon" type="Node3D" parent="." node_paths=PackedStringArray("game_db")]
+[node name="Dungeon" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -18)
-script = ExtResource("2")
-game_db = NodePath("../GameDB")
+script = ExtResource("3_jtqey")
 
-[node name="Builder" type="Node3D" parent="Dungeon" node_paths=PackedStringArray("game_db")]
-script = ExtResource("3")
-game_db = NodePath("../../GameDB")
+[node name="Builder" type="Node3D" parent="Dungeon"]
+script = ExtResource("4_jtqey")
 
 [node name="floor" parent="Dungeon" instance=ExtResource("4")]
 
 [node name="outer_wall" parent="Dungeon" instance=ExtResource("5")]
 transform = Transform3D(1.48, 0, 0, 0, 1, 0, 0, 0, 1.48, 0, 0, 0)
+script = ExtResource("7_6ut8u")
 
 [node name="Grid" type="Node3D" parent="Dungeon"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 18)
-script = ExtResource("23")
+script = ExtResource("7_n2e6y")
 
 [node name="ceiling" parent="Dungeon" instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.51846, 0)
@@ -283,14 +284,13 @@ visible = false
 [node name="StartPos" type="Marker3D" parent="Dungeon"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.25, 16.5)
 
-[node name="Player" type="Node3D" parent="Dungeon" node_paths=PackedStringArray("game_db")]
+[node name="Player" type="Node3D" parent="Dungeon"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21)
-script = ExtResource("9")
-game_db = NodePath("../../GameDB")
+script = ExtResource("9_6ut8u")
 
 [node name="PlayerControl" type="Node3D" parent="Dungeon/Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -1.25, -3)
-script = ExtResource("25")
+script = ExtResource("11_jtqey")
 
 [node name="combat" type="Node" parent="Dungeon/Player" node_paths=PackedStringArray("game_db")]
 script = ExtResource("24")
@@ -354,7 +354,7 @@ stream = ExtResource("18")
 
 [node name="MainMenu" type="Node2D" parent="."]
 visible = false
-script = ExtResource("19")
+script = ExtResource("17_jtqey")
 
 [node name="Sprite2D" type="Sprite2D" parent="MainMenu"]
 position = Vector2(673, 377)
@@ -370,3 +370,4 @@ z_index = 5
 scale = Vector2(0.995122, 1.0023)
 texture = ExtResource("22")
 centered = false
+script = ExtResource("21_tig81")
