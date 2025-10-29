@@ -15,6 +15,10 @@ run/main_scene="res://data/game.tscn"
 config/features=PackedStringArray("4.5", "C#")
 config/icon="res://icon.png"
 
+[audio]
+
+buses/default_bus_layout="res://data/default_bus_layout.tres"
+
 [debug]
 
 gdscript/warnings/return_value_discarded=false

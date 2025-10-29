@@ -1,6 +1,6 @@
 [gd_scene load_steps=29 format=3 uid="uid://co2vu1jhjxhem"]
 
-[ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://MainGame.cs" id="1_tig81"]
+[ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://Source/MainGame.cs" id="1_tig81"]
 [ext_resource type="Script" uid="uid://dje4dtcs656c8" path="res://Source/GameDb.cs" id="2_jtqey"]
 [ext_resource type="Script" uid="uid://biyepob8xqtcl" path="res://Source/dungeon/Dungeon.cs" id="3_jtqey"]
 [ext_resource type="PackedScene" uid="uid://d4nrionulwu34" path="res://data/dungeon/floor.tscn" id="4"]
