@@ -8,6 +8,7 @@ using minotaur.items;
 
 namespace minotaur;
 
+// Loads items, icons, enemies from JSON file
 public partial class GameDb : Node
 {
   private Vector2I _imageSize = new(32, 32);
@@ -47,15 +48,9 @@ public partial class GameDb : Node
     };
   }
   
-  public List<ItemInfo> Items
-  {
-    get => _items;
-  }
+  public List<ItemInfo> Items => _items;
 
-  public List<EnemyInfo> Enemies
-  {
-    get => _enemies;
-  }
+  public List<EnemyInfo> Enemies => _enemies;
 
   public override void _Ready()
   {

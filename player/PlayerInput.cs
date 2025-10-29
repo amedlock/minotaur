@@ -9,7 +9,7 @@ namespace minotaur.player;
 public partial class PlayerInput : Node3D
 {
 	private const float MoveTime = 0.75f;
-	private const float TurnTime = 0.5f;
+	private const float TurnTime = 0.3f;
 	private const float GlanceTime = 0.25f;
 
 	private int _glanceAmount = 0;
@@ -151,11 +151,10 @@ public partial class PlayerInput : Node3D
 	public void MoveForward()
 	{
 		var wall = _player.WallAhead;
-		if (wall != null && wall.Blocked)
+		if ( (wall is Wall or Door { Blocked: true }))
 		{
 			return;
 		}
-
 		var cell = _player.CellAhead;
 		if (cell!=null && cell.Enemy!=null)
 		{

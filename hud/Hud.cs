@@ -31,7 +31,7 @@ public partial class Hud : Node2D
   private Sprite2D _breastPlateSprite;
   private Sprite2D _amuletSprite;
 
-  private List<string> pack_slots =
+  private List<string> _packSlots =
   [
     "Slot1", "Slot2", "Slot3", "Slot4", "Slot5",
     "Slot6", "Slot7", "Slot8", "Slot9"

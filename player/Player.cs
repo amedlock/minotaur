@@ -146,7 +146,7 @@ public partial class Player : Node3D
   }
 
   public Wall WallBehind => null;
-  public Wall WallAhead => null;
+  public Node3D WallAhead => _dungeon.Grid.GetWall(Coord, Direction);
   public DungeonCell CellAhead => null;
 
   public void Init(int skill)
@@ -242,7 +242,11 @@ public partial class Player : Node3D
 
   public void OpenDoor()
   {
-    throw new NotImplementedException();
+    var wall = WallAhead;
+    if (wall is Door door)
+    {
+      door.Activate();
+    }
   }
 
   public void Rest()

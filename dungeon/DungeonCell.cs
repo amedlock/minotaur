@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using Godot;
 using minotaur.enemies;
 using minotaur.items;
+using minotaur.player;
 
 namespace minotaur.dungeon;
 
-public partial class DungeonCell : Node2D
+public partial class DungeonCell : Node3D
 {
   private int _x = 0;
   private int _y = 0;
 
   // walls
-  public Wall North;
-  public Wall East;
+  public Node3D North;
+  public Node3D East;
   
   public ItemInfo ItemInfo;
   
@@ -37,21 +37,27 @@ public partial class DungeonCell : Node2D
     _grid = GetParent() as DungeonGrid;
   }
 
-  public Wall CheckWall(DungeonCell other)
+  // returns wall between the two DungeonCells, if any
+  public Node3D CheckWall(DungeonCell other)
   {
     if (other == null)
     {
       return null;
     }
-
+    
     if (other.Y == Y)
     {
-      return other.X > X ? East : other.East;
+      if (other.X != X)
+      {
+        return other.X > X ? East : other.East;
+      }
     }
-
-    if (other.X == X)
+    else if (other.X == X)
     {
-      return other.Y > Y ? North : other.North;
+      if (other.Y != Y)
+      {
+        return other.Y > Y ? North : other.North;
+      }
     }
     return null;
   }
@@ -76,5 +82,20 @@ public partial class DungeonCell : Node2D
     Enemy = null;
     North = null;
     East = null;
+  }
+
+  public void SetWall(Node3D wall, Direction direction)
+  {
+    switch (direction)
+    {
+      case Direction.North: 
+        North = wall;
+        return;
+      case Direction.East:
+        East = wall;
+        return;
+      default :
+        throw new Exception("Invalid direction: " + direction);
+    }
   }
 }

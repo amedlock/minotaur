@@ -6,4 +6,5 @@ public partial class Enemy : Sprite3D
 {
   public int GridX = 0;
   public int GridY = 0;
+  public EnemyInfo EnemyInfo { get; set; }
 }

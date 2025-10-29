@@ -78,6 +78,8 @@ public partial class Dungeon : Node3D
     _muralColors["magic"] = ResourceLoader.Load("res://data/dungeon/blue_mat.tres");
     _muralColors["tan"] = ResourceLoader.Load("res://data/dungeon/tan_mat.tres");
     _muralColors["both"] = _muralColors["tan"];
+
+    GetNode<Node3D>("ceiling").Visible = true;
   }
 
   public void InitMaze(int skill, uint seedNum)
