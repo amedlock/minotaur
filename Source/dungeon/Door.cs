@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace minotaur.dungeon;
+namespace minotaur.Source.dungeon;
 
 public partial class Door : Node3D
 {

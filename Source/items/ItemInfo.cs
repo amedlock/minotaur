@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace minotaur.items;
+namespace minotaur.Source.items;
 
 public class ItemInfo
 {

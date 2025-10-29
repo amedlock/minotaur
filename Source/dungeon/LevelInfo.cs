@@ -1,6 +1,6 @@
-﻿using minotaur.items;
+﻿using minotaur.Source.items;
 
-namespace minotaur.dungeon;
+namespace minotaur.Source.dungeon;
 
 public class LevelInfo(int depth, uint seedNumber)
 {

@@ -1,9 +1,8 @@
-﻿using System;
-using Godot;
-using minotaur.dungeon;
-using minotaur.hud;
+﻿using Godot;
+using minotaur.Source.dungeon;
+using minotaur.Source.hud;
 
-namespace minotaur.player;
+namespace minotaur.Source.player;
 
 // Handle player movement, this is called from Player
 public partial class PlayerInput : Node3D

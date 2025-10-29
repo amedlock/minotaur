@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Godot;
-using minotaur.dungeon;
-using minotaur.items;
-using minotaur.player;
+using minotaur.Source.dungeon;
+using minotaur.Source.items;
+using minotaur.Source.player;
 
-namespace minotaur.hud;
+namespace minotaur.Source.hud;
 
 public partial class Hud : Node2D
 {

@@ -1,10 +1,11 @@
 ﻿using System;
 using Godot;
-using minotaur.dungeon;
-using minotaur.hud;
-using minotaur.items;
+using minotaur.Source.dungeon;
+using minotaur.Source.hud;
+using minotaur.Source.items;
+using minotaur.Source.Source.dungeon;
 
-namespace minotaur.player;
+namespace minotaur.Source.player;
 
 public partial class Player : Node3D
 {
@@ -84,7 +85,7 @@ public partial class Player : Node3D
       }
 
       var cell = _dungeon.GetCell(Coord);
-      return cell.ItemInfo is { Name: "ladder" };
+      return cell.Item is { Info: {Name: "ladder"} };
     }
   }
 

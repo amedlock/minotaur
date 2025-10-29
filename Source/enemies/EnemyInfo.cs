@@ -1,12 +1,12 @@
 ﻿using Godot;
-using minotaur.dungeon;
+using minotaur.Source.dungeon;
 
-namespace minotaur.enemies;
+namespace minotaur.Source.enemies;
 
 public class EnemyInfo
 {
   public string Name;
-  public EnemyType Kind;
+  public EnemyType Type;
   public int MinLevel;
   public int Power;
   public int MinHp;

@@ -1,7 +1,7 @@
 ﻿using Godot;
-using minotaur.items;
+using minotaur.Source.items;
 
-namespace minotaur.hud;
+namespace minotaur.Source.hud;
 
 public partial class PackSlot : Area2D
 {

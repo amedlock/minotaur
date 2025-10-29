@@ -1,4 +1,4 @@
-﻿namespace minotaur.dungeon;
+﻿namespace minotaur.Source.dungeon;
 
 public enum LevelType
 {

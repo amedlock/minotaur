@@ -1,9 +1,10 @@
 ﻿using Godot;
 using Godot.Collections;
-using minotaur.dungeon;
-using minotaur.player;
+using minotaur.Source.dungeon;
+using minotaur.Source.player;
+using minotaur.Source.Source.dungeon;
 
-namespace minotaur.map;
+namespace minotaur.Source.map;
 
 public partial class MapView : Node2D
 {

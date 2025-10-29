@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace minotaur.help;
+namespace minotaur.Source.help;
 
 public partial class Help : Node2D
 {

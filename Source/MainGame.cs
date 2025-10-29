@@ -1,9 +1,9 @@
 ﻿using Godot;
-using minotaur.dungeon;
-using minotaur.help;
-using minotaur.map;
-using minotaur.menu;
-using minotaur.player;
+using minotaur.Source.dungeon;
+using minotaur.Source.help;
+using minotaur.Source.map;
+using minotaur.Source.menu;
+using minotaur.Source.player;
 
 namespace minotaur;
 

@@ -1,21 +1,18 @@
 ﻿using System;
 using Godot;
-using minotaur.enemies;
-using minotaur.items;
-using minotaur.player;
+using minotaur.Source.dungeon;
+using minotaur.Source.enemies;
+using minotaur.Source.items;
+using minotaur.Source.player;
 
-namespace minotaur.dungeon;
+namespace minotaur.Source.Source.dungeon;
 
 public partial class DungeonCell : Node3D
 {
-  private int _x = 0;
-  private int _y = 0;
-
   // walls
   public Node3D North;
   public Node3D East;
   
-  public ItemInfo ItemInfo;
   
   // contents of cell
   public Item Item;
@@ -25,12 +22,17 @@ public partial class DungeonCell : Node3D
   private DungeonGrid _grid;
 
 
-  public int X => _x;
-  public int Y => _y;
-  
-  public int CellIndex => _grid.Index(_x, _y);
+  public int X { get; private set; }
 
-  public Vector2I GridPos => new(_x, _y);
+  public int Y { get; private set; }
+
+  public int CellIndex => _grid.Index(X, Y);
+
+  public Vector2I GridPos => new(X, Y);
+
+  public EnemyInfo EnemyInfo => Enemy == null ? null : Enemy.Info;
+
+  public ItemInfo ItemInfo => Item == null ? null : Item.Info;
 
   public override void _Ready()
   {
@@ -65,8 +67,8 @@ public partial class DungeonCell : Node3D
 
   public void Init(int x, int y)
   {
-    _x = x;
-    _y = y;
+    X = x;
+    Y = y;
   }
 
   public void ClearAll()

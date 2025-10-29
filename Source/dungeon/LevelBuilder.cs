@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using minotaur.enemies;
-using minotaur.items;
-using minotaur.player;
+using minotaur.Source.enemies;
+using minotaur.Source.items;
+using minotaur.Source.player;
+using minotaur.Source.Source.dungeon;
 
-namespace minotaur.dungeon;
+namespace minotaur.Source.dungeon;
 
 public partial class LevelBuilder : Node
 {
@@ -632,7 +633,7 @@ public partial class LevelBuilder : Node
       AddCorner(cell.Corners.SW, WallPost.SW, dcell);
       AddCorner(cell.Corners.NW, WallPost.NW, dcell);
       // AddItem(dcell, cell.ItemInfo);
-      // AddEnemy(dcell, cell.EnemyInfo);
+      AddEnemy(dcell, cell.EnemyInfo);
       AddGate(dcell, cell.LevelType);
     }
   }
@@ -652,7 +653,7 @@ public partial class LevelBuilder : Node
     }
 
     var node = (Enemy)_enemyPrefab.Instantiate();
-    node.EnemyInfo = enemy;
+    node.Info = enemy;
     dcell.AddChild(node);
     dcell.Enemy = node;
     node.Position = new Vector3(1.5f, 0.9f, -1.5f);

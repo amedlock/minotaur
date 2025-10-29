@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace minotaur.menu;
+namespace minotaur.Source.menu;
 
 public partial class MainMenu : Node2D
 {

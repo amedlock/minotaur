@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using Godot;
-using minotaur.enemies;
-using minotaur.hud;
-using minotaur.map;
-using minotaur.player;
+using minotaur.Source.enemies;
+using minotaur.Source.hud;
+using minotaur.Source.map;
+using minotaur.Source.player;
+using minotaur.Source.Source.dungeon;
 
-namespace minotaur.dungeon;
+namespace minotaur.Source.dungeon;
 
 public partial class Dungeon : Node3D
 {
@@ -126,7 +128,7 @@ public partial class Dungeon : Node3D
 
   void AddFinal(Enemy enemy)
   {
-    Grid.GetCell(enemy.GridX, enemy.GridY).ItemInfo = _gameDb.FindItem("treasure", CurrentLevel.Depth);
+    // Grid.GetCell(enemy.GridX, enemy.GridY).Has = _gameDb.FindItem("treasure", CurrentLevel.Depth);
   }
   
 
@@ -180,6 +182,6 @@ public partial class Dungeon : Node3D
 
   public void UseExit()
   {
-    throw new System.NotImplementedException();
+    throw new NotImplementedException();
   }
 }

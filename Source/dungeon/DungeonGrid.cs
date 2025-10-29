@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Godot;
-using minotaur.player;
+using minotaur.Source.player;
+using minotaur.Source.Source.dungeon;
 
-namespace minotaur.dungeon;
+namespace minotaur.Source.dungeon;
 
 public partial class DungeonGrid : Node3D
 {

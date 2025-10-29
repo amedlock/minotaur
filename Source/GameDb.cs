@@ -2,9 +2,9 @@
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using minotaur.dungeon;
-using minotaur.enemies;
-using minotaur.items;
+using minotaur.Source.dungeon;
+using minotaur.Source.enemies;
+using minotaur.Source.items;
 
 namespace minotaur;
 
@@ -34,17 +34,22 @@ public partial class GameDb : Node
 
   public List<EnemyInfo> FindEnemies(LevelInfo info)
   {
-    return Enemies.Where(e => IsAllowed(e.Kind, info.LevelType) && e.MinLevel >= info.Depth).ToList();
+    return Enemies.Where(e => IsAllowed(e, info)).ToList();
   }
 
 
-  private bool IsAllowed(EnemyType enemyType, LevelType levelType)
+  private bool IsAllowed(EnemyInfo enemy, LevelInfo levelInfo)
   {
-    return enemyType switch
+    if (enemy.MinLevel < levelInfo.Depth)
     {
-      EnemyType.War => levelType != LevelType.Magic,
-      EnemyType.Magic => levelType != LevelType.War,
-      _ or EnemyType.Both => true
+      return false;
+    }
+    
+    return enemy.Type switch
+    {
+      EnemyType.War => levelInfo.LevelType != LevelType.Magic,
+      EnemyType.Magic => levelInfo.LevelType != LevelType.War,
+      _ => true
     };
   }
   
