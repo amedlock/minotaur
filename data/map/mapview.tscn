@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://brx0ix11p2bl7"]
 
-[ext_resource type="Script" uid="uid://uh8576fglno5" path="res://map/MapView.cs" id="1_qyyw3"]
+[ext_resource type="Script" uid="uid://uh8576fglno5" path="res://Source/map/MapView.cs" id="1_qyyw3"]
 [ext_resource type="Texture2D" uid="uid://diljio2sloahc" path="res://data/map/map.png" id="2"]
 [ext_resource type="PackedScene" uid="uid://bw7go0udk6jvw" path="res://data/map/marker.tscn" id="3"]
 

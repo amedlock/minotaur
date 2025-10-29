@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://brv4vhgukvlum"]
 
-[ext_resource type="Script" uid="uid://dinpdeynr2kem" path="res://dungeon/DungeonCell.cs" id="1_ultst"]
+[ext_resource type="Script" uid="uid://dinpdeynr2kem" path="res://Source/dungeon/DungeonCell.cs" id="1_ultst"]
 
 [node name="Cell" type="Node3D"]
 script = ExtResource("1_ultst")
