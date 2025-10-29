@@ -26,6 +26,8 @@ public partial class LevelBuilder : Node
     public int X => x;
     public int Y => y;
 
+    public bool Empty => EnemyInfo == null || ItemInfo == null;
+
     // until this is set to true, nothing set on this maze cell (walls, items, etc)
     public bool Active;
 
@@ -77,8 +79,7 @@ public partial class LevelBuilder : Node
   private PackedScene _blueGate;
   private PackedScene _tanGate;
 
-
-  public IEnumerable<MazeCell> EmptyCells => _maze.Where(c => !c.Active);
+  public IEnumerable<MazeCell> EmptyCells => _maze.Where(c => c.Empty && !IsOuterMaze(c));
 
 
   public override void _Ready()
@@ -121,6 +122,19 @@ public partial class LevelBuilder : Node
     return mc.X == 0 || mc.Y == 0 || mc.X == _dungeon.Width - 1 || mc.Y == _dungeon.Height - 1;
   }
 
+
+  List<T> Shuffle<T>(List<T> items)
+  {
+    var result = new List<T>();
+    foreach (var n in GD.Range(items.Count))
+    {
+      var pos = _rng.RandiRange(0, items.Count - 1);
+      result.Add(items[pos]);
+      items.RemoveAt(pos);
+    }
+    return result;
+  }
+  
   private void ClearOuterWall()
   {
     foreach (var yp in GD.Range(_dungeon.Height))
@@ -426,18 +440,33 @@ public partial class LevelBuilder : Node
 
   void AddEnemies(LevelInfo info, List<MazeCell> cells)
   {
+    if (cells.Count == 0)
+    {
+      GD.PrintErr("No empty cells available for enemies");
+      return;
+    }
     var num = _rng.RandiRange(0, 6) + 12;
-    List<EnemyInfo> allowed = _gameDb.FindEnemies(info);
+    var enemies = _gameDb.FindEnemies(info);
+    if (enemies.Count == 0)
+    {
+      throw new Exception("No enemies available for placement");
+    }
+    var allowed = Shuffle(_gameDb.FindEnemies(info));
+    if (allowed.Count == 0)
+    {
+      throw new Exception("No enemies allowed for placement");
+    }
     foreach (var n in GD.Range(num))
     {
-      if (allowed.Count == 0 || cells.Count == 0)
+      if (cells.Count == 0)
       {
         return;
       }
 
       var target = TakeRandom(cells);
-      EnemyInfo monster = ChooseRandom(allowed);
+      EnemyInfo monster = allowed[n % allowed.Count];
       GetCell(target.X, target.Y).EnemyInfo = monster;
+      // GD.Print($"Enemy: {monster.Name} at {target.X}, {target.Y}");
     }
   }
 
@@ -632,7 +661,7 @@ public partial class LevelBuilder : Node
       AddCorner(cell.Corners.SE, WallPost.SE, dcell);
       AddCorner(cell.Corners.SW, WallPost.SW, dcell);
       AddCorner(cell.Corners.NW, WallPost.NW, dcell);
-      // AddItem(dcell, cell.ItemInfo);
+      AddItem(dcell, cell.ItemInfo);
       AddEnemy(dcell, cell.EnemyInfo);
       AddGate(dcell, cell.LevelType);
     }
@@ -653,7 +682,7 @@ public partial class LevelBuilder : Node
     }
 
     var node = (Enemy)_enemyPrefab.Instantiate();
-    node.Info = enemy;
+    node.Init(enemy, _rng);
     dcell.AddChild(node);
     dcell.Enemy = node;
     node.Position = new Vector3(1.5f, 0.9f, -1.5f);
@@ -668,10 +697,15 @@ public partial class LevelBuilder : Node
       cell.RemoveChild(cell.Item);
       cell.Item = null;
     }
-    var result = _itemPrefab.Instantiate() as Item;
-    result.Init(itemInfo);
-    cell.Item = result;
-    cell.AddChild(result);
+
+    if (itemInfo != null)
+    {
+      var result = _itemPrefab.Instantiate() as Item;
+      result.Init(itemInfo);
+      result.Position = new Vector3(1.5f, 0.5f, -1.5f);
+      cell.Item = result;
+      cell.AddChild(result);
+    }
   }
   
   public void AddGate(DungeonCell dungeonCell, LevelType level)

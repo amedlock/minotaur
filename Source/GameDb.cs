@@ -40,7 +40,7 @@ public partial class GameDb : Node
 
   private bool IsAllowed(EnemyInfo enemy, LevelInfo levelInfo)
   {
-    if (enemy.MinLevel < levelInfo.Depth)
+    if (enemy.MinLevel > levelInfo.Depth)
     {
       return false;
     }
@@ -115,7 +115,7 @@ public partial class GameDb : Node
     }
   }
 
-  private void LoadEnemies(Godot.Collections.Dictionary<string, Variant> data, string section)
+  private void LoadEnemies(Godot.Collections.Dictionary<string,Variant> data, string section)
   {
     var dict = (Dictionary)data;
     foreach (var pair in (Dictionary)dict[section])

@@ -17,6 +17,8 @@ public partial class Debug :Label
     _game = (MainGame)_player.GetParent();
     _dungeon = (Dungeon)_game.GetNode("Dungeon");
     _grid = _dungeon.Grid;
+    SetProcess(false);
+    Visible = false;
   }
  
   
