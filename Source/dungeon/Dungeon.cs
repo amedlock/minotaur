@@ -115,7 +115,8 @@ public partial class Dungeon : Node3D
 
   private LevelInfo CreateDungeonInfo(int skill, int num, RandomNumberGenerator rng)
   {
-    var result = new LevelInfo(num, rng.Randi());
+    uint seed = 1386327162;
+    var result = new LevelInfo(num, seed);
     result.LevelType = rng.RandWeighted([40f, 40f, 20f]) switch
     {
       0 => LevelType.War,

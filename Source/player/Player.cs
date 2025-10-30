@@ -12,6 +12,12 @@ public partial class Player : Node3D
   private bool _isDead = false;
   private Marker3D _startPosition;
   private PlayerState _playerState = PlayerState.Idle;
+  
+  // grid coords
+  private Vector2I _coord = new(0,0);
+  
+  // facing direction in degrees
+  private int _facing = 90;
 
   public PlayerState PlayerState
   {
@@ -23,8 +29,16 @@ public partial class Player : Node3D
 
 
   // player direction in degrees
-  public int Dir => (int)(Mathf.PosMod(RotationDegrees.Y, 360f));
-
+  // if glancing may not be in sync with Node RotationDegrees.Y
+  public int Dir
+  {
+    get => _facing;
+    set
+    {
+      _facing = Mathf.PosMod(value, 360);
+      RotationDegrees = new Vector3(0, _facing, 0);
+    }
+  }
 
   private Node _combat; // $combat
   private Hud _hud; //= $Camera3D/HUD
@@ -44,6 +58,7 @@ public partial class Player : Node3D
   public int MindMax = 0;
 
   public bool Resurrected = false;
+  public bool NeedsRest = false;
 
   public int Gold = 0;
   public int Food = 0;
@@ -68,6 +83,13 @@ public partial class Player : Node3D
     _hud = GetNode<Hud>("Camera3D/HUD");
     _audio = GetNode<AudioStreamPlayer>("Audio");
     _startPosition = _dungeon.GetNode<Marker3D>("StartPos");
+    Position = _startPosition.Position + (new Vector3(_coord.X, 0, _coord.Y) * 3f);
+    RotationDegrees = new Vector3(0, Dir, 0);
+    if ((int)RotationDegrees.Y != Dir)
+    {
+      GD.Print($"Invalid {RotationDegrees.Y} {Dir}");
+      
+    }
   }
 
   public Vector3 CoordToWorld(Vector2I coord)
@@ -90,14 +112,9 @@ public partial class Player : Node3D
   }
 
   //  get the world coords for the player
-  public Vector2I Coord
+  public Vector2I Coord 
   {
-    get
-    {
-      var loc = (Position - _dungeon.StartPosition).Abs();
-      return new Vector2I(Mathf.RoundToInt(loc.X / 3.0f), Mathf.RoundToInt(loc.Z / 3.0f));
-    }
-
+    get=> _coord;
     set => Position = _dungeon.StartPosition + new Vector3(value.X * 3f, 0, -value.Y * 3f);
   }
 
@@ -148,7 +165,10 @@ public partial class Player : Node3D
 
   public Wall WallBehind => null;
   public Node3D WallAhead => _dungeon.Grid.GetWall(Coord, Direction);
-  public DungeonCell CellAhead => null;
+  
+  public DungeonCell CurrentCell => _dungeon.GetCell(Coord);
+  public DungeonCell CellAhead => _dungeon.Grid.GetCell(_coord, Direction); 
+  
 
   public void Init(int skill)
   {
@@ -208,7 +228,7 @@ public partial class Player : Node3D
   public void ResetLocation()
   {
     Position = _startPosition.Position;
-    RotationDegrees = new Vector3(0, 270, 0);
+    Dir = 270;
   }
 
 
@@ -262,5 +282,13 @@ public partial class Player : Node3D
       _dungeon.UseExit();
       GetNode<PlayerInput>("PlayerControl").Reset();
     }
+  }
+
+  public void EnterGate(DungeonGate dungeonGate)
+  {
+    _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/magic.wav");
+    _dungeon.LoadGateLevel(dungeonGate);
+    GetNode<PlayerInput>("PlayerControl").Reset();
+    this.NeedsRest = true;
   }
 }

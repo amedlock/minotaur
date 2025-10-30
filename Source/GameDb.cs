@@ -21,10 +21,10 @@ public partial class GameDb : Node
   private ItemInfo _finalTreasure;
 
 
-  public static readonly List<string> WarColors = ["Tan", "Orange", "Blue", "Grey", "Yellow", "White"];
-  public static readonly List<string> MagicColors = ["Blue", "Grey", "White", "Pink", "Red", "Purple"];
-  public static readonly List<string> MoneyColors = ["Orange", "Grey", "Yellow", "White"];
-  public static readonly List<string> ContainerColors = ["Tan", "Orange", "Blue"];
+  private static readonly List<string> WarColors = ["Tan", "Orange", "Blue", "Grey", "Yellow", "White"];
+  private static readonly List<string> MagicColors = ["Blue", "Grey", "White", "Pink", "Red", "Purple"];
+  private static readonly List<string> MoneyColors = ["Orange", "Grey", "Yellow", "White"];
+  private static readonly List<string> ContainerColors = ["Tan", "Orange", "Blue"];
 
 
   public ItemInfo FindItem(string name, int depth = 1)
@@ -40,7 +40,7 @@ public partial class GameDb : Node
 
   private bool IsAllowed(EnemyInfo enemy, LevelInfo levelInfo)
   {
-    if (enemy.MinLevel > levelInfo.Depth)
+    if (levelInfo.Depth < enemy.MinLevel)
     {
       return false;
     }
@@ -88,9 +88,9 @@ public partial class GameDb : Node
     LoadIcons(data["item_icons"]);
     LoadIcons(data["enemy_icons"]);
     var enemies = (Godot.Collections.Dictionary<string, Variant>)data["enemies"];
-    LoadEnemies(enemies, "war");
-    LoadEnemies(enemies, "magic");
-    LoadEnemies(enemies, "both");
+    LoadEnemies(enemies, "war", EnemyType.War);
+    LoadEnemies(enemies, "magic", EnemyType.Magic);
+    LoadEnemies(enemies, "both", EnemyType.Both);
     LoadItems((Dictionary)data["items"]);
   }
 
@@ -115,13 +115,14 @@ public partial class GameDb : Node
     }
   }
 
-  private void LoadEnemies(Godot.Collections.Dictionary<string,Variant> data, string section)
+  private void LoadEnemies(Variant data, string section, EnemyType enemyType)
   {
     var dict = (Dictionary)data;
     foreach (var pair in (Dictionary)dict[section])
     {
       Array stats = (Array)pair.Value;
       var enemyInfo = new EnemyInfo();
+      enemyInfo.Type = enemyType;
       enemyInfo.Name = (string)pair.Key;
       enemyInfo.ImageRect = this._icons[(string)stats[0]];
       enemyInfo.MinLevel = (int)stats[1];
@@ -133,17 +134,17 @@ public partial class GameDb : Node
     }
   }
 
-  private void LoadItems(Dictionary data)
+  private void LoadItems(Dictionary items)
   {
-    LoadSpecials((Dictionary)data["specials"]);
-    Dictionary weapons = (Dictionary)data["weapons"];
+    LoadSpecials((Dictionary)items["specials"]);
+    Dictionary weapons = (Dictionary)items["weapons"];
     LoadWeapons(weapons, "war", WarColors);
     LoadWeapons(weapons, "magic", MagicColors);
-    LoadArmor((Dictionary)data["armor"], WarColors);
-    LoadKeyItems((Dictionary)data["keys"], _icons["key"], ItemType.Key, "key");
-    LoadKeyItems((Dictionary)data["amulets"], _icons["amulet"], ItemType.Armor, "amulet");
-    LoadContainers((Dictionary)data["containers"]);
-    LoadMoney((Dictionary)data["money"]);
+    LoadArmor((Dictionary)items["armor"], WarColors);
+    LoadKeyItems((Dictionary)items["keys"], _icons["key"], ItemType.Key, "key");
+    LoadKeyItems((Dictionary)items["amulets"], _icons["amulet"], ItemType.Armor, "amulet");
+    LoadContainers((Dictionary)items["containers"]);
+    LoadMoney((Dictionary)items["money"]);
   }
 
 
@@ -157,13 +158,27 @@ public partial class GameDb : Node
     item.MinDepth = minDepth;
     item.Stat1 = stat1;
     item.Stat2 = stat2;
-    item.NeedsKey = false; // @TODO
+    item.NeedsKey = kind == ItemType.Container && name.Match("pack|container|chest");
     _items.Add(item);
   }
 
 
-  private void LoadSpecials(Dictionary data)
+  private void LoadSpecials(Dictionary specials)
   {
+    foreach (var pair in specials)
+    {
+      var item = new ItemInfo();
+      item.Name = (string)pair.Key;
+      Array items = (Array)pair.Value;
+      item.Image = _icons[(string)items[0]];
+      item.MinDepth = (int)items[1];
+      item.Color = _colors[(string)items[2]];
+      item.Stat1 = (int)items[3];
+      item.Stat2 = (int)items[4];
+      item.ItemType = ItemType.Special;
+      _items.Add(item);
+    }
+    
   }
 
   private void LoadWeapons(Dictionary data, string type, List<string> colorNames)
@@ -224,16 +239,29 @@ public partial class GameDb : Node
   }
 
 
-  private void LoadMoney(Dictionary data)
+  private void LoadMoney(Dictionary money)
   {
-    foreach (var pair in data)
+    
+    foreach (var pair in money)
     {
       var name = (string)pair.Key;
-      var values = (Array)pair.Value;
+      var items = (Array)pair.Value;
+      var minDepth = (int)items[0];
+      var value = (int)items[1];
+
+      // only one crown
+      if (name == "crown")
+      {
+        AddItem("crown", ItemType.Money, _icons["crown"], _colors["Yellow"], 6, 200, 0);
+        continue;
+      }
+      
+      // bronze, silver, gold, platinum
       foreach (var colorName in MoneyColors)
       {
         var color =  _colors[colorName];
-        AddItem(name, ItemType.Money, _icons[name],  color, (int)values[0], (int)values[1], 0);
+        AddItem(name, ItemType.Money, _icons[name],  color, minDepth, value, 0);
+        value *= 2;
       }
     }
   }

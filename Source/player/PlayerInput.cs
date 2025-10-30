@@ -11,11 +11,9 @@ public partial class PlayerInput : Node3D
 	private const float TurnTime = 0.3f;
 	private const float GlanceTime = 0.25f;
 
-	private int _glanceAmount = 0;
-
 	private int _dir = 270;
 	private Vector2I _prevCoord;
-	private bool _canRetreat = false;
+	private bool _canRetreat ;
 
 	Player _player;
 	Dungeon _dungeon;
@@ -31,8 +29,7 @@ public partial class PlayerInput : Node3D
 
 	public override void _Input(InputEvent @event)
 	{
-		
-		if (_glanceAmount != 0)
+		if (_player.PlayerState==PlayerState.Glance)
 		{
 			if (@event.IsActionReleased("look_left") || @event.IsActionReleased("look_right"))
 			{
@@ -124,7 +121,6 @@ public partial class PlayerInput : Node3D
 
 	public void Reset()
 	{
-		_glanceAmount = 0;
 	}
 
 	public void MoveBack()
@@ -179,54 +175,39 @@ public partial class PlayerInput : Node3D
 
 	public void TurnPlayer(int amount)
 	{
-		amount = FixRot(amount);
 		var crot = _hud.Compass.RotationDegrees;
-		var tween = CreateTween();
 		var rot = _player.Dir + amount;
 		_player.PlayerState = PlayerState.Turning;
+		var tween = CreateTween();
 		tween.Finished += () =>
 		{
-			_dir += amount;
-			var rotVec = _player.RotationDegrees;
-			rotVec.Y = Mathf.PosMod(rotVec.Y, 360f);
-			_player.RotationDegrees = rotVec;
 			_player.PlayerState = PlayerState.Idle;
 		};
-		
-		tween.TweenProperty(_player, "rotation_degrees:y", rot, TurnTime);
+		tween.TweenProperty(_player, "Dir", rot, TurnTime);
 		tween.Parallel().TweenProperty(_hud.Compass, "rotation_degrees", crot - amount, TurnTime);
 	}
 
 
 	public void Glance(int amount)
 	{
-		_glanceAmount = FixRot(amount);
-		var rot = _player.Dir + _glanceAmount;
+		var rot = _player.Dir + amount;
 		_player.PlayerState = PlayerState.Turning;
 		var tween = CreateTween().TweenProperty(_player, "rotation_degrees:y", rot, TurnTime);
 		tween.Finished += () =>
 		{
-			var rotVec = _player.RotationDegrees;
-			rotVec.Y = Mathf.PosMod(rot, 360);
-			_player.RotationDegrees = rotVec;
 			_player.PlayerState = PlayerState.Glance;
 		};
 	}
 
 	public void UnGlance()
 	{
-		var rot = _player.Dir - _glanceAmount;
 		var tween = CreateTween();
 		_player.PlayerState = PlayerState.Turning;
 		tween.Finished += () =>
 		{
-			_glanceAmount = 0;
-			var rotVec = _player.RotationDegrees;
-			rotVec.Y = Mathf.PosMod(rot, 360);
-			_player.RotationDegrees = rotVec;
 			_player.PlayerState = PlayerState.Idle;
 		};
-		tween.TweenProperty(_player, "rotation_degrees:y", rot, GlanceTime);
+		tween.TweenProperty(_player, "rotation_degrees:y", _player.Dir, GlanceTime);
 	}
 
 	public void Flee()

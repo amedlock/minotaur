@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://co2vu1jhjxhem"]
+[gd_scene load_steps=30 format=3 uid="uid://co2vu1jhjxhem"]
 
 [ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://Source/MainGame.cs" id="1_tig81"]
 [ext_resource type="Script" uid="uid://dje4dtcs656c8" path="res://Source/GameDb.cs" id="2_jtqey"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://mae22grjwobt" path="res://data/hud/hud.tscn" id="17"]
 [ext_resource type="Script" uid="uid://7cpioka38l87" path="res://Source/menu/MainMenu.cs" id="17_jtqey"]
 [ext_resource type="AudioStream" uid="uid://84gaoppi65w3" path="res://data/sounds/hit.wav" id="18"]
+[ext_resource type="Script" uid="uid://d3wxio6nvf0h1" path="res://Source/player/Debug.cs" id="18_n2e6y"]
 [ext_resource type="Texture2D" uid="uid://6uqynfa5rs00" path="res://data/menu/title.png" id="20"]
 [ext_resource type="PackedScene" uid="uid://brx0ix11p2bl7" path="res://data/map/mapview.tscn" id="21"]
 [ext_resource type="Script" uid="uid://c43a0qpyw16hw" path="res://Source/help/Help.cs" id="21_tig81"]
@@ -348,6 +349,7 @@ fov = 90.0
 [node name="HUD" parent="Dungeon/Player/Camera3D" instance=ExtResource("17")]
 
 [node name="debug" parent="Dungeon/Player/Camera3D" instance=ExtResource("11")]
+script = ExtResource("18_n2e6y")
 
 [node name="Audio" type="AudioStreamPlayer" parent="Dungeon/Player"]
 stream = ExtResource("18")

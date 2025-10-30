@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Godot;
 using minotaur.Source.player;
 using minotaur.Source.Source.dungeon;
@@ -27,14 +28,26 @@ public partial class DungeonGrid : Node3D
   }
 
   public bool Valid(int x, int y) => (x >= 0) && (x < Width) && (y >= 0) && (y < Height);
-  public int Index(int x, int y) => Valid(x,y) ?  x + (y * Width) : -1;
+  public int Index(int x, int y) => x + (y * Width);
 
   public DungeonCell GetCell(Vector2I pos) => GetCell(pos.X, pos.Y);
   
+  public DungeonCell GetCell(Vector2I pos, Direction dir)
+  {
+    return dir switch
+    {
+      Direction.North => GetCell(pos.X, pos.Y + 1),
+      Direction.East => GetCell(pos.X + 1, pos.Y),
+      Direction.South => GetCell(pos.X, pos.Y - 1),
+      Direction.West => GetCell(pos.X - 1, pos.Y),
+      _ => throw new Exception("Illegal direction")
+    };
+  }
+
+  
   public DungeonCell GetCell(int x, int y)
   {
-    int n = Index(x, y);
-    return n < 0 ? null : _cells[Index(x, y)];
+    return Valid(x, y) ? _cells[Index(x, y)] : null;
   }
 
   public void ClearAll()
@@ -49,6 +62,10 @@ public partial class DungeonGrid : Node3D
 
   public DungeonCell AddCell(int cellX, int cellY)
   {
+    if (!Valid(cellX, cellY))
+    {
+      throw new Exception("Illegal cell position");
+    }
     var index = Index(cellX, cellY);
     if (!_cells.TryGetValue(index, out DungeonCell result))
     {
@@ -66,13 +83,21 @@ public partial class DungeonGrid : Node3D
 
   public Node3D GetWall(Vector2I coord, Direction dir)
   {
+    switch (dir)
+    {
+      case Direction.West: return GetWall(coord + new Vector2I(-1,0), Direction.East);
+      case Direction.South: return GetWall(coord + new Vector2I(0, -1), Direction.North);
+    }
+    
+    var cell = _dungeon.GetCell(coord);
+    if (cell == null)
+    {
+      return null;
+    }
     return dir switch
     {
-      Direction.North => GetCell(coord).North,
-      Direction.East => GetCell(coord).East,
-      Direction.South => GetCell(new Vector2I(coord.X, coord.Y - 1)).North,
-      Direction.West => GetCell(new Vector2I(coord.X - 1, coord.Y)).East,
-      _ => null
+      Direction.North => cell.North,
+      Direction.East => cell.East
     };
   }
 }

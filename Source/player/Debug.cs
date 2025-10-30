@@ -13,10 +13,10 @@ public partial class Debug :Label
   
   public override void _Ready()
   {
-    _player = (Player)GetNode("../../Player");
-    _game = (MainGame)_player.GetParent();
-    _dungeon = (Dungeon)_game.GetNode("Dungeon");
-    _grid = _dungeon.Grid;
+    _game = (MainGame)FindParent("Game") as MainGame;
+    _player = _game.FindChild("Player") as Player;
+    _dungeon = _game.FindChild("Dungeon") as Dungeon;
+    _grid = _dungeon.FindChild("Grid") as DungeonGrid;
     SetProcess(false);
     Visible = false;
   }

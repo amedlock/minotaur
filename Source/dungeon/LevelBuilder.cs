@@ -66,7 +66,7 @@ public partial class LevelBuilder : Node
 
   private Dungeon _dungeon;
   private GameDb _gameDb;
-  private RandomNumberGenerator _rng = new RandomNumberGenerator();
+  private RandomNumberGenerator _rng = new();
   private List<MazeCell> _maze = [];
 
   // prefabs  
@@ -122,19 +122,6 @@ public partial class LevelBuilder : Node
     return mc.X == 0 || mc.Y == 0 || mc.X == _dungeon.Width - 1 || mc.Y == _dungeon.Height - 1;
   }
 
-
-  List<T> Shuffle<T>(List<T> items)
-  {
-    var result = new List<T>();
-    foreach (var n in GD.Range(items.Count))
-    {
-      var pos = _rng.RandiRange(0, items.Count - 1);
-      result.Add(items[pos]);
-      items.RemoveAt(pos);
-    }
-    return result;
-  }
-  
   private void ClearOuterWall()
   {
     foreach (var yp in GD.Range(_dungeon.Height))
@@ -445,14 +432,11 @@ public partial class LevelBuilder : Node
       GD.PrintErr("No empty cells available for enemies");
       return;
     }
+
     var num = _rng.RandiRange(0, 6) + 12;
     var enemies = _gameDb.FindEnemies(info);
-    if (enemies.Count == 0)
-    {
-      throw new Exception("No enemies available for placement");
-    }
-    var allowed = Shuffle(_gameDb.FindEnemies(info));
-    if (allowed.Count == 0)
+    var sorted = enemies.OrderBy(i => _rng.Randi()).ToList();
+    if (sorted.Count == 0)
     {
       throw new Exception("No enemies allowed for placement");
     }
@@ -464,7 +448,7 @@ public partial class LevelBuilder : Node
       }
 
       var target = TakeRandom(cells);
-      EnemyInfo monster = allowed[n % allowed.Count];
+      EnemyInfo monster = sorted[n % sorted.Count];
       GetCell(target.X, target.Y).EnemyInfo = monster;
       // GD.Print($"Enemy: {monster.Name} at {target.X}, {target.Y}");
     }

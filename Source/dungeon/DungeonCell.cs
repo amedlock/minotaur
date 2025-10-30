@@ -39,6 +39,16 @@ public partial class DungeonCell : Node3D
     _grid = GetParent() as DungeonGrid;
   }
 
+  public void PlayerEnters(Player player)
+  {
+    if (Gate != null)
+    {
+      player.EnterGate(Gate);
+      return;
+    }
+  }
+  
+
   // returns wall between the two DungeonCells, if any
   public Node3D CheckWall(DungeonCell other)
   {
