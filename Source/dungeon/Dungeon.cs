@@ -105,7 +105,7 @@ public partial class Dungeon : Node3D
   }
 
   // # (skill_level: dungeon level) minotaur first appears here
-  private Dictionary<int, int> _minotaurAppears = new()
+  private readonly Dictionary<int, int> _minotaurAppears = new()
   {
     [1] = 3,
     [2] = 6,
@@ -137,9 +137,6 @@ public partial class Dungeon : Node3D
   {
     CurrentLevel.UsedGate = true;
     // CurrentLevel.SeedNumber = this.rng.Ranrandi()
-    CurrentLevel.MagicMonsters = gate.Type != LevelType.War  ;
-    CurrentLevel.WarMonsters = gate.Type != LevelType.Magic;
-    CurrentLevel.ToughMonsters = gate.Type == LevelType.Both;
     Grid.ClearAll();
     builder.BuildMaze(CurrentLevel);
   }

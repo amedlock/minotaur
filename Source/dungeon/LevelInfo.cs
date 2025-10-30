@@ -9,11 +9,6 @@ public class LevelInfo(int depth, uint seedNumber)
     Empty, Tan, Green, Blue
   }
   
-  
-  public bool MagicMonsters = false;
-  public bool WarMonsters = false;
-  public bool ToughMonsters = false;
-  
   public bool UsedGate = false;
   public LevelType LevelType = LevelType.War;
   public bool HasMinotaur = false;
