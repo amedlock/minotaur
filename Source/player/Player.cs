@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
+using minotaur.Source.enemies;
 using minotaur.Source.hud;
 using minotaur.Source.items;
-using minotaur.Source.Source.dungeon;
 
 namespace minotaur.Source.player;
 
@@ -12,10 +13,10 @@ public partial class Player : Node3D
   private bool _isDead = false;
   private Marker3D _startPosition;
   private PlayerState _playerState = PlayerState.Idle;
-  
+
   // grid coords
-  private Vector2I _coord = new(0,0);
-  
+  private Vector2I _coord = new(0, 0);
+
   // facing direction in degrees
   private int _facing = 90;
 
@@ -41,7 +42,6 @@ public partial class Player : Node3D
   }
 
   private Node _combat; // $combat
-  private Hud _hud; //= $Camera3D/HUD
   private AudioStreamPlayer _audio; //= $Audio
   private Dungeon _dungeon;
 
@@ -72,6 +72,18 @@ public partial class Player : Node3D
   public ItemInfo Amulet = null;
   public ItemInfo Shield = null;
 
+  private List<ItemInfo> _slots = [null, null, null, null, null, null, null, null, null];
+
+  public ItemInfo RightHand { get; set; }
+  public ItemInfo LeftHand { get; set; }
+
+  public ItemInfo GetSlot(int slot)
+  {
+    return _slots[slot % 9];
+  }
+
+  public Item ItemAtFeet => _dungeon.GetCell(Coord).Item;
+
   public ItemInfo Potion = null; // active potion?
   private int _potionTurns = 0; // how many turns before it vanishes
 
@@ -80,7 +92,7 @@ public partial class Player : Node3D
   {
     _dungeon = GetParent() as Dungeon;
     _combat = GetNode<Node>("combat");
-    _hud = GetNode<Hud>("Camera3D/HUD");
+    Hud = GetNode<Hud>("Camera3D/HUD");
     _audio = GetNode<AudioStreamPlayer>("Audio");
     _startPosition = _dungeon.GetNode<Marker3D>("StartPos");
     Position = _startPosition.Position + (new Vector3(_coord.X, 0, _coord.Y) * 3f);
@@ -88,7 +100,6 @@ public partial class Player : Node3D
     if ((int)RotationDegrees.Y != Dir)
     {
       GD.Print($"Invalid {RotationDegrees.Y} {Dir}");
-      
     }
   }
 
@@ -107,14 +118,14 @@ public partial class Player : Node3D
       }
 
       var cell = _dungeon.GetCell(Coord);
-      return cell.Item is { Info: {Name: "ladder"} };
+      return cell.Item is { Info: { Name: "ladder" } };
     }
   }
 
   //  get the world coords for the player
-  public Vector2I Coord 
+  public Vector2I Coord
   {
-    get=> _coord;
+    get => _coord;
     set => Position = _dungeon.StartPosition + new Vector3(value.X * 3f, 0, -value.Y * 3f);
   }
 
@@ -157,18 +168,14 @@ public partial class Player : Node3D
     }
   }
 
-  public Item ItemAtFeet
-  {
-    get => _dungeon.GetCell(Coord).Item;
-    set { }
-  }
-
   public Wall WallBehind => null;
-  public Node3D WallAhead => _dungeon.Grid.GetWall(Coord, Direction);
-  
+  public Node3D WallAhead => _dungeon.GetWall(Coord, Direction);
+
   public DungeonCell CurrentCell => _dungeon.GetCell(Coord);
-  public DungeonCell CellAhead => _dungeon.Grid.GetCell(_coord, Direction); 
-  
+  public DungeonCell CellAhead => _dungeon.GetCell(_coord, Direction);
+
+  public Hud Hud { get; private set; }
+
 
   public void Init(int skill)
   {
@@ -210,14 +217,14 @@ public partial class Player : Node3D
 
     MindMax = Mind;
     HealthMax = Health;
-    _hud.UpdateAll();
+    Hud.UpdateAll();
   }
 
 
   public void Enable()
   {
     Visible = true;
-    _hud.UpdateAll();
+    Hud.UpdateAll();
   }
 
   public void Disable()
@@ -290,5 +297,87 @@ public partial class Player : Node3D
     _dungeon.LoadGateLevel(dungeonGate);
     GetNode<PlayerInput>("PlayerControl").Reset();
     this.NeedsRest = true;
+  }
+
+  public void WonCombat(Enemy enemy)
+  {
+    Killed(enemy);
+    NeedsRest = true;
+    PlayerState = PlayerState.Idle;
+    Hud.UpdateAll();
+  }
+
+  private void Killed(Enemy enemy)
+  {
+    switch (enemy.Info.Type)
+    {
+      case EnemyType.War:
+        WarExp += enemy.Info.Power;
+        break;
+      case EnemyType.Magic:
+        MagicExp += enemy.Info.Power;
+        break;
+      case EnemyType.Both:
+        WarExp += enemy.Info.Power;
+        MagicExp += enemy.Info.Power;
+        break;
+    }
+
+    if (enemy.Info.Name == "minotaur")
+    {
+      _dungeon.AddFinal(enemy);
+    }
+
+    if (IsDead)
+    {
+      _dungeon.Game.GameOver();
+    }
+  }
+
+  // vary amount by +/- percent
+  private int VaryAmount(int amount, int percent)
+  {
+    float variance = amount * (100f / percent);
+    return (int)((amount - variance) + GD.RandRange(0, 2 * variance));
+  }
+
+  private float Percentage(int amount, int percent)
+  {
+    return (amount * (100f - percent)) / 100f;
+  }
+  
+  private int ApplyArmor(int damage, int armor)
+  {
+    var prot = (int)Percentage(damage, armor);
+    if (prot == 0)
+    {
+      return damage;
+    }
+    prot = VaryAmount(prot, 15);
+    return Mathf.Max(damage - prot, 1);
+  }
+  
+
+  public void Damage(Enemy enemy, ItemInfo item)
+  {
+    var maxDamage = item.Stat1 * Skill;
+    var damage = Skill switch
+    {
+      1 => VaryAmount(maxDamage, 5),
+      2 => VaryAmount(maxDamage, 10),
+      3 => VaryAmount(maxDamage, 15),
+      4 => VaryAmount(maxDamage, 20)
+    };
+    var warAmount = ApplyArmor(damage, WarArmor);
+    var mindAmount = ApplyArmor(damage, MindArmor);
+    if (item.IsWar)
+    {
+      Health = Mathf.Clamp(Health - warAmount, 0, HealthMax);
+    }
+
+    if (item.IsMagic)
+    {
+      Mind = Mathf.Clamp(Mind - mindAmount, 0, MindMax);
+    }
   }
 }

@@ -1,8 +1,8 @@
 ﻿using Godot;
 using Godot.Collections;
 using minotaur.Source.dungeon;
+using minotaur.Source.dungeon.builder;
 using minotaur.Source.player;
-using minotaur.Source.Source.dungeon;
 
 namespace minotaur.Source.map;
 
@@ -23,7 +23,7 @@ public partial class MapView : Node2D
 
   private Dictionary<int, Sprite2D> _lookup = new();
 
-  private static Dictionary<StringName, Rect2> _spriteLookup = new()
+  private static readonly Dictionary<StringName, Rect2> SpriteLookup = new()
   {
     ["none_none"] = EmptyTile,
     ["none_door"] = MapTile(2, 0),
@@ -128,52 +128,55 @@ public partial class MapView : Node2D
     {
       foreach (var x in GD.Range(_dungeon.Width))
       {
-        var c = _dungeon.Grid.GetCell(x, y);
+        var cell = _dungeon.Grid.Cell(x, y);
         var spr = _lookup[_index(x, y)];
-        spr.RegionRect = ChooseTile(c);
+        spr.RegionRect = ChooseTile(cell);
         // one of the walls is present, but not the other
-        if (c.North == null || c.East == null)
+        if (cell.North == WallType.Empty || cell.East == WallType.Empty)
         {
-          FixUpCorner(c);
+          FixUpCorner(cell);
         }
-        if (c.Gate!=null)
+        if (cell.Gate!=GateType.None)
         {
-          AddGate(c.Gate, x, y);
+          AddGate(cell.Gate, x, y);
         }
       }
     }
   }
 
-  public Rect2 ChooseTile(DungeonCell cell)
+  public Rect2 ChooseTile(MazeCell cell)
   {
-    return _spriteLookup["none_none"];
+    return SpriteLookup["none_none"];
     // StringName n1 = nameof(cell.North.WallType);
     // StringName n2 = nameof(cell.East.WallType);
     // var path = $"{n1}_{n2}";
     // return _spriteLookup[path];
   }
 
-  public void AddGate(DungeonGate gate, int x, int y)
+  public void AddGate(GateType gate, int x, int y)
   {
-    var icon = _gateIcon.Instantiate() as Sprite2D;
-    icon.Modulate = gate.Sprite.Modulate;
+    var icon = (Sprite2D)_gateIcon.Instantiate();
+    icon.Modulate = gate switch
+    {
+      GateType.War => Colors.DarkGreen,
+      GateType.Magic => Colors.DarkBlue,
+      _ => Colors.Tan
+    };
     _other.AddChild(icon);
     icon.Position = TilePosition(x, y);
   }
 
-  private void FixUpCorner(DungeonCell cell)
+  private void FixUpCorner(MazeCell cell)
   {
-    var n = _dungeon.Grid.GetCell(cell.X, cell.Y + 1);
-    // if (n is not { East: true })
-    // {
-    //   return;
-    // }
+    if (cell is { East: WallType.Empty })
+    {
+      return;
+    }
 
-    var e = _dungeon.Grid.GetCell(cell.X + 1, cell.Y);
-    // if (e is not { North: true })
-    // {
-    //   return;
-    // }
+    if (cell is { North: WallType.Empty })
+    {
+      return;
+    }
     // var fix = _gateIcon.Instantiate() as Sprite2D;
     // fix.Name = $"fix_{cell.X}_{cell.Y}";
     // fix.RegionRect = MapTile(2, 2);

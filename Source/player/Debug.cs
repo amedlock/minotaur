@@ -1,5 +1,6 @@
 ﻿using Godot;
 using minotaur.Source.dungeon;
+using DungeonGrid = minotaur.Source.dungeon.builder.DungeonGrid;
 
 namespace minotaur.Source.player;
 
@@ -9,14 +10,12 @@ public partial class Debug :Label
   private Player _player;
   private MainGame _game;
   private Dungeon _dungeon;
-  private DungeonGrid _grid;
   
   public override void _Ready()
   {
     _game = (MainGame)FindParent("Game") as MainGame;
     _player = _game.FindChild("Player") as Player;
     _dungeon = _game.FindChild("Dungeon") as Dungeon;
-    _grid = _dungeon.FindChild("Grid") as DungeonGrid;
     SetProcess(false);
     Visible = false;
   }

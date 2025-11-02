@@ -1,30 +1,35 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using minotaur.Source.dungeon.builder;
 using minotaur.Source.enemies;
 using minotaur.Source.hud;
 using minotaur.Source.map;
 using minotaur.Source.player;
-using minotaur.Source.Source.dungeon;
 
 namespace minotaur.Source.dungeon;
+
 
 public partial class Dungeon : Node3D
 {
   public int Height = 12;
   public int Width = 12;
-  const float CellSize = 3.0f;
+  internal const float CellSize = 3.0f;
   const int MaxLevel = 100;
 
   private GameDb _gameDb;
 
+  // this is the "virtual" grid of cell info
   public DungeonGrid Grid;
   private GameDb GameDb;
 
-  private Player player;
-  private LevelBuilder builder;
-  private Hud hud;
-  private AudioStreamPlayer audio;
+  // dungeon cells (Node3D) lookup
+  private readonly Dictionary<int, DungeonCell> _cells = new();
+  
+  private Player _player;
+  private LevelBuilder _builder;
+  private Hud _hud;
+  private AudioStreamPlayer _audio;
 
   private int _skillLevel = 1;
   private uint _seedNumber = 1;
@@ -35,8 +40,46 @@ public partial class Dungeon : Node3D
   private Dictionary<string, Resource> _muralColors = new();
 
 
+  
+  public override void _Ready()
+  {
+    var game = FindParent("Game") as MainGame;
+    Grid = new DungeonGrid(Width, Height);
+    _player = GetNode("Player") as Player;
+    _builder = GetNode("Builder") as builder.LevelBuilder;
+    _mapView = game.GetNode("MapView") as MapView;
+    _startPosition = GetNode("StartPos") as Marker3D;
+    _hud = GetNode("Player/Camera3D/HUD") as Hud;
+    _audio = GetNode("Player/Audio") as AudioStreamPlayer;
+    _muralColors["war"] = ResourceLoader.Load("res://data/dungeon/green_mat.tres");
+    _muralColors["magic"] = ResourceLoader.Load("res://data/dungeon/blue_mat.tres");
+    _muralColors["tan"] = ResourceLoader.Load("res://data/dungeon/tan_mat.tres");
+    _muralColors["both"] = _muralColors["tan"];
+
+    GetNode<Node3D>("ceiling").Visible = true;
+
+    var cellPrefab = (PackedScene)ResourceLoader.Load("res://data/dungeon/cell.tscn");
+    
+    foreach (var y in GD.Range(Height))
+    {
+      foreach (var x in GD.Range(Width))
+      {
+        var cell = (DungeonCell)cellPrefab.Instantiate();
+        AddChild(cell);
+        cell.Init(x, y);
+        if (cell.Position != new Vector3(x * CellSize, 0, y * CellSize))
+        {
+          throw new Exception("Wrong Position");
+        }
+        _cells[Grid.Index(x, y)] = cell;
+      }
+    }
+  }
+  
   public Vector3 StartPosition => _startPosition.Position;
 
+  
+  public MainGame Game => GetParent() as MainGame;
 
   public LevelInfo CurrentLevel
   {
@@ -47,16 +90,15 @@ public partial class Dungeon : Node3D
   {
     return StartPosition + new Vector3(coord.X * CellSize, 0, coord.Y * CellSize);
   }
-
-
-  public LevelInfo.GateType MuralColor
+  
+  public GateType MuralColor
   {
     set
     {
       var mat = value switch
       {
-        LevelInfo.GateType.Blue => _muralColors["blue"],
-        LevelInfo.GateType.Green => _muralColors["green"],
+        GateType.Magic => _muralColors["blue"],
+        GateType.War => _muralColors["green"],
         _ => _muralColors["tan"]
       };
       foreach (var node in GetTree().GetNodesInGroup("murals"))
@@ -66,23 +108,59 @@ public partial class Dungeon : Node3D
     }
   }
 
-  public override void _Ready()
-  {
-    var game = FindParent("Game") as MainGame;
-    Grid = GetNode("Grid") as DungeonGrid;
-    player = GetNode("Player") as Player;
-    builder = GetNode("Builder") as LevelBuilder;
-    _mapView = game.GetNode("MapView") as MapView;
-    _startPosition = GetNode("StartPos") as Marker3D;
-    hud = GetNode("Player/Camera3D/HUD") as Hud;
-    audio = GetNode("Player/Audio") as AudioStreamPlayer;
-    _muralColors["war"] = ResourceLoader.Load("res://data/dungeon/green_mat.tres");
-    _muralColors["magic"] = ResourceLoader.Load("res://data/dungeon/blue_mat.tres");
-    _muralColors["tan"] = ResourceLoader.Load("res://data/dungeon/tan_mat.tres");
-    _muralColors["both"] = _muralColors["tan"];
 
-    GetNode<Node3D>("ceiling").Visible = true;
+  public DungeonCell GetCell(int x, int y)
+  {
+    return Grid.Valid(x, y) ? _cells.GetValueOrDefault(Grid.Index(x, y)) : null;
   }
+    
+  public DungeonCell GetCell(Vector2I pos) => GetCell(pos.X, pos.Y);
+  
+  public DungeonCell GetCell(Vector2I pos, Direction dir)
+  {
+    return dir switch
+    {
+      Direction.North => GetCell(pos.X, pos.Y + 1),
+      Direction.East => GetCell(pos.X + 1, pos.Y),
+      Direction.South => GetCell(pos.X, pos.Y - 1),
+      Direction.West => GetCell(pos.X - 1, pos.Y),
+      _ => throw new Exception("Illegal direction")
+    };
+  }
+
+  public void SetCell(int x, int y, DungeonCell cell)
+  {
+    var current = GetCell(x, y);
+    if (current != null)
+    {
+      RemoveChild(current);
+      current.QueueFree();
+    }
+    _cells[Grid.Index(x, y)] = cell;
+  }
+
+  public Node3D GetWall(Vector2I coord, Direction dir)
+  {
+    switch (dir)
+    {
+      case Direction.West: return GetWall(coord + new Vector2I(-1,0), Direction.East);
+      case Direction.South: return GetWall(coord + new Vector2I(0, -1), Direction.North);
+    }
+    
+    var cell = GetCell(coord);
+    if (cell == null)
+    {
+      return null;
+    }
+    return dir switch
+    {
+      Direction.North => cell.North,
+      Direction.East => cell.East,
+      _ => null
+    };
+  }
+  
+  
 
   public void InitMaze(int skill, uint seedNum)
   {
@@ -96,11 +174,11 @@ public partial class Dungeon : Node3D
     }
 
     _currentLevel = _levels[1];
-    Grid.ClearAll();
-    builder.BuildMaze(_currentLevel);
+    Grid.Reset();
+    _builder.BuildMaze(_currentLevel);
     Visible = true;
-    hud.UpdateStats();
-    player.ResetLocation();
+    _hud.UpdateStats();
+    _player.ResetLocation();
     _mapView.UpdateMap(_currentLevel.Depth);
   }
 
@@ -127,7 +205,7 @@ public partial class Dungeon : Node3D
     return result;
   }
 
-  void AddFinal(Enemy enemy)
+  public void AddFinal(Enemy enemy)
   {
     // Grid.GetCell(enemy.GridX, enemy.GridY).Has = _gameDb.FindItem("treasure", CurrentLevel.Depth);
   }
@@ -137,16 +215,11 @@ public partial class Dungeon : Node3D
   {
     CurrentLevel.UsedGate = true;
     // CurrentLevel.SeedNumber = this.rng.Ranrandi()
-    Grid.ClearAll();
-    builder.BuildMaze(CurrentLevel);
+    Grid.Reset();
+    _builder.BuildMaze(CurrentLevel);
   }
 
   public Vector3 MazeOrigin => new(-18, 0, -18);
-
-  public DungeonCell GetCell(Vector2I coord)
-  {
-    return Grid.GetCell(coord.X, coord.Y);
-  }
 
   Dictionary<Direction, WallPost> _wallPosts = new(){
     [Direction.North] = WallPost.NW,

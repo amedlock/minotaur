@@ -183,6 +183,7 @@ public partial class GameDb : Node
 
   private void LoadWeapons(Dictionary data, string type, List<string> colorNames)
   {
+    var itemType = type=="war" ? ItemType.WarWeapon : ItemType.MagicWeapon;
     foreach (var pair in (Dictionary)data[type])
     {
       var name = (string)pair.Key;
@@ -191,7 +192,7 @@ public partial class GameDb : Node
       foreach (var power in items)
       {
         var minLvl = (n * 2) + 1;
-        AddItem(name, ItemType.Weapon, _icons[name], _colors[colorNames[n]], minLvl, (int)power, 0);
+        AddItem(name, itemType, _icons[name], _colors[colorNames[n]], minLvl, (int)power, 0);
         n += 1;
       }
     }
@@ -269,5 +270,33 @@ public partial class GameDb : Node
   public EnemyInfo FindEnemy(string name)
   {
     return Enemies.FirstOrDefault(e => e.Name == name);
+  }
+
+  private readonly List<string> _warWeapons = ["axe", "spear", "dagger"];
+  private readonly List<string> _magicWeapons = ["small_fireball", "fireball"];
+  
+  public List<ItemInfo> FindWeapons(EnemyType enemyType, LevelInfo current)
+  {
+    var result = _items.Where(it => it.IsWeapon);
+    if (enemyType != EnemyType.War)
+    {
+      result = result.Where(it => _magicWeapons.Contains(it.Name));
+    }
+    if (enemyType != EnemyType.Magic)
+    {
+      result = result.Where(it => _warWeapons.Contains(it.Name));
+    }
+    return result.ToList();
+  }
+
+  public ItemInfo FindMissile(ItemInfo item)
+  {
+    return item.Name switch
+    {
+      "bow" or "crossbow" => FindItem("arrow"),
+      "staff" or "book" => FindItem("small_fireball"),
+      "wand" or "scroll" => FindItem("small_lightning"),
+      _ => item
+    };
   }
 }

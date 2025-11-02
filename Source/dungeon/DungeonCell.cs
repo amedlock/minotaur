@@ -1,11 +1,10 @@
-﻿using System;
-using Godot;
-using minotaur.Source.dungeon;
+﻿using Godot;
+using minotaur.Source.dungeon.builder;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
 using minotaur.Source.player;
 
-namespace minotaur.Source.Source.dungeon;
+namespace minotaur.Source.dungeon;
 
 public partial class DungeonCell : Node3D
 {
@@ -19,14 +18,12 @@ public partial class DungeonCell : Node3D
   public Enemy Enemy;
   public DungeonGate Gate;
 
-  private DungeonGrid _grid;
-
+  private Dungeon _dungeon;
+  internal MazeCell MazeCell;
 
   public int X { get; private set; }
 
   public int Y { get; private set; }
-
-  public int CellIndex => _grid.Index(X, Y);
 
   public Vector2I GridPos => new(X, Y);
 
@@ -36,7 +33,7 @@ public partial class DungeonCell : Node3D
 
   public override void _Ready()
   {
-    _grid = GetParent() as DungeonGrid;
+    _dungeon = GetParent() as Dungeon;
   }
 
   public void PlayerEnters(Player player)
@@ -79,6 +76,8 @@ public partial class DungeonCell : Node3D
   {
     X = x;
     Y = y;
+    Position = new Vector3(x * Dungeon.CellSize, 0, y * Dungeon.CellSize);
+    ClearAll();
   }
 
   public void ClearAll()
@@ -96,18 +95,12 @@ public partial class DungeonCell : Node3D
     East = null;
   }
 
-  public void SetWall(Node3D wall, Direction direction)
+  public void RemoveEnemy()
   {
-    switch (direction)
+    if (Enemy != null)
     {
-      case Direction.North: 
-        North = wall;
-        return;
-      case Direction.East:
-        East = wall;
-        return;
-      default :
-        throw new Exception("Invalid direction: " + direction);
+      RemoveChild(Enemy);
+      Enemy.QueueFree();
     }
   }
 }

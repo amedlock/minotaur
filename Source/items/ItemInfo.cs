@@ -10,10 +10,18 @@ public class ItemInfo
   public Color Color;
   public Rect2I Image;
   public Color color = Colors.White;
-  private int _minLevel = 1;
   public int Uses = 10 ; // min uses before item could break
   public bool NeedsKey = false;
   public int Stat1;
   public int Stat2;
   public Vector3 Offset = Vector3.Zero;//   # Vector3 offset for items in maze
+
+  public bool IsWeapon => ItemType is ItemType.WarWeapon or ItemType.MagicWeapon;
+  
+  public bool IsBow => Name is "bow" or "crossbow";
+  public bool IsBook => Name is "scroll" or "book" or "wand" or "staff";
+  public bool Spins => Name is "axe" or "dagger" or "fireball" or "small_fireball";
+
+  public bool IsWar => ItemType == ItemType.WarWeapon;
+  public bool IsMagic => ItemType == ItemType.MagicWeapon;
 }

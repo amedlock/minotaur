@@ -4,15 +4,10 @@ namespace minotaur.Source.dungeon;
 
 public class LevelInfo(int depth, uint seedNumber)
 {
-  public enum GateType
-  {
-    Empty, Tan, Green, Blue
-  }
-  
   public bool UsedGate = false;
   public LevelType LevelType = LevelType.War;
   public bool HasMinotaur = false;
-  public GateType _gateType = GateType.Empty;
+  public GateType _gateType = GateType.None;
   
   public int Depth => depth;
   public uint SeedNumber => seedNumber;

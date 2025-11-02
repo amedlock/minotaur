@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://gh4nl2t15esc"]
 
 [ext_resource type="Texture2D" uid="uid://c5gsa1hiy2rpv" path="res://data/enemies/smoke.png" id="1"]
-[ext_resource type="Script" uid="uid://sp7326tegh5t" path="res://data/enemies/smoke.gd" id="2"]
+[ext_resource type="Script" uid="uid://bhc8ll2i54q45" path="res://Source/enemies/Smoke.cs" id="2_gea8q"]
 
 [sub_resource type="Animation" id="1"]
 length = 1.7
@@ -55,9 +55,9 @@ billboard = 2
 texture_filter = 2
 texture = ExtResource("1")
 hframes = 3
-script = ExtResource("2")
+script = ExtResource("2_gea8q")
 
 [node name="Animation" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_nk1ac")
+&"": SubResource("AnimationLibrary_nk1ac")
 }
