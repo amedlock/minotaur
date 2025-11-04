@@ -7,6 +7,7 @@ using minotaur.Source.enemies;
 using minotaur.Source.hud;
 using minotaur.Source.map;
 using minotaur.Source.player;
+using static minotaur.Source.dungeon.Direction;
 
 namespace minotaur.Source.dungeon;
 
@@ -123,10 +124,10 @@ public partial class Dungeon : Node3D
   {
     return dir switch
     {
-      Direction.North => GetCell(pos.X, pos.Y + 1),
-      Direction.East => GetCell(pos.X + 1, pos.Y),
-      Direction.South => GetCell(pos.X, pos.Y - 1),
-      Direction.West => GetCell(pos.X - 1, pos.Y),
+      North => GetCell(pos.X, pos.Y + 1),
+      East => GetCell(pos.X + 1, pos.Y),
+      South => GetCell(pos.X, pos.Y - 1),
+      West => GetCell(pos.X - 1, pos.Y),
       _ => throw new Exception("Illegal direction")
     };
   }
@@ -146,8 +147,8 @@ public partial class Dungeon : Node3D
   {
     switch (dir)
     {
-      case Direction.West: return GetWall(coord + new Vector2I(-1,0), Direction.East);
-      case Direction.South: return GetWall(coord + new Vector2I(0, -1), Direction.North);
+      case West: return GetWall(coord + new Vector2I(-1,0), East);
+      case South: return GetWall(coord + new Vector2I(0, -1), North);
     }
     
     var cell = GetCell(coord);
@@ -157,8 +158,8 @@ public partial class Dungeon : Node3D
     }
     return dir switch
     {
-      Direction.North => cell.North,
-      Direction.East => cell.East,
+      North => cell.North,
+      East => cell.East,
       _ => null
     };
   }
@@ -226,10 +227,10 @@ public partial class Dungeon : Node3D
   public List<DungeonCell> Cells => _cells;
 
   Dictionary<Direction, WallPost> _wallPosts = new(){
-    [Direction.North] = WallPost.NW,
-    [Direction.East] = WallPost.NE,
-    [Direction.South] = WallPost.SE,
-    [Direction.West] = WallPost.SW
+    [North] = WallPost.NW,
+    [East] = WallPost.NE,
+    [South] = WallPost.SE,
+    [West] = WallPost.SW
   };
 
   private Dictionary<WallPost, Vector3> _wallPostOffsets = new()
@@ -242,10 +243,10 @@ public partial class Dungeon : Node3D
 
   private Dictionary<Direction,int> _wallAngle = new()
   {
-    [Direction.North] = 0,
-    [Direction.East] = 270,
-    [Direction.South] = 180,
-    [Direction.West] = 90
+    [North] = 0,
+    [East] = 270,
+    [South] = 180,
+    [West] = 90
   };
 
 

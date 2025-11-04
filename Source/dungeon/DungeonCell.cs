@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System;
+using Godot;
 using minotaur.Source.dungeon.builder;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
@@ -30,6 +31,7 @@ public partial class DungeonCell : Node3D
   public EnemyInfo EnemyInfo => Enemy == null ? null : Enemy.Info;
 
   public ItemInfo ItemInfo => Item == null ? null : Item.Info;
+  public Vector2I Coord => new(X, Y);
 
   public override void _Ready()
   {
@@ -102,6 +104,22 @@ public partial class DungeonCell : Node3D
     {
       RemoveChild(Enemy);
       Enemy.QueueFree();
+    }
+  }
+
+  public void AddWall(Node3D node,  WallType wallType, Direction direction)
+  {
+    AddChild(node);
+    switch (direction)
+    {
+      case Direction.North:
+        North = node;
+        break;
+      case Direction.East:
+        East = node;
+        break;
+      default:
+        throw new Exception("Invalid wall direction");
     }
   }
 }

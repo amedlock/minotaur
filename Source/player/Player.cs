@@ -16,7 +16,7 @@ public partial class Player : Node3D
 
   // grid coords
   private Vector2I _coord = new(0, 0);
-
+  
   // facing direction in degrees
   private int _facing = 90;
 
@@ -97,10 +97,6 @@ public partial class Player : Node3D
     _startPosition = _dungeon.GetNode<Marker3D>("StartPos");
     Position = _startPosition.Position + (new Vector3(_coord.X, 0, _coord.Y) * 3f);
     RotationDegrees = new Vector3(0, Dir, 0);
-    if ((int)RotationDegrees.Y != Dir)
-    {
-      GD.Print($"Invalid {RotationDegrees.Y} {Dir}");
-    }
   }
 
   public Vector3 CoordToWorld(Vector2I coord)
@@ -123,10 +119,14 @@ public partial class Player : Node3D
   }
 
   //  get the world coords for the player
-  public Vector2I Coord
+  public  Vector2I Coord
   {
     get => _coord;
-    set => Position = _dungeon.StartPosition + new Vector3(value.X * 3f, 0, -value.Y * 3f);
+    set
+    {
+      Position = _dungeon.StartPosition + new Vector3(value.X * 3f, 0, -value.Y * 3f);
+      _coord = value;
+    }
   }
 
   public Direction Direction
@@ -142,22 +142,6 @@ public partial class Player : Node3D
       };
     }
   }
-
-  public string DirName
-  {
-    get
-    {
-      return Direction switch
-      {
-        Direction.North => "north",
-        Direction.East => "east",
-        Direction.West => "west",
-        Direction.South => "south",
-        _ => ""
-      };
-    }
-  }
-
 
   public Vector2I ForwardVector
   {

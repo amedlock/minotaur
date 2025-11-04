@@ -21,6 +21,8 @@ public class DungeonGrid
   public MazeCell Cell(int x, int y) => Valid(x, y) ? _items[Index(x, y)] : null;
   public MazeCell Cell(Vector2I coord) => Cell(coord.X, coord.Y);
 
+  public int Count => Width * Height;
+  
   public MazeCell Cell(Vector2I coord, Direction dir)
   {
     return dir switch

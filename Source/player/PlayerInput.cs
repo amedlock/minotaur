@@ -150,10 +150,14 @@ public partial class PlayerInput : Node3D
 		{
 			return;
 		}
-		var cell = _player.CellAhead;
-		if (cell!=null && cell.Enemy!=null)
+		var nextCell = _player.CellAhead;
+		if (nextCell == null)
 		{
-			_player.StartCombat(cell, true);
+			return;
+		}
+		if (nextCell.Enemy!=null)
+		{
+			_player.StartCombat(nextCell, true);
 			return;
 		}
 		_prevCoord = _player.Coord;
@@ -166,6 +170,7 @@ public partial class PlayerInput : Node3D
 		{
 			_hud.UpdateAll();
 			_player.PlayerState = PlayerState.Idle;
+			_player.Coord = nextCell.Coord;
 		};
 	}
 
@@ -182,6 +187,7 @@ public partial class PlayerInput : Node3D
 		tween.Finished += () =>
 		{
 			_player.PlayerState = PlayerState.Idle;
+			_player.Dir = rot;
 		};
 		tween.TweenProperty(_player, "Dir", rot, TurnTime);
 		tween.Parallel().TweenProperty(_hud.Compass, "rotation_degrees", crot - amount, TurnTime);
