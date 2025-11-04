@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://bb4p5cknm53mu" path="res://Source/items/Item.cs" id="2_evsbl"]
 
 [node name="item" type="Sprite3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 pixel_size = 0.02
 billboard = 1
 texture_filter = 2

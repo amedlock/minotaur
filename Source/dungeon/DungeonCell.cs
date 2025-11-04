@@ -76,7 +76,8 @@ public partial class DungeonCell : Node3D
   {
     X = x;
     Y = y;
-    Position = new Vector3(x * Dungeon.CellSize, 0, y * Dungeon.CellSize);
+    Name = $"Cell_{X}_{Y}";
+    Position = new Vector3(x * 3f, 0, y * -3f);
     ClearAll();
   }
 

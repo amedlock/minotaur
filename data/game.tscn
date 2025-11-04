@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://co2vu1jhjxhem"]
+[gd_scene load_steps=30 format=3 uid="uid://co2vu1jhjxhem"]
 
 [ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://Source/MainGame.cs" id="1_tig81"]
 [ext_resource type="Script" uid="uid://dje4dtcs656c8" path="res://Source/GameDb.cs" id="2_jtqey"]
@@ -22,6 +22,8 @@
 [ext_resource type="PackedScene" uid="uid://brx0ix11p2bl7" path="res://data/map/mapview.tscn" id="21"]
 [ext_resource type="Script" uid="uid://c43a0qpyw16hw" path="res://Source/help/Help.cs" id="21_tig81"]
 [ext_resource type="Texture2D" uid="uid://cbqdoeam4ohxh" path="res://data/help/help.png" id="22"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_jtqey"]
 
 [sub_resource type="Animation" id="1"]
 resource_name = "Fire"
@@ -257,11 +259,7 @@ script = ExtResource("1_tig81")
 [node name="GameDB" type="Node" parent="."]
 script = ExtResource("2_jtqey")
 
-[node name="WorldStart" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36, 1.25, 0)
-
 [node name="Dungeon" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -18)
 script = ExtResource("3_jtqey")
 
 [node name="Builder" type="Node3D" parent="Dungeon"]
@@ -277,8 +275,17 @@ script = ExtResource("7_6ut8u")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.51846, 0)
 visible = false
 
+[node name="GridOrigin" type="Marker3D" parent="Dungeon"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.25, 18)
+
 [node name="StartPos" type="Marker3D" parent="Dungeon"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 1.25, 16.5)
+
+[node name="TestCube" type="MeshInstance3D" parent="Dungeon/StartPos"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+visible = false
+mesh = SubResource("BoxMesh_jtqey")
+skeleton = NodePath("../..")
 
 [node name="Player" type="Node3D" parent="Dungeon"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21)

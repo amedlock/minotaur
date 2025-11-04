@@ -11,5 +11,6 @@ public partial class Item : Sprite3D
     Info = itemInfo;
     RegionEnabled = true;
     RegionRect = itemInfo.Image;
+    Modulate = itemInfo.Color;
   }
 }

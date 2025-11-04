@@ -1,4 +1,5 @@
 ﻿using Godot;
+using minotaur.Source.dungeon;
 
 namespace minotaur.Source.items;
 
@@ -24,4 +25,18 @@ public class ItemInfo
 
   public bool IsWar => ItemType == ItemType.WarWeapon;
   public bool IsMagic => ItemType == ItemType.MagicWeapon;
+
+  public bool IsAllowed(LevelType levelType)
+  {
+    if (IsWeapon)
+    {
+      return levelType switch
+      {
+        LevelType.Magic => IsMagic,
+        LevelType.War => IsWar,
+        LevelType.Both => true
+      };
+    }
+    return true;
+  }
 }

@@ -37,6 +37,17 @@ public partial class GameDb : Node
     return Enemies.Where(e => IsAllowed(e, info)).ToList();
   }
 
+  public List<ItemInfo> FindWeapons(LevelInfo info)
+  {
+    var result = _items.Where(i => i.IsAllowed(info.LevelType));
+    return result.Where(i => i.MinDepth <= info.Depth).ToList();
+  }
+
+  
+  public List<ItemInfo> FindArmor(LevelInfo info)
+  {
+    return _items.Where(i => i.ItemType==ItemType.Armor && i.MinDepth <= info.Depth).ToList();
+  }
 
   private bool IsAllowed(EnemyInfo enemy, LevelInfo levelInfo)
   {

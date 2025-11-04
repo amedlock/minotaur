@@ -55,4 +55,28 @@ public class DungeonGrid
       cell.Reset();
     }
   }
+
+
+  public IEnumerable<WallPost> WallPosts(int x, int y)
+  {
+    var result = new List<WallPost>();
+    var cell = Cell(x, y);
+    if (cell == null)
+    {
+      return result;
+    }
+
+    if (cell.North != WallType.Empty)
+    {
+      result.Add(WallPost.NW);
+      result.Add(WallPost.NE);
+    }
+
+    if (cell.East != WallType.Empty)
+    {
+      result.Add(WallPost.NE);
+      result.Add(WallPost.SE);
+    }
+    return result.Distinct();
+  }
 }

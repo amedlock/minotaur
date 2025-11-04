@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using minotaur.Source.dungeon.builder;
 using minotaur.Source.enemies;
@@ -24,7 +25,7 @@ public partial class Dungeon : Node3D
   private GameDb GameDb;
 
   // dungeon cells (Node3D) lookup
-  private readonly Dictionary<int, DungeonCell> _cells = new();
+  private readonly List<DungeonCell> _cells = new();
   
   private Player _player;
   private LevelBuilder _builder;
@@ -43,14 +44,14 @@ public partial class Dungeon : Node3D
   
   public override void _Ready()
   {
-    var game = FindParent("Game") as MainGame;
+    var game = (MainGame)FindParent("Game");
     Grid = new DungeonGrid(Width, Height);
     _player = GetNode("Player") as Player;
-    _builder = GetNode("Builder") as builder.LevelBuilder;
-    _mapView = game.GetNode("MapView") as MapView;
-    _startPosition = GetNode("StartPos") as Marker3D;
-    _hud = GetNode("Player/Camera3D/HUD") as Hud;
-    _audio = GetNode("Player/Audio") as AudioStreamPlayer;
+    _builder = GetNode<LevelBuilder>("Builder");
+    _mapView = game.GetNode<MapView>("MapView");
+    _startPosition = GetNode<Marker3D>("StartPos");
+    _hud = GetNode<Hud>("Player/Camera3D/HUD");
+    _audio = GetNode<AudioStreamPlayer>("Player/Audio");
     _muralColors["war"] = ResourceLoader.Load("res://data/dungeon/green_mat.tres");
     _muralColors["magic"] = ResourceLoader.Load("res://data/dungeon/blue_mat.tres");
     _muralColors["tan"] = ResourceLoader.Load("res://data/dungeon/tan_mat.tres");
@@ -58,22 +59,24 @@ public partial class Dungeon : Node3D
 
     GetNode<Node3D>("ceiling").Visible = true;
 
-    var cellPrefab = (PackedScene)ResourceLoader.Load("res://data/dungeon/cell.tscn");
     
+    // var tcell = ResourceLoader.Load<PackedScene>("res://data/test_cell.tscn").Instantiate() as Node3D;
+    // // tcell.Position = new Vector3(18f, 0, -18f);
+    // _player.AddChild(tcell);
+    //
+    var gridOrigin = (Marker3D)FindChild("GridOrigin");
+    var cellPrefab = (PackedScene)ResourceLoader.Load("res://data/dungeon/cell.tscn");
     foreach (var y in GD.Range(Height))
     {
       foreach (var x in GD.Range(Width))
       {
         var cell = (DungeonCell)cellPrefab.Instantiate();
-        AddChild(cell);
+        _cells.Add(cell);
+        gridOrigin.AddChild(cell);
         cell.Init(x, y);
-        if (cell.Position != new Vector3(x * CellSize, 0, y * CellSize))
-        {
-          throw new Exception("Wrong Position");
-        }
-        _cells[Grid.Index(x, y)] = cell;
       }
     }
+    
   }
   
   public Vector3 StartPosition => _startPosition.Position;
@@ -111,7 +114,7 @@ public partial class Dungeon : Node3D
 
   public DungeonCell GetCell(int x, int y)
   {
-    return Grid.Valid(x, y) ? _cells.GetValueOrDefault(Grid.Index(x, y)) : null;
+    return Grid.Valid(x, y) ? _cells[Grid.Index(x, y)] : null;
   }
     
   public DungeonCell GetCell(Vector2I pos) => GetCell(pos.X, pos.Y);
@@ -220,6 +223,7 @@ public partial class Dungeon : Node3D
   }
 
   public Vector3 MazeOrigin => new(-18, 0, -18);
+  public List<DungeonCell> Cells => _cells;
 
   Dictionary<Direction, WallPost> _wallPosts = new(){
     [Direction.North] = WallPost.NW,
