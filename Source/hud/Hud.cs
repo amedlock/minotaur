@@ -17,7 +17,7 @@ public partial class Hud : Node2D
   private Label _foodDisplay;
   private Label _levelDisplay;
   private Label _arrowsDisplay;
-  private Sprite2D _shieldSprite;
+  private Sprite2D _leftHandSprite;
   private Sprite2D _atFeetSprite;
   private Sprite2D _rightHandSprite;
 
@@ -31,11 +31,7 @@ public partial class Hud : Node2D
   private Sprite2D _breastPlateSprite;
   private Sprite2D _amuletSprite;
 
-  private List<string> _packSlots =
-  [
-    "Slot1", "Slot2", "Slot3", "Slot4", "Slot5",
-    "Slot6", "Slot7", "Slot8", "Slot9"
-  ];
+  private Dictionary<int, PackSlot> _packSlots = new();
 
   public Sprite2D Compass;
 
@@ -51,7 +47,7 @@ public partial class Hud : Node2D
     _foodDisplay = FindChild("FoodDisplay") as Label;
     _levelDisplay = FindChild("LevelDisplay") as Label;
     _arrowsDisplay = FindChild("ArrowsDisplay") as Label;
-    _shieldSprite = GetNode("Hands/background/Left/Sprite2D") as Sprite2D;
+    _leftHandSprite = GetNode("Hands/background/Left/Sprite2D") as Sprite2D;
     _atFeetSprite = GetNode("Hands/background/Feet/Sprite2D") as Sprite2D;
     _rightHandSprite = GetNode("Hands/background/Right/Sprite2D") as Sprite2D;
 
@@ -59,11 +55,19 @@ public partial class Hud : Node2D
     _breastPlateSprite = GetNode("ArmorItems/BreastplateSprite") as Sprite2D;
     _amuletSprite = GetNode("ArmorItems/AmuletSprite") as Sprite2D;
 
-    MainGame game = FindParent("Game") as MainGame;
-    _dungeon = game.GetNode("Dungeon") as Dungeon;
-    _player = _dungeon.GetNode("Player") as Player;
+    MainGame game = (MainGame)FindParent("Game");
+    _dungeon = (Dungeon)game.GetNode("Dungeon");
+    _player = (Player)_dungeon.GetNode("Player");
 
-    foreach (var node in FindChildren("Hands/background"))
+    foreach (var node in GetNode("Pack").GetChildren())
+    {
+      if (node is PackSlot packSlot)
+      {
+        _packSlots[packSlot.SlotNumber] = packSlot;
+      }
+    }
+    
+    foreach (var node in GetNode("Hands/background").GetChildren())
     {
       var area2d = (Area2D)node;
       switch (node.Name)
@@ -103,21 +107,30 @@ public partial class Hud : Node2D
     _damageDisplay.Text = $"{_player.WarDamage}/{_player.MindDamage}";
   }
 
+  private void Assign(Sprite2D sprite, ItemInfo item)
+  {
+    if (item == null)
+    {
+      sprite.Visible = false;
+    }
+    else
+    {
+      sprite.RegionEnabled = true;
+      sprite.Visible = true;
+      sprite.RegionRect = item.Image;
+    }
+  }
+  
   public void UpdatePack()
   {
-    // set_slot_item("hand", _player.right_hand)
-    // var at_feet = _player.item_at_feet()
-    // set_slot_item("feet", at_feet)
-    // set_slot_item("shield", _player.shield)
+    Assign(_leftHandSprite, _player.LeftHand);
+    Assign(_rightHandSprite, _player.RightHand);
+    Assign(_atFeetSprite, _player.ItemAtFeet);
+    foreach (var slot in _packSlots.Values)
+    {
+      slot.Item = _player.GetSlot(slot.SlotNumber);
+    }
     // UpdateDamage();
-    // var index = 1;
-    // for i_name in pack_slots:
-    // var p = pack.find_child( i_name )
-    // if _player.inventory.has( index ):
-    // p.set_item( _player.inventory[index] )
-    // else:
-    // p.set_item(null);
-    // index += 1;
   }
 
 
@@ -133,43 +146,28 @@ public partial class Hud : Node2D
     {
       "hand" => _rightHandSprite,
       "feet" => _atFeetSprite,
-      "shield" => _shieldSprite,
+      "shield" => _leftHandSprite,
       _ => throw new Exception("Invalid Inventory slot:" + slot)
     };
   }
 
-  public void SetSlotItem(string which, ItemInfo item)
-  {
-    Sprite2D target = FindSlot(which);
-    if (item == null)
-    {
-      target.Visible = false;
-    }
-    else
-    {
-      target.Scale = CalcSpriteScale(32, 32, 50, 50);
-      target.Modulate = item.Color;
-      target.RegionRect = item.Image;
-      target.Visible = true;
-      target.RegionEnabled = true;
-    }
-  }
-
   // Event handlers
 
-  public void PackSlotClicked(int slot, MouseButton button)
+  public void PackSlotClicked(int slot, InputEvent inputEvent)
   {
-    // ItemType cur = _player.GetInventory(slot);
-    // if (button == MouseButton.Left)
-    // {
-    // 	_player.Inventory[slot] = _player.ItemAtFeet;
-    // 	_player.ItemAtFeet = cur;
-    // }
-    // else if (button == MouseButton.Right)
-    // {
-    // 	_player.inventory[slot] = _player.RightHand;
-    // 	_player.RightHand = cur;
-    // }
+    ItemInfo item = _player.GetSlot(slot);
+    if (inputEvent is InputEventMouseButton {Pressed:true, ButtonIndex: MouseButton.Left } leftClick)
+    {
+      var leftHand = _player.LeftHand;
+      _player.LeftHand = item;
+      _player.SetSlot(slot, leftHand);
+    }
+    else if (inputEvent is InputEventMouseButton {Pressed:true, ButtonIndex: MouseButton.Right } rightClick)
+    {
+      var rightHand = _player.RightHand;
+      _player.RightHand = item;
+      _player.SetSlot(slot, rightHand);
+    }
     UpdateStats();
     UpdatePack();
   }
@@ -181,7 +179,6 @@ public partial class Hud : Node2D
     {
       _player.UseOrTakeItem();
     }
-
     UpdateStats();
   }
 
@@ -204,7 +201,10 @@ public partial class Hud : Node2D
     {
       _player.SwapItems();
     }
-
+    else if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
+    {
+      _player.AttackAhead();
+    }
     UpdateAll();
   }
 }

@@ -19,11 +19,9 @@ public partial class Dungeon : Node3D
   internal const float CellSize = 3.0f;
   const int MaxLevel = 100;
 
-  private GameDb _gameDb;
-
   // this is the "virtual" grid of cell info
   public DungeonGrid Grid;
-  private GameDb GameDb;
+  public GameDb GameDb;
 
   // dungeon cells (Node3D) lookup
   private readonly List<DungeonCell> _cells = new();
@@ -47,6 +45,7 @@ public partial class Dungeon : Node3D
   {
     var game = (MainGame)FindParent("Game");
     Grid = new DungeonGrid(Width, Height);
+    GameDb =(GameDb)game.GetNode("GameDB");
     _player = GetNode("Player") as Player;
     _builder = GetNode<LevelBuilder>("Builder");
     _mapView = game.GetNode<MapView>("MapView");

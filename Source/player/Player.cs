@@ -72,17 +72,27 @@ public partial class Player : Node3D
   public ItemInfo Amulet = null;
   public ItemInfo Shield = null;
 
-  private List<ItemInfo> _slots = [null, null, null, null, null, null, null, null, null];
+  private Dictionary<int, ItemInfo> _slots = new();
 
   public ItemInfo RightHand { get; set; }
   public ItemInfo LeftHand { get; set; }
 
+  public void SwapHands()
+  {
+    (LeftHand, RightHand) = (RightHand, LeftHand);
+  }
+  
   public ItemInfo GetSlot(int slot)
   {
     return _slots[slot % 9];
   }
 
-  public Item ItemAtFeet => _dungeon.GetCell(Coord).Item;
+  public void SetSlot(int slot, ItemInfo item)
+  {
+    _slots[slot % 9] = item;
+  }
+  
+  public ItemInfo ItemAtFeet => _dungeon.GetCell(Coord).ItemInfo;
 
   public ItemInfo Potion = null; // active potion?
   private int _potionTurns = 0; // how many turns before it vanishes
@@ -172,16 +182,16 @@ public partial class Player : Node3D
     Resurrected = false;
     foreach (var n in GD.Range(10))
     {
-      // Inventory[n] = null;
+      _slots[n] = null;
     }
 
-    // right = game_db.find_item("bow");
+    RightHand = _dungeon.GameDb.FindItem("bow");
     switch (skill)
     {
       case 1:
         Health = 18;
         Mind = 9;
-        // self.Shield = game_db.find_item("small_shield");
+        LeftHand = _dungeon.GameDb.FindItem("small_shield");
         break;
       case 2:
         Health = 16;
@@ -228,12 +238,6 @@ public partial class Player : Node3D
   }
 
 
-  public void SwapHands()
-  {
-    // var left = player.LeftHand;
-    // player.LeftHand = player.RightHand;
-    // player.RightHand = left;
-  }
 
   public void AttackAhead()
   {
@@ -364,4 +368,6 @@ public partial class Player : Node3D
       Mind = Mathf.Clamp(Mind - mindAmount, 0, MindMax);
     }
   }
+
+ 
 }

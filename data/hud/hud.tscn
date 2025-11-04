@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://mae22grjwobt"]
+[gd_scene load_steps=12 format=3 uid="uid://mae22grjwobt"]
 
 [ext_resource type="Script" uid="uid://cj5mp24r14cy3" path="res://Source/hud/Hud.cs" id="1_lgx6c"]
 [ext_resource type="FontFile" uid="uid://0ba6ubjsj10p" path="res://data/font/system36.fnt" id="2"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://7t1fr8bq62mi" path="res://data/hud/pack_grid.png" id="7"]
 [ext_resource type="PackedScene" uid="uid://bkxg8wb87gdgr" path="res://data/hud/pack_slot.tscn" id="8"]
 [ext_resource type="Texture2D" uid="uid://qyfk4s8mpoyk" path="res://data/hud/compass.png" id="9"]
+[ext_resource type="Script" uid="uid://d2f8r3xxnpbtu" path="res://Source/hud/PackSlot.cs" id="9_f75ge"]
 [ext_resource type="PackedScene" uid="uid://bev6h8xgfuapk" path="res://data/hud/armor_items.tscn" id="9_pvoon"]
 
 [node name="HUD" type="Node2D"]
@@ -201,39 +202,48 @@ texture = ExtResource("7")
 
 [node name="Slot1" parent="Pack" instance=ExtResource("8")]
 position = Vector2(0.700001, -36.7963)
-slot_num = 1
+script = ExtResource("9_f75ge")
+SlotNumber = 1
 
 [node name="Slot2" parent="Pack" instance=ExtResource("8")]
 position = Vector2(58.3332, -36.829)
-slot_num = 2
+script = ExtResource("9_f75ge")
+SlotNumber = 2
 
 [node name="Slot3" parent="Pack" instance=ExtResource("8")]
 position = Vector2(117.333, -36.829)
-slot_num = 3
+script = ExtResource("9_f75ge")
+SlotNumber = 3
 
 [node name="Slot4" parent="Pack" instance=ExtResource("8")]
 position = Vector2(-0.59874, 21.5545)
-slot_num = 4
+script = ExtResource("9_f75ge")
+SlotNumber = 4
 
 [node name="Slot5" parent="Pack" instance=ExtResource("8")]
 position = Vector2(58.3332, 22.171)
-slot_num = 5
+script = ExtResource("9_f75ge")
+SlotNumber = 5
 
 [node name="Slot6" parent="Pack" instance=ExtResource("8")]
 position = Vector2(117.333, 21.171)
-slot_num = 6
+script = ExtResource("9_f75ge")
+SlotNumber = 6
 
 [node name="Slot7" parent="Pack" instance=ExtResource("8")]
 position = Vector2(-0.666801, 82.171)
-slot_num = 7
+script = ExtResource("9_f75ge")
+SlotNumber = 7
 
 [node name="Slot8" parent="Pack" instance=ExtResource("8")]
 position = Vector2(58.3332, 81.1711)
-slot_num = 8
+script = ExtResource("9_f75ge")
+SlotNumber = 8
 
 [node name="Slot9" parent="Pack" instance=ExtResource("8")]
 position = Vector2(117.352, 82.0269)
-slot_num = 9
+script = ExtResource("9_f75ge")
+SlotNumber = 9
 
 [node name="ArmorItems" parent="." instance=ExtResource("9_pvoon")]
 offset_left = 196.0

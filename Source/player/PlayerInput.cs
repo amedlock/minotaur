@@ -168,9 +168,9 @@ public partial class PlayerInput : Node3D
 		var tween =  CreateTween().TweenProperty(_player, "position", pos + pvec, MoveTime);
 		tween.Finished += () =>
 		{
-			_hud.UpdateAll();
 			_player.PlayerState = PlayerState.Idle;
 			_player.Coord = nextCell.Coord;
+			_hud.UpdateAll();
 		};
 	}
 
