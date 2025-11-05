@@ -182,7 +182,7 @@ public partial class Dungeon : Node3D
     Visible = true;
     _hud.UpdateStats();
     _player.ResetLocation();
-    _mapView.UpdateMap(_currentLevel.Depth);
+    _mapView.UpdateMap(_currentLevel);
   }
 
   // # (skill_level: dungeon level) minotaur first appears here
@@ -212,8 +212,27 @@ public partial class Dungeon : Node3D
   {
     // Grid.GetCell(enemy.GridX, enemy.GridY).Has = _gameDb.FindItem("treasure", CurrentLevel.Depth);
   }
-  
 
+
+  public void NextLevel()
+  {
+    var next = _currentLevel.Depth + 1;
+    if (!_levels.ContainsKey(next))
+    {
+      return;
+    }
+
+    _currentLevel = _levels[next];
+    _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/descend.wav");
+    _audio.Play();
+    Grid.Reset();
+    _builder.BuildMaze(_currentLevel);
+    _mapView.UpdateMap(_currentLevel);
+    _player.ResetLocation();
+    _hud.UpdateStats();
+
+  }
+  
   public void LoadGateLevel(DungeonGate gate)
   {
     CurrentLevel.UsedGate = true;
@@ -255,8 +274,4 @@ public partial class Dungeon : Node3D
     return MazeOrigin + _wallPostOffsets[which] + new Vector3(cx * CellSize, 0f, cy * CellSize);
   }
 
-  public void UseExit()
-  {
-    throw new NotImplementedException();
-  }
 }

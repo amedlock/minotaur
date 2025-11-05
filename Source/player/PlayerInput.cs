@@ -123,7 +123,7 @@ public partial class PlayerInput : Node3D
 	{
 	}
 
-	public void MoveBack()
+	protected void MoveBack()
 	{
 		var wall = _player.WallBehind;
 		if (wall!=null && wall.Blocked)
@@ -143,7 +143,7 @@ public partial class PlayerInput : Node3D
 	}
 
 
-	public void MoveForward()
+	protected void MoveForward()
 	{
 		var wall = _player.WallAhead;
 		if ( (wall is Wall or Door { Blocked: true }))
@@ -151,11 +151,7 @@ public partial class PlayerInput : Node3D
 			return;
 		}
 		var nextCell = _player.CellAhead;
-		if (nextCell == null)
-		{
-			return;
-		}
-		if (nextCell.Enemy!=null)
+		if (nextCell is { Enemy: not null })
 		{
 			_player.StartCombat(nextCell, true);
 			return;
@@ -163,9 +159,9 @@ public partial class PlayerInput : Node3D
 		_prevCoord = _player.Coord;
 		_canRetreat = true;
 		var pos = _player.Position;
-		var pvec = _player.Transform.Basis.Z * -3;
+		var delta = _player.Transform.Basis.Z * -3;
 		_player.PlayerState = PlayerState.Moving;
-		var tween =  CreateTween().TweenProperty(_player, "position", pos + pvec, MoveTime);
+		var tween =  CreateTween().TweenProperty(_player, "position", pos + delta, MoveTime);
 		tween.Finished += () =>
 		{
 			_player.PlayerState = PlayerState.Idle;
@@ -178,7 +174,7 @@ public partial class PlayerInput : Node3D
 	// ensure amount is only (0, 90, 180, 270)
 	private int FixRot(int amount) => ((amount / 90) % 4) * 90;
 
-	public void TurnPlayer(int amount)
+	protected void TurnPlayer(int amount)
 	{
 		var crot = _hud.Compass.RotationDegrees;
 		var rot = _player.Dir + amount;
@@ -194,7 +190,7 @@ public partial class PlayerInput : Node3D
 	}
 
 
-	public void Glance(int amount)
+	protected void Glance(int amount)
 	{
 		var rot = _player.Dir + amount;
 		_player.PlayerState = PlayerState.Turning;
@@ -205,7 +201,7 @@ public partial class PlayerInput : Node3D
 		};
 	}
 
-	public void UnGlance()
+	protected void UnGlance()
 	{
 		var tween = CreateTween();
 		_player.PlayerState = PlayerState.Turning;
@@ -216,7 +212,7 @@ public partial class PlayerInput : Node3D
 		tween.TweenProperty(_player, "rotation_degrees:y", _player.Dir, GlanceTime);
 	}
 
-	public void Flee()
+	protected void Flee()
 	{
 		if (_canRetreat)
 		{

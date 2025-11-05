@@ -39,17 +39,25 @@ public partial class Combat : Node
   private double _turnElapsed = 0.75f;
 
   // has player attacked this turn
-  private bool _playerAttack = false;
+  private bool _playerAttack;
 
   // has player retreated this turn
-  private bool _playerRetreat = false;
+  private bool _playerRetreat;
 
   //  enemy can only do one thing: attack
-  private bool _enemyAttack = false;
+  private bool _enemyAttack;
   
   // player weapon broken?
-  private bool _broken = false;
-  
+  private bool _broken;
+
+  private double _playerTurn = 0;
+  private double _enemyTurn = 0;
+
+  public bool PlayerAttack
+  {
+    set => _playerAttack = value;
+  }
+
 
   public override void _Ready()
   {
@@ -76,7 +84,8 @@ public partial class Combat : Node
 
   private void ResetTurn()
   {
-    _turnElapsed = 0;
+    _playerTurn = 0;
+    _enemyTurn = 0;
     _playerAttack = false;
     _enemyAttack = false;
     _playerRetreat = false;
@@ -105,13 +114,32 @@ public partial class Combat : Node
     }
   }
 
-  public void EndTurn()
+  
+  public override void _Process(double delta)
   {
-    if (_playerAnim.IsPlaying() || _enemyAnim.IsPlaying())
+    _playerTurn += delta;
+    _enemyTurn += delta;
+    _playerAttack = Input.IsActionJustPressed("attack");
+    
+    if (_playerTurn >= TurnTime)
     {
-      return;
+      if (_playerAttack)
+      {
+        AttackMonster();
+        _playerTurn = 0;
+      }
+      else if (_playerRetreat)
+      {
+        Retreat();
+      }
     }
 
+    if (_enemyTurn >= TurnTime)
+    {
+      _enemyTurn = 0;
+      EnemyFire();  
+    }
+    
     if (_player.IsDead)
     {
       _mainGame.GameOver();
@@ -126,50 +154,18 @@ public partial class Combat : Node
       SetProcess(false);
       return;
     }
-
-    if (_playerRetreat)
-    {
-      SetProcess(false);
-    }
-    else
-    {
-      ResetTurn();
-    }
   }
 
-
-  public override void _Process(double delta)
+  private void Retreat()
   {
-    _turnElapsed += delta;
-    if (_turnElapsed >= TurnTime || _player.IsDead)
-    {
-      EndTurn();
-      return;
-    }
-
-    if (!_enemyAttack)
-    {
-      _enemyAttack = true;
-      EnemyFire();
-    }
-
-    if (!(_playerRetreat || _playerAttack))
-    {
-      if (Input.IsActionJustPressed("back"))
-      {
-        _playerRetreat = true;
-      }
-    }
+    SetProcess(false);
+    _player.PlayerState = PlayerState.Idle;
+    return;
   }
-
+  
   private void AttackMonster()
   {
-    if (_playerAttack || _playerRetreat)
-    {
-      return;
-    }
-
-    _playerAttack = true;
+    _playerAttack = false;
     PlayerFire();
   }
 
@@ -202,29 +198,32 @@ public partial class Combat : Node
     }
 
     _broken = false;
-    var missile = _gameDb.FindMissile(_playerItem) ?? _playerItem;
     var fx = GetSoundFx(_playerItem);
     if (_playerItem.IsBow){
       if (_player.Arrows < 1)
       {
         return;
       }
-      _playerWeapon.RegionRect = missile.Image;
+      _playerWeapon.RegionRect = _gameDb.FindIcon("arrow"); 
       _player.Arrows -= 1;
       _broken = (GD.Randi() % 30) == 29;
     }
+    else if (_playerItem.IsScroll)
+    {
+      _playerWeapon.RegionRect = _gameDb.FindIcon("fireball");
+      _broken = (GD.Randi() % 25) == 24;
+    }
     else if (_playerItem.IsBook)
     {
-      _playerWeapon.RegionRect = missile.Image;
+      _playerWeapon.RegionRect = _gameDb.FindIcon("small_lightning");
       _broken = (GD.Randi() % 25) == 24;
     }
     else
     {
-      _player.RightHand = null;
       _playerWeapon.RegionRect = _playerItem.Image;	
+      _player.RightHand = null;
     }
     _playerWeapon.Modulate = _playerItem.Color;
-
     if (_playerItem.Spins)
     {
       _playerAnim.Play("SpinFire");

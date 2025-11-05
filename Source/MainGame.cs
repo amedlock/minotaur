@@ -77,7 +77,6 @@ public partial class MainGame : Node3D
 
   public void GameOver()
   {
-    _mapView.UpdateMap(_depth);
     ShowMap();
     _player.Disable();
     _gameMode = GameMode.GameOver;
@@ -103,7 +102,6 @@ public partial class MainGame : Node3D
 
   public void ShowMap()
   {
-    _mapView.UpdateMap(_depth);
     _mapView.Show();
     _dungeon.Hide();
     _gameMode = GameMode.Map;

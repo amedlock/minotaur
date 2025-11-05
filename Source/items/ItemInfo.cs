@@ -20,7 +20,10 @@ public class ItemInfo
   public bool IsWeapon => ItemType is ItemType.WarWeapon or ItemType.MagicWeapon;
   
   public bool IsBow => Name is "bow" or "crossbow";
-  public bool IsBook => Name is "scroll" or "book" or "wand" or "staff";
+  public bool IsBook => Name is "book" or "staff";
+
+  public bool IsScroll => Name is "scroll" or "wand";
+
   public bool Spins => Name is "axe" or "dagger" or "fireball" or "small_fireball";
 
   public bool IsWar => ItemType == ItemType.WarWeapon;
@@ -34,7 +37,8 @@ public class ItemInfo
       {
         LevelType.Magic => IsMagic,
         LevelType.War => IsWar,
-        LevelType.Both => true
+        LevelType.Both => true,
+        _ => false
       };
     }
     return true;

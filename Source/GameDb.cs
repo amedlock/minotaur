@@ -20,7 +20,6 @@ public partial class GameDb : Node
 
   private ItemInfo _finalTreasure;
 
-
   private static readonly List<string> WarColors = ["Tan", "Orange", "Blue", "Grey", "Yellow", "White"];
   private static readonly List<string> MagicColors = ["Blue", "Grey", "White", "Pink", "Red", "Purple"];
   private static readonly List<string> MoneyColors = ["Orange", "Grey", "Yellow", "White"];
@@ -103,6 +102,7 @@ public partial class GameDb : Node
     LoadEnemies(enemies, "magic", EnemyType.Magic);
     LoadEnemies(enemies, "both", EnemyType.Both);
     LoadItems((Dictionary)data["items"]);
+    _finalTreasure = FindItem("treasure", 1);
   }
 
   private void LoadColors(Variant data)
@@ -237,7 +237,6 @@ public partial class GameDb : Node
 
   private void LoadContainers(Dictionary data)
   {
-    var n = 0;
     foreach (var pair in data)
     {
       var name = (string)pair.Key;
@@ -299,15 +298,11 @@ public partial class GameDb : Node
     }
     return result.ToList();
   }
+  
 
-  public ItemInfo FindMissile(ItemInfo item)
+  public Rect2I FindIcon(string name)
   {
-    return item.Name switch
-    {
-      "bow" or "crossbow" => FindItem("arrow"),
-      "staff" or "book" => FindItem("small_fireball"),
-      "wand" or "scroll" => FindItem("small_lightning"),
-      _ => item
-    };
+    return _icons[name];
   }
+  
 }

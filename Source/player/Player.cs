@@ -10,7 +10,6 @@ namespace minotaur.Source.player;
 
 public partial class Player : Node3D
 {
-  private bool _isDead = false;
   private Marker3D _startPosition;
   private PlayerState _playerState = PlayerState.Idle;
 
@@ -26,7 +25,7 @@ public partial class Player : Node3D
     set => _playerState = value;
   }
 
-  public bool IsDead => _isDead;
+  public bool IsDead => Health <= 0;
 
 
   // player direction in degrees
@@ -41,7 +40,7 @@ public partial class Player : Node3D
     }
   }
 
-  private Node _combat; // $combat
+  private Combat _combat; // $combat
   private AudioStreamPlayer _audio; //= $Audio
   private Dungeon _dungeon;
 
@@ -101,7 +100,7 @@ public partial class Player : Node3D
   public override void _Ready()
   {
     _dungeon = GetParent() as Dungeon;
-    _combat = GetNode<Node>("combat");
+    _combat = GetNode<Combat>("combat");
     Hud = GetNode<Hud>("Camera3D/HUD");
     _audio = GetNode<AudioStreamPlayer>("Audio");
     _startPosition = _dungeon.GetNode<Marker3D>("StartPos");
@@ -235,12 +234,15 @@ public partial class Player : Node3D
 
   public void StartCombat(DungeonCell cell, bool attacking)
   {
+    _combat.Start(cell, attacking);
   }
-
-
 
   public void AttackAhead()
   {
+    if (_playerState == PlayerState.Combat)
+    {
+      _combat.PlayerAttack = true;
+    }
   }
 
   public void SwapItems()
@@ -267,15 +269,36 @@ public partial class Player : Node3D
 
   public void Rest()
   {
-    throw new NotImplementedException();
+    if (Food < 1 || !NeedsRest)
+    {
+      return;
+    }
+
+    if (Health == HealthMax && Mind==MindMax)
+    {
+      return;
+    }
+
+    NeedsRest = false;
+    var hpGain = Mathf.FloorToInt(WarExp / 4.0);
+    var mindGain = Mathf.FloorToInt(MagicExp / 5.0);
+    WarExp = WarExp % 4;
+    MagicExp = MagicExp % 5;
+    HealthMax += hpGain;
+    MindMax += mindGain;
+    Health = ( Mathf.Min( Health + Mathf.FloorToInt(HealthMax * 2.0 / 3.0), HealthMax ) );
+    Mind = ( Mathf.Min( Mind + Mathf.FloorToInt(MindMax * 2.0 / 3.0), MindMax ) );
+    Food -= 1;
+    Hud.UpdateAll();
   }
 
   public void UseExit()
   {
     if (_playerState == PlayerState.Idle && OverExit)
     {
-      _dungeon.UseExit();
-      GetNode<PlayerInput>("PlayerControl").Reset();
+      _dungeon.NextLevel();
+      ResetLocation();
+      _playerState = PlayerState.Idle;
     }
   }
 
@@ -354,7 +377,7 @@ public partial class Player : Node3D
       1 => VaryAmount(maxDamage, 5),
       2 => VaryAmount(maxDamage, 10),
       3 => VaryAmount(maxDamage, 15),
-      4 => VaryAmount(maxDamage, 20)
+      _ => VaryAmount(maxDamage, 20)
     };
     var warAmount = ApplyArmor(damage, WarArmor);
     var mindAmount = ApplyArmor(damage, MindArmor);

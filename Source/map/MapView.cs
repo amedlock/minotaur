@@ -119,11 +119,12 @@ public partial class MapView : Node2D
   }
 
   // rebuilds the map layout, only called when level layout changes
-  public void UpdateMap(int depth)
+  public void UpdateMap(LevelInfo levelInfo)
   {
     ClearAll();
-    var label = FindChild("Label") as Label;
-    label.Text = $"Level: {depth}";
+    var label = (Label)FindChild("Label");
+    label.Text = $"Level: {levelInfo.Depth}";
+    
     foreach (var y in GD.Range(_dungeon.Height))
     {
       foreach (var x in GD.Range(_dungeon.Width))
