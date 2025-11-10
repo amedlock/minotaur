@@ -67,10 +67,12 @@ public partial class Combat : Node
     _gameDb = (GameDb)_mainGame.GetNode("GameDB");
     
     _playerAnim = GetNode<AnimationPlayer>("PlayerAnim");
+    _playerAnim.AnimationFinished += name => DamageEnemy();
     _playerWeapon = GetNode<Sprite2D>("PlayerWeapon");
     _playerAudio = GetNode<AudioStreamPlayer>("PlayerWeapon/Audio");
 
     _enemyAnim = GetNode<AnimationPlayer>("EnemyAnim");
+    _enemyAnim.AnimationFinished += name => DamagePlayer();
     _enemyWeapon = GetNode<Sprite2D>("EnemyWeapon");
     _enemyAudio = GetNode<AudioStreamPlayer>("EnemyWeapon/Audio");
 
@@ -94,11 +96,16 @@ public partial class Combat : Node
 
   public void Start(DungeonCell dungeonCell, bool attack)
   {
+    if (_player.PlayerState == PlayerState.Combat)
+    {
+      return;
+    }
     if (dungeonCell.Enemy is not { Info: not null })
     {
       return;
     }
 
+    GD.Print("Starting Combat");
     _player.PlayerState = PlayerState.Combat;
     _enemyCell = dungeonCell;
     _enemy = _enemyCell.Enemy;
@@ -117,9 +124,29 @@ public partial class Combat : Node
   
   public override void _Process(double delta)
   {
+    if (_player.PlayerState == PlayerState.Combat)
+    {
+      SetProcess(false);
+      return;
+    }
+    // if (_player.IsDead)
+    // {
+    //   _mainGame.GameOver();
+    //   SetProcess(false);
+    //   return;
+    // }
+    //
+    // if (_enemy.IsDead)
+    // {
+    //   _player.WonCombat(_enemy);
+    //   _enemyCell.RemoveEnemy();
+    //   SetProcess(false);
+    //   return;
+    // }
+    
     _playerTurn += delta;
     _enemyTurn += delta;
-    _playerAttack = Input.IsActionJustPressed("attack");
+    _playerAttack = _playerAttack || Input.IsActionJustPressed("attack");
     
     if (_playerTurn >= TurnTime)
     {
@@ -136,24 +163,10 @@ public partial class Combat : Node
 
     if (_enemyTurn >= TurnTime)
     {
+      EnemyFire();
       _enemyTurn = 0;
-      EnemyFire();  
     }
     
-    if (_player.IsDead)
-    {
-      _mainGame.GameOver();
-      SetProcess(false);
-      return;
-    }
-
-    if (_enemy.IsDead)
-    {
-      _player.WonCombat(_enemy);
-      _enemyCell.RemoveEnemy();
-      SetProcess(false);
-      return;
-    }
   }
 
   private void Retreat()
@@ -175,16 +188,17 @@ public partial class Combat : Node
     {
       return null;
     }
-    if (item.Name.Contains("fireball")) // "fireball", "small_fireball"
+    
+    if (item.Name is "fireball" or "small_fireball")
     {
       return _fireballSound;
     }
-
-    if (item.Name.MatchN("wand|staff|scroll|book")) // "wand", "staff", "scroll", "book"
+    
+    if (item.Name is "wand" or "staff" or "scroll" or "book")
     {
       return _lightningSound;
     }
-
+    
     return null;
   }
   
@@ -239,7 +253,7 @@ public partial class Combat : Node
       _playerAudio.Play();
     }
 
-    if (_broken && _dungeon.CurrentLevel.Depth > 2)
+    if (_broken && _dungeon.CurrentLevel.Depth > 2) // don't break on first 2 levels
     {
       _player.RightHand = null;  //clear out of the players hand
     }
@@ -260,12 +274,25 @@ public partial class Combat : Node
     if (_enemy.IsDead)
     {
       _enemy.Die();
+      _enemyCell.RemoveEnemy();
+      _player.PlayerState = PlayerState.Idle;
+      SetProcess(false);
     }
 
     if (_broken)
     {
       _player.RightHand = null;
     }
+  }
+
+
+  private void DamagePlayer()
+  {
+    if (_enemy == null || _enemy.IsDead || _enemyItem==null )
+    {
+      return;
+    }
+    _player.Damage(_enemy, _enemyItem);
   }
   
   
@@ -292,7 +319,7 @@ public partial class Combat : Node
     }
 
     _player.Damage(_enemy, _enemyItem);
-    _player.Hud.UpdatePack();
+    _player.Hud.UpdateAll();
   }
   
 }

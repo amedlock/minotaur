@@ -82,6 +82,13 @@ public partial class MainGame : Node3D
     _gameMode = GameMode.GameOver;
   }
 
+  public void WonGame()
+  {
+    ShowMap();
+    _player.Disable();
+    _gameMode = GameMode.GameWon;
+  }
+  
   public void ShowGame()
   {
     _dungeon.Show();

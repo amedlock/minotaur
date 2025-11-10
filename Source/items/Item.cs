@@ -4,13 +4,25 @@ namespace minotaur.Source.items;
 
 public partial class Item : Sprite3D
 {
-  public ItemInfo Info;
+  private ItemInfo _info;
 
-  public void Init(ItemInfo itemInfo)
+  public ItemInfo Info
   {
-    Info = itemInfo;
-    RegionEnabled = true;
-    RegionRect = itemInfo.Image;
-    Modulate = itemInfo.Color;
+    get => _info;
+    set
+    {
+      _info = value;
+      if (value != null)
+      {
+        RegionEnabled = true;
+        RegionRect = value.Image;
+        Modulate = value.Color;
+        Visible = true;
+      }
+      else
+      {
+        Visible = false;
+      }
+    }
   }
 }

@@ -2,5 +2,14 @@
 
 public enum ItemType
 {
-  WarWeapon, MagicWeapon, Armor, Ladder, Key, Treasure, Container, Money, Special
+  WarWeapon,
+  MagicWeapon,
+  Armor,
+  MagicArmor,
+  Ladder,
+  Key,
+  Container,
+  Money,
+  Special,
+  Treasure
 }

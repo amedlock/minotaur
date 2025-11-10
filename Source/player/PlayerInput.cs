@@ -15,14 +15,14 @@ public partial class PlayerInput : Node3D
 	private Vector2I _prevCoord;
 	private bool _canRetreat ;
 
-	Player _player;
-	Dungeon _dungeon;
-	Hud _hud;
+	private Player _player;
+	private Dungeon _dungeon;
+	private Hud _hud;
 
 
 	public override void _Ready()
 	{
-		_player = GetParent() as Player;
+		_player = (Player)GetParent();
 		_dungeon = _player.GetParent<Dungeon>();
 		_hud = _player.GetNode("Camera3D/HUD") as Hud;
 	}

@@ -22,10 +22,20 @@ public partial class Player : Node3D
   public PlayerState PlayerState
   {
     get => _playerState;
-    set => _playerState = value;
+    set
+    {
+      if (_playerState != value)
+      {
+        if (value == PlayerState.Combat || _playerState == PlayerState.Combat)
+        {
+          GD.Print($"PlayerState changed to {value}"); 
+        }
+        _playerState = value;
+      }
+    }
   }
 
-  public bool IsDead => Health <= 0;
+  public bool IsDead => Health <= 0 || Mind <= 0;
 
 
   // player direction in degrees
@@ -40,30 +50,30 @@ public partial class Player : Node3D
     }
   }
 
-  private Combat _combat; // $combat
-  private AudioStreamPlayer _audio; //= $Audio
+  private Combat _combat; 
+  private AudioStreamPlayer _audio; 
   private Dungeon _dungeon;
 
   public int WarArmor = 0;
   public int MindArmor = 0;
 
-  public int WarDamage = 0;
+  public int WarDamage = 0; 
   public int MindDamage = 0;
-  public int WarExp = 0;
-  public int MagicExp = 0;
-  public int Health = 0;
-  public int HealthMax = 0;
-  public int Mind = 0;
-  public int MindMax = 0;
+  public int WarExp ;
+  public int MagicExp ;
+  public int Health ;
+  public int HealthMax;
+  public int Mind ;
+  public int MindMax;
 
-  public bool Resurrected = false;
-  public bool NeedsRest = false;
+  public bool Resurrected ;
+  public bool NeedsRest ;
 
-  public int Gold = 0;
-  public int Food = 0;
-  public int Arrows = 0;
+  public int Gold ;
+  public int Food ;
+  public int Arrows ;
 
-  public int Skill = 0;
+  public int Skill;
 
   //  these are protective Items from game_db.gd
   public ItemInfo Helmet = null;
@@ -86,9 +96,12 @@ public partial class Player : Node3D
     return _slots[slot % 9];
   }
 
-  public void SetSlot(int slot, ItemInfo item)
+  public ItemInfo SetSlot(int slotNum, ItemInfo item)
   {
-    _slots[slot % 9] = item;
+    slotNum = slotNum % 9;
+    var prev = _slots[slotNum];
+    _slots[slotNum % 9] = item;
+    return prev;
   }
   
   public ItemInfo ItemAtFeet => _dungeon.GetCell(Coord).ItemInfo;
@@ -99,7 +112,7 @@ public partial class Player : Node3D
 
   public override void _Ready()
   {
-    _dungeon = GetParent() as Dungeon;
+    _dungeon = GetParent<Dungeon>();
     _combat = GetNode<Combat>("combat");
     Hud = GetNode<Hud>("Camera3D/HUD");
     _audio = GetNode<AudioStreamPlayer>("Audio");
@@ -237,27 +250,124 @@ public partial class Player : Node3D
     _combat.Start(cell, attacking);
   }
 
-  public void AttackAhead()
+  public bool AttackAhead()
   {
     if (_playerState == PlayerState.Combat)
     {
       _combat.PlayerAttack = true;
     }
+    else
+    {
+      if ( WallAhead is Wall or Door { Blocked: true })
+      {
+        return false;
+      }
+      var ahead = CellAhead;
+      if (ahead is { Enemy: not null })
+      {
+        StartCombat(ahead, true);
+        return true;
+      }
+    }
+    return false;
   }
 
   public void SwapItems()
   {
+    (LeftHand, RightHand) = (RightHand, LeftHand);
+    Hud.UpdateAll();
   }
 
+  // user wants to use/take item at their feet
   public void UseOrTakeItem()
   {
-    var item = ItemAtFeet;
-    if (item == null)
+    var cell = CurrentCell;
+    var itemInfo = cell.Item?.Info;
+    if (itemInfo == null)
     {
       return;
     }
+
+    switch (itemInfo.ItemType)
+    {
+      case ItemType.Money:
+      {
+        Gold += itemInfo.Stat2;
+        cell.RemoveItem();
+        return;
+      }
+      
+      case ItemType.Armor:
+      {
+        WarArmor = Mathf.Max(WarArmor, itemInfo.Stat1);
+        cell.RemoveItem();
+        return;
+      }
+      case ItemType.MagicArmor:
+      {
+        MindArmor = Mathf.Max(MindArmor, itemInfo.Stat1);
+        cell.RemoveItem();
+        return;
+      }
+      case ItemType.Ladder:
+      {
+        _dungeon.NextLevel();
+        return;
+      }
+      case ItemType.Special:
+      {
+        _dungeon.WonGame();
+        return;
+      }
+
+      case ItemType.Container:
+      {
+        var inHand = LeftHand;
+        if (inHand is { ItemType: ItemType.Key } && inHand.Stat1 >= itemInfo.Stat2)
+        {
+          OpenContainer(cell);
+        }
+        return;
+      }
+
+      default:
+        SwapItems();
+        break;
+    }
   }
 
+  // left clicked right inventory slot
+  public void AttackOrUseItem()
+  {
+    if (_playerState == PlayerState.Combat)
+    {
+      _combat.PlayerAttack = true;
+      return;
+    }
+    
+    if (AttackAhead())
+    {
+      return;
+    }
+
+    if (RightHand is { ItemType: ItemType.Key })
+    {
+      if (ItemAtFeet is { ItemType: ItemType.Container })
+      {
+        OpenContainer(CurrentCell);
+      }
+    }
+  }
+  
+
+  private void OpenContainer(DungeonCell  cell)
+  {
+    cell.RemoveItem();
+    // TODO: use some random loot here
+    cell.SetItem(_dungeon.GameDb.FindItem("coins"));
+  }
+  
+  
   public void OpenDoor()
   {
     var wall = WallAhead;
@@ -348,7 +458,7 @@ public partial class Player : Node3D
   // vary amount by +/- percent
   private int VaryAmount(int amount, int percent)
   {
-    float variance = amount * (100f / percent);
+    float variance = amount * (percent / 100f);
     return (int)((amount - variance) + GD.RandRange(0, 2 * variance));
   }
 
@@ -371,7 +481,7 @@ public partial class Player : Node3D
 
   public void Damage(Enemy enemy, ItemInfo item)
   {
-    var maxDamage = item.Stat1 * Skill;
+    var maxDamage = item.Stat1 ;
     var damage = Skill switch
     {
       1 => VaryAmount(maxDamage, 5),

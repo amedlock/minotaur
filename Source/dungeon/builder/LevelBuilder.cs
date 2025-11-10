@@ -610,8 +610,8 @@ public partial class LevelBuilder : Node
     }
     else if (itemInfo != null)
     {
-      var result = _itemPrefab.Instantiate() as Item;
-      result.Init(itemInfo);
+      var result = (Item)_itemPrefab.Instantiate();
+      result.Info = itemInfo;
       result.Position = new Vector3(1.5f, .35f, -1.5f);
       cell.Item = result;
       cell.AddChild(result);

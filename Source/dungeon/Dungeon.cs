@@ -26,6 +26,7 @@ public partial class Dungeon : Node3D
   // dungeon cells (Node3D) lookup
   private readonly List<DungeonCell> _cells = new();
   
+  private MainGame _game;
   private Player _player;
   private LevelBuilder _builder;
   private Hud _hud;
@@ -43,12 +44,12 @@ public partial class Dungeon : Node3D
   
   public override void _Ready()
   {
-    var game = (MainGame)FindParent("Game");
+    _game = (MainGame)FindParent("Game");
     Grid = new DungeonGrid(Width, Height);
-    GameDb =(GameDb)game.GetNode("GameDB");
+    GameDb =(GameDb)_game.GetNode("GameDB");
     _player = GetNode("Player") as Player;
     _builder = GetNode<LevelBuilder>("Builder");
-    _mapView = game.GetNode<MapView>("MapView");
+    _mapView = _game.GetNode<MapView>("MapView");
     _startPosition = GetNode<Marker3D>("StartPos");
     _hud = GetNode<Hud>("Player/Camera3D/HUD");
     _audio = GetNode<AudioStreamPlayer>("Player/Audio");
@@ -82,7 +83,7 @@ public partial class Dungeon : Node3D
   public Vector3 StartPosition => _startPosition.Position;
 
   
-  public MainGame Game => GetParent() as MainGame;
+  public MainGame Game => _game;
 
   public LevelInfo CurrentLevel
   {
@@ -214,6 +215,13 @@ public partial class Dungeon : Node3D
   }
 
 
+  public void WonGame()
+  {
+    _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/win2.wav");
+    _audio.Play();
+    _game.WonGame();
+  }
+  
   public void NextLevel()
   {
     var next = _currentLevel.Depth + 1;

@@ -228,24 +228,30 @@ public partial class GameDb : Node
 
   private void LoadKeyItems(Dictionary data, Rect2I icon, ItemType itemType, string name)
   {
+    var n = 1;
     foreach (var pair in data)
     {
       var colorName = (string)pair.Key;
-      AddItem(name, itemType, icon, _colors[colorName], (int)pair.Value, 0, 0);
+      AddItem(name, itemType, icon, _colors[colorName], (int)pair.Value, n, 0);
+      n += 1;
     }
   }
 
   private void LoadContainers(Dictionary data)
   {
+    var n = 1;
     foreach (var pair in data)
     {
       var name = (string)pair.Key;
-      var value = (int)pair.Value;
-      foreach( var color in ContainerColors)
+      var baseDepth = (int)pair.Value;
+      foreach (var color in ContainerColors)
       {
-        var minLvl = value * 2;
-        AddItem(name, ItemType.Container, _icons[name], _colors[color], minLvl, value, 0 );
+        int keyLevel = ContainerColors.IndexOf(color);
+        var minDepth = baseDepth * 2;
+        AddItem(name, ItemType.Container, _icons[name], _colors[color], minDepth, keyLevel, n );
       }
+
+      n += 1;
     }
   }
 
@@ -282,12 +288,12 @@ public partial class GameDb : Node
     return Enemies.FirstOrDefault(e => e.Name == name);
   }
 
-  private readonly List<string> _warWeapons = ["axe", "spear", "dagger"];
-  private readonly List<string> _magicWeapons = ["small_fireball", "fireball"];
+  private readonly List<string> _warWeapons = ["axe", "spear", "dagger", "bow", "crossbow"];
+  private readonly List<string> _magicWeapons = ["scroll", "book", "wand", "staff"];
   
   public List<ItemInfo> FindWeapons(EnemyType enemyType, LevelInfo current)
   {
-    var result = _items.Where(it => it.IsWeapon);
+    var result = _items.Where(it => it.IsWeapon && current.Depth >= it.MinDepth);
     if (enemyType != EnemyType.War)
     {
       result = result.Where(it => _magicWeapons.Contains(it.Name));

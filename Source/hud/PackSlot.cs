@@ -24,11 +24,7 @@ public partial class PackSlot : Area2D
     get => _itemInfo;
     set
     {
-      if (_itemInfo == value)
-      {
-        return;
-      }
-      if (value == null)
+      if (_itemInfo == value||value == null)
       {
         _sprite.Hide();
       }

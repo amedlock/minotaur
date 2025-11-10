@@ -31,8 +31,10 @@ public partial class Enemy : Sprite3D
   public void Damage(ItemInfo item)
   {
     if (item == null) return;
-    Health = Mathf.Max(Health - item.Stat1, 0);
-    Mind = Mathf.Max(Mind - item.Stat2, 0);
+    var dmg = item.Stat1 * 4;
+    var magic = item.Stat2 * 4;
+    Health = Mathf.Max(Health - dmg, 0);
+    Mind = Mathf.Max(Mind - magic, 0);
   }
 
   public void Die()

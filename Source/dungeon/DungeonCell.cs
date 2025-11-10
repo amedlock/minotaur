@@ -122,4 +122,22 @@ public partial class DungeonCell : Node3D
         throw new Exception("Invalid wall direction");
     }
   }
+
+  public void RemoveItem()
+  {
+    if (Item != null)
+    {
+      Item.Visible = false;
+      RemoveChild(Item);
+      Item.QueueFree();
+    }
+  }
+
+  public void SetItem(ItemInfo itemInfo)
+  {
+    RemoveItem();
+    Item = new Item();
+    Item.Info = itemInfo;
+    AddChild(Item);
+  }
 }

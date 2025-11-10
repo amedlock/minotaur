@@ -118,6 +118,7 @@ public partial class Hud : Node2D
       sprite.RegionEnabled = true;
       sprite.Visible = true;
       sprite.RegionRect = item.Image;
+      sprite.Modulate = item.Color;
     }
   }
   
@@ -155,18 +156,15 @@ public partial class Hud : Node2D
 
   public void PackSlotClicked(int slot, InputEvent inputEvent)
   {
-    ItemInfo item = _player.GetSlot(slot);
-    if (inputEvent is InputEventMouseButton {Pressed:true, ButtonIndex: MouseButton.Left } leftClick)
+    if (inputEvent is InputEventMouseButton {Pressed:true, ButtonIndex: MouseButton.Left })
     {
-      var leftHand = _player.LeftHand;
-      _player.LeftHand = item;
-      _player.SetSlot(slot, leftHand);
+      var prev = _player.SetSlot(slot, _player.LeftHand);
+      _player.LeftHand = prev;
     }
     else if (inputEvent is InputEventMouseButton {Pressed:true, ButtonIndex: MouseButton.Right } rightClick)
     {
-      var rightHand = _player.RightHand;
-      _player.RightHand = item;
-      _player.SetSlot(slot, rightHand);
+      var prev = _player.SetSlot(slot, _player.RightHand);
+      _player.RightHand = prev;
     }
     UpdateStats();
     UpdatePack();
@@ -187,10 +185,14 @@ public partial class Hud : Node2D
   {
     if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
     {
-      _player.AttackAhead();
+      _player.AttackOrUseItem();
+      UpdateAll();
     }
-
-    UpdateAll();
+    else if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
+    {
+      _player.SwapHands();
+      UpdateAll();
+    }
   }
 
 
@@ -200,10 +202,6 @@ public partial class Hud : Node2D
     if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
     {
       _player.SwapItems();
-    }
-    else if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-    {
-      _player.AttackAhead();
     }
     UpdateAll();
   }
