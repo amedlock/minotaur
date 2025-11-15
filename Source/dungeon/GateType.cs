@@ -2,5 +2,8 @@
 
 public enum GateType
 {
-  War, Magic, Both, None
+  War,
+  Magic,
+  Both,
+  None
 }

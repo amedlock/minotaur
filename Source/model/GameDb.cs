@@ -1,34 +1,49 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
+using minotaur.Source.model;
+
+#endregion
 
 namespace minotaur;
 
 // Loads items, icons, enemies from JSON file
-public partial class GameDb : Node
+public class GameDb
 {
-  private Vector2I _imageSize = new(32, 32);
-
-  private System.Collections.Generic.Dictionary<string, Color> _colors = new();
-  private System.Collections.Generic.Dictionary<string, Rect2I> _icons = new();
-  private List<EnemyInfo> _enemies = [];
-  private List<ItemInfo> _items = [];
-
-  private ItemInfo _finalTreasure;
-
   private static readonly List<string> WarColors = ["Tan", "Orange", "Blue", "Grey", "Yellow", "White"];
   private static readonly List<string> MagicColors = ["Blue", "Grey", "White", "Pink", "Red", "Purple"];
   private static readonly List<string> MoneyColors = ["Orange", "Grey", "Yellow", "White"];
   private static readonly List<string> ContainerColors = ["Tan", "Orange", "Blue"];
 
+  private readonly System.Collections.Generic.Dictionary<string, Color> _colors = new();
+  private readonly System.Collections.Generic.Dictionary<string, Rect2I> _icons = new();
+  private readonly Vector2I _imageSize = new(32, 32);
+  private readonly List<string> _magicWeapons = ["scroll", "book", "wand", "staff"];
+
+  private readonly List<string> _warWeapons = ["axe", "spear", "dagger", "bow", "crossbow"];
+
+  private ItemInfo _finalTreasure;
+
+
+  public GameDb()
+  {
+    LoadGameInfo();
+  }
+
+  public List<ItemInfo> Items { get; } = [];
+
+  public List<EnemyInfo> Enemies { get; } = [];
+
 
   public ItemInfo FindItem(string name, int depth = 1)
   {
-    return _items.Find(i => i.Name == name && i.MinDepth <= depth);
+    return Items.Find(i => i.Name == name && i.MinDepth <= depth);
   }
 
   public List<EnemyInfo> FindEnemies(LevelInfo info)
@@ -38,23 +53,20 @@ public partial class GameDb : Node
 
   public List<ItemInfo> FindWeapons(LevelInfo info)
   {
-    var result = _items.Where(i => i.IsAllowed(info.LevelType));
+    var result = Items.Where(i => i.IsAllowed(info.LevelType));
     return result.Where(i => i.MinDepth <= info.Depth).ToList();
   }
 
-  
+
   public List<ItemInfo> FindArmor(LevelInfo info)
   {
-    return _items.Where(i => i.ItemType==ItemType.Armor && i.MinDepth <= info.Depth).ToList();
+    return Items.Where(i => i.ItemType == ItemType.Armor && i.MinDepth <= info.Depth).ToList();
   }
 
   private bool IsAllowed(EnemyInfo enemy, LevelInfo levelInfo)
   {
-    if (levelInfo.Depth < enemy.MinLevel)
-    {
-      return false;
-    }
-    
+    if (levelInfo.Depth < enemy.MinLevel) return false;
+
     return enemy.Type switch
     {
       EnemyType.War => levelInfo.LevelType != LevelType.Magic,
@@ -62,15 +74,7 @@ public partial class GameDb : Node
       _ => true
     };
   }
-  
-  public List<ItemInfo> Items => _items;
 
-  public List<EnemyInfo> Enemies => _enemies;
-
-  public override void _Ready()
-  {
-    LoadGameInfo();
-  }
 
   private void LoadGameInfo()
   {
@@ -102,16 +106,13 @@ public partial class GameDb : Node
     LoadEnemies(enemies, "magic", EnemyType.Magic);
     LoadEnemies(enemies, "both", EnemyType.Both);
     LoadItems((Dictionary)data["items"]);
-    _finalTreasure = FindItem("treasure", 1);
+    _finalTreasure = FindItem("treasure");
   }
 
   private void LoadColors(Variant data)
   {
     var dict = (Dictionary)data;
-    foreach (var pair in dict)
-    {
-      _colors[(string)pair.Key] = new Color((string)pair.Value);
-    }
+    foreach (var pair in dict) _colors[(string)pair.Key] = new Color((string)pair.Value);
   }
 
   private void LoadIcons(Variant data)
@@ -119,8 +120,8 @@ public partial class GameDb : Node
     var dict = (Dictionary)data;
     foreach (var pair in dict)
     {
-      Array array = (Array)pair.Value;
-      string name = (string)pair.Key;
+      var array = (Array)pair.Value;
+      var name = (string)pair.Key;
       Vector2I coord = new((int)array[0] * 32, (int)array[1] * 32);
       _icons[name] = new Rect2I(coord, _imageSize);
     }
@@ -131,24 +132,24 @@ public partial class GameDb : Node
     var dict = (Dictionary)data;
     foreach (var pair in (Dictionary)dict[section])
     {
-      Array stats = (Array)pair.Value;
+      var stats = (Array)pair.Value;
       var enemyInfo = new EnemyInfo();
       enemyInfo.Type = enemyType;
       enemyInfo.Name = (string)pair.Key;
-      enemyInfo.ImageRect = this._icons[(string)stats[0]];
+      enemyInfo.ImageRect = _icons[(string)stats[0]];
       enemyInfo.MinLevel = (int)stats[1];
       enemyInfo.MinHp = (int)stats[2];
       enemyInfo.MaxHp = (int)stats[3];
       enemyInfo.MinMind = (int)stats[4];
       enemyInfo.MaxMind = (int)stats[5];
-      _enemies.Add(enemyInfo);
+      Enemies.Add(enemyInfo);
     }
   }
 
   private void LoadItems(Dictionary items)
   {
     LoadSpecials((Dictionary)items["specials"]);
-    Dictionary weapons = (Dictionary)items["weapons"];
+    var weapons = (Dictionary)items["weapons"];
     LoadWeapons(weapons, "war", WarColors);
     LoadWeapons(weapons, "magic", MagicColors);
     LoadArmor((Dictionary)items["armor"], WarColors);
@@ -170,7 +171,7 @@ public partial class GameDb : Node
     item.Stat1 = stat1;
     item.Stat2 = stat2;
     item.NeedsKey = kind == ItemType.Container && name.Match("pack|container|chest");
-    _items.Add(item);
+    Items.Add(item);
   }
 
 
@@ -180,21 +181,20 @@ public partial class GameDb : Node
     {
       var item = new ItemInfo();
       item.Name = (string)pair.Key;
-      Array items = (Array)pair.Value;
+      var items = (Array)pair.Value;
       item.Image = _icons[(string)items[0]];
       item.MinDepth = (int)items[1];
       item.Color = _colors[(string)items[2]];
       item.Stat1 = (int)items[3];
       item.Stat2 = (int)items[4];
       item.ItemType = ItemType.Special;
-      _items.Add(item);
+      Items.Add(item);
     }
-    
   }
 
   private void LoadWeapons(Dictionary data, string type, List<string> colorNames)
   {
-    var itemType = type=="war" ? ItemType.WarWeapon : ItemType.MagicWeapon;
+    var itemType = type == "war" ? ItemType.WarWeapon : ItemType.MagicWeapon;
     foreach (var pair in (Dictionary)data[type])
     {
       var name = (string)pair.Key;
@@ -202,7 +202,7 @@ public partial class GameDb : Node
       var n = 0;
       foreach (var power in items)
       {
-        var minLvl = (n * 2) + 1;
+        var minLvl = n * 2 + 1;
         AddItem(name, itemType, _icons[name], _colors[colorNames[n]], minLvl, (int)power, 0);
         n += 1;
       }
@@ -219,7 +219,7 @@ public partial class GameDb : Node
       var n = 0;
       foreach (int value in values)
       {
-        var minLvl = (n * 2) + 1;
+        var minLvl = n * 2 + 1;
         AddItem(name, ItemType.Armor, _icons[name], _colors[colorNames[n]], minLvl, value, 0);
         n += 1;
       }
@@ -246,9 +246,9 @@ public partial class GameDb : Node
       var baseDepth = (int)pair.Value;
       foreach (var color in ContainerColors)
       {
-        int keyLevel = ContainerColors.IndexOf(color);
+        var keyLevel = ContainerColors.IndexOf(color);
         var minDepth = baseDepth * 2;
-        AddItem(name, ItemType.Container, _icons[name], _colors[color], minDepth, keyLevel, n );
+        AddItem(name, ItemType.Container, _icons[name], _colors[color], minDepth, keyLevel, n);
       }
 
       n += 1;
@@ -258,7 +258,6 @@ public partial class GameDb : Node
 
   private void LoadMoney(Dictionary money)
   {
-    
     foreach (var pair in money)
     {
       var name = (string)pair.Key;
@@ -272,12 +271,12 @@ public partial class GameDb : Node
         AddItem("crown", ItemType.Money, _icons["crown"], _colors["Yellow"], 6, 200, 0);
         continue;
       }
-      
+
       // bronze, silver, gold, platinum
       foreach (var colorName in MoneyColors)
       {
-        var color =  _colors[colorName];
-        AddItem(name, ItemType.Money, _icons[name],  color, minDepth, value, 0);
+        var color = _colors[colorName];
+        AddItem(name, ItemType.Money, _icons[name], color, minDepth, value, 0);
         value *= 2;
       }
     }
@@ -288,27 +287,17 @@ public partial class GameDb : Node
     return Enemies.FirstOrDefault(e => e.Name == name);
   }
 
-  private readonly List<string> _warWeapons = ["axe", "spear", "dagger", "bow", "crossbow"];
-  private readonly List<string> _magicWeapons = ["scroll", "book", "wand", "staff"];
-  
   public List<ItemInfo> FindWeapons(EnemyType enemyType, LevelInfo current)
   {
-    var result = _items.Where(it => it.IsWeapon && current.Depth >= it.MinDepth);
-    if (enemyType != EnemyType.War)
-    {
-      result = result.Where(it => _magicWeapons.Contains(it.Name));
-    }
-    if (enemyType != EnemyType.Magic)
-    {
-      result = result.Where(it => _warWeapons.Contains(it.Name));
-    }
+    var result = Items.Where(it => it.IsWeapon && current.Depth >= it.MinDepth);
+    if (enemyType != EnemyType.War) result = result.Where(it => _magicWeapons.Contains(it.Name));
+    if (enemyType != EnemyType.Magic) result = result.Where(it => _warWeapons.Contains(it.Name));
     return result.ToList();
   }
-  
+
 
   public Rect2I FindIcon(string name)
   {
     return _icons[name];
   }
-  
 }

@@ -2,5 +2,7 @@
 
 public enum EnemyType
 {
-  War, Magic, Both
+  War,
+  Magic,
+  Both
 }

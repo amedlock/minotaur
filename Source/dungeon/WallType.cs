@@ -5,4 +5,4 @@ public enum WallType
   Wall,
   Door,
   Empty
-};
+}

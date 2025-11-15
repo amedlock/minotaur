@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
-using minotaur.Source.player;
+using minotaur.Source.model;
+
+#endregion
 
 namespace minotaur.Source.dungeon.builder;
 
@@ -12,29 +16,47 @@ namespace minotaur.Source.dungeon.builder;
 // then using that content, creates Godot Nodes for visuals
 public partial class LevelBuilder : Node
 {
+  // walls and corners
+  private readonly Vector3 _wallOffset = new(3f, 0, -3f);
+
+
+  private readonly Dictionary<WallPost, Vector3> _wallPostOffset = new()
+  {
+    [WallPost.NW] = new Vector3(0, 0f, 0),
+    [WallPost.NE] = new Vector3(3, 0f, 0),
+    [WallPost.SE] = new Vector3(3, 0f, 3),
+    [WallPost.SW] = new Vector3(0, 0f, 3)
+  };
+
+  private readonly Dictionary<Direction, Vector3I> _wallRotation = new()
+  {
+    [Direction.North] = new Vector3I(0, 180, 0),
+    [Direction.East] = new Vector3I(0, 270, 0)
+  };
+
+  private PackedScene _blueGate;
+  private PackedScene _cornerPrefab;
+  private PackedScene _doorPrefab;
   private Dungeon _dungeon;
-  private GameDb _gameDb;
+  private PackedScene _enemyPrefab;
+
+  [Export] private GameModel _gameModel;
+  private PackedScene _greenGate;
+  private PackedScene _itemPrefab;
+  private PackedScene _ladderPrefab;
   private Node3D _outerWall;
   private RandomNumberGenerator _rng = new();
+  private PackedScene _tanGate;
 
   // prefabs  
   private PackedScene _wallPrefab;
-  private PackedScene _cornerPrefab;
-  private PackedScene _doorPrefab;
-  private PackedScene _itemPrefab;
-  private PackedScene _ladderPrefab;
-  private PackedScene _enemyPrefab;
-  private PackedScene _greenGate;
-  private PackedScene _blueGate;
-  private PackedScene _tanGate;
 
-  DungeonGrid Grid => _dungeon.Grid;
+  private DungeonGrid Grid => _gameModel.Grid;
 
   public override void _Ready()
   {
-    _dungeon = (Dungeon)GetParent();
-    _outerWall = _dungeon.FindChild("outer_wall") as Node3D;
-    _gameDb = FindParent("Game").GetNode("GameDB") as GameDb;
+    _dungeon = GetParent<Dungeon>();
+    _outerWall = (Node3D)_dungeon.FindChild("outer_wall");
     _wallPrefab = ResourceLoader.Load<PackedScene>("res://data/dungeon/dungeon_wall.tscn");
     _doorPrefab = ResourceLoader.Load<PackedScene>("res://data/door/door_prefab.tscn");
     _cornerPrefab = ResourceLoader.Load<PackedScene>("res://data/dungeon/wall_corner.tscn");
@@ -55,15 +77,9 @@ public partial class LevelBuilder : Node
   {
     foreach (var cell in Grid.Cells)
     {
-      if (cell.X == 0 || cell.X == _dungeon.Width - 1)
-      {
-        cell.North = WallType.Empty;
-      }
+      if (cell.X == 0 || cell.X == _dungeon.Width - 1) cell.North = WallType.Empty;
 
-      if (cell.Y == 0 || cell.Y == _dungeon.Height - 1)
-      {
-        cell.East = WallType.Empty;
-      }
+      if (cell.Y == 0 || cell.Y == _dungeon.Height - 1) cell.East = WallType.Empty;
     }
   }
 
@@ -103,22 +119,12 @@ public partial class LevelBuilder : Node
 
   private MazeCell ChooseRandom(List<MazeCell> items)
   {
-    if (items.Count == 0)
-    {
-      return null;
-    }
-
-    return items[_rng.RandiRange(0, items.Count - 1)];
+    return items.Count == 0 ? null : items[_rng.RandiRange(0, items.Count - 1)];
   }
 
   private T ChooseRandom<T>(List<T> items)
   {
-    if (items.Count == 0)
-    {
-      return default(T);
-    }
-
-    return items[_rng.RandiRange(0, items.Count - 1)];
+    return items.Count == 0 ? default : items[_rng.RandiRange(0, items.Count - 1)];
   }
 
 
@@ -126,7 +132,7 @@ public partial class LevelBuilder : Node
   {
     if (items.Count == 0)
     {
-      return default(T);
+      return default;
     }
 
     var index = _rng.RandiRange(0, items.Count - 1);
@@ -147,19 +153,19 @@ public partial class LevelBuilder : Node
     return items.Where(x => x != null);
   }
 
-  List<MazeCell> AllUnusedNear(MazeCell mc)
+  private List<MazeCell> AllUnusedNear(MazeCell mc)
   {
     return AdjacentCells(mc).Where(x => !(x.Used || IsOuterMaze(x))).ToList();
   }
 
-  MazeCell FindAdjacentUsed(MazeCell mc)
+  private MazeCell FindAdjacentUsed(MazeCell mc)
   {
     var work = AdjacentCells(mc).Where(x => !x.Used).ToList();
     return ChooseRandom(work);
   }
 
   // clear walls to create outer corridor
-  void CreateCorridor()
+  private void CreateCorridor()
   {
     foreach (var cell in Grid.Cells)
     {
@@ -169,18 +175,12 @@ public partial class LevelBuilder : Node
       if (x == 0)
       {
         cell.North = WallType.Empty;
-        if (y == 0 || y == Grid.Height - 1)
-        {
-          cell.East = WallType.Empty;
-        }
+        if (y == 0 || y == Grid.Height - 1) cell.East = WallType.Empty;
       }
       else if (y == 0)
       {
         cell.East = WallType.Empty;
-        if (x == Grid.Width - 1)
-        {
-          cell.North = WallType.Empty;
-        }
+        if (x == Grid.Width - 1) cell.North = WallType.Empty;
       }
       else if (y == Grid.Height - 1)
       {
@@ -195,13 +195,10 @@ public partial class LevelBuilder : Node
     }
   }
 
-  bool CheckWall(int x, int y, Direction dir)
+  private bool CheckWall(int x, int y, Direction dir)
   {
     var cell = Grid.Cell(x, y);
-    if (cell == null)
-    {
-      return false;
-    }
+    if (cell == null) return false;
 
     return dir switch
     {
@@ -213,18 +210,18 @@ public partial class LevelBuilder : Node
     };
   }
 
-  private bool AdjacentToAny(MazeCell cell, List<MazeCell> other) 
+  private bool AdjacentToAny(MazeCell cell, List<MazeCell> other)
   {
     return other.Any(c => c.AdjacentTo(cell));
   }
-  
+
   private void BuildMazePrim()
   {
     Grid.Reset();
     CreateCorridor();
     AddOuterDoors();
 
-    List<MazeCell> notMaze = Grid.Cells.Where(cell => !IsOuterMaze(cell)).ToList();
+    var notMaze = Grid.Cells.Where(cell => !IsOuterMaze(cell)).ToList();
     List<MazeCell> inMaze = [];
     var start = TakeRandom(notMaze);
     start.Used = true;
@@ -238,58 +235,17 @@ public partial class LevelBuilder : Node
         break;
       }
 
-      MazeCell pick = TakeRandom(frontier);
+      var pick = TakeRandom(frontier);
       pick.Used = true;
       notMaze.Remove(pick);
       inMaze.Add(pick);
       var next = inMaze.First(c => c.AdjacentTo(pick));
       AddPath(next, pick);
     }
-    AddAllCorners();
   }
-
-
-  private void AddAllCorners()
-  {
-    foreach (var m in Grid.Cells)
-    {
-      if (IsOuterMaze(m))
-      {
-        continue;
-      }
-
-      // if (m.North != WallType.Empty)
-      // {
-      //   m.Corners.NE = m.Corners.NW = true;
-      // }
-      //
-      // if (m.East != WallType.Empty)
-      // {
-      //   m.Corners.SE = m.Corners.NE = true;
-      // }
-      // var southCell = GetCell(m.X, m.Y -1);
-      // if (southCell != null)
-      // {
-      //   if (southCell.North!=WallType.Empty)
-      //   {
-      //     m.Corners.SE = m.Corners.SW = true;
-      //   }
-      // }
-      //
-      // var westCell = GetCell(m.X - 1, m.Y);
-      // if (westCell != null)
-      // {
-      //   if (westCell.East != WallType.Empty)
-      //   {
-      //     m.Corners.NE = m.Corners.SE = true;
-      //   }
-      // }
-    }
-  }
-
 
   // prims algo makes maze too twisty, add some strategic doorways
-  void AddMoreDoors()
+  private void AddMoreDoors()
   {
     if (CheckWall(3, 3, Direction.East))
     {
@@ -312,7 +268,7 @@ public partial class LevelBuilder : Node
     }
   }
 
-  void AddGates(LevelInfo info)
+  private void AddGates(LevelInfo info)
   {
     if (info.Depth > 2 || info.UsedGate)
     {
@@ -333,22 +289,19 @@ public partial class LevelBuilder : Node
     }
   }
 
-  void AddExit(LevelInfo info)
+  private void AddExit(LevelInfo info)
   {
     // last level is 100
-    if (info.Depth > 99)
-    {
-      return;
-    }
+    if (info.Depth > 99) return;
 
     List<Vector2I> exitLoc = [new(3, 4), new(7, 4), new(4, 3), new(4, 7)];
-    Vector2I exit = ChooseRandom(exitLoc);
+    var exit = ChooseRandom(exitLoc);
     var cell = Grid.Cell(exit);
-    cell.ItemInfo = _gameDb.FindItem("ladder");
+    cell.ItemInfo = _gameModel.GameDb.FindItem("ladder");
     cell.Used = true;
   }
 
-  void AddEnemies(LevelInfo info, List<MazeCell> cells)
+  private void AddEnemies(LevelInfo info, List<MazeCell> cells)
   {
     if (cells.Count == 0)
     {
@@ -357,170 +310,18 @@ public partial class LevelBuilder : Node
     }
 
     var num = _rng.RandiRange(0, 6) + 12;
-    var enemies = _gameDb.FindEnemies(info);
+    var enemies = _gameModel.GameDb.FindEnemies(info);
     var sorted = enemies.OrderBy(_ => _rng.Randi()).ToList();
-    if (sorted.Count == 0)
-    {
-      throw new Exception("No enemies allowed for placement");
-    }
+    if (sorted.Count == 0) throw new Exception("No enemies allowed for placement");
 
     foreach (var n in GD.Range(num))
     {
-      if (cells.Count == 0)
-      {
-        return;
-      }
+      if (cells.Count == 0) return;
 
       var target = TakeRandom(cells);
-      EnemyInfo monster = sorted[n % sorted.Count];
+      var monster = sorted[n % sorted.Count];
       Grid.Cell(target.X, target.Y).EnemyInfo = monster;
     }
-  }
-
-  void AddKey(LevelInfo info, List<MazeCell> cells)
-  {
-    if (cells.Count == 0)
-    {
-      return;
-    }
-
-    List<ItemInfo> keys = _gameDb.Items.Where(i => i.ItemType == ItemType.Key && !info.HasItem(i)).ToList();
-    if (keys.Count == 0)
-    {
-      GD.Print("Warning no 'key' items found for level ", info);
-      return;
-    }
-
-    var c = ChooseRandom(cells);
-    Grid.Cell(c.X, c.Y).ItemInfo = ChooseRandom(keys);
-  }
-
-  void AddLoot(int num, LevelInfo info, List<MazeCell> cells)
-  {
-    HashSet<string> names = ["small_bag"];
-    switch (info.Depth)
-    {
-      case 2 or 3 or 4: names.Add("bag"); break;
-      case 5: names.Add("box"); break;
-      case 6: names.Add("pack"); break;
-      default: names.Add("chest"); break;
-    }
-
-    var items = _gameDb.Items.Where(i => i.ItemType == ItemType.Container && names.Contains(i.Name)).ToList();
-
-    foreach (var unused in GD.Range(num))
-    {
-      if (cells.Count == 0 || items.Count == 0)
-      {
-        break;
-      }
-      else
-      {
-        var target = TakeRandom(cells);
-        Grid.Cell(target.X, target.Y).ItemInfo = ChooseRandom(items);
-      }
-    }
-  }
-
-  void AddMoney(int num, LevelInfo info, List<MazeCell> cells)
-  {
-    var allowed = _gameDb.Items.Where(i => i.ItemType == ItemType.Money).ToList();
-    if (allowed.Count > 0)
-    {
-      foreach (var n in GD.Range(num))
-      {
-        if (cells.Count == 0)
-        {
-          return;
-        }
-
-        var c = TakeRandom(cells);
-        Grid.Cell(c.X, c.Y).ItemInfo = ChooseRandom(allowed);
-      }
-    }
-  }
-
-  void AddOther(List<MazeCell> cells)
-  {
-    var food = _gameDb.FindItem("food");
-    var foodCount = _rng.RandiRange(1, 3);
-    foreach (var unused in GD.Range(foodCount))
-    {
-      if (cells.Count > 0)
-      {
-        var c = TakeRandom(cells);
-        Grid.Cell(c.X, c.Y).ItemInfo = food;
-      }
-      else
-      {
-        return;
-      }
-    }
-
-    var quiver = _gameDb.FindItem("quiver");
-    foreach (var unused in GD.Range(_rng.RandiRange(1, 3)))
-    {
-      if (cells.Count == 0)
-      {
-        return;
-      }
-
-      var c = TakeRandom(cells);
-      Grid.Cell(c.X, c.Y).ItemInfo = quiver;
-    }
-  }
-
-  void AddWeapons(int weaponCount, int armorCount, LevelInfo info, List<MazeCell> cells)
-  {
-    var armor = _gameDb.FindArmor(info);
-    foreach (var n in GD.Range(armorCount))
-    {
-      if (cells.Count == 0 || armor.Count == 0)
-      {
-        break;
-      }
-
-      var c = TakeRandom(cells);
-      c.ItemInfo = TakeRandom(armor);
-    }
-
-    var weapons = _gameDb.FindWeapons(info);
-    foreach (var n in GD.Range(weaponCount))
-    {
-      if (cells.Count == 0 || armor.Count == 0)
-      {
-        break;
-      }
-
-      TakeRandom(cells).ItemInfo = TakeRandom(weapons);
-    }
-  }
-
-  void AddAmulets(List<MazeCell> cells)
-  {
-    var amulets = _gameDb.Items.Where(i => i.ItemType == ItemType.Armor).ToList();
-    foreach (var n in GD.Range(_rng.RandiRange(0, 3)))
-    {
-      if (cells.Count == 0 || amulets.Count == 0)
-      {
-        break;
-      }
-
-      var c = TakeRandom(cells);
-      c.ItemInfo = TakeRandom(amulets);
-    }
-  }
-
-  void AddItems(LevelInfo info, List<MazeCell> cells)
-  {
-    var bags = 7 + _rng.RandiRange(0, 3);
-    var weapons = 7 + _rng.RandiRange(1, 5);
-    var armor = _rng.RandiRange(0, 2);
-    AddLoot(bags, info, cells);
-    AddKey(info, cells);
-    AddOther(cells);
-    AddWeapons(weapons, armor, info, cells);
-    AddAmulets(cells);
   }
 
 
@@ -534,10 +335,10 @@ public partial class LevelBuilder : Node
     var emptyCells = Grid.EmptyCells.Where(cell => !IsOuterMaze(cell)).ToList();
 
     AddEnemies(currentLevel, emptyCells);
-    AddItems(currentLevel, emptyCells);
+    // AddItems(currentLevel, emptyCells);
     AddMinotaur(currentLevel, emptyCells);
     BuildGrid(currentLevel); // build the actual geometry
-    _dungeon.MuralColor = currentLevel._gateType;
+    _dungeon.MuralColor = currentLevel.GateType;
   }
 
   private void AddMinotaur(LevelInfo currentLevel, List<MazeCell> cells)
@@ -545,11 +346,11 @@ public partial class LevelBuilder : Node
     if (currentLevel.HasMinotaur)
     {
       var cell = TakeRandom(cells);
-      cell.EnemyInfo = _gameDb.FindEnemy("Minotaur");
+      cell.EnemyInfo = _gameModel.GameDb.FindEnemy("Minotaur");
     }
   }
 
-  void BuildGrid(LevelInfo levelInfo)
+  private void BuildGrid(LevelInfo levelInfo)
   {
     foreach (var cell in Grid.Cells)
     {
@@ -558,10 +359,7 @@ public partial class LevelBuilder : Node
       dungeonCell.MazeCell = cell;
       CreateWall(dungeonCell, cell.North, Direction.North);
       CreateWall(dungeonCell, cell.East, Direction.East);
-      foreach (var wallPost in Grid.WallPosts(cell.X, cell.Y))
-      {
-        AddCorner(wallPost, dungeonCell);
-      }
+      foreach (var wallPost in Grid.WallPosts(cell.X, cell.Y)) AddCorner(wallPost, dungeonCell);
 
       AddItem(dungeonCell, cell.ItemInfo);
       AddEnemy(dungeonCell, cell.EnemyInfo);
@@ -579,10 +377,7 @@ public partial class LevelBuilder : Node
       dc.Enemy = null;
     }
 
-    if (enemy == null)
-    {
-      return;
-    }
+    if (enemy == null) return;
 
     var node = (Enemy)_enemyPrefab.Instantiate();
     node.Init(enemy, _rng);
@@ -627,10 +422,7 @@ public partial class LevelBuilder : Node
       dungeonCell.Gate = null;
     }
 
-    if (cell.Gate == GateType.None)
-    {
-      return;
-    }
+    if (cell.Gate == GateType.None) return;
 
     var result = level switch
     {
@@ -647,44 +439,23 @@ public partial class LevelBuilder : Node
     }
   }
 
-  // walls and corners
-  private readonly Vector3 _wallOffset = new(3f, 0, -3f);
-
-  private readonly Dictionary<Direction, Vector3I> _wallRotation = new()
-  {
-    [Direction.North] = new Vector3I(0, 180, 0),
-    [Direction.East] = new Vector3I(0, 270, 0)
-  };
-
 
   private void CreateWall(DungeonCell dest, WallType wallType, Direction direction)
   {
     var wallRot = _wallRotation[direction];
-    Node3D node = wallType switch
+    var node = wallType switch
     {
       WallType.Door => (Node3D)_doorPrefab.Instantiate(),
       WallType.Wall => (Node3D)_wallPrefab.Instantiate(),
       _ => null
     };
-    if (node == null)
-    {
-      return;
-    }
+    if (node == null) return;
 
     node.Position = _wallOffset;
     node.RotationDegrees = wallRot;
     node.Name = "Wall_" + wallType;
     dest.AddWall(node, wallType, direction);
   }
-
-
-  private Dictionary<WallPost, Vector3> _wallPostOffset = new()
-  {
-    [WallPost.NW] = new Vector3(0, 0f, 0),
-    [WallPost.NE] = new Vector3(3, 0f, 0),
-    [WallPost.SE] = new Vector3(3, 0f, 3),
-    [WallPost.SW] = new Vector3(0, 0f, 3)
-  };
 
   public void AddCorner(WallPost wallPost, DungeonCell dest)
   {

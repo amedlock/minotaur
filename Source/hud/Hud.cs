@@ -1,63 +1,69 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.items;
+using minotaur.Source.model;
 using minotaur.Source.player;
+
+#endregion
 
 namespace minotaur.Source.hud;
 
 public partial class Hud : Node2D
 {
-  private Label _hpDisplay;
-  private Label _mindDisplay;
+  private readonly Dictionary<int, PackSlot> _packSlots = new();
+  private Sprite2D _amuletSprite;
   private Label _armorDisplay;
-  private Label _damageDisplay;
-  private Label _goldDisplay;
-  private Label _foodDisplay;
-  private Label _levelDisplay;
+  private Sprite2D _armorSprite;
   private Label _arrowsDisplay;
-  private Sprite2D _leftHandSprite;
   private Sprite2D _atFeetSprite;
-  private Sprite2D _rightHandSprite;
+  private Sprite2D _breastPlateSprite;
+  private Label _damageDisplay;
 
-  private Node2D _pack;
-  private Player _player;
-  private Dungeon _dungeon;
+  private Label _foodDisplay;
+  private Label _goldDisplay;
 
 
   private Sprite2D _helmetSprite;
-  private Sprite2D _armorSprite;
-  private Sprite2D _breastPlateSprite;
-  private Sprite2D _amuletSprite;
+  private Label _hpDisplay;
+  private Sprite2D _leftHandSprite;
+  private Label _levelDisplay;
+  private Label _mindDisplay;
 
-  private Dictionary<int, PackSlot> _packSlots = new();
+  [Export] private Control _pack;
+
+  [Export] private Player _player;
+
+  [Export] private Dungeon _dungeon;
+
+  [Export] private GameModel gameModel;
+  
+  private Sprite2D _rightHandSprite;
 
   public Sprite2D Compass;
 
 
   public override void _Ready()
   {
-    Compass = FindChild("Compass") as Sprite2D;
-    _hpDisplay = FindChild("HPDisplay") as Label;
-    _mindDisplay = FindChild("MindDisplay") as Label;
-    _armorDisplay = FindChild("ArmorDisplay") as Label;
-    _damageDisplay = FindChild("DamageDisplay") as Label;
-    _goldDisplay = FindChild("GoldDisplay") as Label;
-    _foodDisplay = FindChild("FoodDisplay") as Label;
-    _levelDisplay = FindChild("LevelDisplay") as Label;
-    _arrowsDisplay = FindChild("ArrowsDisplay") as Label;
-    _leftHandSprite = GetNode("Hands/background/Left/Sprite2D") as Sprite2D;
-    _atFeetSprite = GetNode("Hands/background/Feet/Sprite2D") as Sprite2D;
-    _rightHandSprite = GetNode("Hands/background/Right/Sprite2D") as Sprite2D;
+    Compass = (Sprite2D)FindChild("Compass");
+    _hpDisplay = (Label)FindChild("HPDisplay");
+    _mindDisplay = (Label)FindChild("MindDisplay");
+    _armorDisplay = (Label)FindChild("ArmorDisplay");
+    _damageDisplay = (Label)FindChild("DamageDisplay");
+    _goldDisplay = (Label)FindChild("GoldDisplay");
+    _foodDisplay = (Label)FindChild("FoodDisplay");
+    _levelDisplay = (Label)FindChild("LevelDisplay");
+    _arrowsDisplay = (Label)FindChild("ArrowsDisplay");
+    _leftHandSprite = GetNode<Sprite2D>("Hands/background/Left/Sprite2D");
+    _atFeetSprite = GetNode<Sprite2D>("Hands/background/Feet/Sprite2D");
+    _rightHandSprite = GetNode<Sprite2D>("Hands/background/Right/Sprite2D");
 
-    _helmetSprite = GetNode("ArmorItems/HelmetSprite") as Sprite2D;
-    _breastPlateSprite = GetNode("ArmorItems/BreastplateSprite") as Sprite2D;
-    _amuletSprite = GetNode("ArmorItems/AmuletSprite") as Sprite2D;
-
-    MainGame game = (MainGame)FindParent("Game");
-    _dungeon = (Dungeon)game.GetNode("Dungeon");
-    _player = (Player)_dungeon.GetNode("Player");
+    _helmetSprite = GetNode<Sprite2D>("ArmorItems/HelmetSprite");
+    _breastPlateSprite = GetNode<Sprite2D>("ArmorItems/BreastplateSprite");
+    _amuletSprite = GetNode<Sprite2D>("ArmorItems/AmuletSprite");
 
     foreach (var node in GetNode("Pack").GetChildren())
     {
@@ -66,7 +72,7 @@ public partial class Hud : Node2D
         _packSlots[packSlot.SlotNumber] = packSlot;
       }
     }
-    
+
     foreach (var node in GetNode("Hands/background").GetChildren())
     {
       var area2d = (Area2D)node;
@@ -87,17 +93,18 @@ public partial class Hud : Node2D
 
   private Vector2 CalcSpriteScale(float sw, float sh, float dw, float dh)
   {
-    return new(dw / sw, dh / sh);
+    return new Vector2(dw / sw, dh / sh);
   }
 
   public void UpdateStats()
   {
-    _levelDisplay.Text = $"Level: {_dungeon.CurrentLevel.Depth}";
-    _arrowsDisplay.Text = $"Arrows: {_player.Arrows}";
-    _foodDisplay.Text = $"Food: {_player.Food}";
-    _goldDisplay.Text = $"{_player.Gold}";
-    _hpDisplay.Text = $"{_player.Health}/{_player.HealthMax}";
-    _mindDisplay.Text = $"{_player.Mind}/{_player.MindMax}";
+    var pdata = gameModel.PlayerData;
+    _levelDisplay.Text = $"Level: {gameModel.CurrentLevel.Depth}";
+    _arrowsDisplay.Text = $"Arrows: {pdata.Arrows}";
+    _foodDisplay.Text = $"Food: {pdata.Food}";
+    _goldDisplay.Text = $"{pdata.Gold}";
+    _hpDisplay.Text = $"{pdata.Health}/{pdata.HealthMax}";
+    _mindDisplay.Text = $"{pdata.Mind}/{pdata.MindMax}";
     UpdateDamage();
   }
 
@@ -121,16 +128,13 @@ public partial class Hud : Node2D
       sprite.Modulate = item.Color;
     }
   }
-  
+
   public void UpdatePack()
   {
     Assign(_leftHandSprite, _player.LeftHand);
     Assign(_rightHandSprite, _player.RightHand);
     Assign(_atFeetSprite, _player.ItemAtFeet);
-    foreach (var slot in _packSlots.Values)
-    {
-      slot.Item = _player.GetSlot(slot.SlotNumber);
-    }
+    foreach (var slot in _packSlots.Values) slot.Item = _player.GetSlot(slot.SlotNumber);
     // UpdateDamage();
   }
 
@@ -156,16 +160,17 @@ public partial class Hud : Node2D
 
   public void PackSlotClicked(int slot, InputEvent inputEvent)
   {
-    if (inputEvent is InputEventMouseButton {Pressed:true, ButtonIndex: MouseButton.Left })
+    if (inputEvent is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
     {
       var prev = _player.SetSlot(slot, _player.LeftHand);
       _player.LeftHand = prev;
     }
-    else if (inputEvent is InputEventMouseButton {Pressed:true, ButtonIndex: MouseButton.Right } rightClick)
+    else if (inputEvent is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right } rightClick)
     {
       var prev = _player.SetSlot(slot, _player.RightHand);
       _player.RightHand = prev;
     }
+
     UpdateStats();
     UpdatePack();
   }
@@ -173,10 +178,7 @@ public partial class Hud : Node2D
 
   public void ClickedFeet(Node _viewport, InputEvent @event, long _shape_index)
   {
-    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
-    {
-      _player.UseOrTakeItem();
-    }
+    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left }) _player.UseOrTakeItem();
     UpdateStats();
   }
 
@@ -199,10 +201,7 @@ public partial class Hud : Node2D
   // Alternate attack method?
   public void ClickedLeft(Node _viewport, InputEvent @event, long _shape_idx)
   {
-    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
-    {
-      _player.SwapItems();
-    }
+    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right }) _player.SwapItems();
     UpdateAll();
   }
 }

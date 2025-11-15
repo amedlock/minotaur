@@ -2,5 +2,8 @@
 
 public enum LevelType
 {
-  War, Magic, Both, None
+  War,
+  Magic,
+  Both,
+  None
 }

@@ -1,4 +1,8 @@
-﻿using Godot;
+﻿#region
+
+using Godot;
+
+#endregion
 
 namespace minotaur.Source.help;
 
@@ -11,6 +15,6 @@ public partial class Help : Node2D
 
   public void Toggle()
   {
-    Visible = !Visible; 
+    Visible = !Visible;
   }
 }

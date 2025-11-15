@@ -1,26 +1,29 @@
-﻿using Godot;
+﻿#region
+
+using Godot;
 using minotaur.Source.dungeon;
-using DungeonGrid = minotaur.Source.dungeon.builder.DungeonGrid;
+
+#endregion
 
 namespace minotaur.Source.player;
 
 //  debug output window
-public partial class Debug :Label
+public partial class Debug : Label
 {
-  private Player _player;
-  private MainGame _game;
   private Dungeon _dungeon;
-  
+  private MainGame _game;
+  private Player _player;
+
   public override void _Ready()
   {
-    _game = (MainGame)FindParent("Game") as MainGame;
+    _game = (MainGame)FindParent("Game");
     _player = _game.FindChild("Player") as Player;
     _dungeon = _game.FindChild("Dungeon") as Dungeon;
     SetProcess(false);
     Visible = false;
   }
- 
-  
+
+
   public override void _Process(double delta)
   {
     if (Input.IsActionJustPressed("debug"))
@@ -29,10 +32,7 @@ public partial class Debug :Label
       SetProcess(Visible);
     }
 
-    if (!Visible)
-    {
-      return;
-    }
+    if (!Visible) return;
 
     UpdateLabel();
   }
@@ -52,7 +52,7 @@ public partial class Debug :Label
     // var item = player.item_at_feet()
     // if item:
     // info.append("Item: %s/%s pwr:%s" % [item.kind, item.name, item.power])
-		  //
+    //
     // var wall = player.wall_ahead()
     // if wall:
     // info.append("Wall: %s" % wall.name )

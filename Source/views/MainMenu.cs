@@ -1,16 +1,15 @@
-﻿using Godot;
+﻿#region
 
-namespace minotaur.Source.menu;
+using Godot;
+
+#endregion
+
+namespace minotaur.Source.views;
 
 public partial class MainMenu : Node2D
 {
-  private bool _enabled = false;
-  private MainGame _game ;
-
-  public override void _Ready()
-  {
-    _game = GetParent() as  MainGame;
-  }
+  private bool _enabled;
+  private MainGame _game;
 
   public bool Enabled
   {
@@ -21,6 +20,11 @@ public partial class MainMenu : Node2D
       Visible = value;
       SetProcessInput(value);
     }
+  }
+
+  public override void _Ready()
+  {
+    _game = GetParent() as MainGame;
   }
 
   public override void _Input(InputEvent @event)

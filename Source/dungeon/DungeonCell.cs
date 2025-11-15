@@ -1,26 +1,31 @@
-﻿using System;
+﻿#region
+
+using System;
 using Godot;
-using minotaur.Source.dungeon.builder;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
+using minotaur.Source.model;
 using minotaur.Source.player;
+
+#endregion
 
 namespace minotaur.Source.dungeon;
 
 public partial class DungeonCell : Node3D
 {
-  // walls
-  public Node3D North;
+  private Dungeon _dungeon;
   public Node3D East;
-  
-  
-  // contents of cell
-  public Item Item;
   public Enemy Enemy;
   public DungeonGate Gate;
 
-  private Dungeon _dungeon;
+
+  // contents of cell
+  public Item Item;
+
   internal MazeCell MazeCell;
+
+  // walls
+  public Node3D North;
 
   public int X { get; private set; }
 
@@ -40,36 +45,24 @@ public partial class DungeonCell : Node3D
 
   public void PlayerEnters(Player player)
   {
-    if (Gate != null)
-    {
-      player.EnterGate(Gate);
-      return;
-    }
+    if (Gate != null) player.EnterGate(Gate);
   }
-  
+
 
   // returns wall between the two DungeonCells, if any
   public Node3D CheckWall(DungeonCell other)
   {
-    if (other == null)
-    {
-      return null;
-    }
-    
+    if (other == null) return null;
+
     if (other.Y == Y)
     {
-      if (other.X != X)
-      {
-        return other.X > X ? East : other.East;
-      }
+      if (other.X != X) return other.X > X ? East : other.East;
     }
     else if (other.X == X)
     {
-      if (other.Y != Y)
-      {
-        return other.Y > Y ? North : other.North;
-      }
+      if (other.Y != Y) return other.Y > Y ? North : other.North;
     }
+
     return null;
   }
 
@@ -107,7 +100,7 @@ public partial class DungeonCell : Node3D
     }
   }
 
-  public void AddWall(Node3D node,  WallType wallType, Direction direction)
+  public void AddWall(Node3D node, WallType wallType, Direction direction)
   {
     AddChild(node);
     switch (direction)

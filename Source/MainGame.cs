@@ -1,38 +1,46 @@
-﻿using Godot;
+﻿#region
+
+using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.help;
-using minotaur.Source.map;
-using minotaur.Source.menu;
+using minotaur.Source.model;
 using minotaur.Source.player;
+using minotaur.Source.views;
+using MainMenu = minotaur.Source.views.MainMenu;
+using MapView = minotaur.Source.views.MapView;
 
-namespace minotaur;
+#endregion
 
+namespace minotaur.Source;
+
+// initial Controller for the game
 public partial class MainGame : Node3D
 {
-  private Player _player;
-  private Dungeon _dungeon;
-  private Help _help;
-  private MainMenu _menu;
-  private MapView _mapView;
-  
-  private GameMode _gameMode;
-  private int _depth = 0;
-  private int _skillLevel = 1;
-  
-  
-  private RandomNumberGenerator _random = new();
-  private uint _seedNum;
+  private int _depth;
 
-  public Player Player => _player;
-  public Dungeon Dungeon => _dungeon;
+  private GameMode _gameMode;
+  
+
+  // views
+  [Export] private MainMenu menu;
+
+  [Export] private Dungeon dungeon;
+
+  [Export] private Player player;
+
+  [Export] private GameOver gameOver;
+
+  [Export] private MapView _mapView;
+
+  [Export] 
+  private Help _help;
+  
+  // game model
+  [Export] GameModel gameModel;
+
 
   public override void _Ready()
   {
-    _dungeon = FindChild("Dungeon") as Dungeon;
-    _player = _dungeon.FindChild("Player") as Player;
-    _help = FindChild("Help") as Help;
-    _menu = FindChild("MainMenu") as MainMenu;
-    _mapView = FindChild("MapView") as MapView;
     ShowMenu();
   }
 
@@ -50,13 +58,15 @@ public partial class MainGame : Node3D
         {
           _help.Toggle();
         }
+
         break;
-      
-        case GameMode.Map:
+
+      case GameMode.Map:
         if (Input.IsActionJustPressed("view map"))
         {
           ShowGame();
         }
+
         break;
     }
 
@@ -68,9 +78,10 @@ public partial class MainGame : Node3D
 
   public void StartGame(int skill)
   {
-    _seedNum = _random.Randi();
-    _dungeon.InitMaze( skill, _seedNum );
-    _player.Init(skill);
+    uint _seedNum = 0xdeadbeef; // _random.Randi();
+    gameModel.Init(skill, _seedNum);
+    //Dungeon.BuildMaze();
+    player.Init(skill);
     ShowGame();
     _help.Show();
   }
@@ -78,22 +89,22 @@ public partial class MainGame : Node3D
   public void GameOver()
   {
     ShowMap();
-    _player.Disable();
+    player.Disable();
     _gameMode = GameMode.GameOver;
   }
 
   public void WonGame()
   {
     ShowMap();
-    _player.Disable();
+    player.Disable();
     _gameMode = GameMode.GameWon;
   }
-  
+
   public void ShowGame()
   {
-    _dungeon.Show();
-    _player.Show();
-    _menu.Enabled = false;
+    dungeon.Show();
+    player.Show();
+    menu.Enabled = false;
     _mapView.Hide();
     _gameMode = GameMode.Dungeon;
   }
@@ -102,17 +113,15 @@ public partial class MainGame : Node3D
   {
     _gameMode = GameMode.Menu;
     _mapView.Hide();
-    _dungeon.Hide();
-    _player.Hide();
-    _menu.Enabled = true;
+    dungeon.Hide();
+    player.Hide();
+    menu.Enabled = true;
   }
 
   public void ShowMap()
   {
     _mapView.Show();
-    _dungeon.Hide();
+    player.Hide();
     _gameMode = GameMode.Map;
   }
-  
-  
 }

@@ -2,5 +2,8 @@
 
 public enum WallPost
 {
-  SE, SW, NE, NW
+  SE,
+  SW,
+  NE,
+  NW
 }

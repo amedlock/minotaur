@@ -1,27 +1,20 @@
-﻿using Godot;
+﻿#region
+
+using Godot;
 using Godot.Collections;
 using minotaur.Source.dungeon;
-using minotaur.Source.dungeon.builder;
+using minotaur.Source.model;
 using minotaur.Source.player;
 
-namespace minotaur.Source.map;
+#endregion
+
+namespace minotaur.Source.views;
 
 public partial class MapView : Node2D
 {
-  private PackedScene _mapCellPrefab;
-  private PackedScene _gateIcon;
-  private Node2D _walls;
-  private Node2D _other;
-  private Sprite2D _marker;
-
-  private Dungeon _dungeon;
-  private Player _player;
-
   private static readonly Rect2 EmptyTile = MapTile(3, 0);
   private static readonly Rect2 ArrowTile = MapTile(3, 2);
   private static readonly Rect2 TombstoneTile = MapTile(1, 3);
-
-  private Dictionary<int, Sprite2D> _lookup = new();
 
   private static readonly Dictionary<StringName, Rect2> SpriteLookup = new()
   {
@@ -35,8 +28,28 @@ public partial class MapView : Node2D
     ["door_wall"] = MapTile(0, 2),
     ["door_door"] = MapTile(1, 1)
   };
-  
 
+  [Export]
+  private Dungeon _dungeon;
+
+  [Export]
+  private Player _player;
+
+  [Export]
+  private GameModel _gameModel;
+
+  
+  private PackedScene _gateIcon;
+
+  private Dictionary<int, Sprite2D> _lookup = new();
+  private PackedScene _mapCellPrefab;
+  private Sprite2D _marker;
+  private Node2D _other;
+  private Node2D _walls;
+
+
+  private DungeonGrid grid => _gameModel.Grid;
+  
   private static Rect2 MapTile(int x, int y)
   {
     return new Rect2(x * 16, y * 16, 16, 16);
@@ -45,8 +58,8 @@ public partial class MapView : Node2D
   // converts grid coord to map position
   private static Vector2I TilePosition(int x, int y)
   {
-    var xc = (int)(39.5f + (x * 16));
-    var yc = (int)(215.5f - (y * 16));
+    var xc = (int)(39.5f + x * 16);
+    var yc = (int)(215.5f - y * 16);
     return new Vector2I(xc, yc);
   }
 
@@ -58,9 +71,9 @@ public partial class MapView : Node2D
 
   public override void _Ready()
   {
-    var game = GetParent() as MainGame;
-    _dungeon = game.GetNode("Dungeon") as Dungeon;
-    _player = _dungeon.GetNode("Player") as Player;
+    // var game = GetParent() as MainGame;
+    // _dungeon = game.GetNode("Dungeon") as Dungeon;
+    // _player = _dungeon.GetNode("Player") as Player;
     _walls = GetNode("Walls") as Node2D;
     _other = GetNode("Other") as Node2D;
     _marker = GetNode("marker") as Sprite2D;
@@ -68,17 +81,15 @@ public partial class MapView : Node2D
     _gateIcon = ResourceLoader.Load<PackedScene>("res://data/map/gate_icon.tscn");
 
     foreach (var y in GD.Range(12))
+    foreach (var x in GD.Range(12))
     {
-      foreach (var x in GD.Range(12))
-      {
-        var col = _mapCellPrefab.Instantiate() as Sprite2D;
-        AddChild(col);
-        col.Position = TilePosition(x, y);
-        col.RegionRect = EmptyTile;
-        col.ZIndex = 2;
-        col.Name = $"map_{x}_{y}";
-        _lookup[_index(x, y)] = col;
-      }
+      var col = _mapCellPrefab.Instantiate() as Sprite2D;
+      AddChild(col);
+      col.Position = TilePosition(x, y);
+      col.RegionRect = EmptyTile;
+      col.ZIndex = 2;
+      col.Name = $"map_{x}_{y}";
+      _lookup[_index(x, y)] = col;
     }
   }
 
@@ -105,7 +116,7 @@ public partial class MapView : Node2D
 
   public void ClearAll()
   {
-    foreach( var n in _other.GetChildren())
+    foreach (var n in _other.GetChildren())
     {
       _other.RemoveChild(n);
       n.QueueFree();
@@ -124,24 +135,16 @@ public partial class MapView : Node2D
     ClearAll();
     var label = (Label)FindChild("Label");
     label.Text = $"Level: {levelInfo.Depth}";
-    
+
     foreach (var y in GD.Range(_dungeon.Height))
+    foreach (var x in GD.Range(_dungeon.Width))
     {
-      foreach (var x in GD.Range(_dungeon.Width))
-      {
-        var cell = _dungeon.Grid.Cell(x, y);
-        var spr = _lookup[_index(x, y)];
-        spr.RegionRect = ChooseTile(cell);
-        // one of the walls is present, but not the other
-        if (cell.North == WallType.Empty || cell.East == WallType.Empty)
-        {
-          FixUpCorner(cell);
-        }
-        if (cell.Gate!=GateType.None)
-        {
-          AddGate(cell.Gate, x, y);
-        }
-      }
+      var cell = grid.Cell(x, y);
+      var spr = _lookup[_index(x, y)];
+      spr.RegionRect = ChooseTile(cell);
+      // one of the walls is present, but not the other
+      if (cell.North == WallType.Empty || cell.East == WallType.Empty) FixUpCorner(cell);
+      if (cell.Gate != GateType.None) AddGate(cell.Gate, x, y);
     }
   }
 
@@ -169,14 +172,10 @@ public partial class MapView : Node2D
 
   private void FixUpCorner(MazeCell cell)
   {
-    if (cell is { East: WallType.Empty })
-    {
-      return;
-    }
+    if (cell is { East: WallType.Empty }) return;
 
     if (cell is { North: WallType.Empty })
     {
-      return;
     }
     // var fix = _gateIcon.Instantiate() as Sprite2D;
     // fix.Name = $"fix_{cell.X}_{cell.Y}";
@@ -184,5 +183,4 @@ public partial class MapView : Node2D
     // fix.Position = TilePosition(cell.X, cell.Y);
     // _other.AddChild(fix);
   }
-
 }

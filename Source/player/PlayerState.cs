@@ -2,7 +2,7 @@
 
 public enum PlayerState
 {
-  Idle,  		// default state
+  Idle, // default state
   Turning,
   Moving,
   Glance,

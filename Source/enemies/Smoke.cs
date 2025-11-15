@@ -1,11 +1,15 @@
-﻿using Godot;
+﻿#region
+
+using Godot;
+
+#endregion
 
 namespace minotaur.Source.enemies;
 
 public partial class Smoke : Sprite3D
 {
   private AnimationPlayer _animationPlayer;
-  
+
   public override void _Ready()
   {
     _animationPlayer = GetNode<AnimationPlayer>("Animation");
@@ -23,5 +27,4 @@ public partial class Smoke : Sprite3D
     GetParent().RemoveChild(this);
     QueueFree();
   }
- 
 }

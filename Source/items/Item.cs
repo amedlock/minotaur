@@ -1,4 +1,8 @@
-﻿using Godot;
+﻿#region
+
+using Godot;
+
+#endregion
 
 namespace minotaur.Source.items;
 

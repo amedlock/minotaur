@@ -1,57 +1,70 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
+using minotaur.Source.model;
+
+#endregion
 
 namespace minotaur.Source.player;
 
 public partial class Combat : Node
 {
-  private Player _player;
-  private Dungeon _dungeon;
-  private MainGame _mainGame;
-  private GameDb _gameDb;
-
-  private AnimationPlayer _playerAnim;
-  private Sprite2D _playerWeapon;
-  private AudioStreamPlayer _playerAudio;
-
-  private AnimationPlayer _enemyAnim;
-  private Sprite2D _enemyWeapon;
-  private AudioStreamPlayer _enemyAudio;
-
-  private AudioStream _fireballSound;
-  private AudioStream _lightningSound;
-  
-  private ItemInfo _playerItem;
-  private ItemInfo _enemyItem;
-  private DungeonCell _enemyCell;
-  private Enemy _enemy;
-  private EnemyInfo _enemyInfo;
-
-  private List<ItemInfo> _enemyWeapons;
-  
   private const float TurnTime = 2f;
   private const float EnemyDelay = 0.75f;
 
-  // time in turn so far
-  private double _turnElapsed = 0.75f;
+  // player weapon broken?
+  private bool _broken;
+  
+  [Export]
+  private Dungeon _dungeon;
+  private Enemy _enemy;
+
+  private AnimationPlayer _enemyAnim;
+
+  //  enemy can only do one thing: attack
+  private bool _enemyAttack;
+  private AudioStreamPlayer _enemyAudio;
+  private DungeonCell _enemyCell;
+  private EnemyInfo _enemyInfo;
+  private ItemInfo _enemyItem;
+  private double _enemyTurn;
+  private Sprite2D _enemyWeapon;
+
+  private List<ItemInfo> _enemyWeapons;
+
+  private AudioStream _fireballSound;
+  private AudioStream _lightningSound;
+
+  [Export] 
+  private GameModel gameModel;
+ 
+  [Export]
+  private MainGame _mainGame;
+  
+  [Export]
+  private Player _player;
+
+  private AnimationPlayer _playerAnim;
 
   // has player attacked this turn
   private bool _playerAttack;
+  private AudioStreamPlayer _playerAudio;
+
+  private ItemInfo _playerItem;
 
   // has player retreated this turn
   private bool _playerRetreat;
 
-  //  enemy can only do one thing: attack
-  private bool _enemyAttack;
-  
-  // player weapon broken?
-  private bool _broken;
+  private double _playerTurn;
+  private Sprite2D _playerWeapon;
 
-  private double _playerTurn = 0;
-  private double _enemyTurn = 0;
+  // time in turn so far
+  private double _turnElapsed = 0.75f;
+
 
   public bool PlayerAttack
   {
@@ -61,11 +74,10 @@ public partial class Combat : Node
 
   public override void _Ready()
   {
-    _player = (Player)GetParent();
-    _dungeon = (Dungeon)_player.GetParent();
-    _mainGame = (MainGame)_dungeon.GetParent();
-    _gameDb = (GameDb)_mainGame.GetNode("GameDB");
-    
+    // _player = (Player)GetParent();
+    // _dungeon = (Dungeon)_player.GetParent();
+    // _mainGame = (MainGame)_dungeon.GetParent();
+
     _playerAnim = GetNode<AnimationPlayer>("PlayerAnim");
     _playerAnim.AnimationFinished += name => DamageEnemy();
     _playerWeapon = GetNode<Sprite2D>("PlayerWeapon");
@@ -78,7 +90,7 @@ public partial class Combat : Node
 
     _fireballSound = ResourceLoader.Load<AudioStream>("res://data/sounds/fireball.wav");
     _lightningSound = ResourceLoader.Load<AudioStream>("res://data/sounds/lightning.wav");
-    
+
     _playerWeapon.Visible = false;
     _enemyWeapon.Visible = false;
     SetProcess(false);
@@ -96,32 +108,23 @@ public partial class Combat : Node
 
   public void Start(DungeonCell dungeonCell, bool attack)
   {
-    if (_player.PlayerState == PlayerState.Combat)
-    {
-      return;
-    }
-    if (dungeonCell.Enemy is not { Info: not null })
-    {
-      return;
-    }
+    if (_player.PlayerState == PlayerState.Combat) return;
+    if (dungeonCell.Enemy is not { Info: not null }) return;
 
     GD.Print("Starting Combat");
     _player.PlayerState = PlayerState.Combat;
     _enemyCell = dungeonCell;
     _enemy = _enemyCell.Enemy;
     _enemyInfo = _enemy.Info;
-    _enemyWeapons = _gameDb.FindWeapons(_enemyInfo.Type, _dungeon.CurrentLevel);
+    // _enemyWeapons = gameModel.FindWeapons(_enemyInfo.Type, _dungeon.CurrentLevel);
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
     ResetTurn();
     SetProcess(true);
-    if (attack)
-    {
-      AttackMonster();
-    }
+    if (attack) AttackMonster();
   }
 
-  
+
   public override void _Process(double delta)
   {
     if (_player.PlayerState == PlayerState.Combat)
@@ -143,11 +146,11 @@ public partial class Combat : Node
     //   SetProcess(false);
     //   return;
     // }
-    
+
     _playerTurn += delta;
     _enemyTurn += delta;
     _playerAttack = _playerAttack || Input.IsActionJustPressed("attack");
-    
+
     if (_playerTurn >= TurnTime)
     {
       if (_playerAttack)
@@ -166,16 +169,14 @@ public partial class Combat : Node
       EnemyFire();
       _enemyTurn = 0;
     }
-    
   }
 
   private void Retreat()
   {
     SetProcess(false);
     _player.PlayerState = PlayerState.Idle;
-    return;
   }
-  
+
   private void AttackMonster()
   {
     _playerAttack = false;
@@ -184,68 +185,51 @@ public partial class Combat : Node
 
   private AudioStream GetSoundFx(ItemInfo item)
   {
-    if (item == null)
-    {
-      return null;
-    }
-    
-    if (item.Name is "fireball" or "small_fireball")
-    {
-      return _fireballSound;
-    }
-    
-    if (item.Name is "wand" or "staff" or "scroll" or "book")
-    {
-      return _lightningSound;
-    }
-    
+    if (item == null) return null;
+
+    if (item.Name is "fireball" or "small_fireball") return _fireballSound;
+
+    if (item.Name is "wand" or "staff" or "scroll" or "book") return _lightningSound;
+
     return null;
   }
-  
+
 
   private void PlayerFire()
   {
     _playerItem = _player.RightHand;
-    if (_playerItem is not { IsWeapon: true })
-    {
-      return;
-    }
+    if (_playerItem is not { IsWeapon: true }) return;
 
     _broken = false;
     var fx = GetSoundFx(_playerItem);
-    if (_playerItem.IsBow){
-      if (_player.Arrows < 1)
-      {
-        return;
-      }
-      _playerWeapon.RegionRect = _gameDb.FindIcon("arrow"); 
+    if (_playerItem.IsBow)
+    {
+      if (_player.Arrows < 1) return;
+      _playerWeapon.RegionRect = gameModel.GameDb.FindIcon("arrow");
       _player.Arrows -= 1;
-      _broken = (GD.Randi() % 30) == 29;
+      _broken = GD.Randi() % 30 == 29;
     }
     else if (_playerItem.IsScroll)
     {
-      _playerWeapon.RegionRect = _gameDb.FindIcon("fireball");
-      _broken = (GD.Randi() % 25) == 24;
+      _playerWeapon.RegionRect = gameModel.GameDb.FindIcon("fireball");
+      _broken = GD.Randi() % 25 == 24;
     }
     else if (_playerItem.IsBook)
     {
-      _playerWeapon.RegionRect = _gameDb.FindIcon("small_lightning");
-      _broken = (GD.Randi() % 25) == 24;
+      _playerWeapon.RegionRect = gameModel.GameDb.FindIcon("small_lightning");
+      _broken = GD.Randi() % 25 == 24;
     }
     else
     {
-      _playerWeapon.RegionRect = _playerItem.Image;	
+      _playerWeapon.RegionRect = _playerItem.Image;
       _player.RightHand = null;
     }
+
     _playerWeapon.Modulate = _playerItem.Color;
     if (_playerItem.Spins)
-    {
       _playerAnim.Play("SpinFire");
-    }
     else
-    {
       _playerAnim.Play("Fire");
-    }
 
     if (fx != null)
     {
@@ -254,20 +238,15 @@ public partial class Combat : Node
     }
 
     if (_broken && _dungeon.CurrentLevel.Depth > 2) // don't break on first 2 levels
-    {
-      _player.RightHand = null;  //clear out of the players hand
-    }
+      _player.RightHand = null; //clear out of the players hand
 
     _player.Hud.UpdatePack();
   }
-  
+
 
   private void DamageEnemy()
   {
-    if (_playerItem == null)
-    {
-      return;
-    }
+    if (_playerItem == null) return;
 
     _enemy.Damage(_playerItem);
     _playerItem = null;
@@ -279,23 +258,16 @@ public partial class Combat : Node
       SetProcess(false);
     }
 
-    if (_broken)
-    {
-      _player.RightHand = null;
-    }
+    if (_broken) _player.RightHand = null;
   }
 
 
   private void DamagePlayer()
   {
-    if (_enemy == null || _enemy.IsDead || _enemyItem==null )
-    {
-      return;
-    }
+    if (_enemy == null || _enemy.IsDead || _enemyItem == null) return;
     _player.Damage(_enemy, _enemyItem);
   }
-  
-  
+
 
   private void EnemyFire()
   {
@@ -310,16 +282,11 @@ public partial class Combat : Node
     }
 
     if (_enemyItem.Spins)
-    {
       _enemyAnim.Play("SpinFire");
-    }
     else
-    {
       _enemyAnim.Play("Fire");
-    }
 
     _player.Damage(_enemy, _enemyItem);
     _player.Hud.UpdateAll();
   }
-  
 }

@@ -1,18 +1,21 @@
-﻿using Godot;
-using minotaur.Source.dungeon;
+﻿#region
+
+using Godot;
+
+#endregion
 
 namespace minotaur.Source.enemies;
 
 public class EnemyInfo
 {
-  public string Name;
-  public EnemyType Type;
-  public int MinLevel;
-  public int Power;
-  public int MinHp;
-  public int MaxHp;
-  public int MinMind;
-  public int MaxMind;
   public int BaseDamage = 5;
   public Rect2I ImageRect;
+  public int MaxHp;
+  public int MaxMind;
+  public int MinHp;
+  public int MinLevel;
+  public int MinMind;
+  public string Name;
+  public int Power;
+  public EnemyType Type;
 }
