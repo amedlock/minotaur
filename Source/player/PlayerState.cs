@@ -6,6 +6,7 @@ public enum PlayerState
   Turning,
   Moving,
   Glance,
+  ViewMap,
   Combat,
   Wait,
   Won,

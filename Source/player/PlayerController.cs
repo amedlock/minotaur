@@ -3,6 +3,8 @@
 using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.hud;
+using minotaur.Source.model;
+using minotaur.Source.views;
 
 #endregion
 
@@ -19,8 +21,12 @@ public partial class PlayerController : Node
   [Export] private Combat _combat;
 
   [Export] private Dungeon _dungeon;
+  
+  [Export] private GameModel _gameModel;
 
   [Export] private Hud _hud;
+  
+  [Export] private MapView _mapView;
 
   [Export] private Player _player;
 
@@ -49,11 +55,11 @@ public partial class PlayerController : Node
     // _player.CanRetreat = true;
     var pos = _player.Position;
     var delta = _player.Transform.Basis.Z * -3;
-    _player.PlayerState = PlayerState.Moving;
+    _gameModel.PlayerState = PlayerState.Moving;
     var tween = CreateTween().TweenProperty(_player, "position", pos + delta, MoveTime);
     tween.Finished += () =>
     {
-      _player.PlayerState = PlayerState.Idle;
+      _gameModel.PlayerState = PlayerState.Idle;
       _player.Coord = nextCell.Coord;
       _hud.UpdateAll();
     };
@@ -68,19 +74,19 @@ public partial class PlayerController : Node
 
     var pos = _player.Position;
     var pvec = _player.Transform.Basis.Z * -3f;
-    _player.PlayerState = PlayerState.Moving;
+    _gameModel.PlayerState = PlayerState.Moving;
     var tween = CreateTween().TweenProperty(_player, "position", pos - pvec, MoveTime);
     tween.Finished += () =>
     {
       _hud.UpdateAll();
       _player.Coord = nextCell.Coord;
-      _player.PlayerState = PlayerState.Idle;
+      _gameModel.PlayerState = PlayerState.Idle;
     };
   }
 
   public void Turn(int amount)
   {
-    _player.PlayerState = PlayerState.Turning;
+    _gameModel.PlayerState = PlayerState.Turning;
     var rot = _player.Dir + amount;
     var dir = Mathf.PosMod(rot, 360);
     var compassRot = Mathf.PosMod(_hud.Compass.RotationDegrees - rot, 360);
@@ -90,18 +96,18 @@ public partial class PlayerController : Node
     tween.Finished += () =>
     {
       _player.Dir = dir;
-      _player.PlayerState = PlayerState.Idle;
+      _gameModel.PlayerState = PlayerState.Idle;
     };
   }
 
   public void Glance(int amount)
   {
     var rot = _player.Dir + amount;
-    _player.PlayerState = PlayerState.Turning;
+    _gameModel.PlayerState = PlayerState.Turning;
     var tween = CreateTween().TweenProperty(_player, "rotation_degrees:y", rot, GlanceTime);
     tween.Finished += () =>
     {
-      _player.PlayerState = PlayerState.Glance;
+      _gameModel.PlayerState = PlayerState.Glance;
       _player.Dir = Mathf.PosMod(rot, 360);
       _glanceAmount += amount; 
     };
@@ -109,16 +115,16 @@ public partial class PlayerController : Node
 
   public void UnGlance()
   {
-    if (_player.PlayerState != PlayerState.Glance)
+    if (_gameModel.PlayerState != PlayerState.Glance)
     {
       return;
     }
     var rot = _player.Dir - _glanceAmount;
-    _player.PlayerState = PlayerState.Turning;
+    _gameModel.PlayerState = PlayerState.Turning;
     var tween = CreateTween().TweenProperty(_player, "rotation_degrees:y", rot, GlanceTime);
     tween.Finished += () =>
     {
-      _player.PlayerState = PlayerState.Idle;
+      _gameModel.PlayerState = PlayerState.Idle;
       _glanceAmount = 0;
       _player.Dir = Mathf.PosMod(rot, 360);
     };
@@ -141,5 +147,21 @@ public partial class PlayerController : Node
 
   public void Retreat()
   {
+  }
+
+  public void ShowMap(bool visible)
+  {
+    if (visible)
+    {
+      _mapView.Show();
+      _player.Hide();
+
+    }
+    else
+    {
+      _mapView.Hide();
+      _player.Show();
+    }
+
   }
 }

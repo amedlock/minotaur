@@ -21,6 +21,10 @@ public partial class Combat : Node
   
   [Export]
   private Dungeon _dungeon;
+  
+  [Export]
+  private GameModel _gameModel;
+  
   private Enemy _enemy;
 
   private AnimationPlayer _enemyAnim;
@@ -108,11 +112,10 @@ public partial class Combat : Node
 
   public void Start(DungeonCell dungeonCell, bool attack)
   {
-    if (_player.PlayerState == PlayerState.Combat) return;
     if (dungeonCell.Enemy is not { Info: not null }) return;
 
     GD.Print("Starting Combat");
-    _player.PlayerState = PlayerState.Combat;
+    _gameModel.PlayerState = PlayerState.Combat;
     _enemyCell = dungeonCell;
     _enemy = _enemyCell.Enemy;
     _enemyInfo = _enemy.Info;
@@ -127,7 +130,7 @@ public partial class Combat : Node
 
   public override void _Process(double delta)
   {
-    if (_player.PlayerState == PlayerState.Combat)
+    if (_gameModel.PlayerState == PlayerState.Combat)
     {
       SetProcess(false);
       return;
@@ -174,7 +177,7 @@ public partial class Combat : Node
   private void Retreat()
   {
     SetProcess(false);
-    _player.PlayerState = PlayerState.Idle;
+    _gameModel.PlayerState = PlayerState.Idle;
   }
 
   private void AttackMonster()
@@ -254,7 +257,7 @@ public partial class Combat : Node
     {
       _enemy.Die();
       _enemyCell.RemoveEnemy();
-      _player.PlayerState = PlayerState.Idle;
+      _gameModel.PlayerState = PlayerState.Idle;
       SetProcess(false);
     }
 

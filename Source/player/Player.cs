@@ -68,20 +68,6 @@ public partial class Player : Node3D
   public int WarDamage = 0;
   public int WarExp;
 
-  public PlayerState PlayerState
-  {
-    get => _playerState;
-    set
-    {
-      if (_playerState != value)
-      {
-        if (value == PlayerState.Combat || _playerState == PlayerState.Combat)
-          GD.Print($"PlayerState changed to {value}");
-        _playerState = value;
-      }
-    }
-  }
-
   public bool IsDead => Health <= 0 || Mind <= 0;
 
 
@@ -413,7 +399,6 @@ public partial class Player : Node3D
   {
     _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/magic.wav");
     _dungeon.LoadGateLevel(dungeonGate);
-    GetNode<PlayerInput>("PlayerControl").Reset();
     NeedsRest = true;
   }
 
@@ -421,7 +406,7 @@ public partial class Player : Node3D
   {
     Killed(enemy);
     NeedsRest = true;
-    PlayerState = PlayerState.Idle;
+    // PlayerState = PlayerState.Idle;
     Hud.UpdateAll();
   }
 

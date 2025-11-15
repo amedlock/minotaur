@@ -175,7 +175,7 @@ public partial class MapView : Node2D
     icon.Position = TilePosition(x, y);
   }
 
-  private void FixUpCorner(MazeCell cell)
+  private static void FixUpCorner(MazeCell cell)
   {
     if (cell is { East: WallType.Empty }) return;
 

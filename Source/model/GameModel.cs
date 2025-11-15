@@ -26,7 +26,8 @@ public partial class GameModel : Node
 
   public DungeonGrid Grid => _grid;
   public PlayerData PlayerData => _playerData;
-  
+  public PlayerState PlayerState { get; set; }
+
   public override void _Ready()
   {
     _playerData = new PlayerData();
