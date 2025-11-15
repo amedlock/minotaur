@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
@@ -15,6 +16,8 @@ public partial class GameModel : Node
   private PlayerData _playerData;
   public GameDb GameDb { get; private set; }
 
+  public LevelRandomizer randomizer;
+  
   public int Depth { get; }
 
   public LevelInfo CurrentLevel => Levels[Depth];
@@ -29,7 +32,10 @@ public partial class GameModel : Node
     _playerData = new PlayerData();
     GameDb = new GameDb();
     _grid = new DungeonGrid(12, 12);
+    randomizer = new LevelRandomizer(_grid, GameDb);
   }
+
+  
 
   // generate levelInfo for the dungeon using the skill and seed
   public void Init(int skill, uint seed)
@@ -51,4 +57,17 @@ public partial class GameModel : Node
       Levels.Add(levelInfo);
     }
   }
+  
+  public void CreateLevel(int depth)
+  {
+    int index = depth - 1;
+    if (index >= Levels.Count)
+    {
+      throw new ArgumentException("Invalid depth");
+    }
+    
+    var levelInfo = Levels[index];
+    randomizer.BuildLevel(levelInfo);
+  }
+  
 }

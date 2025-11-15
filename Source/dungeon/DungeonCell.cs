@@ -14,7 +14,6 @@ namespace minotaur.Source.dungeon;
 public partial class DungeonCell : Node3D
 {
   private Dungeon _dungeon;
-  public Node3D East;
   public Enemy Enemy;
   public DungeonGate Gate;
 
@@ -26,7 +25,8 @@ public partial class DungeonCell : Node3D
 
   // walls
   public Node3D North;
-
+  public Node3D East;
+  
   public int X { get; private set; }
 
   public int Y { get; private set; }

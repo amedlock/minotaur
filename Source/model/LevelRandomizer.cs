@@ -5,34 +5,26 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using minotaur.Source.dungeon;
+using minotaur.Source.enemies;
 using minotaur.Source.items;
 
 #endregion
 
 namespace minotaur.Source.model;
 
-public class LevelRandomizer
+public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
 {
-  RandomNumberGenerator rng;
-  GameDb gameDb;
-  DungeonGrid grid;
-
-  public LevelRandomizer(uint seed, DungeonGrid grid, GameDb gameDb)
-  {
-    rng = new RandomNumberGenerator();
-    this.grid = grid;
-    this.gameDb = gameDb;
-  }
+  RandomNumberGenerator rng = new();
 
   public void BuildLevel(LevelInfo levelInfo)
   {
     rng.Seed = levelInfo.SeedNumber;
-    grid.GateType = levelInfo.GateType;
+    dungeonGrid.GateType = levelInfo.GateType;
     BuildMazePrim(levelInfo);
     AddMoreDoors();
     AddExit(levelInfo);
     AddGates(levelInfo);
-    var emptyCells = grid.EmptyCells.Where(cell => !IsOuterMaze(cell)).ToList();
+    var emptyCells = dungeonGrid.EmptyCells.Where(cell => !IsOuterMaze(cell)).ToList();
 
     AddEnemies(levelInfo, emptyCells);
     AddItems(levelInfo, emptyCells);
@@ -67,10 +59,10 @@ public class LevelRandomizer
   {
     List<MazeCell> items =
     [
-      grid.Cell(cell.X, cell.Y + 1),
-      grid.Cell(cell.X, cell.Y - 1),
-      grid.Cell(cell.X + 1, cell.Y),
-      grid.Cell(cell.X - 1, cell.Y)
+      dungeonGrid.Cell(cell.X, cell.Y + 1),
+      dungeonGrid.Cell(cell.X, cell.Y - 1),
+      dungeonGrid.Cell(cell.X + 1, cell.Y),
+      dungeonGrid.Cell(cell.X - 1, cell.Y)
     ];
     return items.Where(x => x != null);
   }
@@ -80,13 +72,24 @@ public class LevelRandomizer
     return other.Any(c => c.AdjacentTo(cell));
   }
 
+  private void ClearOuterWall()
+  {
+    foreach (var cell in dungeonGrid.Cells)
+    {
+      if (cell.X == 0 || cell.X == dungeonGrid.Width - 1) cell.North = WallType.Empty;
+
+      if (cell.Y == 0 || cell.Y == dungeonGrid.Height - 1) cell.East = WallType.Empty;
+    }
+  }
+
+  
   private void BuildMazePrim(LevelInfo levelInfo)
   {
-    grid.Reset();
+    dungeonGrid.Reset();
     CreateCorridor();
     AddOuterDoors();
 
-    var notMaze = grid.Cells.Where(cell => !IsOuterMaze(cell)).ToList();
+    var notMaze = dungeonGrid.Cells.Where(cell => !IsOuterMaze(cell)).ToList();
     List<MazeCell> inMaze = [];
     var start = TakeRandom(notMaze);
     start.Used = true;
@@ -111,13 +114,13 @@ public class LevelRandomizer
 
   private bool IsOuterMaze(MazeCell mc)
   {
-    return mc.X == 0 || mc.Y == 0 || mc.X == grid.Width - 1 || mc.Y == grid.Height - 1;
+    return mc.X == 0 || mc.Y == 0 || mc.X == dungeonGrid.Width - 1 || mc.Y == dungeonGrid.Height - 1;
   }
 
   // clear walls to create outer corridor
   private void CreateCorridor()
   {
-    foreach (var cell in grid.Cells)
+    foreach (var cell in dungeonGrid.Cells)
     {
       var x = cell.X;
       var y = cell.Y;
@@ -125,19 +128,19 @@ public class LevelRandomizer
       if (x == 0)
       {
         cell.North = WallType.Empty;
-        if (y == 0 || y == grid.Height - 1) cell.East = WallType.Empty;
+        if (y == 0 || y == dungeonGrid.Height - 1) cell.East = WallType.Empty;
       }
       else if (y == 0)
       {
         cell.East = WallType.Empty;
-        if (x == grid.Width - 1) cell.North = WallType.Empty;
+        if (x == dungeonGrid.Width - 1) cell.North = WallType.Empty;
       }
-      else if (y == grid.Height - 1)
+      else if (y == dungeonGrid.Height - 1)
       {
         cell.North = WallType.Empty;
         cell.East = WallType.Empty;
       }
-      else if (x == grid.Width - 1)
+      else if (x == dungeonGrid.Width - 1)
       {
         cell.East = WallType.Empty;
         cell.North = WallType.Empty;
@@ -147,19 +150,19 @@ public class LevelRandomizer
 
   private void AddOuterDoors()
   {
-    grid.Cell(3, 0).North = WallType.Door;
-    grid.Cell(8, 0).North = WallType.Door;
-    grid.Cell(3, grid.Height - 2).North = WallType.Door;
-    grid.Cell(8, grid.Height - 2).North = WallType.Door;
-    grid.Cell(0, 3).East = WallType.Door;
-    grid.Cell(0, 8).East = WallType.Door;
-    grid.Cell(grid.Width - 2, 3).East = WallType.Door;
-    grid.Cell(grid.Width - 2, 8).East = WallType.Door;
+    dungeonGrid.Cell(3, 0).North = WallType.Door;
+    dungeonGrid.Cell(8, 0).North = WallType.Door;
+    dungeonGrid.Cell(3, dungeonGrid.Height - 2).North = WallType.Door;
+    dungeonGrid.Cell(8, dungeonGrid.Height - 2).North = WallType.Door;
+    dungeonGrid.Cell(0, 3).East = WallType.Door;
+    dungeonGrid.Cell(0, 8).East = WallType.Door;
+    dungeonGrid.Cell(dungeonGrid.Width - 2, 3).East = WallType.Door;
+    dungeonGrid.Cell(dungeonGrid.Width - 2, 8).East = WallType.Door;
   }
 
   private bool CheckWall(int x, int y, Direction dir)
   {
-    var cell = grid.Cell(x, y);
+    var cell = dungeonGrid.Cell(x, y);
     if (cell == null) return false;
 
     return dir switch
@@ -177,22 +180,22 @@ public class LevelRandomizer
   {
     if (CheckWall(3, 3, Direction.East))
     {
-      grid.Cell(3, 3).East = WallType.Door;
+      dungeonGrid.Cell(3, 3).East = WallType.Door;
     }
 
     if (CheckWall(8, 4, Direction.North))
     {
-      grid.Cell(8, 4).North = WallType.Door;
+      dungeonGrid.Cell(8, 4).North = WallType.Door;
     }
 
     if (CheckWall(3, 8, Direction.North))
     {
-      grid.Cell(3, 8).North = WallType.Door;
+      dungeonGrid.Cell(3, 8).North = WallType.Door;
     }
 
     if (CheckWall(8, 9, Direction.North))
     {
-      grid.Cell(8, 9).North = WallType.Door;
+      dungeonGrid.Cell(8, 9).North = WallType.Door;
     }
   }
 
@@ -217,8 +220,8 @@ public class LevelRandomizer
 
     List<Vector2I> exitLoc = [new(3, 4), new(7, 4), new(4, 3), new(4, 7)];
     var exit = ChooseRandom(exitLoc);
-    var cell = grid.Cell(exit);
-    cell.ItemInfo = gameDb.FindItem("ladder");
+    var cell = dungeonGrid.Cell(exit);
+    cell.ItemInfo = db.FindItem("ladder");
     cell.Used = true;
   }
 
@@ -239,8 +242,8 @@ public class LevelRandomizer
     };
     if (gates.Count == 2)
     {
-      grid.Cell(grid.Width - 1, 0).Gate = gates[0];
-      grid.Cell(0, grid.Height - 1).Gate = gates[1];
+      dungeonGrid.Cell(dungeonGrid.Width - 1, 0).Gate = gates[0];
+      dungeonGrid.Cell(0, dungeonGrid.Height - 1).Gate = gates[1];
     }
   }
 
@@ -254,7 +257,7 @@ public class LevelRandomizer
     }
 
     var num = rng.RandiRange(0, 6) + 12;
-    var enemies = gameDb.FindEnemies(info);
+    var enemies = db.FindEnemies(info);
     var sorted = enemies.OrderBy(_ => rng.Randi()).ToList();
     if (sorted.Count == 0) throw new Exception("No enemies allowed for placement");
 
@@ -264,7 +267,7 @@ public class LevelRandomizer
 
       var target = TakeRandom(cells);
       var monster = sorted[n % sorted.Count];
-      grid.Cell(target.X, target.Y).EnemyInfo = monster;
+      dungeonGrid.Cell(target.X, target.Y).EnemyInfo = monster;
     }
   }
 
@@ -273,7 +276,7 @@ public class LevelRandomizer
     if (currentLevel.HasMinotaur)
     {
       var cell = TakeRandom(cells);
-      cell.EnemyInfo = gameDb.FindEnemy("Minotaur");
+      cell.EnemyInfo = db.FindEnemy("Minotaur");
     }
   }
 
@@ -282,7 +285,7 @@ public class LevelRandomizer
   {
     if (cells.Count == 0) return;
 
-    var keys = gameDb.Items.Where(i => i.ItemType == ItemType.Key && !info.HasItem(i)).ToList();
+    var keys = db.Items.Where(i => i.ItemType == ItemType.Key && !info.HasItem(i)).ToList();
     if (keys.Count == 0)
     {
       GD.Print("Warning no 'key' items found for level ", info);
@@ -290,7 +293,7 @@ public class LevelRandomizer
     }
 
     var c = ChooseRandom(cells);
-    grid.Cell(c.X, c.Y).ItemInfo = ChooseRandom(keys);
+    dungeonGrid.Cell(c.X, c.Y).ItemInfo = ChooseRandom(keys);
   }
 
   private void AddLoot(int num, LevelInfo info, List<MazeCell> cells)
@@ -304,58 +307,58 @@ public class LevelRandomizer
       default: names.Add("chest"); break;
     }
 
-    var items = gameDb.Items.Where(i => i.ItemType == ItemType.Container && names.Contains(i.Name)).ToList();
+    var items = db.Items.Where(i => i.ItemType == ItemType.Container && names.Contains(i.Name)).ToList();
 
     foreach (var unused in GD.Range(num))
     {
       if (cells.Count == 0 || items.Count == 0) break;
 
       var target = TakeRandom(cells);
-      grid.Cell(target.X, target.Y).ItemInfo = ChooseRandom(items);
+      dungeonGrid.Cell(target.X, target.Y).ItemInfo = ChooseRandom(items);
     }
   }
 
   private void AddMoney(int num, LevelInfo info, List<MazeCell> cells)
   {
-    var allowed = gameDb.Items.Where(i => i.ItemType == ItemType.Money).ToList();
+    var allowed = db.Items.Where(i => i.ItemType == ItemType.Money).ToList();
     if (allowed.Count > 0)
       foreach (var n in GD.Range(num))
       {
         if (cells.Count == 0) return;
 
         var c = TakeRandom(cells);
-        grid.Cell(c.X, c.Y).ItemInfo = ChooseRandom(allowed);
+        dungeonGrid.Cell(c.X, c.Y).ItemInfo = ChooseRandom(allowed);
       }
   }
 
   private void AddOther(List<MazeCell> cells)
   {
-    var food = gameDb.FindItem("food");
+    var food = db.FindItem("food");
     var foodCount = rng.RandiRange(1, 3);
     foreach (var unused in GD.Range(foodCount))
       if (cells.Count > 0)
       {
         var c = TakeRandom(cells);
-        grid.Cell(c.X, c.Y).ItemInfo = food;
+        dungeonGrid.Cell(c.X, c.Y).ItemInfo = food;
       }
       else
       {
         return;
       }
 
-    var quiver = gameDb.FindItem("quiver");
+    var quiver = db.FindItem("quiver");
     foreach (var unused in GD.Range(rng.RandiRange(1, 3)))
     {
       if (cells.Count == 0) return;
 
       var c = TakeRandom(cells);
-      grid.Cell(c.X, c.Y).ItemInfo = quiver;
+      dungeonGrid.Cell(c.X, c.Y).ItemInfo = quiver;
     }
   }
 
   private void AddWeapons(int weaponCount, int armorCount, LevelInfo info, List<MazeCell> cells)
   {
-    var armor = gameDb.FindArmor(info);
+    var armor = db.FindArmor(info);
     foreach (var n in GD.Range(armorCount))
     {
       if (cells.Count == 0 || armor.Count == 0) break;
@@ -364,7 +367,7 @@ public class LevelRandomizer
       c.ItemInfo = TakeRandom(armor);
     }
 
-    var weapons = gameDb.FindWeapons(info);
+    var weapons = db.FindWeapons(info);
     foreach (var n in GD.Range(weaponCount))
     {
       if (cells.Count == 0 || armor.Count == 0) break;
@@ -375,7 +378,7 @@ public class LevelRandomizer
 
   private void AddAmulets(List<MazeCell> cells)
   {
-    var amulets = gameDb.Items.Where(i => i.ItemType == ItemType.Armor).ToList();
+    var amulets = db.Items.Where(i => i.ItemType == ItemType.Armor).ToList();
     foreach (var n in GD.Range(rng.RandiRange(0, 3)))
     {
       if (cells.Count == 0 || amulets.Count == 0) break;
@@ -396,4 +399,6 @@ public class LevelRandomizer
     AddWeapons(weapons, armor, info, cells);
     AddAmulets(cells);
   }
+  
+  
 }

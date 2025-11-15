@@ -81,15 +81,17 @@ public partial class MapView : Node2D
     _gateIcon = ResourceLoader.Load<PackedScene>("res://data/map/gate_icon.tscn");
 
     foreach (var y in GD.Range(12))
-    foreach (var x in GD.Range(12))
     {
-      var col = _mapCellPrefab.Instantiate() as Sprite2D;
-      AddChild(col);
-      col.Position = TilePosition(x, y);
-      col.RegionRect = EmptyTile;
-      col.ZIndex = 2;
-      col.Name = $"map_{x}_{y}";
-      _lookup[_index(x, y)] = col;
+      foreach (var x in GD.Range(12))
+      {
+        var col = _mapCellPrefab.Instantiate() as Sprite2D;
+        AddChild(col);
+        col.Position = TilePosition(x, y);
+        col.RegionRect = EmptyTile;
+        col.ZIndex = 2;
+        col.Name = $"map_{x}_{y}";
+        _lookup[_index(x, y)] = col;
+      }
     }
   }
 
@@ -136,16 +138,19 @@ public partial class MapView : Node2D
     var label = (Label)FindChild("Label");
     label.Text = $"Level: {levelInfo.Depth}";
 
-    foreach (var y in GD.Range(_dungeon.Height))
-    foreach (var x in GD.Range(_dungeon.Width))
+    foreach (var y in GD.Range(_gameModel.Grid.Height))
     {
-      var cell = grid.Cell(x, y);
-      var spr = _lookup[_index(x, y)];
-      spr.RegionRect = ChooseTile(cell);
-      // one of the walls is present, but not the other
-      if (cell.North == WallType.Empty || cell.East == WallType.Empty) FixUpCorner(cell);
-      if (cell.Gate != GateType.None) AddGate(cell.Gate, x, y);
+      foreach (var x in GD.Range(_gameModel.Grid.Width))
+      {
+        var cell = grid.Cell(x, y);
+        var spr = _lookup[_index(x, y)];
+        spr.RegionRect = ChooseTile(cell);
+        // one of the walls is present, but not the other
+        if (cell.North == WallType.Empty || cell.East == WallType.Empty) FixUpCorner(cell);
+        if (cell.Gate != GateType.None) AddGate(cell.Gate, x, y);
+      }
     }
+
   }
 
   public Rect2 ChooseTile(MazeCell cell)

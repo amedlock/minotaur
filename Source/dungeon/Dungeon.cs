@@ -20,18 +20,6 @@ public partial class Dungeon : Node3D
   private const float CellSize = 3.0f;
   private const int MaxLevel = 100;
 
-  // dungeon cells (Node3D) lookup
-  private readonly Dictionary<int, LevelInfo> _levels = new();
-
-  // # (skill_level: dungeon level) minotaur first appears here
-  private readonly Dictionary<int, int> _minotaurAppears = new()
-  {
-    [1] = 3,
-    [2] = 6,
-    [3] = 10,
-    [4] = 15
-  };
-
   private readonly Dictionary<string, Resource> _muralColors = new();
 
   private readonly Dictionary<WallPost, Vector3> _wallPostOffsets = new()
@@ -51,27 +39,70 @@ public partial class Dungeon : Node3D
   };
 
   private AudioStreamPlayer _audio;
+  
+  [Export]
   private LevelBuilder _builder;
 
-  [Export]
+  [Export] 
   private Hud _hud;
-  
-  [Export]
-  private MapView _mapView;
-  
-  [Export]
-  private Player _player;
-  
-  [Export]
-  private GameModel gameModel;
-  
-  
-  private uint _seedNumber = 1;
 
-  private int _skillLevel = 1;
-  
-  [Export]
+  [Export] 
+  private MapView _mapView;
+
+  [Export] 
+  private Player _player;
+
+  [Export] 
+  private GameModel gameModel;
+
+  [Export] 
   private Marker3D _startPosition;
+
+  private Node3D _walls;
+  private Node3D _cells;
+
+  public override void _Ready()
+  {
+    _muralColors["war"] = ResourceLoader.Load("res://data/dungeon/green_mat.tres");
+    _muralColors["magic"] = ResourceLoader.Load("res://data/dungeon/blue_mat.tres");
+    _muralColors["tan"] = ResourceLoader.Load("res://data/dungeon/tan_mat.tres");
+    _muralColors["both"] = _muralColors["tan"];
+
+    GetNode<Node3D>("ceiling").Visible = true;
+
+    _cells = new Node3D();
+    _cells.Name = "Cells";
+    _cells.Position = GetNode<Marker3D>("GridOrigin").Position;
+    AddChild(_cells);
+
+    var gridOrigin = (Marker3D)FindChild("GridOrigin");
+    var cellPrefab = (PackedScene)ResourceLoader.Load("res://data/dungeon/cell.tscn");
+    foreach (var y in GD.Range(gameModel.Grid.Height))
+    {
+      foreach (var x in GD.Range(gameModel.Grid.Width))
+      {
+        var cell = (DungeonCell)cellPrefab.Instantiate();
+        Cells.Add(cell);
+        _cells.AddChild(cell);
+        cell.Init(x, y);
+      }
+    }
+  }
+
+  public void BuildLevel()
+  {
+    ClearAll();
+    var levelInfo = gameModel.CurrentLevel;
+    var grid = gameModel.Grid;
+    _builder.Build(this, levelInfo, grid);
+  }
+
+
+  public void ClearAll()
+  {
+    Cells.ForEach(cell => cell.ClearAll());
+  }
+
 
   private Dictionary<Direction, int> _wallAngle = new()
   {
@@ -81,10 +112,6 @@ public partial class Dungeon : Node3D
     [West] = 90
   };
 
-  // this is the "virtual" grid of cell info
-  // public DungeonGrid Grid;
-  public int Height = 12;
-  public int Width = 12;
 
   public Vector3 StartPosition => _startPosition.Position;
 
@@ -116,31 +143,6 @@ public partial class Dungeon : Node3D
   public Vector3 MazeOrigin => new(-18, 0, -18);
   public List<DungeonCell> Cells { get; } = new();
 
-
-  public override void _Ready()
-  {
-    _muralColors["war"] = ResourceLoader.Load("res://data/dungeon/green_mat.tres");
-    _muralColors["magic"] = ResourceLoader.Load("res://data/dungeon/blue_mat.tres");
-    _muralColors["tan"] = ResourceLoader.Load("res://data/dungeon/tan_mat.tres");
-    _muralColors["both"] = _muralColors["tan"];
-
-    GetNode<Node3D>("ceiling").Visible = true;
-
-    // var tcell = ResourceLoader.Load<PackedScene>("res://data/test_cell.tscn").Instantiate() as Node3D;
-    // // tcell.Position = new Vector3(18f, 0, -18f);
-    // _player.AddChild(tcell);
-
-    var gridOrigin = (Marker3D)FindChild("GridOrigin");
-    var cellPrefab = (PackedScene)ResourceLoader.Load("res://data/dungeon/cell.tscn");
-    foreach (var y in GD.Range(Height))
-    foreach (var x in GD.Range(Width))
-    {
-      var cell = (DungeonCell)cellPrefab.Instantiate();
-      Cells.Add(cell);
-      gridOrigin.AddChild(cell);
-      cell.Init(x, y);
-    }
-  }
 
   public Vector3 WorldPosition(Vector2I coord)
   {
@@ -235,25 +237,25 @@ public partial class Dungeon : Node3D
 
   public void NextLevel()
   {
-    var next = CurrentLevel.Depth + 1;
-    if (!_levels.ContainsKey(next)) return;
-
-    CurrentLevel = _levels[next];
-    _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/descend.wav");
-    _audio.Play();
-    Grid.Reset();
-    _builder.BuildMaze(CurrentLevel);
-    _mapView.UpdateMap(CurrentLevel);
-    _player.ResetLocation();
-    _hud.UpdateStats();
+    // var next = CurrentLevel.Depth + 1;
+    // if (!_levels.ContainsKey(next)) return;
+    //
+    // CurrentLevel = _levels[next];
+    // _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/descend.wav");
+    // _audio.Play();
+    // Grid.Reset();
+    // _builder.Build(this, gameModel.CurrentLevel, gameModel.Grid);
+    // _mapView.UpdateMap(CurrentLevel);
+    // _player.ResetLocation();
+    // _hud.UpdateStats();
   }
 
   public void LoadGateLevel(DungeonGate gate)
   {
-    CurrentLevel.UsedGate = true;
-    // CurrentLevel.SeedNumber = this.rng.Ranrandi()
-    Grid.Reset();
-    _builder.BuildMaze(CurrentLevel);
+    // CurrentLevel.UsedGate = true;
+    // // CurrentLevel.SeedNumber = this.rng.Ranrandi()
+    // Grid.Reset();
+    // _builder.Build(CurrentLevel);
   }
 
 

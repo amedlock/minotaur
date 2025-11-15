@@ -353,17 +353,17 @@ script = ExtResource("18_n2e6y")
 [node name="Audio" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("18")
 
-[node name="Dungeon" type="Node3D" parent="." node_paths=PackedStringArray("_hud", "_mapView", "_player", "gameModel", "_startPosition")]
+[node name="Dungeon" type="Node3D" parent="." node_paths=PackedStringArray("_builder", "_hud", "_mapView", "_player", "gameModel", "_startPosition")]
 script = ExtResource("3_jtqey")
+_builder = NodePath("Builder")
 _hud = NodePath("../Player/Camera3D/HUD")
 _mapView = NodePath("../MapView")
 _player = NodePath("../Player")
 gameModel = NodePath("../GameModel")
 _startPosition = NodePath("StartPos")
 
-[node name="Builder" type="Node3D" parent="Dungeon" node_paths=PackedStringArray("_gameModel")]
+[node name="Builder" type="Node3D" parent="Dungeon"]
 script = ExtResource("4_jtqey")
-_gameModel = NodePath("../../GameModel")
 
 [node name="floor" parent="Dungeon" instance=ExtResource("4")]
 
@@ -411,4 +411,5 @@ centered = false
 script = ExtResource("21_tig81")
 
 [node name="GameOver" type="Node2D" parent="."]
+visible = false
 script = ExtResource("25_i050v")

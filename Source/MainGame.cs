@@ -66,7 +66,6 @@ public partial class MainGame : Node3D
         {
           ShowGame();
         }
-
         break;
     }
 
@@ -78,9 +77,10 @@ public partial class MainGame : Node3D
 
   public void StartGame(int skill)
   {
-    uint _seedNum = 0xdeadbeef; // _random.Randi();
-    gameModel.Init(skill, _seedNum);
-    //Dungeon.BuildMaze();
+    uint seedNum = 0xdeadbeef; // _random.Randi();
+    gameModel.Init(skill, seedNum);
+    gameModel.CreateLevel(1);
+    dungeon.BuildLevel();
     player.Init(skill);
     ShowGame();
     _help.Show();
