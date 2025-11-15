@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://c2hv1cgejxsjy" path="res://Source/model/GameModel.cs" id="2_n2e6y"]
 [ext_resource type="Script" uid="uid://biyepob8xqtcl" path="res://Source/dungeon/Dungeon.cs" id="3_jtqey"]
 [ext_resource type="PackedScene" uid="uid://d4nrionulwu34" path="res://data/dungeon/floor.tscn" id="4"]
-[ext_resource type="Script" uid="uid://drif34kaoqm1n" path="res://Source/dungeon/builder/LevelBuilder.cs" id="4_jtqey"]
 [ext_resource type="PackedScene" uid="uid://cy2jqn7lnyq7b" path="res://data/dungeon/outer_wall.tscn" id="5"]
 [ext_resource type="Script" uid="uid://exh1kurl6nfu" path="res://Source/views/PlayerView.cs" id="5_n2e6y"]
 [ext_resource type="PackedScene" uid="uid://dbamw6tvtfh5d" path="res://data/dungeon/ceiling.tscn" id="6"]
@@ -14,6 +13,7 @@
 [ext_resource type="Script" uid="uid://bxnabatjy3iaf" path="res://Source/player/PlayerController.cs" id="10_jtqey"]
 [ext_resource type="PackedScene" uid="uid://4rjyss6wu3fy" path="res://data/debug/debug.tscn" id="11"]
 [ext_resource type="Script" uid="uid://vxefwkiqn0d4" path="res://Source/player/Combat.cs" id="11_n2e6y"]
+[ext_resource type="Script" uid="uid://drif34kaoqm1n" path="res://Source/dungeon/LevelBuilder.cs" id="14_6ut8u"]
 [ext_resource type="Environment" uid="uid://7fdxmqhwueqc" path="res://data/game_env.tres" id="16"]
 [ext_resource type="PackedScene" uid="uid://mae22grjwobt" path="res://data/hud/hud.tscn" id="17"]
 [ext_resource type="AudioStream" uid="uid://84gaoppi65w3" path="res://data/sounds/hit.wav" id="18"]
@@ -284,11 +284,10 @@ _hud = NodePath("../Camera3D/HUD")
 _mapView = NodePath("../../MapView")
 _player = NodePath("..")
 
-[node name="View" type="Node" parent="Player" node_paths=PackedStringArray("controller", "gameModel", "hud")]
+[node name="View" type="Node" parent="Player" node_paths=PackedStringArray("_controller", "_gameModel")]
 script = ExtResource("5_n2e6y")
-controller = NodePath("../PlayerController")
-gameModel = NodePath("../../GameModel")
-hud = NodePath("../Camera3D/HUD")
+_controller = NodePath("../PlayerController")
+_gameModel = NodePath("../../GameModel")
 
 [node name="combat" type="Node" parent="Player" node_paths=PackedStringArray("_dungeon", "_gameModel", "gameModel", "_mainGame", "_player")]
 script = ExtResource("11_n2e6y")
@@ -347,10 +346,9 @@ environment = ExtResource("16")
 current = true
 fov = 90.0
 
-[node name="HUD" parent="Player/Camera3D" node_paths=PackedStringArray("_player", "_dungeon", "gameModel") instance=ExtResource("17")]
-_player = NodePath("../..")
-_dungeon = NodePath("../../../Dungeon")
-gameModel = NodePath("../../../GameModel")
+[node name="HUD" parent="Player/Camera3D" node_paths=PackedStringArray("_gameModel", "_controller") instance=ExtResource("17")]
+_gameModel = NodePath("../../../GameModel")
+_controller = NodePath("../../PlayerController")
 
 [node name="debug" parent="Player/Camera3D" instance=ExtResource("11")]
 script = ExtResource("18_n2e6y")
@@ -368,7 +366,7 @@ gameModel = NodePath("../GameModel")
 _startPosition = NodePath("StartPos")
 
 [node name="Builder" type="Node3D" parent="Dungeon"]
-script = ExtResource("4_jtqey")
+script = ExtResource("14_6ut8u")
 
 [node name="floor" parent="Dungeon" instance=ExtResource("4")]
 

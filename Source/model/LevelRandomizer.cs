@@ -20,7 +20,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
   {
     rng.Seed = levelInfo.SeedNumber;
     dungeonGrid.GateType = levelInfo.GateType;
-    BuildMazePrim(levelInfo);
+    BuildMazePrim();
     AddMoreDoors();
     AddExit(levelInfo);
     AddGates(levelInfo);
@@ -29,12 +29,6 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
     AddEnemies(levelInfo, emptyCells);
     AddItems(levelInfo, emptyCells);
     AddMinotaur(levelInfo, emptyCells);
-  }
-
-
-  private MazeCell ChooseRandom(List<MazeCell> items)
-  {
-    return items.Count == 0 ? null : items[rng.RandiRange(0, items.Count - 1)];
   }
 
   private T ChooseRandom<T>(List<T> items)
@@ -71,19 +65,8 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
   {
     return other.Any(c => c.AdjacentTo(cell));
   }
-
-  private void ClearOuterWall()
-  {
-    foreach (var cell in dungeonGrid.Cells)
-    {
-      if (cell.X == 0 || cell.X == dungeonGrid.Width - 1) cell.North = WallType.Empty;
-
-      if (cell.Y == 0 || cell.Y == dungeonGrid.Height - 1) cell.East = WallType.Empty;
-    }
-  }
-
   
-  private void BuildMazePrim(LevelInfo levelInfo)
+  private void BuildMazePrim()
   {
     dungeonGrid.Reset();
     CreateCorridor();

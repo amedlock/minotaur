@@ -7,13 +7,12 @@ namespace minotaur.Source.views;
 
 public partial class PlayerView : Node
 {
-  [Export] private PlayerController controller;
-  [Export] private GameModel gameModel;
-  [Export] private Hud hud;
+  [Export] private PlayerController _controller;
+  [Export] private GameModel _gameModel;
 
   public override void _Process(double delta)
   {
-    switch (gameModel.PlayerState)
+    switch (_gameModel.PlayerState)
     {
       case PlayerState.Idle:
       {
@@ -31,7 +30,7 @@ public partial class PlayerView : Node
       {
         if (Input.IsActionJustPressed("view map"))
         {
-          controller.ShowMap(false);
+          _controller.ShowMap(false);
         }
         break;
       }
@@ -48,12 +47,12 @@ public partial class PlayerView : Node
     // check hud for attack
     if (Input.IsActionJustPressed("attack"))
     {
-      controller.Attack();
+      _controller.Attack();
     }
 
     if (Input.IsActionJustPressed("back"))
     {
-      controller.Retreat();
+      _controller.Retreat();
     }
   }
 
@@ -62,35 +61,35 @@ public partial class PlayerView : Node
   {
     if (Input.IsActionJustPressed("right"))
     {
-      controller.Turn(-90);
+      _controller.Turn(-90);
     }
     else if (Input.IsActionJustPressed("left"))
     {
-      controller.Turn(90);
+      _controller.Turn(90);
     }
     else if (Input.IsActionJustPressed("forward"))
     {
-      controller.MoveForward();
+      _controller.MoveForward();
     }
     else if (Input.IsActionJustPressed("back"))
     {
-      controller.MoveBackward();
+      _controller.MoveBackward();
     }
     else if (Input.IsActionJustPressed("look_left"))
     {
-      controller.Glance(90);
+      _controller.Glance(90);
     }
     else if (Input.IsActionJustPressed("look_right"))
     {
-      controller.Glance(-90);
+      _controller.Glance(-90);
     }
     else if (Input.IsActionJustReleased("look_left") || Input.IsActionJustReleased("look_right"))
     {
-      controller.UnGlance();
+      _controller.UnGlance();
     }
     else if (Input.IsActionJustPressed("open"))
     {
-      controller.OpenDoor();
+      _controller.OpenDoor();
     }
   }
 
@@ -98,7 +97,7 @@ public partial class PlayerView : Node
   {
     if ( !Input.IsActionPressed("look_left") && !Input.IsActionPressed("look_right"))
     {
-      controller.UnGlance();
+      _controller.UnGlance();
     }
   }
 }

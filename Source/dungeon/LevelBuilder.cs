@@ -1,8 +1,6 @@
 ﻿#region
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
@@ -10,7 +8,7 @@ using minotaur.Source.model;
 
 #endregion
 
-namespace minotaur.Source.dungeon.builder;
+namespace minotaur.Source.dungeon;
 
 // sole purpose is to generate content and store in DungeonGrid
 // then using that content, creates Godot Nodes for visuals

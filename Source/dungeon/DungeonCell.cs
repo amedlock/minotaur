@@ -45,7 +45,10 @@ public partial class DungeonCell : Node3D
 
   public void PlayerEnters(Player player)
   {
-    if (Gate != null) player.EnterGate(Gate);
+    if (Gate != null)
+    {
+      player.EnterGate(Gate);
+    }
   }
 
 
@@ -53,7 +56,7 @@ public partial class DungeonCell : Node3D
   public Node3D CheckWall(DungeonCell other)
   {
     if (other == null) return null;
-
+    
     if (other.Y == Y)
     {
       if (other.X != X) return other.X > X ? East : other.East;
@@ -97,6 +100,7 @@ public partial class DungeonCell : Node3D
     {
       RemoveChild(Enemy);
       Enemy.QueueFree();
+      Enemy = null;
     }
   }
 

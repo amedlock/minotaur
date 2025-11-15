@@ -431,41 +431,4 @@ public partial class Player : Node3D
     if (IsDead) _dungeon.Game.GameOver();
   }
 
-  // vary amount by +/- percent
-  private int VaryAmount(int amount, int percent)
-  {
-    var variance = amount * (percent / 100f);
-    return (int)(amount - variance + GD.RandRange(0, 2 * variance));
-  }
-
-  private float Percentage(int amount, int percent)
-  {
-    return amount * (100f - percent) / 100f;
-  }
-
-  private int ApplyArmor(int damage, int armor)
-  {
-    var prot = (int)Percentage(damage, armor);
-    if (prot == 0) return damage;
-    prot = VaryAmount(prot, 15);
-    return Mathf.Max(damage - prot, 1);
-  }
-
-
-  public void Damage(Enemy enemy, ItemInfo item)
-  {
-    var maxDamage = item.Stat1;
-    var damage = Skill switch
-    {
-      1 => VaryAmount(maxDamage, 5),
-      2 => VaryAmount(maxDamage, 10),
-      3 => VaryAmount(maxDamage, 15),
-      _ => VaryAmount(maxDamage, 20)
-    };
-    var warAmount = ApplyArmor(damage, WarArmor);
-    var mindAmount = ApplyArmor(damage, MindArmor);
-    if (item.IsWar) Health = Mathf.Clamp(Health - warAmount, 0, HealthMax);
-
-    if (item.IsMagic) Mind = Mathf.Clamp(Mind - mindAmount, 0, MindMax);
-  }
 }

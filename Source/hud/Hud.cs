@@ -35,11 +35,9 @@ public partial class Hud : Node2D
 
   [Export] private Control _pack;
 
-  [Export] private Player _player;
-
-  [Export] private Dungeon _dungeon;
-
-  [Export] private GameModel gameModel;
+  [Export] private GameModel _gameModel;
+  
+  [Export] private PlayerController _controller;
   
   private Sprite2D _rightHandSprite;
 
@@ -91,6 +89,9 @@ public partial class Hud : Node2D
     }
   }
 
+  private PlayerData PlayerData => _gameModel.PlayerData;
+  
+
   private Vector2 CalcSpriteScale(float sw, float sh, float dw, float dh)
   {
     return new Vector2(dw / sw, dh / sh);
@@ -98,20 +99,19 @@ public partial class Hud : Node2D
 
   public void UpdateStats()
   {
-    var pdata = gameModel.PlayerData;
-    _levelDisplay.Text = $"Level: {gameModel.CurrentLevel.Depth}";
-    _arrowsDisplay.Text = $"Arrows: {pdata.Arrows}";
-    _foodDisplay.Text = $"Food: {pdata.Food}";
-    _goldDisplay.Text = $"{pdata.Gold}";
-    _hpDisplay.Text = $"{pdata.Health}/{pdata.HealthMax}";
-    _mindDisplay.Text = $"{pdata.Mind}/{pdata.MindMax}";
+    _levelDisplay.Text = $"Level: {_gameModel.CurrentLevel.Depth}";
+    _arrowsDisplay.Text = $"Arrows: {PlayerData.Arrows}";
+    _foodDisplay.Text = $"Food: {PlayerData.Food}";
+    _goldDisplay.Text = $"{PlayerData.Gold}";
+    _hpDisplay.Text = $"{PlayerData.Health}/{PlayerData.HealthMax}";
+    _mindDisplay.Text = $"{PlayerData.Mind}/{PlayerData.MindMax}";
     UpdateDamage();
   }
 
   public void UpdateDamage()
   {
-    _armorDisplay.Text = $"{_player.WarArmor}/{_player.MindArmor}";
-    _damageDisplay.Text = $"{_player.WarDamage}/{_player.MindDamage}";
+    _armorDisplay.Text = $"{PlayerData.WarArmor}/{PlayerData.MindArmor}";
+    _damageDisplay.Text = $"{PlayerData.WarDamage}/{PlayerData.MindDamage}";
   }
 
   private void Assign(Sprite2D sprite, ItemInfo item)
@@ -131,10 +131,13 @@ public partial class Hud : Node2D
 
   public void UpdatePack()
   {
-    Assign(_leftHandSprite, _player.LeftHand);
-    Assign(_rightHandSprite, _player.RightHand);
-    Assign(_atFeetSprite, _player.ItemAtFeet);
-    foreach (var slot in _packSlots.Values) slot.Item = _player.GetSlot(slot.SlotNumber);
+    Assign(_leftHandSprite, PlayerData.LeftHand);
+    Assign(_rightHandSprite, PlayerData.RightHand);
+    Assign(_atFeetSprite, _gameModel.ItemAtFeet);
+    foreach (var slot in _packSlots.Values)
+    {
+      slot.Item = PlayerData.GetSlot(slot.SlotNumber);
+    }
     // UpdateDamage();
   }
 
@@ -158,17 +161,16 @@ public partial class Hud : Node2D
 
   // Event handlers
 
+  // this needs to delegate to a controller
   public void PackSlotClicked(int slot, InputEvent inputEvent)
   {
     if (inputEvent is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
     {
-      var prev = _player.SetSlot(slot, _player.LeftHand);
-      _player.LeftHand = prev;
+      _controller.ClickSlot(slot, false);
     }
     else if (inputEvent is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right } rightClick)
     {
-      var prev = _player.SetSlot(slot, _player.RightHand);
-      _player.RightHand = prev;
+      _controller.ClickSlot(slot, true);
     }
 
     UpdateStats();
@@ -178,7 +180,10 @@ public partial class Hud : Node2D
 
   public void ClickedFeet(Node _viewport, InputEvent @event, long _shape_index)
   {
-    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left }) _player.UseOrTakeItem();
+    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
+    {
+      _controller.ClickFeet();
+    }
     UpdateStats();
   }
 
@@ -187,21 +192,27 @@ public partial class Hud : Node2D
   {
     if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
     {
-      _player.AttackOrUseItem();
+      _controller.ClickRightHand();
       UpdateAll();
     }
     else if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
     {
-      _player.SwapHands();
+      _controller.SwapHands();
       UpdateAll();
     }
   }
 
 
-  // Alternate attack method?
   public void ClickedLeft(Node _viewport, InputEvent @event, long _shape_idx)
   {
-    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right }) _player.SwapItems();
+    if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
+    {
+      _controller.SwapWithFeet();
+    }
+    else if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
+    {
+      // Alternate attack method?
+    }
     UpdateAll();
   }
 }

@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
+using minotaur.Source.enemies;
+using minotaur.Source.items;
 using minotaur.Source.player;
 
 #endregion
@@ -17,16 +19,30 @@ public partial class GameModel : Node
   public GameDb GameDb { get; private set; }
 
   public LevelRandomizer randomizer;
-  
-  public int Depth { get; }
+
+  public int Depth = 1;
+  public int Skill = 1;
+
+  // player location
+  public int playerX = 0;
+  public int playerY = 0;
+  public int facing = 90;
 
   public LevelInfo CurrentLevel => Levels[Depth];
+
+  public MazeCell CurrentCell => _grid.Cell(playerX, playerY);
 
   public List<LevelInfo> Levels = new();
 
   public DungeonGrid Grid => _grid;
   public PlayerData PlayerData => _playerData;
   public PlayerState PlayerState { get; set; }
+
+  public ItemInfo ItemAtFeet
+  {
+    get => CurrentCell.ItemInfo;
+    set => CurrentCell.ItemInfo = value;
+  }
 
   public override void _Ready()
   {
@@ -70,5 +86,43 @@ public partial class GameModel : Node
     var levelInfo = Levels[index];
     randomizer.BuildLevel(levelInfo);
   }
+
   
+  // vary amount by +/- percent
+  private int VaryAmount(int amount, int percent)
+  {
+    var variance = amount * (percent / 100f);
+    return (int)(amount - variance + GD.RandRange(0, 2 * variance));
+  }
+
+  private float Percentage(int amount, int percent)
+  {
+    return amount * (100f - percent) / 100f;
+  }
+
+  private int ApplyArmor(int damage, int armor)
+  {
+    var prot = (int)Percentage(damage, armor);
+    if (prot == 0) return damage;
+    prot = VaryAmount(prot, 15);
+    return Mathf.Max(damage - prot, 1);
+  }
+
+
+  public void DamagePlayer(Enemy enemy, ItemInfo item)
+  {
+    var maxDamage = item.Stat1;
+    var damage = Skill switch
+    {
+      1 => VaryAmount(maxDamage, 5),
+      2 => VaryAmount(maxDamage, 10),
+      3 => VaryAmount(maxDamage, 15),
+      _ => VaryAmount(maxDamage, 20)
+    };
+    var warAmount = ApplyArmor(damage, _playerData.WarArmor);
+    var mindAmount = ApplyArmor(damage, _playerData.MindArmor);
+    if (item.IsWar) _playerData.Health = Mathf.Clamp(_playerData.Health - warAmount, 0, _playerData.HealthMax);
+
+    if (item.IsMagic) _playerData.Mind = Mathf.Clamp(_playerData.Mind - mindAmount, 0, _playerData.MindMax);
+  }
 }

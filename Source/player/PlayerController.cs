@@ -30,11 +30,11 @@ public partial class PlayerController : Node
 
   [Export] private Player _player;
 
+  private PlayerData _playerData;
+  
   public override void _Ready()
   {
-    // _player = GetParent<Player>();
-    // _dungeon = _player.GetParent<Dungeon>();
-    // _hud = _player.GetNode<Hud>("Camera3D/HUD");
+    _playerData = _gameModel.PlayerData;
   }
 
   public void MoveForward()
@@ -162,6 +162,32 @@ public partial class PlayerController : Node
       _mapView.Hide();
       _player.Show();
     }
+  }
 
+  public void ClickSlot(int slotNum, bool rightClick)
+  {
+    
+  }
+
+  public void ClickFeet()
+  {
+    throw new System.NotImplementedException();
+  }
+
+  public void ClickRightHand()
+  {
+    throw new System.NotImplementedException();
+  }
+
+  public void SwapHands()
+  {
+    (_playerData.LeftHand, _playerData.RightHand) = (_playerData.RightHand, _playerData.LeftHand);
+    // todo update HUD
+  }
+
+  public void SwapWithFeet()
+  {
+    (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
+    // todo update HUD
   }
 }

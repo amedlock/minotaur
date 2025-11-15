@@ -20,10 +20,9 @@ public partial class Combat : Node
   private bool _broken;
   
   [Export]
-  private Dungeon _dungeon;
-  
-  [Export]
   private GameModel _gameModel;
+  
+  private PlayerData _playerData;
   
   private Enemy _enemy;
 
@@ -42,16 +41,10 @@ public partial class Combat : Node
 
   private AudioStream _fireballSound;
   private AudioStream _lightningSound;
-
-  [Export] 
-  private GameModel gameModel;
  
   [Export]
   private MainGame _mainGame;
   
-  [Export]
-  private Player _player;
-
   private AnimationPlayer _playerAnim;
 
   // has player attacked this turn
@@ -69,18 +62,14 @@ public partial class Combat : Node
   // time in turn so far
   private double _turnElapsed = 0.75f;
 
-
   public bool PlayerAttack
   {
     set => _playerAttack = value;
   }
 
-
   public override void _Ready()
   {
-    // _player = (Player)GetParent();
-    // _dungeon = (Dungeon)_player.GetParent();
-    // _mainGame = (MainGame)_dungeon.GetParent();
+    _playerData = _gameModel.PlayerData;
 
     _playerAnim = GetNode<AnimationPlayer>("PlayerAnim");
     _playerAnim.AnimationFinished += name => DamageEnemy();
@@ -200,32 +189,32 @@ public partial class Combat : Node
 
   private void PlayerFire()
   {
-    _playerItem = _player.RightHand;
+    _playerItem = _playerData.RightHand;
     if (_playerItem is not { IsWeapon: true }) return;
 
     _broken = false;
     var fx = GetSoundFx(_playerItem);
     if (_playerItem.IsBow)
     {
-      if (_player.Arrows < 1) return;
-      _playerWeapon.RegionRect = gameModel.GameDb.FindIcon("arrow");
-      _player.Arrows -= 1;
+      if (_playerData.Arrows < 1) return;
+      _playerWeapon.RegionRect = _gameModel.GameDb.FindIcon("arrow");
+      _playerData.Arrows -= 1;
       _broken = GD.Randi() % 30 == 29;
     }
     else if (_playerItem.IsScroll)
     {
-      _playerWeapon.RegionRect = gameModel.GameDb.FindIcon("fireball");
+      _playerWeapon.RegionRect = _gameModel.GameDb.FindIcon("fireball");
       _broken = GD.Randi() % 25 == 24;
     }
     else if (_playerItem.IsBook)
     {
-      _playerWeapon.RegionRect = gameModel.GameDb.FindIcon("small_lightning");
+      _playerWeapon.RegionRect = _gameModel.GameDb.FindIcon("small_lightning");
       _broken = GD.Randi() % 25 == 24;
     }
     else
     {
       _playerWeapon.RegionRect = _playerItem.Image;
-      _player.RightHand = null;
+      _playerData.RightHand = null;
     }
 
     _playerWeapon.Modulate = _playerItem.Color;
@@ -240,10 +229,10 @@ public partial class Combat : Node
       _playerAudio.Play();
     }
 
-    if (_broken && _dungeon.CurrentLevel.Depth > 2) // don't break on first 2 levels
-      _player.RightHand = null; //clear out of the players hand
+    if (_broken && _gameModel.CurrentLevel.Depth > 2) // don't break on first 2 levels
+      _playerData.RightHand = null; //clear out of the players hand
 
-    _player.Hud.UpdatePack();
+    // _hud.UpdatePack();
   }
 
 
@@ -261,14 +250,18 @@ public partial class Combat : Node
       SetProcess(false);
     }
 
-    if (_broken) _player.RightHand = null;
+    if (_broken)
+    {
+      _playerData.RightHand = null;
+    }
   }
 
 
   private void DamagePlayer()
   {
     if (_enemy == null || _enemy.IsDead || _enemyItem == null) return;
-    _player.Damage(_enemy, _enemyItem);
+    _gameModel.DamagePlayer(_enemy, _enemyItem);
+    //_hud.UpdateStats();
   }
 
 
@@ -288,8 +281,5 @@ public partial class Combat : Node
       _enemyAnim.Play("SpinFire");
     else
       _enemyAnim.Play("Fire");
-
-    _player.Damage(_enemy, _enemyItem);
-    _player.Hud.UpdateAll();
   }
 }
