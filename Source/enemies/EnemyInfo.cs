@@ -10,12 +10,15 @@ public class EnemyInfo
 {
   public int BaseDamage = 5;
   public Rect2I ImageRect;
-  public int MaxHp;
-  public int MaxMind;
-  public int MinHp;
-  public int MinLevel;
-  public int MinMind;
+  public int WarHp;
+  public int MindHp;
+  public int Armor;
+  public int Damage;
+  public int MinDepth;
   public string Name;
-  public int Power;
+  public string Weapon;
   public EnemyType Type;
+  public int MaxDepth;
+  public Color Color;
+  public int Power;
 }

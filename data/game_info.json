@@ -87,59 +87,59 @@
 		"minotaur":  [7,3]
   },
   "enemies":{
-		"comment": "name : icon_name, min_level, min_hp, max_hp, min_mind, max_mind",
+		"comment": "name : min_level, war_hp, mind_hp, armor, weapon, weapon_level",
 		"war":{
-			"skeleton":["skeleton", 1, 5, 12, 4, 6],
-			"ghoul":["ghoul", 1, 6, 12, 7, 9],
-			"cloaked_skel":["cloaked_skel", 2, 9, 15, 4, 10],    
-			"skeleton_shield":["skeleton_shield", 2, 12, 18, 4, 8],
-			"giant_frog":["giant_frog", 3, 11, 16, 5, 10],
-			"dwarf":["dwarf", 3, 14, 20, 9, 15],
-			"snake":["snake", 4, 9, 16, 9, 13],
-			"dwarf_shield":["dwarf_shield", 4, 15, 25, 12, 17],
-			"giant":["giant", 5, 20, 30, 10, 20],
-			"giant_shield":["giant_shield", 6, 25, 35, 10, 25],
-			"knight":["knight", 7, 30, 40, 15, 30]
+			"skeleton":[1, 6, 4, 0, "dagger", 1],
+			"cloaked_skel":[1, 8, 5, 1, "axe", 1],
+			"ghoul":[1, 7, 5, 1, "dagger", 2],
+			"skeleton_shield":[2, 9, 6, 2, "axe", 2],
+			"dwarf":[2, 15, 10, 5, "axe", 3],
+			"dwarf_shield":[3, 15, 12, 6, "bow", 3],
+			"giant":[3, 25, 10, 4, "axe", 3],
+			"giant_shield":[5, 35, 19, 7, "axe", 4],
+			"knight":[7, 30, 20, 9, "crossbow", 3]
 		},
 		"magic":{
-			"hornet":["hornet", 1, 5, 8, 5, 8],
-			"wasp":["wasp", 1, 5, 10, 5, 9],
-			"spider":["spider", 2, 11, 16, 4, 9],      
-			"wraith":["wraith", 3, 14, 18, 6, 12],
-			"scorpion":["scorpion", 4, 14, 20, 9, 14],          
-			"wraith_shield":["wraith_shield", 4, 17, 22, 8, 14],
-			"drake":["drake", 5, 20, 35, 14, 20],
-			"enchantress":["enchantress", 6, 24, 34, 20, 30],
-			"wizard":["wizard", 7, 30, 35, 40, 60],
-			"lich":["lich", 7, 35, 50, 45, 75]
+			"hornet":[1, 5, 8, 1, "scroll", 2],
+			"wasp":[1, 5, 10, 2, "wand", 1],
+			"spider":[1, 8, 12, 2, "book", 1],      
+			"scorpion":[2, 9, 13, 2, "wand", 2],          
+			"snake":[2, 9, 16, 3, "book", 2],
+			"dwarf_warrior":[3, 15, 15, 5, "book", 2],
+			"giant_frog": [3, 12, 16, 2, "wand", 3],
+			"drake":[4, 15, 17, 2, "staff", 1],
+			"enchantress":[6, 25, 30, 4, "book", 3],
+			"wizard":[8, 25, 35, 5, "staff", 2],
+			"lich":[10, 30, 50, 7, "staff", 3]
 		},
 		"both":{
-			"green_dragon":["green_dragon", 5, 35, 35, 18, 35],
-			"dwarf_warrior":["dwarf_warrior", 5, 25, 36, 20, 28],
-			"red_dragon":["red_dragon", 6, 35, 42, 25, 45],
-			"vampire":["vampire", 7, 40, 75, 50, 80]
+			"wraith":[1, 14, 18, 6, "book", 2],
+			"wraith_shield":[2, 17, 22, 8, "wand", 2],
+			"golem":[3, 19, 24, 4, "book", 2],
+			"evil_eye":[4, 21, 26, 18, "book", 3],
+			"green_dragon":[5, 28, 30, 6, "staff", 1],
+			"red_dragon":[6, 34, 40, 7, "staff", 2],
+			"vampire":[7, 50, 45, 10, "staff", 3],
+			"undead_dragon":[10, 60, 60, 10, "staff", 3]
 		},
 		"special":{
-			"undead_dragon":["undead_dragon", 8, 50, 85, 40, 60],
-			"evil_eye":["evil_eye", 8, 30, 48, 55, 75],
-			"golem":["golem", 8, 70, 90, 30, 40],
 			"minotaur":["minotaur", 6, 40, 80, 40, 65]
 		}
   },
   "items":{
 		"weapons":{
 			"war":{
-			"bow": [6,9,15,21,27,33],
-			"crossbow": [18,24,30,36,42,99],
-			"spear": [21,27,33,42,57,75],
-			"dagger": [9,15,21,30,42,57],
-			"axe": [15,21,27,36,57,66]
+				"bow": [6,9,15,21,27,33],
+				"crossbow": [18,24,30,36,42,99],
+				"dagger": [9,15,21,30,42,57],
+				"spear": [21,27,33,42,57,75],
+				"axe": [15,21,27,36,57,66]
 			},
 			"magic":{
-			"scroll" : [4,6,9,13,17,21],
-			"wand" :[7,9,12,15,20,24] ,
-			"book" : [10,12,18,23,27,30],
-			"staff" : [13,15,18,26,27,32]
+			"scroll" : [3,5,9,13,17,21],
+			"book" : [11,15,19,23,27,65],
+			"wand" :[9,13,17,23,33,43],
+			"staff" : [17,21,29,45,55,65]
 			}
 		},
 		"armor":{
@@ -156,13 +156,12 @@
 			"chest": 6
 			},
 		"money":{
-			"coins": [1, 10],
-			"necklace": [1, 20],
-			"ring": [2, 15],
-			"horn": [3, 25],
-			"lamp": [2, 30],
-			"chalice": [4, 40],
-			"crown": [6, 70]
+			"coins": [1, 10, 30, 170],
+			"necklace": [2, 20, 70, 200],
+			"horn": [4, 50, 350, 450],
+			"lamp": [6, 100, 250, 400],
+			"chalice": [7, 120, 250, 400],
+			"crown": [9, 300, 500, 600]
 		},
 		"keys": { 
 			"Tan": 1,

@@ -21,8 +21,6 @@ public partial class DungeonCell : Node3D
   // contents of cell
   public Item Item;
 
-  internal MazeCell MazeCell;
-
   // walls
   public Node3D North;
   public Node3D East;
@@ -42,15 +40,6 @@ public partial class DungeonCell : Node3D
   {
     _dungeon = GetParent() as Dungeon;
   }
-
-  public void PlayerEnters(Player player)
-  {
-    if (Gate != null)
-    {
-      player.EnterGate(Gate);
-    }
-  }
-
 
   // returns wall between the two DungeonCells, if any
   public Node3D CheckWall(DungeonCell other)

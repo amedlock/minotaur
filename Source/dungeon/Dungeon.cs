@@ -123,6 +123,13 @@ public partial class Dungeon : Node3D
   }
 
   public LevelInfo CurrentLevel { get; private set; }
+  public Vector3 PlayerPosition {
+    get
+    {
+      var coord = gameModel.PlayerCoord;
+      return StartPosition + new Vector3(coord.X * 3, 0, coord.Y * -3);
+    } 
+  }
 
   public GateType MuralColor
   {
@@ -141,6 +148,7 @@ public partial class Dungeon : Node3D
 
   public Vector3 MazeOrigin => new(-18, 0, -18);
   public List<DungeonCell> Cells { get; } = new();
+  public DungeonCell CurrentCell => Cells[gameModel.GridIndex];
 
 
   public Vector3 WorldPosition(Vector2I coord)
@@ -249,13 +257,6 @@ public partial class Dungeon : Node3D
     // _hud.UpdateStats();
   }
 
-  public void LoadGateLevel(DungeonGate gate)
-  {
-    // CurrentLevel.UsedGate = true;
-    // // CurrentLevel.SeedNumber = this.rng.Ranrandi()
-    // Grid.Reset();
-    // _builder.Build(CurrentLevel);
-  }
 
 
   public Vector3 WallPostForWall(int cx, int cy, Direction dir)

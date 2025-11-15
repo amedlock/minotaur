@@ -67,16 +67,14 @@ public partial class LevelBuilder : Node
     foreach (var cell in grid.Cells)
     {
       var dungeonCell = dungeon.GetCell(cell.X, cell.Y);
-      dungeonCell.MazeCell = cell;
       CreateWall(dungeonCell, cell.North, Direction.North);
       CreateWall(dungeonCell, cell.East, Direction.East);
       foreach (var wallPost in grid.WallPosts(cell.X, cell.Y))
       {
         AddCorner(wallPost, dungeonCell);
       }
-
       AddItem(dungeonCell, cell.ItemInfo);
-      // AddEnemy(dungeonCell, cell.EnemyInfo);
+      AddEnemy(dungeonCell, cell.EnemyInfo);
       AddGate(dungeonCell, cell, currentLevel.LevelType);
     }
     dungeon.MuralColor = currentLevel.GateType;
@@ -92,13 +90,14 @@ public partial class LevelBuilder : Node
       dc.Enemy = null;
     }
 
-    if (enemy == null) return;
-
-    var node = (Enemy)_enemyPrefab.Instantiate();
-    node.Init(enemy, _rng);
-    dc.AddChild(node);
-    dc.Enemy = node;
-    node.Position = new Vector3(1.5f, .7f, -1.5f);
+    if (enemy != null)
+    {
+      var node = (Enemy)_enemyPrefab.Instantiate();
+      node.Init(enemy, _rng);
+      dc.AddChild(node);
+      dc.Enemy = node;
+      node.Position = new Vector3(1.5f, .7f, -1.5f);
+    }
   }
   
   public void AddItem(DungeonCell cell, ItemInfo itemInfo)

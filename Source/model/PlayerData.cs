@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using Godot;
 using minotaur.Source.items;
 
 #endregion
@@ -16,10 +17,17 @@ public class PlayerData
   public  int Gold;
   public  int Health;
   public  int HealthMax;
-  
-  public  int Mind;
+
+  public int Mind;
   public int MindMax;
 
+  public int WarExp ;
+  public int MagicExp ;
+  
+  public bool Resurrected ;
+
+  public bool IsDead => Health <= 0 || Mind <= 0;
+  
   private ItemInfo helmet;
   private ItemInfo breastplate;
   private ItemInfo hauberk;
@@ -29,7 +37,7 @@ public class PlayerData
 
   public ItemInfo RightHand { get; set; }
 
-  private bool needsRest;
+  public bool needsRest;
   private bool resurrected;
 
   private ItemInfo ring;
@@ -41,6 +49,20 @@ public class PlayerData
 
   private List<ItemInfo> slots = [null, null, null, null, null, null, null, null, null];
 
+
+  public void ClearSlots()
+  {
+    foreach (var n in GD.Range(slots.Count))
+    {
+      slots[n] = null;
+    }
+  }
+  
+  public ItemInfo SetSlot(int slotNum, ItemInfo item)
+  {
+    return slots[slotNum-1] = item;
+  }
+  
   public ItemInfo GetSlot(int slotNum)
   {
     return slots[slotNum-1];

@@ -26,8 +26,16 @@ public partial class GameModel : Node
   // player location
   public int playerX = 0;
   public int playerY = 0;
-  public int facing = 90;
+  private int _facing = 90;
 
+  public int Facing
+  {
+    get => _facing;
+    set => _facing = value;
+  }
+  
+  public int GridIndex => Grid.Index(playerX, playerY);
+  
   public LevelInfo CurrentLevel => Levels[Depth];
 
   public MazeCell CurrentCell => _grid.Cell(playerX, playerY);
@@ -38,10 +46,22 @@ public partial class GameModel : Node
   public PlayerData PlayerData => _playerData;
   public PlayerState PlayerState { get; set; }
 
+  public bool OverExit => ItemAtFeet is { Name: "ladder" };
+  
   public ItemInfo ItemAtFeet
   {
     get => CurrentCell.ItemInfo;
     set => CurrentCell.ItemInfo = value;
+  }
+
+  public Vector2I PlayerCoord
+  {
+    get => new Vector2I(playerX, playerY);
+    set
+    {
+      playerX = value.X;
+      playerY = value.Y;
+    }
   }
 
   public override void _Ready()
@@ -88,6 +108,14 @@ public partial class GameModel : Node
   }
 
   
+  public void LoadGateLevel(DungeonGate gate)
+  {
+    CurrentLevel.UsedGate = true;
+    // CurrentLevel.SeedNumber = this.rng.Ranrandi()
+    Grid.Reset();
+  }
+  
+  
   // vary amount by +/- percent
   private int VaryAmount(int amount, int percent)
   {
@@ -124,5 +152,18 @@ public partial class GameModel : Node
     if (item.IsWar) _playerData.Health = Mathf.Clamp(_playerData.Health - warAmount, 0, _playerData.HealthMax);
 
     if (item.IsMagic) _playerData.Mind = Mathf.Clamp(_playerData.Mind - mindAmount, 0, _playerData.MindMax);
+  }
+
+  public void NextLevel()
+  {
+    if (Depth >= 99)
+    {
+      return;
+    }
+    Depth++;
+    randomizer.BuildLevel(Levels[Depth]);
+    playerX = 0;
+    playerY = 0;
+    _facing = 90;
   }
 }

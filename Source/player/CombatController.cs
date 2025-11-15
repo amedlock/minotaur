@@ -11,7 +11,7 @@ using minotaur.Source.model;
 
 namespace minotaur.Source.player;
 
-public partial class Combat : Node
+public partial class CombatController : Node
 {
   private const float TurnTime = 2f;
   private const float EnemyDelay = 0.75f;

@@ -38,6 +38,7 @@ public partial class MapView : Node2D
   [Export]
   private GameModel _gameModel;
 
+  private PlayerData _playerData;
   
   private PackedScene _gateIcon;
 
@@ -71,9 +72,7 @@ public partial class MapView : Node2D
 
   public override void _Ready()
   {
-    // var game = GetParent() as MainGame;
-    // _dungeon = game.GetNode("Dungeon") as Dungeon;
-    // _player = _dungeon.GetNode("Player") as Player;
+    _playerData = _gameModel.PlayerData;
     _walls = GetNode("Walls") as Node2D;
     _other = GetNode("Other") as Node2D;
     _marker = GetNode("marker") as Sprite2D;
@@ -98,10 +97,10 @@ public partial class MapView : Node2D
 
   public override void _Process(double delta)
   {
-    var loc = _player.Coord;
+    var loc = _gameModel.PlayerCoord;
     _marker.Visible = true;
     _marker.Position = TilePosition(loc.X, loc.Y);
-    if (_player.IsDead)
+    if (_playerData.IsDead)
     {
       _marker.Modulate = Colors.Gray;
       _marker.RegionRect = TombstoneTile;

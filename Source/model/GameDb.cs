@@ -65,7 +65,10 @@ public class GameDb
 
   private bool IsAllowed(EnemyInfo enemy, LevelInfo levelInfo)
   {
-    if (levelInfo.Depth < enemy.MinLevel) return false;
+    if (levelInfo.Depth < enemy.MinDepth || levelInfo.Depth > enemy.MaxDepth)
+    {
+      return false;
+    }
 
     return enemy.Type switch
     {
@@ -126,23 +129,44 @@ public class GameDb
       _icons[name] = new Rect2I(coord, _imageSize);
     }
   }
-
+  
+  
+  // for each enemy load 3 variants of it 
   private void LoadEnemies(Variant data, string section, EnemyType enemyType)
   {
+    List<string> colorNames = enemyType switch
+    {
+      EnemyType.Both or EnemyType.War => ["White", "Grey", "Tan"],
+      EnemyType.Magic => ["Blue", "Pink", "Purple"]
+    };
+    
     var dict = (Dictionary)data;
     foreach (var pair in (Dictionary)dict[section])
     {
+      var name = (string)pair.Key;
       var stats = (Array)pair.Value;
-      var enemyInfo = new EnemyInfo();
-      enemyInfo.Type = enemyType;
-      enemyInfo.Name = (string)pair.Key;
-      enemyInfo.ImageRect = _icons[(string)stats[0]];
-      enemyInfo.MinLevel = (int)stats[1];
-      enemyInfo.MinHp = (int)stats[2];
-      enemyInfo.MaxHp = (int)stats[3];
-      enemyInfo.MinMind = (int)stats[4];
-      enemyInfo.MaxMind = (int)stats[5];
-      Enemies.Add(enemyInfo);
+      int depth = (int)stats[0];
+      
+      for( int power = 0; power < 3; power++)
+      {
+        var minDepth = (power * 4) + depth;
+        var maxDepth = power < 2 ? minDepth + 5 : 99;
+
+        var info = new EnemyInfo();
+        info.Type = enemyType;
+        info.Name = name;
+        info.Color = _colors[colorNames[power]] ;
+        info.ImageRect = _icons[name];
+        info.Power = power;
+        info.MinDepth = minDepth;
+        info.MaxDepth = maxDepth;
+        info.WarHp = (int)stats[1];
+        info.MindHp = (int)stats[2];
+        info.Armor = (int)stats[3];
+        info.Weapon = (string)stats[4];
+        info.Damage = (int)stats[5];
+        Enemies.Add(info);
+      }
     }
   }
 
@@ -261,24 +285,24 @@ public class GameDb
     foreach (var pair in money)
     {
       var name = (string)pair.Key;
-      var items = (Array)pair.Value;
-      var minDepth = (int)items[0];
-      var value = (int)items[1];
-
+      
       // only one crown
       if (name == "crown")
       {
         AddItem("crown", ItemType.Money, _icons["crown"], _colors["Yellow"], 6, 200, 0);
         continue;
       }
-
-      // bronze, silver, gold, platinum
-      foreach (var colorName in MoneyColors)
-      {
-        var color = _colors[colorName];
-        AddItem(name, ItemType.Money, _icons[name], color, minDepth, value, 0);
-        value *= 2;
-      }
+      
+      var items = (Array)pair.Value;
+      var minDepth = (int)items[0];
+      var silverValue = (int)items[1];
+      var goldValue = (int)items[2];
+      var platinumValue = (int)items[3];
+      
+      //  silver, gold, platinum
+      AddItem(name, ItemType.Money, _icons[name], _colors["Grey"], minDepth, silverValue, 0);
+      AddItem(name, ItemType.Money, _icons[name], _colors["Yellow"], minDepth + 3, goldValue, 0);
+      AddItem(name, ItemType.Money, _icons[name], _colors["White"], minDepth + 6, platinumValue, 0);
     }
   }
 

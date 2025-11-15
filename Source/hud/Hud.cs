@@ -138,7 +138,7 @@ public partial class Hud : Node2D
     {
       slot.Item = PlayerData.GetSlot(slot.SlotNumber);
     }
-    // UpdateDamage();
+    UpdateDamage();
   }
 
 
@@ -193,12 +193,10 @@ public partial class Hud : Node2D
     if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
     {
       _controller.ClickRightHand();
-      UpdateAll();
     }
     else if (@event is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Right })
     {
       _controller.SwapHands();
-      UpdateAll();
     }
   }
 

@@ -23,10 +23,11 @@ public partial class Enemy : Sprite3D
   public void Init(EnemyInfo info, RandomNumberGenerator rnd)
   {
     Info = info;
+    Modulate = info.Color;
     RegionEnabled = true;
     RegionRect = Info.ImageRect;
-    Health = rnd.RandiRange(Info.MinHp, Info.MaxHp);
-    Mind = rnd.RandiRange(Info.MinMind, Info.MaxMind);
+    Health = Info.WarHp;
+    Mind = Info.MindHp;
     _smokePrefab = ResourceLoader.Load<PackedScene>("res://data/enemies/smoke.tscn");
   }
 

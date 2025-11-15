@@ -27,6 +27,7 @@ public partial class MainGame : Node3D
   [Export] private Dungeon dungeon;
 
   [Export] private Player player;
+  [Export] private PlayerController playerController;
 
   [Export] private GameOver gameOver;
 
@@ -81,7 +82,7 @@ public partial class MainGame : Node3D
     gameModel.Init(skill, seedNum);
     gameModel.CreateLevel(1);
     dungeon.BuildLevel();
-    player.Init(skill);
+    playerController.Init(skill);
     ShowGame();
     _help.Show();
   }
