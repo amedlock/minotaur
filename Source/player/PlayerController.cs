@@ -239,7 +239,7 @@ public partial class PlayerController : Node
       _dungeon.BuildLevel();
       _mapView.UpdateMap(_gameModel.CurrentLevel);
       _player.Update();
-      _hud.UpdateStats();
+      _hud.UpdateAll();
       _gameModel.PlayerState = PlayerState.Idle;
     }
   }
@@ -282,7 +282,7 @@ public partial class PlayerController : Node
   }
 
 
-  private void OpenContainer(ItemInfo key, MazeCell cell, ItemInfo container)
+  private void OpenContainer(MazeCell cell, ItemInfo container)
   {
     if (container.NeedsKey)
     {
@@ -291,10 +291,18 @@ public partial class PlayerController : Node
       {
         cell.ItemInfo = _gameModel.ChooseTreasure(container);
       }
-      return;
+      else
+      {
+        SwapWithFeet();
+        return;
+      }
     }
-
-    cell.ItemInfo = _gameModel.ChooseTreasure(container);
+    else
+    {
+      cell.ItemInfo = _gameModel.ChooseTreasure(container);
+    }
+    _dungeon.CurrentCell.SetItem(cell.ItemInfo);
+    _hud.UpdatePack();
   }
 
   public void ClickRightHand()
@@ -318,7 +326,8 @@ public partial class PlayerController : Node
   public void SwapWithFeet()
   {
     (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
-    // todo update HUD
+    _dungeon.CurrentCell.SetItem(_gameModel.ItemAtFeet);
+    _hud.UpdatePack();
   }
 
   private void RemoveItem()
@@ -368,9 +377,7 @@ public partial class PlayerController : Node
         return;
       
       case ItemType.Container:
-        OpenContainer(_playerData.RightHand, cell, itemInfo);
-        _dungeon.CurrentCell.SetItem(cell.ItemInfo);
-        _hud.UpdatePack();
+        OpenContainer(cell, itemInfo);
         return;
       
       case ItemType.Armor or ItemType.MagicArmor:
