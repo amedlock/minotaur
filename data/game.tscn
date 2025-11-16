@@ -276,7 +276,7 @@ _startPosition = NodePath("../Dungeon/StartPos")
 _dungeon = NodePath("../Dungeon")
 gameModel = NodePath("../GameModel")
 
-[node name="PlayerController" type="Node" parent="Player" node_paths=PackedStringArray("_combatController", "_dungeon", "_gameModel", "_hud", "_mapView", "_player")]
+[node name="PlayerController" type="Node" parent="Player" node_paths=PackedStringArray("_combatController", "_dungeon", "_gameModel", "_hud", "_mapView", "_player", "_mainGame")]
 script = ExtResource("10_jtqey")
 _combatController = NodePath("../combat")
 _dungeon = NodePath("../../Dungeon")
@@ -284,15 +284,17 @@ _gameModel = NodePath("../../GameModel")
 _hud = NodePath("../Camera3D/HUD")
 _mapView = NodePath("../../MapView")
 _player = NodePath("..")
+_mainGame = NodePath("../..")
 
 [node name="View" type="Node" parent="Player" node_paths=PackedStringArray("_controller", "_gameModel")]
 script = ExtResource("5_n2e6y")
 _controller = NodePath("../PlayerController")
 _gameModel = NodePath("../../GameModel")
 
-[node name="combat" type="Node" parent="Player" node_paths=PackedStringArray("_gameModel", "_mainGame")]
+[node name="combat" type="Node" parent="Player" node_paths=PackedStringArray("_gameModel", "_playerController", "_mainGame")]
 script = ExtResource("6_6ut8u")
 _gameModel = NodePath("../../GameModel")
+_playerController = NodePath("../PlayerController")
 _mainGame = NodePath("../..")
 
 [node name="PlayerTimer" type="Timer" parent="Player/combat"]

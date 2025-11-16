@@ -136,8 +136,9 @@ public class GameDb
   {
     List<string> colorNames = enemyType switch
     {
-      EnemyType.Both or EnemyType.War => ["White", "Grey", "Tan"],
-      EnemyType.Magic => ["Blue", "Pink", "Purple"]
+      EnemyType.War => ["White", "Grey", "Tan"],
+      EnemyType.Magic => ["Blue", "Pink", "Purple"],
+      EnemyType.Both => ["White", "Yellow", "Red"] 
     };
     
     var dict = (Dictionary)data;

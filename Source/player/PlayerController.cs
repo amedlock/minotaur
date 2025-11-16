@@ -5,6 +5,7 @@ using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.hud;
+using minotaur.Source.items;
 using minotaur.Source.model;
 using minotaur.Source.views;
 
@@ -31,8 +32,12 @@ public partial class PlayerController : Node
   [Export] private MapView _mapView;
 
   [Export] private Player _player;
+  
+  [Export]
+  private MainGame _mainGame;
 
   private PlayerData _playerData;
+  public Hud Hud => _hud;
 
   public override void _Ready()
   {
@@ -228,11 +233,12 @@ public partial class PlayerController : Node
   {
     if (_gameModel.PlayerState == PlayerState.Idle && _gameModel.OverExit)
     {
+      _player.Audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/descend.wav");
+      _player.Audio.Play();
       _gameModel.NextLevel();
-      // _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/descend.wav");
-      // _audio.Play();
       _dungeon.BuildLevel();
       _mapView.UpdateMap(_gameModel.CurrentLevel);
+      _player.Update();
       _hud.UpdateStats();
       _gameModel.PlayerState = PlayerState.Idle;
     }
@@ -276,11 +282,19 @@ public partial class PlayerController : Node
   }
 
 
-  private void OpenContainer(DungeonCell cell)
+  private void OpenContainer(ItemInfo key, MazeCell cell, ItemInfo container)
   {
-    cell.RemoveItem();
-    // TODO: use some random loot here
-    cell.SetItem(_gameModel.GameDb.FindItem("coins"));
+    if (container.NeedsKey)
+    {
+      var rh = _playerData.RightHand;
+      if (rh is { ItemType: ItemType.Key } && rh.Stat1 >= container.Stat1)
+      {
+        cell.ItemInfo = _gameModel.ChooseTreasure(container);
+      }
+      return;
+    }
+
+    cell.ItemInfo = _gameModel.ChooseTreasure(container);
   }
 
   public void ClickRightHand()
@@ -307,6 +321,14 @@ public partial class PlayerController : Node
     // todo update HUD
   }
 
+  private void RemoveItem()
+  {
+    _gameModel.CurrentCell.ItemInfo = null;
+    _dungeon.CurrentCell.RemoveItem();
+    _hud.UpdateAll();
+  }
+  
+
   // user wants to use/take item at their feet
   public void UseOrTakeItem()
   {
@@ -316,66 +338,67 @@ public partial class PlayerController : Node
     {
       return;
     }
+    
+    if (itemInfo is { ItemType: ItemType.Special })
+    {
+      switch (itemInfo.Name)
+      {
+        case "ladder": 
+          return;
+        case "treasure": 
+          _mainGame.WonGame();
+          return;
+        case "quiver" or "food":
+          _playerData.AddSpecial(itemInfo.Name, itemInfo.Stat1);
+          RemoveItem();
+          return;
+      }
+      return;
+    }
+
 
     switch (itemInfo.ItemType)
     {
-      // case ItemType.Money:
-      //   {
-      //     Gold += itemInfo.Stat2;
-      //     cell.RemoveItem();
-      //     return;
-      //   }
-      //
-      //   case ItemType.Armor:
-      //   {
-      //     WarArmor = Mathf.Max(WarArmor, itemInfo.Stat1);
-      //     cell.RemoveItem();
-      //     return;
-      //   }
-      //   case ItemType.MagicArmor:
-      //   {
-      //     MindArmor = Mathf.Max(MindArmor, itemInfo.Stat1);
-      //     cell.RemoveItem();
-      //     return;
-      //   }
-      //   case ItemType.Ladder:
-      //   {
-      //     _dungeon.NextLevel();
-      //     return;
-      //   }
-      //   case ItemType.Special:
-      //   {
-      //     _dungeon.WonGame();
-      //     return;
-      //   }
-      //
-      //   case ItemType.Container:
-      //   {
-      //     var inHand = LeftHand;
-      //     if (inHand is { ItemType: ItemType.Key } && inHand.Stat1 >= itemInfo.Stat2) OpenContainer(cell);
-      //     break;
-      //   }
-      //
+      case ItemType.Ladder:
+        return;
+      
+      case ItemType.Money or ItemType.Treasure:
+        _playerData.Gold += itemInfo.Stat1;
+        RemoveItem();
+        return;
+      
+      case ItemType.Container:
+        OpenContainer(_playerData.RightHand, cell, itemInfo);
+        _dungeon.CurrentCell.SetItem(cell.ItemInfo);
+        _hud.UpdatePack();
+        return;
+      
+      case ItemType.Armor or ItemType.MagicArmor:
+        _playerData.AddArmor(itemInfo);
+        RemoveItem();
+        return;
+
       default:
         (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
-        break;
+        _dungeon.CurrentCell.SetItem(_gameModel.ItemAtFeet);
+        _hud.UpdatePack();
+        return;
     }
-
-    _hud.UpdatePack();
   }
+
   
   public void EnterGate(DungeonGate dungeonGate)
   {
     _player.Audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/magic.wav");
     _gameModel.LoadGateLevel(dungeonGate);
-    //NeedsRest = true;
+    _playerData.needsRest = true;
   }
 
   public void WonCombat(EnemyInfo enemy)
   {
     Killed(enemy);
-    // NeedsRest = true;
-    // PlayerState = PlayerState.Idle;
+    _playerData.needsRest = true;
+    _gameModel.PlayerState = PlayerState.Idle;
     _hud.UpdateAll();
   }
 

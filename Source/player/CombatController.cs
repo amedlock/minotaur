@@ -1,6 +1,5 @@
 ﻿#region
 
-using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
@@ -22,6 +21,9 @@ public partial class CombatController : Node
   [Export]
   private GameModel _gameModel;
   
+  [Export]
+  private PlayerController _playerController;
+  
   private PlayerData _playerData;
   
   private Enemy _enemy;
@@ -36,8 +38,6 @@ public partial class CombatController : Node
   private ItemInfo _enemyItem;
   private double _enemyTurn;
   private Sprite2D _enemyWeapon;
-
-  private List<ItemInfo> _enemyWeapons;
 
   private AudioStream _fireballSound;
   private AudioStream _lightningSound;
@@ -108,7 +108,6 @@ public partial class CombatController : Node
     _enemyCell = dungeonCell;
     _enemy = _enemyCell.Enemy;
     _enemyInfo = _enemy.Info;
-    // _enemyWeapons = gameModel.FindWeapons(_enemyInfo.Type, _dungeon.CurrentLevel);
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
     ResetTurn();
@@ -119,25 +118,17 @@ public partial class CombatController : Node
 
   public override void _Process(double delta)
   {
-    if (_gameModel.PlayerState == PlayerState.Combat)
+    if (_gameModel.PlayerState != PlayerState.Combat)
     {
       SetProcess(false);
       return;
     }
-    // if (_player.IsDead)
-    // {
-    //   _mainGame.GameOver();
-    //   SetProcess(false);
-    //   return;
-    // }
-    //
-    // if (_enemy.IsDead)
-    // {
-    //   _player.WonCombat(_enemy);
-    //   _enemyCell.RemoveEnemy();
-    //   SetProcess(false);
-    //   return;
-    // }
+    if (_playerData.IsDead)
+    {
+      _mainGame.GameOver();
+      SetProcess(false);
+      return;
+    }
 
     _playerTurn += delta;
     _enemyTurn += delta;
@@ -154,6 +145,10 @@ public partial class CombatController : Node
       {
         Retreat();
       }
+    }
+    if (_enemy==null || _enemy.IsDead)
+    {
+      return;
     }
 
     if (_enemyTurn >= TurnTime)
@@ -238,22 +233,27 @@ public partial class CombatController : Node
 
   private void DamageEnemy()
   {
-    if (_playerItem == null) return;
+    if (_playerItem == null)
+    {
+      return;
+    }
 
     _enemy.Damage(_playerItem);
     _playerItem = null;
+    if (_broken)
+    {
+      GD.Print("Weapon broke");
+      _playerData.RightHand = null;
+      _playerController.Hud.UpdatePack();
+    }
+    
     if (_enemy.IsDead)
     {
       _enemy.Die();
+      _playerController.WonCombat(_enemyInfo);
       _enemyCell.RemoveEnemy();
-      _gameModel.PlayerState = PlayerState.Idle;
-      SetProcess(false);
     }
 
-    if (_broken)
-    {
-      _playerData.RightHand = null;
-    }
   }
 
 
@@ -267,7 +267,6 @@ public partial class CombatController : Node
 
   private void EnemyFire()
   {
-    _enemyItem = _enemyWeapons[(int)(GD.Randi() % _enemyWeapons.Count)];
     _enemyWeapon.RegionRect = _enemyItem.Image;
     _enemyWeapon.Modulate = _enemyItem.Color;
     var fx = GetSoundFx(_enemyItem);

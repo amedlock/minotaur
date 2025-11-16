@@ -111,10 +111,11 @@ public partial class GameModel : Node
   public void LoadGateLevel(DungeonGate gate)
   {
     CurrentLevel.UsedGate = true;
-    // CurrentLevel.SeedNumber = this.rng.Ranrandi()
-    Grid.Reset();
+    var seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16 ;
+    var levelInfo = new LevelInfo(Skill, Depth, seed, gate.Type);
+    Levels[Depth] = levelInfo;
+    randomizer.BuildLevel(levelInfo);
   }
-  
   
   // vary amount by +/- percent
   private int VaryAmount(int amount, int percent)
@@ -164,6 +165,11 @@ public partial class GameModel : Node
     randomizer.BuildLevel(Levels[Depth]);
     playerX = 0;
     playerY = 0;
-    _facing = 90;
+    _facing = 270;
+  }
+
+  public ItemInfo ChooseTreasure(ItemInfo container)
+  {
+    return GameDb.FindItem("coins");
   }
 }

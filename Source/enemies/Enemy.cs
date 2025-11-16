@@ -42,7 +42,10 @@ public partial class Enemy : Sprite3D
 
   public void Die()
   {
-    if (!Visible) return; // might get called twice
+    if (!Visible) 
+    {
+      return; // might get called twice
+    }
     Visible = false;
     var smoke = (Smoke)_smokePrefab.Instantiate();
     smoke.Position = Position - new Vector3(0, 0.6f, 0);

@@ -42,10 +42,10 @@ public class PlayerData
 
   private ItemInfo ring;
 
-  public int WarArmor => 0;
-  public int MindArmor => 0;
-  public int WarDamage => 0;
-  public int MindDamage => 0;
+  public int WarArmor = 0;
+  public int MindArmor = 0;
+  public int WarDamage = 0;
+  public int MindDamage = 0;
 
   private List<ItemInfo> slots = [null, null, null, null, null, null, null, null, null];
 
@@ -66,5 +66,31 @@ public class PlayerData
   public ItemInfo GetSlot(int slotNum)
   {
     return slots[slotNum-1];
+  }
+
+  public void AddArmor(ItemInfo itemInfo)
+  {
+    switch (itemInfo)
+    {
+      case { ItemType: ItemType.MagicArmor }:
+        MindArmor = Mathf.Min( MindArmor, itemInfo.Stat1);
+        break;
+      case { ItemType: ItemType.Armor }:
+        WarArmor = Mathf.Min( WarArmor, itemInfo.Stat1);
+        break;
+    }
+  }
+
+  public void AddSpecial(string name, int amount)
+  {
+    switch (name)
+    {
+      case "quiver":
+        Arrows += amount;
+        return ;
+      case "food":
+        Food += amount;
+        return ;
+    }
   }
 }

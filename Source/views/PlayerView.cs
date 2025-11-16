@@ -91,6 +91,10 @@ public partial class PlayerView : Node
     {
       _controller.OpenDoor();
     }
+    else if (Input.IsActionJustReleased("descend"))
+    {
+      _controller.UseExit();
+    }
   }
 
   private void HandleGlance()
