@@ -95,6 +95,10 @@ public partial class PlayerView : Node
     {
       _controller.UseExit();
     }
+    else if (Input.IsActionJustReleased("rest"))
+    {
+      _controller.Rest();
+    }
   }
 
   private void HandleGlance()

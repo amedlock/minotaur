@@ -150,8 +150,8 @@ public class GameDb
       
       for( int power = 0; power < 3; power++)
       {
-        var minDepth = (power * 4) + depth;
-        var maxDepth = power < 2 ? minDepth + 5 : 99;
+        var minDepth = (power * 3) + depth;
+        var maxDepth = minDepth + 5;
 
         var info = new EnemyInfo();
         info.Type = enemyType;
@@ -324,5 +324,10 @@ public class GameDb
   public Rect2I FindIcon(string name)
   {
     return _icons[name];
+  }
+
+  public ItemInfo FindWeapon(string weapon, int power, int depth)
+  {
+    return Items.FirstOrDefault(i => i.Name==weapon && i.MinDepth <= depth);
   }
 }

@@ -291,10 +291,11 @@ script = ExtResource("5_n2e6y")
 _controller = NodePath("../PlayerController")
 _gameModel = NodePath("../../GameModel")
 
-[node name="combat" type="Node" parent="Player" node_paths=PackedStringArray("_gameModel", "_playerController", "_mainGame")]
+[node name="combat" type="Node" parent="Player" node_paths=PackedStringArray("_gameModel", "_playerController", "_hud", "_mainGame")]
 script = ExtResource("6_6ut8u")
 _gameModel = NodePath("../../GameModel")
 _playerController = NodePath("../PlayerController")
+_hud = NodePath("../Camera3D/HUD")
 _mainGame = NodePath("../..")
 
 [node name="PlayerTimer" type="Timer" parent="Player/combat"]

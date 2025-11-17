@@ -3,6 +3,7 @@
 using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
+using minotaur.Source.hud;
 using minotaur.Source.items;
 using minotaur.Source.model;
 
@@ -23,6 +24,9 @@ public partial class CombatController : Node
   
   [Export]
   private PlayerController _playerController;
+
+  [Export]
+  private Hud _hud;
   
   private PlayerData _playerData;
   
@@ -101,13 +105,17 @@ public partial class CombatController : Node
 
   public void Start(DungeonCell dungeonCell, bool attack)
   {
-    if (dungeonCell.Enemy is not { Info: not null }) return;
+    if (dungeonCell.Enemy is not { Info: not null })
+    {
+      return;
+    }
 
     GD.Print("Starting Combat");
     _gameModel.PlayerState = PlayerState.Combat;
     _enemyCell = dungeonCell;
     _enemy = _enemyCell.Enemy;
     _enemyInfo = _enemy.Info;
+    _enemyItem = _gameModel.FindWeapon(_enemy);
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
     ResetTurn();
@@ -172,11 +180,20 @@ public partial class CombatController : Node
 
   private AudioStream GetSoundFx(ItemInfo item)
   {
-    if (item == null) return null;
+    if (item == null)
+    {
+      return null;
+    }
 
-    if (item.Name is "fireball" or "small_fireball") return _fireballSound;
+    if (item.Name is "fireball" or "small_fireball")
+    {
+      return _fireballSound;
+    }
 
-    if (item.Name is "wand" or "staff" or "scroll" or "book") return _lightningSound;
+    if (item.Name is "wand" or "staff" or "scroll" or "book")
+    {
+      return _lightningSound;
+    }
 
     return null;
   }
@@ -227,7 +244,7 @@ public partial class CombatController : Node
     if (_broken && _gameModel.CurrentLevel.Depth > 2) // don't break on first 2 levels
       _playerData.RightHand = null; //clear out of the players hand
 
-    // _hud.UpdatePack();
+    _hud.UpdatePack();
   }
 
 
@@ -253,15 +270,13 @@ public partial class CombatController : Node
       _playerController.WonCombat(_enemyInfo);
       _enemyCell.RemoveEnemy();
     }
-
   }
-
 
   private void DamagePlayer()
   {
     if (_enemy == null || _enemy.IsDead || _enemyItem == null) return;
     _gameModel.DamagePlayer(_enemy, _enemyItem);
-    //_hud.UpdateStats();
+    _hud.UpdateStats();
   }
 
 

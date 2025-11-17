@@ -172,4 +172,10 @@ public partial class GameModel : Node
   {
     return GameDb.FindItem("coins");
   }
+
+  public ItemInfo FindWeapon(Enemy enemy)
+  {
+    var enemyInfo = enemy.Info;
+    return GameDb.FindWeapon(enemyInfo.Weapon, enemyInfo.Power, Depth);
+  }
 }

@@ -313,7 +313,7 @@ public partial class PlayerController : Node
     }
     else
     {
-      // TODO
+      StartCombat(_player.CellAhead, true);
     }
   }
 
