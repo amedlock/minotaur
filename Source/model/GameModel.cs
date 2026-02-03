@@ -36,7 +36,7 @@ public partial class GameModel : Node
   
   public int GridIndex => Grid.Index(playerX, playerY);
   
-  public LevelInfo CurrentLevel => Levels[Depth];
+  public LevelInfo CurrentLevel => Depth >=0 ? Levels[Depth] : null;
 
   public MazeCell CurrentCell => _grid.Cell(playerX, playerY);
 

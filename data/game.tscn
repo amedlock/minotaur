@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://co2vu1jhjxhem"]
+[gd_scene load_steps=31 format=3 uid="uid://co2vu1jhjxhem"]
 
 [ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://Source/MainGame.cs" id="1_tig81"]
 [ext_resource type="Script" uid="uid://c2hv1cgejxsjy" path="res://Source/model/GameModel.cs" id="2_n2e6y"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://exh1kurl6nfu" path="res://Source/views/PlayerView.cs" id="5_n2e6y"]
 [ext_resource type="PackedScene" uid="uid://dbamw6tvtfh5d" path="res://data/dungeon/ceiling.tscn" id="6"]
 [ext_resource type="Script" uid="uid://vxefwkiqn0d4" path="res://Source/player/CombatController.cs" id="6_6ut8u"]
-[ext_resource type="Script" uid="uid://ch0r2o7n4fdhw" path="res://Source/dungeon/OuterWall.cs" id="7_6ut8u"]
 [ext_resource type="Script" uid="uid://cey2mgaomcpu2" path="res://Source/player/Player.cs" id="9_6ut8u"]
 [ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="10"]
 [ext_resource type="Script" uid="uid://bxnabatjy3iaf" path="res://Source/player/PlayerController.cs" id="10_jtqey"]
@@ -373,7 +372,7 @@ script = ExtResource("14_6ut8u")
 
 [node name="outer_wall" parent="Dungeon" instance=ExtResource("5")]
 transform = Transform3D(1.48, 0, 0, 0, 1, 0, 0, 0, 1.48, 0, 0, 0)
-script = ExtResource("7_6ut8u")
+script = null
 
 [node name="ceiling" parent="Dungeon" instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.51846, 0)

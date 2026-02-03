@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
@@ -34,6 +35,38 @@ public partial class CombatController : Node
 
   private AnimationPlayer _enemyAnim;
 
+
+  struct CombatState
+  {
+    public float timer;
+    public bool attack;
+    public bool animating;
+    public bool playerDead;
+    public bool enemyDead;
+    public bool gameOver;
+    public bool doAttack;
+    public bool doRetreat;
+    public bool endCombat;
+
+    public void Reset()
+    {
+      attack = false;
+      timer = 0f;
+      animating = false;
+      playerDead = false;
+      enemyDead = false;
+      gameOver = false;
+      doAttack = false;
+      doRetreat = false;
+      endCombat = false;
+    }
+  }
+  
+  
+  private CombatState _combatState;
+  
+  
+  
   //  enemy can only do one thing: attack
   private bool _enemyAttack;
   private AudioStreamPlayer _enemyAudio;
@@ -60,7 +93,6 @@ public partial class CombatController : Node
   // has player retreated this turn
   private bool _playerRetreat;
 
-  private double _playerTurn;
   private Sprite2D _playerWeapon;
 
   // time in turn so far
@@ -93,16 +125,6 @@ public partial class CombatController : Node
     SetProcess(false);
   }
 
-  private void ResetTurn()
-  {
-    _playerTurn = 0;
-    _enemyTurn = 0;
-    _playerAttack = false;
-    _enemyAttack = false;
-    _playerRetreat = false;
-  }
-
-
   public void Start(DungeonCell dungeonCell, bool attack)
   {
     if (dungeonCell.Enemy is not { Info: not null })
@@ -118,9 +140,23 @@ public partial class CombatController : Node
     _enemyItem = _gameModel.FindWeapon(_enemy);
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
-    ResetTurn();
+    _combatState.Reset();
     SetProcess(true);
-    if (attack) AttackMonster();
+    if (attack)
+    {
+      AttackMonster();
+    }
+  }
+
+
+  public void EndCombat()
+  {
+    _gameModel.PlayerState = PlayerState.Idle;
+    SetProcess(false);
+    if (_playerData.IsDead)
+    {
+      _mainGame.GameOver();
+    }
   }
 
 
@@ -138,16 +174,20 @@ public partial class CombatController : Node
       return;
     }
 
-    _playerTurn += delta;
-    _enemyTurn += delta;
-    _playerAttack = _playerAttack || Input.IsActionJustPressed("attack");
+    if (_combatState.timer > 0)
+    {
+      _combatState.timer = Math.Max(_combatState.timer - (float)delta, 0f);
+    }
 
-    if (_playerTurn >= TurnTime)
+    _enemyTurn += delta;
+    _combatState.attack = _combatState.attack || Input.IsActionJustPressed("attack");
+
+    if (_combatState.timer <= 0)
     {
       if (_playerAttack)
       {
         AttackMonster();
-        _playerTurn = 0;
+        _combatState.timer = 0;
       }
       else if (_playerRetreat)
       {
@@ -242,8 +282,10 @@ public partial class CombatController : Node
     }
 
     if (_broken && _gameModel.CurrentLevel.Depth > 2) // don't break on first 2 levels
+    {
       _playerData.RightHand = null; //clear out of the players hand
-
+      _broken = false;
+    }
     _hud.UpdatePack();
   }
 

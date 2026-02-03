@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://d18ywqescyuy5"]
+
+[ext_resource type="Script" uid="uid://dinpdeynr2kem" path="res://Source/dungeon/DungeonCell.cs" id="1_16is6"]
+[ext_resource type="PackedScene" uid="uid://bcbttux3sdgll" path="res://data/dungeon/dungeon_wall.tscn" id="2_3btdv"]
+[ext_resource type="PackedScene" uid="uid://csq6llv7jm4sp" path="res://data/door/door_prefab.tscn" id="3_cc24v"]
+
+[node name="Cell" type="Node3D"]
+script = ExtResource("1_16is6")
+
+[node name="North" parent="." instance=ExtResource("2_3btdv")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.5, 0, -1.5)
+
+[node name="East" parent="." instance=ExtResource("2_3btdv")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 1.5, 0, -1.5)
+visible = false
+
+[node name="DoorNorth" parent="." instance=ExtResource("3_cc24v")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.5, 0, -1.5)
+visible = false
+
+[node name="DoorEast" parent="." instance=ExtResource("3_cc24v")]
+transform = Transform3D(1.1924881e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924881e-08, 1.5, 0, -1.5)

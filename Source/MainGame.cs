@@ -1,5 +1,7 @@
 ﻿#region
 
+using System;
+using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.help;
@@ -42,6 +44,7 @@ public partial class MainGame : Node3D
 
   public override void _Ready()
   {
+    RuleTest();
     ShowMenu();
   }
 
@@ -125,4 +128,13 @@ public partial class MainGame : Node3D
     player.Hide();
     _gameMode = GameMode.Map;
   }
+
+
+  protected void RuleTest()
+  {
+    var tbl = new RuleTable("test", "A,B,C","D, E");
+    tbl.AddRule("test rule", ("A", 100), ("C", 300));
+    Console.WriteLine(tbl);
+  }
+  
 }
