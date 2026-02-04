@@ -34,9 +34,9 @@ public partial class MainMenu : Node2D
     switch (eventKey.Keycode)
     {
       case Key.Key1 or Key.Kp1: _game.StartGame(1); break;
-      case Key.Key2 or Key.Kp1: _game.StartGame(2); break;
-      case Key.Key3 or Key.Kp1: _game.StartGame(3); break;
-      case Key.Key4 or Key.Kp1: _game.StartGame(4); break;
+      case Key.Key2 or Key.Kp2: _game.StartGame(2); break;
+      case Key.Key3 or Key.Kp3: _game.StartGame(3); break;
+      case Key.Key4 or Key.Kp4: _game.StartGame(4); break;
     }
   }
 }

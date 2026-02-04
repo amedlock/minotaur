@@ -34,6 +34,7 @@ public partial class CombatController : Node
   private Enemy _enemy;
 
   private AnimationPlayer _enemyAnim;
+  private AnimationPlayer _playerAnim;
 
 
   struct CombatState
@@ -82,7 +83,6 @@ public partial class CombatController : Node
   [Export]
   private MainGame _mainGame;
   
-  private AnimationPlayer _playerAnim;
 
   // has player attacked this turn
   private bool _playerAttack;

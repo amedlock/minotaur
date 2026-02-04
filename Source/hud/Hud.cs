@@ -71,22 +71,10 @@ public partial class Hud : Node2D
       }
     }
 
-    foreach (var node in GetNode("Hands/background").GetChildren())
-    {
-      var area2d = (Area2D)node;
-      switch (node.Name)
-      {
-        case "Left":
-          area2d.InputEvent += ClickedLeft;
-          break;
-        case "Feet":
-          area2d.InputEvent += ClickedFeet;
-          break;
-        case "Right":
-          area2d.InputEvent += ClickedRight;
-          break;
-      }
-    }
+    var hands = GetNode("Hands/background");
+    hands.GetNode<Area2D>("Left").InputEvent += ClickedLeft;
+    hands.GetNode<Area2D>("Feet").InputEvent += ClickedFeet;
+    hands.GetNode<Area2D>("Right").InputEvent += ClickedRight;
   }
 
   private PlayerData PlayerData => _gameModel.PlayerData;

@@ -270,6 +270,7 @@ script = ExtResource("2_n2e6y")
 
 [node name="Player" type="Node3D" parent="." node_paths=PackedStringArray("_startPosition", "_dungeon", "gameModel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21)
+visible = false
 script = ExtResource("9_6ut8u")
 _startPosition = NodePath("../Dungeon/StartPos")
 _dungeon = NodePath("../Dungeon")
@@ -357,6 +358,7 @@ script = ExtResource("18_n2e6y")
 stream = ExtResource("18")
 
 [node name="Dungeon" type="Node3D" parent="." node_paths=PackedStringArray("_builder", "_hud", "_mapView", "_player", "gameModel", "_startPosition")]
+visible = false
 script = ExtResource("3_jtqey")
 _builder = NodePath("Builder")
 _hud = NodePath("../Player/Camera3D/HUD")

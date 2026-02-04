@@ -44,7 +44,7 @@ public partial class MainGame : Node3D
 
   public override void _Ready()
   {
-    RuleTest();
+    // RuleTest();
     ShowMenu();
   }
 
