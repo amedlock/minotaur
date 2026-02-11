@@ -1,12 +1,8 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using Godot;
 using minotaur.Source.dungeon;
-using minotaur.Source.enemies;
 using minotaur.Source.hud;
-using minotaur.Source.items;
 using minotaur.Source.model;
 
 #endregion
@@ -107,7 +103,7 @@ public partial class Player : Node3D
     Hud = GetNode<Hud>("Camera3D/HUD");
     _audio = GetNode<AudioStreamPlayer>("Audio");
   }
-
+  
   public Vector3 CoordToWorld(Vector2I coord)
   {
     return _startPosition.Position + new Vector3(coord.X * 3f, 0, -coord.Y * 3);
@@ -116,11 +112,13 @@ public partial class Player : Node3D
   public void Enable()
   {
     Visible = true;
+    Hud.Show();
     Hud.UpdateAll();
   }
 
   public void Disable()
   {
+    Hud.Hide();
     Visible = false;
   }
   

@@ -1,6 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://4rjyss6wu3fy"]
-
-[ext_resource type="Script" uid="uid://cd1qiqar764h5" path="res://data/debug/debug.gd" id="1"]
+[gd_scene format=3 uid="uid://4rjyss6wu3fy"]
 
 [node name="debug" type="Label"]
 offset_left = 24.0
@@ -14,7 +12,3 @@ sdfsdf
 
 sdfdsf
 sfddsf"
-script = ExtResource("1")
-__meta__ = {
-"_edit_use_anchors_": false
-}
