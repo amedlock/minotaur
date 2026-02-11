@@ -55,5 +55,3 @@ func _process(_delta):
 	if wall:
 		info.append("Wall: %s" % wall.name )
 	self.text = join_str(info)
-
-

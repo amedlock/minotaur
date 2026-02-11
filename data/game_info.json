@@ -1,0 +1,183 @@
+{
+  "colors":{
+		"White": "ffffff",
+		"Grey": "999999",
+		"Orange": "FF8400",
+		"Blue": "436FA8",
+		"Pink": "E843A0",
+		"Purple": "5A1E96",
+		"Red": "CC2A2A",
+		"Tan": "DBB592",
+		"Green": "00B300",
+		"Yellow": "F4FC58"
+  },
+  "item_icons":{
+		"small_potion" : [0,0],
+		"arrow" : [1,0],
+		"potion" : [2,0],
+		"ladder" : [3,0] ,
+		"small_shield" : [4,0],
+		"breastplate" : [6,0],
+		"bomb" :[0,1],
+		"food" : [1,1],
+		"quiver" : [3,1],
+		"shield" : [5,1],
+		"helmet" : [7,1],
+		"bow" : [0,2],
+		"crossbow" : [2,2],
+		"axe" : [4,2],
+		"dagger" : [6,2],
+		"tome" : [0,3],
+		"book" : [1,3],
+		"scroll" : [3,3],
+		"amulet" : [5,3],
+		"spear" : [7,3],
+		"fireball" : [0,4],
+		"small_lightning" : [1,4],
+		"small_fireball" : [2,4],
+		"wand" : [4,4],
+		"staff" : [6,4],
+		"ring" : [1,5],
+		"small_bag" : [3,5],
+		"bag" : [5,5],
+		"key" : [7,5],
+		"box" : [6,6],
+		"pack" : [4,6],
+		"chest" : [2,6],
+		"lamp" : [0,6],
+		"horn" : [1,7],
+		"coins" : [3,7],
+		"necklace" : [4,7],
+		"chalice" : [5,7],
+		"crown" : [6,7],
+		"treasure" : [7,7]
+  },
+  "enemy_icons":{
+		"skeleton" : [0,0],
+		"skeleton_shield":  [1,0],
+		"cloaked_skel":  [2,0],
+		"ghoul":  [3,0],
+		"wraith": [4,0],
+		"vampire" : [5,0],
+		"wraith_shield":  [6,0],
+		"lich":  [7,0],
+		"giant":  [0,1],
+		"giant_shield":  [1,1],
+		"dwarf":  [2,1],
+		"dwarf_warrior":  [3,1],
+		"dwarf_shield":  [4,1],
+		"knight" : [5,1],
+		"enchantress" :  [6,1],
+		"wizard" :  [7,1],
+		"spider":  [0,2],
+		"wasp":  [1,2],
+		"hornet":  [2,2],	
+		"scorpion" :  [3,2],
+		"wolf" : [4,2],
+		"alligator" : [5,2],
+		"kobold" : [6,2],
+		"golem": [7,2],
+		"green_dragon":  [0,3],
+		"red_dragon":  [1,3],
+		"drake":  [2,3],	
+		"giant_frog": [3,3],
+		"snake":  [4,3],
+		"undead_dragon": [5,3],
+		"evil_eye" :  [6,3],
+		"minotaur":  [7,3]
+  },
+  "enemies":{
+		"comment": "name : min_level, war_hp, mind_hp, armor, weapon, weapon_level",
+		"war":{
+			"skeleton":[1, 6, 4, 0, "dagger", 1],
+			"cloaked_skel":[1, 8, 5, 1, "axe", 1],
+			"ghoul":[1, 7, 5, 1, "dagger", 2],
+			"skeleton_shield":[2, 9, 6, 2, "axe", 2],
+			"dwarf":[2, 15, 10, 5, "axe", 3],
+			"dwarf_shield":[3, 15, 12, 6, "bow", 3],
+			"giant":[3, 25, 10, 4, "axe", 3],
+			"giant_shield":[5, 35, 19, 7, "axe", 4],
+			"knight":[7, 30, 20, 9, "crossbow", 3]
+		},
+		"magic":{
+			"hornet":[1, 5, 8, 1, "scroll", 2],
+			"wasp":[1, 5, 10, 2, "wand", 1],
+			"spider":[1, 8, 12, 2, "book", 1],      
+			"scorpion":[2, 9, 13, 2, "wand", 2],          
+			"snake":[2, 9, 16, 3, "book", 2],
+			"dwarf_warrior":[3, 15, 15, 5, "book", 2],
+			"giant_frog": [3, 12, 16, 2, "wand", 3],
+			"drake":[4, 15, 17, 2, "staff", 1],
+			"enchantress":[6, 25, 30, 4, "book", 3],
+			"wizard":[8, 25, 35, 5, "staff", 2],
+			"lich":[10, 30, 50, 7, "staff", 3]
+		},
+		"both":{
+			"wraith":[1, 14, 18, 6, "book", 2],
+			"wraith_shield":[2, 17, 22, 8, "wand", 2],
+			"golem":[3, 19, 24, 4, "book", 2],
+			"evil_eye":[4, 21, 26, 18, "book", 3],
+			"green_dragon":[5, 28, 30, 6, "staff", 1],
+			"red_dragon":[6, 34, 40, 7, "staff", 2],
+			"vampire":[7, 50, 45, 10, "staff", 3],
+			"undead_dragon":[10, 60, 60, 10, "staff", 3]
+		},
+		"special":{
+			"minotaur":["minotaur", 6, 40, 80, 40, 65]
+		}
+  },
+  "items":{
+		"weapons":{
+			"war":{
+				"bow": [6,9,15,21,27,33],
+				"crossbow": [18,24,30,36,42,99],
+				"dagger": [9,15,21,30,42,57],
+				"spear": [21,27,33,42,57,75],
+				"axe": [15,21,27,36,57,66]
+			},
+		"magic":{
+			"scroll" : [3,5,9,13,17,21],
+			"book" : [11,15,19,23,27,65],
+			"wand" :[9,13,17,23,33,43],
+			"staff" : [17,21,29,45,55,65]
+			}
+		},
+		"armor":{
+			"small_shield": [6,12,18,24,30,36] ,
+			"helmet": [5,10,15,20,25,30],
+			"breastplate": [10,17,24,31,38,45],    
+			"shield": [8,16,24,32,40,48]
+		},
+		"containers":{
+			"small_bag": 1,
+			"bag": 2,
+			"box": 3,
+			"pack": 4,
+			"chest": 6
+			},
+		"money":{
+			"coins": [1, 10, 30, 170],
+			"necklace": [2, 20, 70, 200],
+			"horn": [4, 50, 350, 450],
+			"lamp": [6, 100, 250, 400],
+			"chalice": [7, 120, 250, 400],
+			"crown": [9, 300, 500, 600]
+		},
+		"keys": { 
+			"Tan": 1,
+			"Orange": 2,
+			"Blue":3
+		},
+		"amulets":{
+			"Blue": 1,
+			"Pink": 2,
+			"Purple": 3
+		},    
+		"specials":{
+			"quiver": ["quiver", 1, "Tan", 6, 0],
+			"food": ["food", 1, "Tan", 3, 0],
+			"treasure": ["treasure", 1, "Yellow", 0, 0],
+			"ladder" : ["ladder", 1, "Tan", 0, 0]
+		}
+  }
+}

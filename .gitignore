@@ -1,3 +1,7 @@
 .import/**
 .vscode/**
 .godot/**
+
+layout.txt
+*.cts
+.idea/

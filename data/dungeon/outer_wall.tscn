@@ -1,11 +1,11 @@
 [gd_scene load_steps=4 format=3 uid="uid://cy2jqn7lnyq7b"]
 
 [ext_resource type="ArrayMesh" uid="uid://iqf32hwmxg65" path="res://data/dungeon/outer_wall.obj" id="1"]
+[ext_resource type="Script" uid="uid://ch0r2o7n4fdhw" path="res://Source/dungeon/OuterWall.cs" id="1_tqcht"]
 [ext_resource type="Material" uid="uid://dc0d6jwenkfsi" path="res://data/dungeon/wall_mat.tres" id="2"]
-[ext_resource type="Script" path="res://data/dungeon/outer_wall.gd" id="3"]
 
 [node name="outer_wall" type="Node3D"]
-script = ExtResource("3")
+script = ExtResource("1_tqcht")
 
 [node name="mesh" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1")

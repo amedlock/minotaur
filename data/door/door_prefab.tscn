@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://csq6llv7jm4sp"]
 
-[ext_resource type="Script" path="res://data/door/door.gd" id="1"]
+[ext_resource type="Script" uid="uid://bpfjeb1bb2ysy" path="res://Source/dungeon/Door.cs" id="1_8phlb"]
 [ext_resource type="PackedScene" uid="uid://0gd43ywtcxhl" path="res://data/door/dungeon_arch.tscn" id="2"]
 [ext_resource type="Material" uid="uid://txagr6mpho06" path="res://data/door/door_mat.tres" id="3"]
 [ext_resource type="ArrayMesh" uid="uid://d27taoxtrm745" path="res://data/door/dungeon_door.obj" id="4"]
@@ -37,12 +37,12 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_oaqxh"]
 _data = {
-"Lower": SubResource("1"),
-"Raise": SubResource("2")
+&"Lower": SubResource("1"),
+&"Raise": SubResource("2")
 }
 
 [node name="door_prefab" type="Node3D"]
-script = ExtResource("1")
+script = ExtResource("1_8phlb")
 
 [node name="dungeon_arch" parent="." instance=ExtResource("2")]
 
@@ -54,5 +54,5 @@ surface_material_override/0 = ExtResource("3")
 
 [node name="anim" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_oaqxh")
+&"": SubResource("AnimationLibrary_oaqxh")
 }

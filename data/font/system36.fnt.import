@@ -14,3 +14,4 @@ dest_files=["res://.godot/imported/system36.fnt-b03a7c5b298c0cc6ebd689e83ceaaae7
 
 fallbacks=[]
 compress=true
+scaling_mode=2
