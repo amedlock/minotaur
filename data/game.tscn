@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://co2vu1jhjxhem"]
+[gd_scene load_steps=30 format=3 uid="uid://co2vu1jhjxhem"]
 
 [ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://Source/MainGame.cs" id="1_tig81"]
 [ext_resource type="Script" uid="uid://c2hv1cgejxsjy" path="res://Source/model/GameModel.cs" id="2_n2e6y"]
@@ -16,7 +16,6 @@
 [ext_resource type="Environment" uid="uid://7fdxmqhwueqc" path="res://data/game_env.tres" id="16"]
 [ext_resource type="PackedScene" uid="uid://mae22grjwobt" path="res://data/hud/hud.tscn" id="17"]
 [ext_resource type="AudioStream" uid="uid://84gaoppi65w3" path="res://data/sounds/hit.wav" id="18"]
-[ext_resource type="Script" uid="uid://d3wxio6nvf0h1" path="res://Source/player/Debug.cs" id="18_n2e6y"]
 [ext_resource type="Script" uid="uid://7cpioka38l87" path="res://Source/views/MainMenu.cs" id="19_n2e6y"]
 [ext_resource type="Texture2D" uid="uid://6uqynfa5rs00" path="res://data/menu/title.png" id="20"]
 [ext_resource type="PackedScene" uid="uid://brx0ix11p2bl7" path="res://data/map/mapview.tscn" id="21"]
@@ -254,19 +253,63 @@ _data = {
 
 [sub_resource type="BoxMesh" id="BoxMesh_jtqey"]
 
-[node name="Game" type="Node3D" node_paths=PackedStringArray("menu", "dungeon", "player", "playerController", "gameOver", "_mapView", "_help", "gameModel")]
+[node name="MainGame" type="Node3D" node_paths=PackedStringArray("menu", "dungeon", "player", "playerController", "gameOver", "_mapView", "_help", "gameModel")]
 script = ExtResource("1_tig81")
-menu = NodePath("MainMenu")
+menu = NodePath("Views/MainMenu")
 dungeon = NodePath("Dungeon")
 player = NodePath("Player")
-playerController = NodePath("Player/PlayerController")
-gameOver = NodePath("GameOver")
-_mapView = NodePath("MapView")
-_help = NodePath("Help")
+playerController = NodePath("Controller/PlayerController")
+gameOver = NodePath("Views/GameOver")
+_mapView = NodePath("Views/MapView")
+_help = NodePath("Views/Help")
 gameModel = NodePath("GameModel")
 
 [node name="GameModel" type="Node" parent="."]
 script = ExtResource("2_n2e6y")
+
+[node name="Controller" type="Node" parent="."]
+
+[node name="PlayerController" type="Node" parent="Controller" node_paths=PackedStringArray("_combatController", "_dungeon", "_gameModel", "_hud", "_mapView", "_player", "_mainGame")]
+script = ExtResource("10_jtqey")
+_combatController = NodePath("../../Player/combat")
+_dungeon = NodePath("../../Dungeon")
+_gameModel = NodePath("../../GameModel")
+_hud = NodePath("../../Player/Camera3D/HUD")
+_mapView = NodePath("../../Views/MapView")
+_player = NodePath("../../Player")
+_mainGame = NodePath("../..")
+
+[node name="CombatController" type="Node" parent="Controller"]
+
+[node name="Views" type="Node" parent="."]
+
+[node name="Help" type="Sprite2D" parent="Views"]
+visible = false
+z_index = 5
+scale = Vector2(0.995122, 1.0023)
+texture = ExtResource("22")
+centered = false
+script = ExtResource("21_tig81")
+
+[node name="GameOver" type="Node2D" parent="Views"]
+visible = false
+script = ExtResource("25_i050v")
+
+[node name="MainMenu" type="Node2D" parent="Views" node_paths=PackedStringArray("_mainGame")]
+visible = false
+script = ExtResource("19_n2e6y")
+_mainGame = NodePath("../..")
+
+[node name="Sprite2D" type="Sprite2D" parent="Views/MainMenu"]
+position = Vector2(673, 377)
+scale = Vector2(3, 3)
+texture = ExtResource("20")
+
+[node name="MapView" parent="Views" node_paths=PackedStringArray("_dungeon", "_player", "_gameModel") instance=ExtResource("21")]
+visible = false
+_dungeon = NodePath("../../Dungeon")
+_player = NodePath("../../Player")
+_gameModel = NodePath("../../GameModel")
 
 [node name="Player" type="Node3D" parent="." node_paths=PackedStringArray("_startPosition", "_dungeon", "gameModel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21)
@@ -276,25 +319,15 @@ _startPosition = NodePath("../Dungeon/StartPos")
 _dungeon = NodePath("../Dungeon")
 gameModel = NodePath("../GameModel")
 
-[node name="PlayerController" type="Node" parent="Player" node_paths=PackedStringArray("_combatController", "_dungeon", "_gameModel", "_hud", "_mapView", "_player", "_mainGame")]
-script = ExtResource("10_jtqey")
-_combatController = NodePath("../combat")
-_dungeon = NodePath("../../Dungeon")
-_gameModel = NodePath("../../GameModel")
-_hud = NodePath("../Camera3D/HUD")
-_mapView = NodePath("../../MapView")
-_player = NodePath("..")
-_mainGame = NodePath("../..")
-
 [node name="View" type="Node" parent="Player" node_paths=PackedStringArray("_controller", "_gameModel")]
 script = ExtResource("5_n2e6y")
-_controller = NodePath("../PlayerController")
+_controller = NodePath("../../Controller/PlayerController")
 _gameModel = NodePath("../../GameModel")
 
 [node name="combat" type="Node" parent="Player" node_paths=PackedStringArray("_gameModel", "_playerController", "_hud", "_mainGame")]
 script = ExtResource("6_6ut8u")
 _gameModel = NodePath("../../GameModel")
-_playerController = NodePath("../PlayerController")
+_playerController = NodePath("../../Controller/PlayerController")
 _hud = NodePath("../Camera3D/HUD")
 _mainGame = NodePath("../..")
 
@@ -348,11 +381,13 @@ current = true
 fov = 90.0
 
 [node name="HUD" parent="Player/Camera3D" node_paths=PackedStringArray("_gameModel", "_controller") instance=ExtResource("17")]
+visible = false
 _gameModel = NodePath("../../../GameModel")
-_controller = NodePath("../../PlayerController")
+_controller = NodePath("../../../Controller/PlayerController")
 
 [node name="debug" parent="Player/Camera3D" instance=ExtResource("11")]
-script = ExtResource("18_n2e6y")
+process_mode = 4
+visible = false
 
 [node name="Audio" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("18")
@@ -362,7 +397,7 @@ visible = false
 script = ExtResource("3_jtqey")
 _builder = NodePath("Builder")
 _hud = NodePath("../Player/Camera3D/HUD")
-_mapView = NodePath("../MapView")
+_mapView = NodePath("../Views/MapView")
 _player = NodePath("../Player")
 gameModel = NodePath("../GameModel")
 _startPosition = NodePath("StartPos")
@@ -391,30 +426,3 @@ transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 visible = false
 mesh = SubResource("BoxMesh_jtqey")
 skeleton = NodePath("../..")
-
-[node name="MainMenu" type="Node2D" parent="."]
-visible = false
-script = ExtResource("19_n2e6y")
-
-[node name="Sprite2D" type="Sprite2D" parent="MainMenu"]
-position = Vector2(673, 377)
-scale = Vector2(3, 3)
-texture = ExtResource("20")
-
-[node name="MapView" parent="." node_paths=PackedStringArray("_dungeon", "_player", "_gameModel") instance=ExtResource("21")]
-visible = false
-_dungeon = NodePath("../Dungeon")
-_player = NodePath("../Player")
-_gameModel = NodePath("../GameModel")
-
-[node name="Help" type="Sprite2D" parent="."]
-visible = false
-z_index = 5
-scale = Vector2(0.995122, 1.0023)
-texture = ExtResource("22")
-centered = false
-script = ExtResource("21_tig81")
-
-[node name="GameOver" type="Node2D" parent="."]
-visible = false
-script = ExtResource("25_i050v")

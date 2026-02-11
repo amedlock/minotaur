@@ -10,8 +10,13 @@ namespace minotaur.Source.player;
 //  debug output window
 public partial class Debug : Label
 {
+  [Export]
   private Dungeon _dungeon;
+  
+  [Export]
   private MainGame _game;
+  
+  [Export]
   private Player _player;
 
   public override void _Ready()

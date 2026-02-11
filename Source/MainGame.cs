@@ -41,7 +41,7 @@ public partial class MainGame : Node3D
   // game model
   [Export] GameModel gameModel;
 
-
+  
   public override void _Ready()
   {
     // RuleTest();
@@ -107,7 +107,7 @@ public partial class MainGame : Node3D
   public void ShowGame()
   {
     dungeon.Show();
-    player.Show();
+    player.Enable();
     menu.Enabled = false;
     _mapView.Hide();
     _gameMode = GameMode.Dungeon;
