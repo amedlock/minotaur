@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -8,6 +9,7 @@ using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
 using minotaur.Source.model;
+using Array = Godot.Collections.Array;
 
 #endregion
 
@@ -138,7 +140,8 @@ public class GameDb
     {
       EnemyType.War => ["White", "Grey", "Tan"],
       EnemyType.Magic => ["Blue", "Pink", "Purple"],
-      EnemyType.Both => ["White", "Yellow", "Red"] 
+      EnemyType.Both => ["White", "Yellow", "Red"],
+      _ => throw new ArgumentOutOfRangeException(nameof(enemyType), enemyType, null)
     };
     
     var dict = (Dictionary)data;

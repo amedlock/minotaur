@@ -44,7 +44,6 @@ public partial class MainGame : Node3D
   
   public override void _Ready()
   {
-    // RuleTest();
     ShowMenu();
   }
 
@@ -132,9 +131,22 @@ public partial class MainGame : Node3D
 
   protected void RuleTest()
   {
-    var tbl = new RuleTable("test", "A,B,C","D, E");
-    tbl.AddRule("test rule", ("A", 100), ("C", 300));
-    Console.WriteLine(tbl);
+    var tbl = new RuleTable("A,B,C = D, E");
+    tbl.AddRule("-,50,10", 12, 22);
+    
+    tbl.Set("A", 100).Set("B", 50).Set("C", 10);
+    Console.WriteLine(tbl.Get("C"));
+
+    if (!tbl.Match())
+    {
+      Console.WriteLine("No match");
+    }
+    else
+    {
+      Console.WriteLine("Match : " + tbl.Get("D") + "," + tbl.Get("E"));
+    }
   }
-  
+
+
+ 
 }
