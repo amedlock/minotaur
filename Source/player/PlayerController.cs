@@ -19,7 +19,7 @@ public partial class PlayerController : Node
   private const float TurnTime = 0.3f;
   private const float GlanceTime = 0.25f;
 
-  private int _glanceAmount = 0;
+  private int _glanceAmount;
 
   [Export] private CombatController _combatController;
 

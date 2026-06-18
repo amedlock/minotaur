@@ -61,7 +61,6 @@ public partial class MainGame : Node3D
         {
           _help.Toggle();
         }
-
         break;
 
       case GameMode.Map:
@@ -127,26 +126,4 @@ public partial class MainGame : Node3D
     player.Hide();
     _gameMode = GameMode.Map;
   }
-
-
-  protected void RuleTest()
-  {
-    var tbl = new RuleTable("A,B,C = D, E");
-    tbl.AddRule("-,50,10", 12, 22);
-    
-    tbl.Set("A", 100).Set("B", 50).Set("C", 10);
-    Console.WriteLine(tbl.Get("C"));
-
-    if (!tbl.Match())
-    {
-      Console.WriteLine("No match");
-    }
-    else
-    {
-      Console.WriteLine("Match : " + tbl.Get("D") + "," + tbl.Get("E"));
-    }
-  }
-
-
- 
 }

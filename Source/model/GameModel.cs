@@ -18,7 +18,7 @@ public partial class GameModel : Node
   private PlayerData _playerData;
   public GameDb GameDb { get; private set; }
 
-  public LevelRandomizer randomizer;
+  internal LevelRandomizer Randomizer;
 
   public int Depth = 1;
   public int Skill = 1;
@@ -69,7 +69,7 @@ public partial class GameModel : Node
     _playerData = new PlayerData();
     GameDb = new GameDb();
     _grid = new DungeonGrid(12, 12);
-    randomizer = new LevelRandomizer(_grid, GameDb);
+    Randomizer = new LevelRandomizer(_grid, GameDb);
   }
 
   
@@ -104,7 +104,7 @@ public partial class GameModel : Node
     }
     
     var levelInfo = Levels[index];
-    randomizer.BuildLevel(levelInfo);
+    Randomizer.BuildLevel(levelInfo);
   }
 
   
@@ -114,7 +114,7 @@ public partial class GameModel : Node
     var seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16 ;
     var levelInfo = new LevelInfo(Skill, Depth, seed, gate.Type);
     Levels[Depth] = levelInfo;
-    randomizer.BuildLevel(levelInfo);
+    Randomizer.BuildLevel(levelInfo);
   }
   
   // vary amount by +/- percent
@@ -162,7 +162,7 @@ public partial class GameModel : Node
       return;
     }
     Depth++;
-    randomizer.BuildLevel(Levels[Depth]);
+    Randomizer.BuildLevel(Levels[Depth]);
     playerX = 0;
     playerY = 0;
     _facing = 270;

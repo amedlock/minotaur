@@ -8,12 +8,11 @@ using Godot.Collections;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
-using minotaur.Source.model;
 using Array = Godot.Collections.Array;
 
 #endregion
 
-namespace minotaur;
+namespace minotaur.Source.model;
 
 // Loads items, icons, enemies from JSON file
 public class GameDb
@@ -151,7 +150,7 @@ public class GameDb
       var stats = (Array)pair.Value;
       int depth = (int)stats[0];
       
-      for( int power = 0; power < 3; power++)
+      for( var power = 0; power < 3; power++)
       {
         var minDepth = (power * 3) + depth;
         var maxDepth = minDepth + 5;
