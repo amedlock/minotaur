@@ -9,10 +9,13 @@ namespace minotaur.Source.views;
 public partial class MainMenu : Node2D
 {
   private bool _enabled;
-  
-  [Export]
-  private MainGame _mainGame;
 
+  [Signal]
+  public delegate void StartGameEventHandler(int skill);
+  
+  [Signal]
+  public delegate void QuitGameEventHandler();
+  
   public bool Enabled
   {
     get => _enabled;
@@ -26,15 +29,19 @@ public partial class MainMenu : Node2D
 
   public override void _Input(InputEvent @event)
   {
-    if (@event is InputEventKey eventKey )
+    if (@event is InputEventKey {Pressed: true} eventKey  )
     {
-      if (!eventKey.Pressed) return;
-      switch (eventKey.Keycode)
+      int skill = eventKey.Keycode switch
       {
-        case Key.Key1 or Key.Kp1: _mainGame.StartGame(1); break;
-        case Key.Key2 or Key.Kp2: _mainGame.StartGame(2); break;
-        case Key.Key3 or Key.Kp3: _mainGame.StartGame(3); break;
-        case Key.Key4 or Key.Kp4: _mainGame.StartGame(4); break;
+        Key.Key1 or Key.Kp1 => 1,
+        Key.Key2 or Key.Kp2 => 2,
+        Key.Key3 or Key.Kp3 => 3,
+        Key.Key4 or Key.Kp4 => 4,
+        _ => 0
+      };
+      if (skill > 0)
+      {
+        EmitSignal(SignalName.StartGame, skill);
       }
     }
   }

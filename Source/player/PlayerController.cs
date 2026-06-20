@@ -277,10 +277,8 @@ public partial class PlayerController : Node
 
   public void ClickFeet()
   {
-    var item = _gameModel.ItemAtFeet;
     UseOrTakeItem();
   }
-
 
   private void OpenContainer(MazeCell cell, ItemInfo container)
   {

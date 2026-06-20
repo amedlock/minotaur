@@ -25,7 +25,6 @@ public partial class Player : Node3D
   [Export] private GameModel gameModel;
   
   private PlayerData _playerData;
-  private readonly AudioStreamPlayer _audio1;
 
 
   // update location and rotation based on gameModel

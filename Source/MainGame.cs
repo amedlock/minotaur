@@ -18,20 +18,19 @@ namespace minotaur.Source;
 // initial Controller for the game
 public partial class MainGame : Node3D
 {
-  private int _depth;
-
   private GameMode _gameMode;
-  
+
+  [Export] public Dispatcher Dispatcher;
 
   // views
-  [Export] private MainMenu menu;
+  [Export] private MainMenu _menu;
 
-  [Export] private Dungeon dungeon;
+  [Export] private Dungeon _dungeon;
 
-  [Export] private Player player;
-  [Export] private PlayerController playerController;
+  [Export] private Player _player;
+  [Export] private PlayerController _playerController;
 
-  [Export] private GameOver gameOver;
+  [Export] private GameOver _gameOver;
 
   [Export] private MapView _mapView;
 
@@ -39,7 +38,7 @@ public partial class MainGame : Node3D
   private Help _help;
   
   // game model
-  [Export] GameModel gameModel;
+  [Export] GameModel _gameModel;
 
   
   public override void _Ready()
@@ -80,10 +79,10 @@ public partial class MainGame : Node3D
   public void StartGame(int skill)
   {
     uint seedNum = 0xdeadbeef; // _random.Randi();
-    gameModel.Init(skill, seedNum);
-    gameModel.CreateLevel(1);
-    dungeon.BuildLevel();
-    playerController.Init(skill);
+    _gameModel.Init(skill, seedNum);
+    _gameModel.CreateLevel(1);
+    _dungeon.BuildLevel();
+    _playerController.Init(skill);
     ShowGame();
     _help.Show();
   }
@@ -91,22 +90,22 @@ public partial class MainGame : Node3D
   public void GameOver()
   {
     ShowMap();
-    player.Disable();
+    _player.Disable();
     _gameMode = GameMode.GameOver;
   }
 
   public void WonGame()
   {
     ShowMap();
-    player.Disable();
+    _player.Disable();
     _gameMode = GameMode.GameWon;
   }
 
   public void ShowGame()
   {
-    dungeon.Show();
-    player.Enable();
-    menu.Enabled = false;
+    _dungeon.Show();
+    _player.Enable();
+    _menu.Enabled = false;
     _mapView.Hide();
     _gameMode = GameMode.Dungeon;
   }
@@ -115,15 +114,15 @@ public partial class MainGame : Node3D
   {
     _gameMode = GameMode.Menu;
     _mapView.Hide();
-    dungeon.Hide();
-    player.Hide();
-    menu.Enabled = true;
+    _dungeon.Hide();
+    _player.Hide();
+    _menu.Enabled = true;
   }
 
   public void ShowMap()
   {
     _mapView.Show();
-    player.Hide();
+    _player.Hide();
     _gameMode = GameMode.Map;
   }
 }

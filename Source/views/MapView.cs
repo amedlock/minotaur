@@ -152,7 +152,7 @@ public partial class MapView : Node2D
 
   }
 
-  public Rect2 ChooseTile(MazeCell cell)
+  public static Rect2 ChooseTile(MazeCell cell)
   {
     return SpriteLookup["none_none"];
     // StringName n1 = nameof(cell.North.WallType);

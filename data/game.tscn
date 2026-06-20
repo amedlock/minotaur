@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://co2vu1jhjxhem"]
+[gd_scene load_steps=31 format=3 uid="uid://co2vu1jhjxhem"]
 
 [ext_resource type="Script" uid="uid://8cavoj4sramm" path="res://Source/MainGame.cs" id="1_tig81"]
 [ext_resource type="Script" uid="uid://c2hv1cgejxsjy" path="res://Source/model/GameModel.cs" id="2_n2e6y"]
@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://brx0ix11p2bl7" path="res://data/map/mapview.tscn" id="21"]
 [ext_resource type="Script" uid="uid://c43a0qpyw16hw" path="res://Source/help/Help.cs" id="21_tig81"]
 [ext_resource type="Texture2D" uid="uid://cbqdoeam4ohxh" path="res://data/help/help.png" id="22"]
+[ext_resource type="Script" uid="uid://cvtj77jjrwuwe" path="res://Source/Dispatcher.cs" id="23_n2e6y"]
 [ext_resource type="Script" uid="uid://mnvutg4ctjuw" path="res://Source/views/GameOver.cs" id="25_i050v"]
 
 [sub_resource type="Animation" id="1"]
@@ -253,16 +254,23 @@ _data = {
 
 [sub_resource type="BoxMesh" id="BoxMesh_jtqey"]
 
-[node name="MainGame" type="Node3D" node_paths=PackedStringArray("menu", "dungeon", "player", "playerController", "gameOver", "_mapView", "_help", "gameModel")]
+[node name="MainGame" type="Node3D" node_paths=PackedStringArray("Dispatcher", "_menu", "_dungeon", "_player", "_playerController", "_gameOver", "_mapView", "_help", "_gameModel")]
 script = ExtResource("1_tig81")
-menu = NodePath("Views/MainMenu")
-dungeon = NodePath("Dungeon")
-player = NodePath("Player")
-playerController = NodePath("Controller/PlayerController")
-gameOver = NodePath("Views/GameOver")
+Dispatcher = NodePath("Dispatcher")
+_menu = NodePath("Views/MainMenu")
+_dungeon = NodePath("Dungeon")
+_player = NodePath("Player")
+_playerController = NodePath("Controller/PlayerController")
+_gameOver = NodePath("Views/GameOver")
 _mapView = NodePath("Views/MapView")
 _help = NodePath("Views/Help")
-gameModel = NodePath("GameModel")
+_gameModel = NodePath("GameModel")
+
+[node name="Dispatcher" type="Node" parent="." node_paths=PackedStringArray("MainGame", "MainMenu", "GameModel")]
+script = ExtResource("23_n2e6y")
+MainGame = NodePath("..")
+MainMenu = NodePath("../Views/MainMenu")
+GameModel = NodePath("../GameModel")
 
 [node name="GameModel" type="Node" parent="."]
 script = ExtResource("2_n2e6y")
@@ -295,10 +303,9 @@ script = ExtResource("21_tig81")
 visible = false
 script = ExtResource("25_i050v")
 
-[node name="MainMenu" type="Node2D" parent="Views" node_paths=PackedStringArray("_mainGame")]
+[node name="MainMenu" type="Node2D" parent="Views"]
 visible = false
 script = ExtResource("19_n2e6y")
-_mainGame = NodePath("../..")
 
 [node name="Sprite2D" type="Sprite2D" parent="Views/MainMenu"]
 position = Vector2(673, 377)
