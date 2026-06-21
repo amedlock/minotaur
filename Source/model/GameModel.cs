@@ -120,7 +120,7 @@ public partial class GameModel : Node
   // vary amount by +/- percent
   private int VaryAmount(int amount, int percent)
   {
-    var variance = amount * (percent / 100f);
+    float variance = amount * (percent / 100f);
     return (int)(amount - variance + GD.RandRange(0, 2 * variance));
   }
 
