@@ -9,7 +9,6 @@ namespace minotaur.Source.enemies;
 
 public partial class Enemy : Sprite3D
 {
-  private PackedScene _smokePrefab;
   public int GridX = 0;
   public int GridY = 0;
 
@@ -28,7 +27,6 @@ public partial class Enemy : Sprite3D
     RegionRect = Info.ImageRect;
     Health = Info.WarHp;
     Mind = Info.MindHp;
-    _smokePrefab = ResourceLoader.Load<PackedScene>("res://data/enemies/smoke.tscn");
   }
 
   public void Damage(ItemInfo item)
@@ -47,7 +45,7 @@ public partial class Enemy : Sprite3D
       return; // might get called twice
     }
     Visible = false;
-    var smoke = (Smoke)_smokePrefab.Instantiate();
+    var smoke = (Smoke)ResourceLoader.Load<PackedScene>("res://data/enemies/smoke.tscn").Instantiate();
     smoke.Position = Position - new Vector3(0, 0.6f, 0);
     smoke.Visible = true;
     GetParent().AddChild(smoke);
