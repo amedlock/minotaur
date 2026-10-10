@@ -252,8 +252,13 @@ public partial class PlayerController : Node
     (_playerData.LeftHand, _playerData.RightHand) = (_playerData.RightHand, _playerData.LeftHand);
   }
 
+  // items at the feet can only be touched while standing still, not mid-move or in combat
+  private bool CanUseFeet => _gameModel.PlayerState == PlayerState.Idle;
+
   public void SwapWithFeet()
   {
+    if (!CanUseFeet) return;
+
     // ladders, treasure and supplies can't be carried in a hand
     if (_gameModel.ItemAtFeet is { ItemType: ItemType.Special })
     {
@@ -272,6 +277,8 @@ public partial class PlayerController : Node
   // user wants to use/take item at their feet
   public void UseOrTakeItem()
   {
+    if (!CanUseFeet) return;
+
     var cell = _gameModel.CurrentCell;
     var itemInfo = cell.ItemInfo;
     if (itemInfo == null)
