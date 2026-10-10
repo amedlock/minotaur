@@ -29,21 +29,17 @@ public partial class MapView : Node2D
     ["door_door"] = MapTile(1, 1)
   };
 
-  [Export]
-  private MainGame _game;
-  
+  [Export] private MainGame _game;
+
   // shouldn't need this
-  [Export]
-  private Dungeon _dungeon;
+  [Export] private Dungeon _dungeon;
 
-  [Export]
-  private Player _player;
+  [Export] private Player _player;
 
-  [Export]
-  private GameModel _gameModel;
+  [Export] private GameModel _gameModel;
 
   private PlayerData _playerData;
-  
+
   private PackedScene _gateIcon;
 
   private Dictionary<int, Sprite2D> _lookup = new();
@@ -54,7 +50,7 @@ public partial class MapView : Node2D
 
 
   private DungeonGrid grid => _gameModel.Grid;
-  
+
   private static Rect2 MapTile(int x, int y)
   {
     return new Rect2(x * 16, y * 16, 16, 16);
@@ -162,7 +158,6 @@ public partial class MapView : Node2D
         if (cell.Gate != GateType.None) AddGate(cell.Gate, x, y);
       }
     }
-
   }
 
   public static Rect2 ChooseTile(MazeCell cell)

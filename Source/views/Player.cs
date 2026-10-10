@@ -12,9 +12,7 @@ namespace minotaur.Source.views;
 
 public partial class Player : Node3D
 {
-  private AudioStreamPlayer _audio;
-  
-  public AudioStreamPlayer Audio => _audio;
+  public AudioStreamPlayer Audio { get; private set; }
 
   // facing direction in degrees
   private PlayerState _playerState = PlayerState.Idle;
@@ -24,10 +22,10 @@ public partial class Player : Node3D
   [Export] private Dungeon _dungeon;
 
   [Export] private GameModel _gameModel;
-  
+
   private PlayerData _playerData;
 
-  private bool _enabled = false;
+  private bool _enabled;
 
   public bool Enabled
   {
@@ -45,7 +43,6 @@ public partial class Player : Node3D
     }
   }
 
-  
 
   // update location and rotation based on gameModel
   public void Update()
@@ -55,7 +52,7 @@ public partial class Player : Node3D
     var coord = _gameModel.PlayerCoord;
     Position = _dungeon.PlayerPosition;
   }
-  
+
   // player direction in degrees
   // if glancing may not be in sync with Node RotationDegrees.Y
   public int Dir
@@ -120,9 +117,9 @@ public partial class Player : Node3D
   {
     _playerData = _gameModel.PlayerData;
     Hud = GetNode<Hud>("Camera3D/HUD");
-    _audio = GetNode<AudioStreamPlayer>("Audio");
+    Audio = GetNode<AudioStreamPlayer>("Audio");
   }
-  
+
   public Vector3 CoordToWorld(Vector2I coord)
   {
     return _startPosition.Position + new Vector3(coord.X * 3f, 0, -coord.Y * 3);
@@ -140,6 +137,4 @@ public partial class Player : Node3D
     Hud.Hide();
     Visible = false;
   }
-  
-
 }

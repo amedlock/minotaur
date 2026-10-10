@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using minotaur.Source.control;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.hud;
@@ -17,7 +18,7 @@ public partial class Dungeon : Node3D
 {
   private const float CellSize = 3.0f;
   private const int MaxLevel = 100;
-  
+
   private readonly Dictionary<string, Resource> _muralColors = new();
 
   private readonly Dictionary<WallPost, Vector3> _wallPostOffsets = new()
@@ -37,24 +38,18 @@ public partial class Dungeon : Node3D
   };
 
   private AudioStreamPlayer _audio;
-  
-  [Export]
-  private control.LevelBuilder _builder;
 
-  [Export] 
-  private Hud _hud;
+  [Export] private LevelBuilder _builder;
 
-  [Export] 
-  private MapView _mapView;
+  [Export] private Hud _hud;
 
-  [Export] 
-  private Player _player;
+  [Export] private MapView _mapView;
 
-  [Export] 
-  private GameModel gameModel;
+  [Export] private Player _player;
 
-  [Export] 
-  private Marker3D _startPosition;
+  [Export] private GameModel gameModel;
+
+  [Export] private Marker3D _startPosition;
 
   private Node3D _walls;
   private Node3D _cells;
@@ -116,18 +111,17 @@ public partial class Dungeon : Node3D
 
   public MainGame Game { get; private set; }
 
-  public DungeonGrid Grid
-  {
-    get => gameModel.Grid;
-  }
+  public DungeonGrid Grid => gameModel.Grid;
 
   public LevelInfo CurrentLevel { get; private set; }
-  public Vector3 PlayerPosition {
+
+  public Vector3 PlayerPosition
+  {
     get
     {
       var coord = gameModel.PlayerCoord;
       return StartPosition + new Vector3(coord.X * 3, 0, coord.Y * -3);
-    } 
+    }
   }
 
   public GateType MuralColor
@@ -247,7 +241,6 @@ public partial class Dungeon : Node3D
     // _player.ResetLocation();
     // _hud.UpdateStats();
   }
-
 
 
   public Vector3 WallPostForWall(int cx, int cy, Direction dir)

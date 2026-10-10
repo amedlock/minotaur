@@ -15,8 +15,6 @@ namespace minotaur.Source.model;
 
 public partial class GameModel : Node
 {
-  private DungeonGrid _grid;
-  private PlayerData _playerData;
   public GameDb GameDb { get; private set; }
 
   internal LevelRandomizer Randomizer;
@@ -25,30 +23,27 @@ public partial class GameModel : Node
   public int Skill = 1;
 
   // player location
-  public int playerX = 0;
-  public int playerY = 0;
-  private int _facing = 90;
+  public int playerX;
+  public int playerY;
 
-  public int Facing
-  {
-    get => _facing;
-    set => _facing = value;
-  }
-  
+  public int Facing { get; set; } = 90;
+
   public int GridIndex => Grid.Index(playerX, playerY);
-  
-  public LevelInfo CurrentLevel => Depth >=0 ? Levels[Depth] : null;
 
-  public MazeCell CurrentCell => _grid.Cell(playerX, playerY);
+  public LevelInfo CurrentLevel => Depth >= 0 ? Levels[Depth] : null;
+
+  public MazeCell CurrentCell => Grid.Cell(playerX, playerY);
 
   public List<LevelInfo> Levels = new();
 
-  public DungeonGrid Grid => _grid;
-  public PlayerData PlayerData => _playerData;
+  public DungeonGrid Grid { get; private set; }
+
+  public PlayerData PlayerData { get; private set; }
+
   public PlayerState PlayerState { get; set; }
 
   public bool OverExit => ItemAtFeet is { Name: "ladder" };
-  
+
   public ItemInfo ItemAtFeet
   {
     get => CurrentCell.ItemInfo;
@@ -57,7 +52,7 @@ public partial class GameModel : Node
 
   public Vector2I PlayerCoord
   {
-    get => new Vector2I(playerX, playerY);
+    get => new(playerX, playerY);
     set
     {
       playerX = value.X;
@@ -67,13 +62,12 @@ public partial class GameModel : Node
 
   public override void _Ready()
   {
-    _playerData = new PlayerData();
+    PlayerData = new PlayerData();
     GameDb = new GameDb();
-    _grid = new DungeonGrid(12, 12);
-    Randomizer = new LevelRandomizer(_grid, GameDb);
+    Grid = new DungeonGrid(12, 12);
+    Randomizer = new LevelRandomizer(Grid, GameDb);
   }
 
-  
 
   // generate levelInfo for the dungeon using the skill and seed
   public void Init(int skill, uint seed)
@@ -94,66 +88,66 @@ public partial class GameModel : Node
       var levelInfo = new LevelInfo(skill, index + 1, seedNum, levelType);
       Levels.Add(levelInfo);
     }
-    
+
     Skill = skill;
     Facing = 270;
-    _playerData.Gold = 0;
-    _playerData.WarExp = 0;
-    _playerData.MagicExp = 0;
-    _playerData.Food = 10 - skill;
-    _playerData.Arrows = 9 - skill;
-    _playerData.Resurrected = false;
-    _playerData.ClearSlots();
+    PlayerData.Gold = 0;
+    PlayerData.WarExp = 0;
+    PlayerData.MagicExp = 0;
+    PlayerData.Food = 10 - skill;
+    PlayerData.Arrows = 9 - skill;
+    PlayerData.Resurrected = false;
+    PlayerData.ClearSlots();
 
-    _playerData.RightHand = GameDb.FindItem("bow");
+    PlayerData.RightHand = GameDb.FindItem("bow");
     switch (skill)
     {
       case 1:
-        _playerData.Health = 18;
-        _playerData.Mind = 9;
-        _playerData.LeftHand = GameDb.FindItem("small_shield");
+        PlayerData.Health = 18;
+        PlayerData.Mind = 9;
+        PlayerData.LeftHand = GameDb.FindItem("small_shield");
         break;
       case 2:
-        _playerData.Health = 16;
-        _playerData.Mind = 7;
+        PlayerData.Health = 16;
+        PlayerData.Mind = 7;
         break;
       case 3:
-        _playerData.Health = 14;
-        _playerData.Mind = 7;
+        PlayerData.Health = 14;
+        PlayerData.Mind = 7;
         break;
       case 4:
-        _playerData.Health = 12;
-        _playerData.Mind = 6;
+        PlayerData.Health = 12;
+        PlayerData.Mind = 6;
         break;
       default:
         throw new Exception("Invalid skill: " + skill);
     }
 
-    _playerData.MindMax = _playerData.Mind;
-    _playerData.HealthMax = _playerData.Health;
+    PlayerData.MindMax = PlayerData.Mind;
+    PlayerData.HealthMax = PlayerData.Health;
   }
-  
+
   public void CreateLevel(int depth)
   {
     if (depth >= Levels.Count)
     {
       throw new ArgumentException("Invalid depth");
     }
-    
+
     var levelInfo = Levels[depth];
     Randomizer.BuildLevel(levelInfo);
   }
 
-  
+
   public void LoadGateLevel(DungeonGate gate)
   {
     CurrentLevel.UsedGate = true;
-    uint seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16 ;
+    uint seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16;
     var levelInfo = new LevelInfo(Skill, Depth, seed, gate.Type);
     Levels[Depth] = levelInfo;
     Randomizer.BuildLevel(levelInfo);
   }
-  
+
   // vary amount by +/- percent
   private int VaryAmount(int amount, int percent)
   {
@@ -185,11 +179,11 @@ public partial class GameModel : Node
       3 => VaryAmount(maxDamage, 15),
       _ => VaryAmount(maxDamage, 20)
     };
-    int warAmount = ApplyArmor(damage, _playerData.WarArmor);
-    int mindAmount = ApplyArmor(damage, _playerData.MindArmor);
-    if (item.IsWar) _playerData.Health = Mathf.Clamp(_playerData.Health - warAmount, 0, _playerData.HealthMax);
+    int warAmount = ApplyArmor(damage, PlayerData.WarArmor);
+    int mindAmount = ApplyArmor(damage, PlayerData.MindArmor);
+    if (item.IsWar) PlayerData.Health = Mathf.Clamp(PlayerData.Health - warAmount, 0, PlayerData.HealthMax);
 
-    if (item.IsMagic) _playerData.Mind = Mathf.Clamp(_playerData.Mind - mindAmount, 0, _playerData.MindMax);
+    if (item.IsMagic) PlayerData.Mind = Mathf.Clamp(PlayerData.Mind - mindAmount, 0, PlayerData.MindMax);
   }
 
   public void NextLevel()
@@ -198,11 +192,12 @@ public partial class GameModel : Node
     {
       return;
     }
+
     Depth++;
     Randomizer.BuildLevel(Levels[Depth]);
     playerX = 0;
     playerY = 0;
-    _facing = 270;
+    Facing = 270;
   }
 
   public ItemInfo ChooseTreasure(ItemInfo container)

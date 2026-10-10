@@ -23,7 +23,7 @@ public partial class PlayerController : Node
 
   private int _glanceAmount;
 
-  [Export] private control.CombatController _combatController;
+  [Export] private CombatController _combatController;
 
   [Export] private Dungeon _dungeon;
 
@@ -33,10 +33,9 @@ public partial class PlayerController : Node
 
   [Export] private MapView _mapView;
 
-  [Export] private views.Player _player;
-  
-  [Export]
-  private MainGame _mainGame;
+  [Export] private Player _player;
+
+  [Export] private MainGame _mainGame;
 
   private PlayerData _playerData;
   public Hud Hud => _hud;
@@ -303,6 +302,7 @@ public partial class PlayerController : Node
     {
       cell.ItemInfo = _gameModel.ChooseTreasure(container);
     }
+
     _dungeon.CurrentCell.SetItem(cell.ItemInfo);
     _hud.UpdatePack();
   }
@@ -338,7 +338,7 @@ public partial class PlayerController : Node
     _dungeon.CurrentCell.RemoveItem();
     _hud.UpdateAll();
   }
-  
+
 
   // user wants to use/take item at their feet
   public void UseOrTakeItem()
@@ -349,14 +349,14 @@ public partial class PlayerController : Node
     {
       return;
     }
-    
+
     if (itemInfo is { ItemType: ItemType.Special })
     {
       switch (itemInfo.Name)
       {
-        case "ladder": 
+        case "ladder":
           return;
-        case "treasure": 
+        case "treasure":
           _mainGame.WonGame();
           return;
         case "quiver" or "food":
@@ -364,6 +364,7 @@ public partial class PlayerController : Node
           RemoveItem();
           return;
       }
+
       return;
     }
 
@@ -372,16 +373,16 @@ public partial class PlayerController : Node
     {
       case ItemType.Ladder:
         return;
-      
+
       case ItemType.Money or ItemType.Treasure:
         _playerData.Gold += itemInfo.Stat1;
         RemoveItem();
         return;
-      
+
       case ItemType.Container:
         OpenContainer(cell, itemInfo);
         return;
-      
+
       case ItemType.Armor or ItemType.MagicArmor:
         _playerData.AddArmor(itemInfo);
         RemoveItem();
@@ -395,7 +396,7 @@ public partial class PlayerController : Node
     }
   }
 
-  
+
   public void EnterGate(DungeonGate dungeonGate)
   {
     _player.Audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/magic.wav");
@@ -437,5 +438,4 @@ public partial class PlayerController : Node
     //   _dungeon.Game.GameOver();
     // }
   }
-  
 }

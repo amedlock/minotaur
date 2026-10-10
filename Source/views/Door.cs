@@ -1,5 +1,8 @@
-﻿
+﻿#region
+
 using Godot;
+
+#endregion
 
 namespace minotaur.Source.dungeon;
 

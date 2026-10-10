@@ -14,20 +14,20 @@ public class PlayerData
   public int Arrows;
   public int Food;
 
-  public  int Gold;
-  public  int Health;
-  public  int HealthMax;
+  public int Gold;
+  public int Health;
+  public int HealthMax;
 
   public int Mind;
   public int MindMax;
 
-  public int WarExp ;
-  public int MagicExp ;
-  
-  public bool Resurrected ;
+  public int WarExp;
+  public int MagicExp;
+
+  public bool Resurrected;
 
   public bool IsDead => Health <= 0 || Mind <= 0;
-  
+
   private ItemInfo helmet;
   private ItemInfo breastplate;
   private ItemInfo hauberk;
@@ -41,8 +41,8 @@ public class PlayerData
   public bool NeedsRest;
   private bool _resurrected;
 
-  public int WarArmor = 0;
-  public int MindArmor = 0;
+  public int WarArmor;
+  public int MindArmor;
   public int WarDamage = 0;
   public int MindDamage = 0;
 
@@ -55,15 +55,15 @@ public class PlayerData
       _slots[n] = null;
     }
   }
-  
+
   public ItemInfo SetSlot(int slotNum, ItemInfo item)
   {
-    return _slots[slotNum-1] = item;
+    return _slots[slotNum - 1] = item;
   }
-  
+
   public ItemInfo GetSlot(int slotNum)
   {
-    return _slots[slotNum-1];
+    return _slots[slotNum - 1];
   }
 
   public void AddArmor(ItemInfo itemInfo)
@@ -71,10 +71,10 @@ public class PlayerData
     switch (itemInfo)
     {
       case { ItemType: ItemType.MagicArmor }:
-        MindArmor = Mathf.Min( MindArmor, itemInfo.Stat1);
+        MindArmor = Mathf.Min(MindArmor, itemInfo.Stat1);
         break;
       case { ItemType: ItemType.Armor }:
-        WarArmor = Mathf.Min( WarArmor, itemInfo.Stat1);
+        WarArmor = Mathf.Min(WarArmor, itemInfo.Stat1);
         break;
     }
   }
@@ -85,10 +85,10 @@ public class PlayerData
     {
       case "quiver":
         Arrows += amount;
-        return ;
+        return;
       case "food":
         Food += amount;
-        return ;
+        return;
     }
   }
 }

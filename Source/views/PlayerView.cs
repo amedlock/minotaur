@@ -1,7 +1,11 @@
-﻿using Godot;
+﻿#region
+
+using Godot;
 using minotaur.Source.model;
 using minotaur.Source.player;
 using PlayerController = minotaur.Source.control.PlayerController;
+
+#endregion
 
 namespace minotaur.Source.views;
 
@@ -16,15 +20,18 @@ public partial class PlayerView : Node
     {
       case PlayerState.Idle:
       {
-        HandleIdle(); break;
+        HandleIdle();
+        break;
       }
       case PlayerState.Combat:
       {
-        HandleCombat(); break;
+        HandleCombat();
+        break;
       }
       case PlayerState.Glance:
       {
-        HandleGlance(); break;
+        HandleGlance();
+        break;
       }
       case PlayerState.ViewMap:
       {
@@ -32,6 +39,7 @@ public partial class PlayerView : Node
         {
           _controller.ShowMap(false);
         }
+
         break;
       }
       case PlayerState.Won:
@@ -107,7 +115,7 @@ public partial class PlayerView : Node
 
   private void HandleGlance()
   {
-    if ( !Input.IsActionPressed("look_left") && !Input.IsActionPressed("look_right"))
+    if (!Input.IsActionPressed("look_left") && !Input.IsActionPressed("look_right"))
     {
       _controller.UnGlance();
     }

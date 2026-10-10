@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using minotaur.Source.dungeon;
 using minotaur.Source.items;
 using minotaur.Source.model;
 using minotaur.Source.player;
@@ -37,9 +36,9 @@ public partial class Hud : Node2D
   [Export] private Control _pack;
 
   [Export] private GameModel _gameModel;
-  
+
   [Export] private PlayerController _controller;
-  
+
   private Sprite2D _rightHandSprite;
 
   public Sprite2D Compass;
@@ -79,7 +78,7 @@ public partial class Hud : Node2D
   }
 
   private PlayerData PlayerData => _gameModel.PlayerData;
-  
+
 
   private Vector2 CalcSpriteScale(float sw, float sh, float dw, float dh)
   {
@@ -127,6 +126,7 @@ public partial class Hud : Node2D
     {
       slot.Item = PlayerData.GetSlot(slot.SlotNumber);
     }
+
     UpdateDamage();
   }
 
@@ -173,6 +173,7 @@ public partial class Hud : Node2D
     {
       _controller.ClickFeet();
     }
+
     UpdateStats();
   }
 
@@ -200,6 +201,7 @@ public partial class Hud : Node2D
     {
       // Alternate attack method?
     }
+
     UpdateAll();
   }
 }

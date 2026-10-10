@@ -64,7 +64,7 @@ public partial class LevelBuilder : Node
   public void Build(Dungeon dungeon, LevelInfo currentLevel, DungeonGrid grid)
   {
     dungeon.ClearAll();
-    
+
     _rng.Seed = currentLevel.SeedNumber;
     foreach (var cell in grid.Cells)
     {
@@ -75,13 +75,15 @@ public partial class LevelBuilder : Node
       {
         AddCorner(wallPost, dungeonCell);
       }
+
       AddItem(dungeonCell, cell.ItemInfo);
       AddEnemy(dungeonCell, cell.EnemyInfo);
       AddGate(dungeonCell, cell, currentLevel.LevelType);
     }
+
     dungeon.MuralColor = currentLevel.GateType;
   }
-  
+
 
   private void AddEnemy(DungeonCell dc, EnemyInfo enemy)
   {
@@ -101,7 +103,7 @@ public partial class LevelBuilder : Node
       node.Position = new Vector3(1.5f, .7f, -1.5f);
     }
   }
-  
+
   public void AddItem(DungeonCell cell, ItemInfo itemInfo)
   {
     if (cell.Item != null)

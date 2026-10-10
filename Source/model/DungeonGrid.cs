@@ -77,7 +77,6 @@ public class DungeonGrid
     }
   }
 
- 
 
   public IEnumerable<WallPost> WallPosts(int x, int y)
   {

@@ -14,7 +14,7 @@ public class MazeCell(int x, int y)
   public readonly int Y = y;
   public WallType East = WallType.Empty;
   public WallType North = WallType.Empty;
-  
+
   public GateType Gate = GateType.None;
 
   public ItemInfo ItemInfo;
@@ -27,11 +27,11 @@ public class MazeCell(int x, int y)
   {
     // used by Prim algorithm
     Used = false;
-    
+
     // fill in all walls until maze algo removes some or makes into doors
     North = WallType.Wall;
     East = WallType.Wall;
-    
+
     ItemInfo = null;
     EnemyInfo = null;
     Gate = GateType.None;

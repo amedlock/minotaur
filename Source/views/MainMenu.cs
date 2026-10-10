@@ -9,10 +9,9 @@ namespace minotaur.Source.views;
 public partial class MainMenu : Node2D
 {
   private bool _enabled;
-  
-  [Export]
-  public MainGame Game;
- 
+
+  [Export] public MainGame Game;
+
   public bool Enabled
   {
     get => _enabled;
@@ -26,7 +25,7 @@ public partial class MainMenu : Node2D
 
   public override void _Input(InputEvent @event)
   {
-    if (@event is InputEventKey {Pressed: true} eventKey  )
+    if (@event is InputEventKey { Pressed: true } eventKey)
     {
       int skill = eventKey.Keycode switch
       {

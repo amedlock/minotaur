@@ -20,18 +20,15 @@ public partial class CombatController : Node
 
   // player weapon broken?
   private bool _broken;
-  
-  [Export]
-  private GameModel _gameModel;
-  
-  [Export]
-  private PlayerController _playerController;
 
-  [Export]
-  private Hud _hud;
-  
+  [Export] private GameModel _gameModel;
+
+  [Export] private PlayerController _playerController;
+
+  [Export] private Hud _hud;
+
   private PlayerData _playerData;
-  
+
   private Enemy _enemy;
 
   private AnimationPlayer _enemyAnim;
@@ -63,12 +60,11 @@ public partial class CombatController : Node
       endCombat = false;
     }
   }
-  
-  
+
+
   private CombatState _combatState;
-  
-  
-  
+
+
   //  enemy can only do one thing: attack
   private bool _enemyAttack;
   private AudioStreamPlayer _enemyAudio;
@@ -80,10 +76,9 @@ public partial class CombatController : Node
 
   private AudioStream _fireballSound;
   private AudioStream _lightningSound;
- 
-  [Export]
-  private MainGame _mainGame;
-  
+
+  [Export] private MainGame _mainGame;
+
 
   // has player attacked this turn
   private bool _playerAttack;
@@ -168,6 +163,7 @@ public partial class CombatController : Node
       SetProcess(false);
       return;
     }
+
     if (_playerData.IsDead)
     {
       _mainGame.GameOver();
@@ -195,7 +191,8 @@ public partial class CombatController : Node
         Retreat();
       }
     }
-    if (_enemy==null || _enemy.IsDead)
+
+    if (_enemy == null || _enemy.IsDead)
     {
       return;
     }
@@ -287,6 +284,7 @@ public partial class CombatController : Node
       _playerData.RightHand = null; //clear out of the players hand
       _broken = false;
     }
+
     _hud.UpdatePack();
   }
 
@@ -306,7 +304,7 @@ public partial class CombatController : Node
       _playerData.RightHand = null;
       _playerController.Hud.UpdatePack();
     }
-    
+
     if (_enemy.IsDead)
     {
       _enemy.Die();

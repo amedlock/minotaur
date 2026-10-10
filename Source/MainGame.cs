@@ -1,12 +1,8 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using Godot;
-using minotaur.Source.dungeon;
 using minotaur.Source.help;
 using minotaur.Source.model;
-using minotaur.Source.player;
 using minotaur.Source.views;
 using Dungeon = minotaur.Source.views.Dungeon;
 using MainMenu = minotaur.Source.views.MainMenu;
@@ -36,12 +32,12 @@ public partial class MainGame : Node3D
   [Export] private MapView _mapView;
 
   [Export] private Help _help;
-  
+
   // game model
   [Export] GameModel _gameModel;
 
   private AudioStreamPlayer _audio;
-  
+
   public override void _Ready()
   {
     _audio = new AudioStreamPlayer();
@@ -63,6 +59,7 @@ public partial class MainGame : Node3D
         {
           _help.Toggle();
         }
+
         break;
 
       case GameMode.Map:
@@ -70,6 +67,7 @@ public partial class MainGame : Node3D
         {
           ShowGame();
         }
+
         break;
     }
 
@@ -130,7 +128,7 @@ public partial class MainGame : Node3D
     _player.Hide();
     _gameMode = GameMode.Map;
   }
-  
+
   public void HideMap()
   {
     _mapView.Hide();

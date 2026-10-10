@@ -65,7 +65,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
   {
     return other.Any(c => c.AdjacentTo(cell));
   }
-  
+
   private void BuildMazePrim()
   {
     dungeonGrid.Reset();
@@ -382,6 +382,4 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
     AddWeapons(weapons, armor, info, cells);
     AddAmulets(cells);
   }
-  
-  
 }

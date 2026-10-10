@@ -5,7 +5,7 @@ using Godot;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
 using minotaur.Source.model;
-using minotaur.Source.player;
+using minotaur.Source.views;
 
 #endregion
 
@@ -13,7 +13,7 @@ namespace minotaur.Source.dungeon;
 
 public partial class DungeonCell : Node3D
 {
-  private views.Dungeon _dungeon;
+  private Dungeon _dungeon;
   public Enemy Enemy;
   public DungeonGate Gate;
 
@@ -24,7 +24,7 @@ public partial class DungeonCell : Node3D
   // walls
   public Node3D North;
   public Node3D East;
-  
+
   public int X { get; private set; }
 
   public int Y { get; private set; }
@@ -38,14 +38,14 @@ public partial class DungeonCell : Node3D
 
   public override void _Ready()
   {
-    _dungeon = GetParent() as views.Dungeon;
+    _dungeon = GetParent() as Dungeon;
   }
 
   // returns wall between the two DungeonCells, if any
   public Node3D CheckWall(DungeonCell other)
   {
     if (other == null) return null;
-    
+
     if (other.Y == Y)
     {
       if (other.X != X) return other.X > X ? East : other.East;

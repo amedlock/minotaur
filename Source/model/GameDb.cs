@@ -130,8 +130,8 @@ public class GameDb
       _icons[name] = new Rect2I(coord, _imageSize);
     }
   }
-  
-  
+
+
   // for each enemy load 3 variants of it 
   private void LoadEnemies(Variant data, string section, EnemyType enemyType)
   {
@@ -142,23 +142,23 @@ public class GameDb
       EnemyType.Both => ["White", "Yellow", "Red"],
       _ => throw new ArgumentOutOfRangeException(nameof(enemyType), enemyType, null)
     };
-    
+
     var dict = (Dictionary)data;
     foreach (var pair in (Dictionary)dict[section])
     {
       var name = (string)pair.Key;
       var stats = (Array)pair.Value;
       int depth = (int)stats[0];
-      
-      for( var power = 0; power < 3; power++)
+
+      for (var power = 0; power < 3; power++)
       {
-        var minDepth = (power * 3) + depth;
+        var minDepth = power * 3 + depth;
         var maxDepth = minDepth + 5;
 
         var info = new EnemyInfo();
         info.Type = enemyType;
         info.Name = name;
-        info.Color = _colors[colorNames[power]] ;
+        info.Color = _colors[colorNames[power]];
         info.ImageRect = _icons[name];
         info.Power = power;
         info.MinDepth = minDepth;
@@ -288,20 +288,20 @@ public class GameDb
     foreach (var pair in money)
     {
       var name = (string)pair.Key;
-      
+
       // only one crown
       if (name == "crown")
       {
         AddItem("crown", ItemType.Money, _icons["crown"], _colors["Yellow"], 6, 200, 0);
         continue;
       }
-      
+
       var items = (Array)pair.Value;
       var minDepth = (int)items[0];
       var silverValue = (int)items[1];
       var goldValue = (int)items[2];
       var platinumValue = (int)items[3];
-      
+
       //  silver, gold, platinum
       AddItem(name, ItemType.Money, _icons[name], _colors["Grey"], minDepth, silverValue, 0);
       AddItem(name, ItemType.Money, _icons[name], _colors["Yellow"], minDepth + 3, goldValue, 0);
@@ -330,6 +330,6 @@ public class GameDb
 
   public ItemInfo FindWeapon(string weapon, int power, int depth)
   {
-    return Items.FirstOrDefault(i => i.Name==weapon && i.MinDepth <= depth);
+    return Items.FirstOrDefault(i => i.Name == weapon && i.MinDepth <= depth);
   }
 }
