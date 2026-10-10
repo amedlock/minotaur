@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using minotaur.Source.control;
 using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
@@ -81,7 +82,7 @@ public partial class GameModel : Node
     rng.Seed = seed;
 
     Levels.Clear();
-    foreach (var index in GD.Range(100))
+    foreach (int index in GD.Range(100))
     {
       var levelType = rng.RandWeighted([40f, 40f, 20f]) switch
       {
@@ -89,21 +90,57 @@ public partial class GameModel : Node
         1 => LevelType.Magic,
         _ => LevelType.Both
       };
-      var seedNum = rng.Randi();
+      uint seedNum = rng.Randi();
       var levelInfo = new LevelInfo(skill, index + 1, seedNum, levelType);
       Levels.Add(levelInfo);
     }
+    
+    Skill = skill;
+    Facing = 270;
+    _playerData.Gold = 0;
+    _playerData.WarExp = 0;
+    _playerData.MagicExp = 0;
+    _playerData.Food = 10 - skill;
+    _playerData.Arrows = 9 - skill;
+    _playerData.Resurrected = false;
+    _playerData.ClearSlots();
+
+    _playerData.RightHand = GameDb.FindItem("bow");
+    switch (skill)
+    {
+      case 1:
+        _playerData.Health = 18;
+        _playerData.Mind = 9;
+        _playerData.LeftHand = GameDb.FindItem("small_shield");
+        break;
+      case 2:
+        _playerData.Health = 16;
+        _playerData.Mind = 7;
+        break;
+      case 3:
+        _playerData.Health = 14;
+        _playerData.Mind = 7;
+        break;
+      case 4:
+        _playerData.Health = 12;
+        _playerData.Mind = 6;
+        break;
+      default:
+        throw new Exception("Invalid skill: " + skill);
+    }
+
+    _playerData.MindMax = _playerData.Mind;
+    _playerData.HealthMax = _playerData.Health;
   }
   
   public void CreateLevel(int depth)
   {
-    int index = depth - 1;
-    if (index >= Levels.Count)
+    if (depth >= Levels.Count)
     {
       throw new ArgumentException("Invalid depth");
     }
     
-    var levelInfo = Levels[index];
+    var levelInfo = Levels[depth];
     Randomizer.BuildLevel(levelInfo);
   }
 
@@ -111,7 +148,7 @@ public partial class GameModel : Node
   public void LoadGateLevel(DungeonGate gate)
   {
     CurrentLevel.UsedGate = true;
-    var seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16 ;
+    uint seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16 ;
     var levelInfo = new LevelInfo(Skill, Depth, seed, gate.Type);
     Levels[Depth] = levelInfo;
     Randomizer.BuildLevel(levelInfo);
@@ -140,16 +177,16 @@ public partial class GameModel : Node
 
   public void DamagePlayer(Enemy enemy, ItemInfo item)
   {
-    var maxDamage = item.Stat1;
-    var damage = Skill switch
+    int maxDamage = item.Stat1;
+    int damage = Skill switch
     {
       1 => VaryAmount(maxDamage, 5),
       2 => VaryAmount(maxDamage, 10),
       3 => VaryAmount(maxDamage, 15),
       _ => VaryAmount(maxDamage, 20)
     };
-    var warAmount = ApplyArmor(damage, _playerData.WarArmor);
-    var mindAmount = ApplyArmor(damage, _playerData.MindArmor);
+    int warAmount = ApplyArmor(damage, _playerData.WarArmor);
+    int mindAmount = ApplyArmor(damage, _playerData.MindArmor);
     if (item.IsWar) _playerData.Health = Mathf.Clamp(_playerData.Health - warAmount, 0, _playerData.HealthMax);
 
     if (item.IsMagic) _playerData.Mind = Mathf.Clamp(_playerData.Mind - mindAmount, 0, _playerData.MindMax);

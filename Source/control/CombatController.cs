@@ -7,10 +7,11 @@ using minotaur.Source.enemies;
 using minotaur.Source.hud;
 using minotaur.Source.items;
 using minotaur.Source.model;
+using minotaur.Source.player;
 
 #endregion
 
-namespace minotaur.Source.player;
+namespace minotaur.Source.control;
 
 public partial class CombatController : Node
 {

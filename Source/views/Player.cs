@@ -4,10 +4,11 @@ using Godot;
 using minotaur.Source.dungeon;
 using minotaur.Source.hud;
 using minotaur.Source.model;
+using minotaur.Source.player;
 
 #endregion
 
-namespace minotaur.Source.player;
+namespace minotaur.Source.views;
 
 public partial class Player : Node3D
 {
@@ -22,17 +23,36 @@ public partial class Player : Node3D
 
   [Export] private Dungeon _dungeon;
 
-  [Export] private GameModel gameModel;
+  [Export] private GameModel _gameModel;
   
   private PlayerData _playerData;
 
+  private bool _enabled = false;
+
+  public bool Enabled
+  {
+    get => _enabled;
+    set
+    {
+      _enabled = value;
+      Visible = value;
+      SetProcessInput(value);
+      Hud.Visible = value;
+      if (value)
+      {
+        Hud.UpdateAll();
+      }
+    }
+  }
+
+  
 
   // update location and rotation based on gameModel
   public void Update()
   {
-    var rot = gameModel.Facing;
+    var rot = _gameModel.Facing;
     RotationDegrees = new Vector3(0, rot, 0);
-    var coord = gameModel.PlayerCoord;
+    var coord = _gameModel.PlayerCoord;
     Position = _dungeon.PlayerPosition;
   }
   
@@ -40,11 +60,11 @@ public partial class Player : Node3D
   // if glancing may not be in sync with Node RotationDegrees.Y
   public int Dir
   {
-    get => gameModel.Facing;
+    get => _gameModel.Facing;
     set
     {
-      gameModel.Facing = Mathf.PosMod(value, 360);
-      RotationDegrees = new Vector3(0, gameModel.Facing, 0);
+      _gameModel.Facing = Mathf.PosMod(value, 360);
+      RotationDegrees = new Vector3(0, _gameModel.Facing, 0);
     }
   }
 
@@ -87,18 +107,18 @@ public partial class Player : Node3D
   }
 
   public Wall WallBehind => null;
-  public Node3D WallAhead => _dungeon.GetWall(gameModel.PlayerCoord, Direction);
+  public Node3D WallAhead => _dungeon.GetWall(_gameModel.PlayerCoord, Direction);
 
-  public DungeonCell CurrentCell => _dungeon.GetCell(gameModel.PlayerCoord);
-  public DungeonCell CellAhead => _dungeon.GetCell(gameModel.PlayerCoord, Direction);
-  public DungeonCell CellBehind => _dungeon.GetCell(gameModel.PlayerCoord, RearDirection);
+  public DungeonCell CurrentCell => _dungeon.GetCell(_gameModel.PlayerCoord);
+  public DungeonCell CellAhead => _dungeon.GetCell(_gameModel.PlayerCoord, Direction);
+  public DungeonCell CellBehind => _dungeon.GetCell(_gameModel.PlayerCoord, RearDirection);
 
   public Hud Hud { get; private set; }
 
 
   public override void _Ready()
   {
-    _playerData = gameModel.PlayerData;
+    _playerData = _gameModel.PlayerData;
     Hud = GetNode<Hud>("Camera3D/HUD");
     _audio = GetNode<AudioStreamPlayer>("Audio");
   }

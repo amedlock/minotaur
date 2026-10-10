@@ -9,13 +9,10 @@ namespace minotaur.Source.views;
 public partial class MainMenu : Node2D
 {
   private bool _enabled;
-
-  [Signal]
-  public delegate void StartGameEventHandler(int skill);
   
-  [Signal]
-  public delegate void QuitGameEventHandler();
-  
+  [Export]
+  public MainGame Game;
+ 
   public bool Enabled
   {
     get => _enabled;
@@ -41,7 +38,7 @@ public partial class MainMenu : Node2D
       };
       if (skill > 0)
       {
-        EmitSignal(SignalName.StartGame, skill);
+        Game.StartGame(skill);
       }
     }
   }

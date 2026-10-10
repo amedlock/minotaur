@@ -7,6 +7,7 @@ using minotaur.Source.dungeon;
 using minotaur.Source.items;
 using minotaur.Source.model;
 using minotaur.Source.player;
+using PlayerController = minotaur.Source.control.PlayerController;
 
 #endregion
 

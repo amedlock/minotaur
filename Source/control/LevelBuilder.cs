@@ -2,13 +2,15 @@
 
 using System.Collections.Generic;
 using Godot;
+using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.items;
 using minotaur.Source.model;
+using Dungeon = minotaur.Source.views.Dungeon;
 
 #endregion
 
-namespace minotaur.Source.dungeon;
+namespace minotaur.Source.control;
 
 // sole purpose is to generate content and store in DungeonGrid
 // then using that content, creates Godot Nodes for visuals

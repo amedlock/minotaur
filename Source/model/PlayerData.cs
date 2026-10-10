@@ -32,40 +32,38 @@ public class PlayerData
   private ItemInfo breastplate;
   private ItemInfo hauberk;
 
+  private ItemInfo ring;
 
   public ItemInfo LeftHand { get; set; }
 
   public ItemInfo RightHand { get; set; }
 
-  public bool needsRest;
-  private bool resurrected;
-
-  private ItemInfo ring;
+  public bool NeedsRest;
+  private bool _resurrected;
 
   public int WarArmor = 0;
   public int MindArmor = 0;
   public int WarDamage = 0;
   public int MindDamage = 0;
 
-  private List<ItemInfo> slots = [null, null, null, null, null, null, null, null, null];
-
+  private List<ItemInfo> _slots = [null, null, null, null, null, null, null, null, null];
 
   public void ClearSlots()
   {
-    foreach (var n in GD.Range(slots.Count))
+    foreach (var n in GD.Range(_slots.Count))
     {
-      slots[n] = null;
+      _slots[n] = null;
     }
   }
   
   public ItemInfo SetSlot(int slotNum, ItemInfo item)
   {
-    return slots[slotNum-1] = item;
+    return _slots[slotNum-1] = item;
   }
   
   public ItemInfo GetSlot(int slotNum)
   {
-    return slots[slotNum-1];
+    return _slots[slotNum-1];
   }
 
   public void AddArmor(ItemInfo itemInfo)

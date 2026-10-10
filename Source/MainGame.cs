@@ -8,8 +8,11 @@ using minotaur.Source.help;
 using minotaur.Source.model;
 using minotaur.Source.player;
 using minotaur.Source.views;
+using Dungeon = minotaur.Source.views.Dungeon;
 using MainMenu = minotaur.Source.views.MainMenu;
 using MapView = minotaur.Source.views.MapView;
+using Player = minotaur.Source.views.Player;
+using PlayerController = minotaur.Source.control.PlayerController;
 
 #endregion
 
@@ -19,8 +22,6 @@ namespace minotaur.Source;
 public partial class MainGame : Node3D
 {
   private GameMode _gameMode;
-
-  [Export] public Dispatcher Dispatcher;
 
   // views
   [Export] private MainMenu _menu;
@@ -34,15 +35,17 @@ public partial class MainGame : Node3D
 
   [Export] private MapView _mapView;
 
-  [Export] 
-  private Help _help;
+  [Export] private Help _help;
   
   // game model
   [Export] GameModel _gameModel;
 
+  private AudioStreamPlayer _audio;
   
   public override void _Ready()
   {
+    _audio = new AudioStreamPlayer();
+    AddChild(_audio);
     ShowMenu();
   }
 
@@ -96,6 +99,8 @@ public partial class MainGame : Node3D
 
   public void WonGame()
   {
+    _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/win2.wav");
+    _audio.Play();
     ShowMap();
     _player.Disable();
     _gameMode = GameMode.GameWon;
@@ -104,7 +109,7 @@ public partial class MainGame : Node3D
   public void ShowGame()
   {
     _dungeon.Show();
-    _player.Enable();
+    _player.Enabled = true;
     _menu.Enabled = false;
     _mapView.Hide();
     _gameMode = GameMode.Dungeon;
@@ -124,5 +129,12 @@ public partial class MainGame : Node3D
     _mapView.Show();
     _player.Hide();
     _gameMode = GameMode.Map;
+  }
+  
+  public void HideMap()
+  {
+    _mapView.Hide();
+    _player.Show();
+    _gameMode = GameMode.Dungeon;
   }
 }

@@ -1,6 +1,7 @@
 ﻿using Godot;
 using minotaur.Source.model;
 using minotaur.Source.player;
+using PlayerController = minotaur.Source.control.PlayerController;
 
 namespace minotaur.Source.views;
 
@@ -23,11 +24,11 @@ public partial class PlayerView : Node
       }
       case PlayerState.Glance:
       {
-        HandleCombat(); break;
+        HandleGlance(); break;
       }
       case PlayerState.ViewMap:
       {
-        if (Input.IsActionJustPressed("view map"))
+        if (!Input.IsActionPressed("view map"))
         {
           _controller.ShowMap(false);
         }
@@ -97,6 +98,10 @@ public partial class PlayerView : Node
     else if (Input.IsActionJustReleased("rest"))
     {
       _controller.Rest();
+    }
+    else if (Input.IsActionJustPressed("view map"))
+    {
+      _controller.ShowMap(true);
     }
   }
 

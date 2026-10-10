@@ -3,22 +3,21 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using minotaur.Source.dungeon;
 using minotaur.Source.enemies;
 using minotaur.Source.hud;
 using minotaur.Source.model;
-using minotaur.Source.player;
-using static minotaur.Source.dungeon.Direction;
-using MapView = minotaur.Source.views.MapView;
+using static minotaur.Source.model.Direction;
 
 #endregion
 
-namespace minotaur.Source.dungeon;
+namespace minotaur.Source.views;
 
 public partial class Dungeon : Node3D
 {
   private const float CellSize = 3.0f;
   private const int MaxLevel = 100;
-
+  
   private readonly Dictionary<string, Resource> _muralColors = new();
 
   private readonly Dictionary<WallPost, Vector3> _wallPostOffsets = new()
@@ -40,7 +39,7 @@ public partial class Dungeon : Node3D
   private AudioStreamPlayer _audio;
   
   [Export]
-  private LevelBuilder _builder;
+  private control.LevelBuilder _builder;
 
   [Export] 
   private Hud _hud;
@@ -76,9 +75,9 @@ public partial class Dungeon : Node3D
 
     var gridOrigin = (Marker3D)FindChild("GridOrigin");
     var cellPrefab = (PackedScene)ResourceLoader.Load("res://data/dungeon/cell.tscn");
-    foreach (var y in GD.Range(gameModel.Grid.Height))
+    foreach (int y in GD.Range(gameModel.Grid.Height))
     {
-      foreach (var x in GD.Range(gameModel.Grid.Width))
+      foreach (int x in GD.Range(gameModel.Grid.Width))
       {
         var cell = (DungeonCell)cellPrefab.Instantiate();
         Cells.Add(cell);
@@ -232,14 +231,6 @@ public partial class Dungeon : Node3D
   public void AddFinal(Enemy enemy)
   {
     // Grid.GetCell(enemy.GridX, enemy.GridY).Has = _gameDb.FindItem("treasure", CurrentLevel.Depth);
-  }
-
-
-  public void WonGame()
-  {
-    _audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/win2.wav");
-    _audio.Play();
-    Game.WonGame();
   }
 
   public void NextLevel()

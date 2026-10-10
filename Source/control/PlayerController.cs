@@ -7,11 +7,13 @@ using minotaur.Source.enemies;
 using minotaur.Source.hud;
 using minotaur.Source.items;
 using minotaur.Source.model;
+using minotaur.Source.player;
 using minotaur.Source.views;
+using Dungeon = minotaur.Source.views.Dungeon;
 
 #endregion
 
-namespace minotaur.Source.player;
+namespace minotaur.Source.control;
 
 public partial class PlayerController : Node
 {
@@ -21,7 +23,7 @@ public partial class PlayerController : Node
 
   private int _glanceAmount;
 
-  [Export] private CombatController _combatController;
+  [Export] private control.CombatController _combatController;
 
   [Export] private Dungeon _dungeon;
 
@@ -31,7 +33,7 @@ public partial class PlayerController : Node
 
   [Export] private MapView _mapView;
 
-  [Export] private Player _player;
+  [Export] private views.Player _player;
   
   [Export]
   private MainGame _mainGame;
@@ -206,16 +208,16 @@ public partial class PlayerController : Node
 
   public void Rest()
   {
-    if (_playerData.Food < 1 || !_playerData.needsRest) return;
+    if (_playerData.Food < 1 || !_playerData.NeedsRest) return;
 
     if (_playerData.Health == _playerData.HealthMax && _playerData.Mind == _playerData.MindMax)
     {
       return;
     }
 
-    _playerData.needsRest = false;
-    var hpGain = Mathf.FloorToInt(_playerData.WarExp / 4.0);
-    var mindGain = Mathf.FloorToInt(_playerData.MagicExp / 5.0);
+    _playerData.NeedsRest = false;
+    int hpGain = Mathf.FloorToInt(_playerData.WarExp / 4.0);
+    int mindGain = Mathf.FloorToInt(_playerData.MagicExp / 5.0);
     _playerData.WarExp = _playerData.WarExp % 4;
     _playerData.MagicExp = _playerData.MagicExp % 5;
     _playerData.HealthMax += hpGain;
@@ -251,11 +253,13 @@ public partial class PlayerController : Node
     {
       _mapView.Show();
       _player.Hide();
+      _gameModel.PlayerState = PlayerState.ViewMap;
     }
     else
     {
       _mapView.Hide();
       _player.Show();
+      _gameModel.PlayerState = PlayerState.Idle;
     }
   }
 
@@ -396,13 +400,13 @@ public partial class PlayerController : Node
   {
     _player.Audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/magic.wav");
     _gameModel.LoadGateLevel(dungeonGate);
-    _playerData.needsRest = true;
+    _playerData.NeedsRest = true;
   }
 
   public void WonCombat(EnemyInfo enemy)
   {
     Killed(enemy);
-    _playerData.needsRest = true;
+    _playerData.NeedsRest = true;
     _gameModel.PlayerState = PlayerState.Idle;
     _hud.UpdateAll();
   }

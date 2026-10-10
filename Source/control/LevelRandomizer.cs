@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using minotaur.Source.dungeon;
-using minotaur.Source.enemies;
 using minotaur.Source.items;
+using minotaur.Source.model;
 
 #endregion
 
-namespace minotaur.Source.model;
+namespace minotaur.Source.control;
 
 public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
 {

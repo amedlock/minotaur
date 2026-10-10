@@ -13,7 +13,7 @@ namespace minotaur.Source.dungeon;
 
 public partial class DungeonCell : Node3D
 {
-  private Dungeon _dungeon;
+  private views.Dungeon _dungeon;
   public Enemy Enemy;
   public DungeonGate Gate;
 
@@ -38,7 +38,7 @@ public partial class DungeonCell : Node3D
 
   public override void _Ready()
   {
-    _dungeon = GetParent() as Dungeon;
+    _dungeon = GetParent() as views.Dungeon;
   }
 
   // returns wall between the two DungeonCells, if any

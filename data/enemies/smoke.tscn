@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://gh4nl2t15esc"]
+[gd_scene format=3 uid="uid://gh4nl2t15esc"]
 
 [ext_resource type="Texture2D" uid="uid://c5gsa1hiy2rpv" path="res://data/enemies/smoke.png" id="1"]
-[ext_resource type="Script" uid="uid://bhc8ll2i54q45" path="res://Source/enemies/Smoke.cs" id="2_gea8q"]
+[ext_resource type="Script" uid="uid://bhc8ll2i54q45" path="res://Source/views/Smoke.cs" id="2_gea8q"]
 
 [sub_resource type="Animation" id="1"]
 length = 1.7

@@ -2,6 +2,7 @@
 
 using Godot;
 using minotaur.Source.dungeon;
+using Dungeon = minotaur.Source.views.Dungeon;
 
 #endregion
 
@@ -17,12 +18,12 @@ public partial class Debug : Label
   private MainGame _game;
   
   [Export]
-  private Player _player;
+  private views.Player _player;
 
   public override void _Ready()
   {
     _game = (MainGame)FindParent("Game");
-    _player = _game.FindChild("Player") as Player;
+    _player = _game.FindChild("Player") as views.Player;
     _dungeon = _game.FindChild("Dungeon") as Dungeon;
     SetProcess(false);
     Visible = false;

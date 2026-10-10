@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://cy7eynhhyhdq"]
+[gd_scene format=3 uid="uid://cy7eynhhyhdq"]
 
 [ext_resource type="Texture2D" uid="uid://d06ijpp0sgcwv" path="res://data/items/item_sheet.png" id="2"]
-[ext_resource type="Script" uid="uid://bb4p5cknm53mu" path="res://Source/items/Item.cs" id="2_evsbl"]
+[ext_resource type="Script" uid="uid://bb4p5cknm53mu" path="res://Source/views/Item.cs" id="2_evsbl"]
 
 [node name="item" type="Sprite3D"]
 pixel_size = 0.02

@@ -30,6 +30,10 @@ public partial class MapView : Node2D
   };
 
   [Export]
+  private MainGame _game;
+  
+  // shouldn't need this
+  [Export]
   private Dungeon _dungeon;
 
   [Export]
@@ -91,6 +95,15 @@ public partial class MapView : Node2D
         col.Name = $"map_{x}_{y}";
         _lookup[_index(x, y)] = col;
       }
+    }
+  }
+
+
+  public override void _Input(InputEvent @event)
+  {
+    if (Input.IsActionJustPressed("view map"))
+    {
+      _game.HideMap();
     }
   }
 
