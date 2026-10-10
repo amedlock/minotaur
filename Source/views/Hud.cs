@@ -139,9 +139,6 @@ public partial class Hud : Node2D
     {
       _controller.ClickSlot(slot, true);
     }
-
-    UpdateStats();
-    UpdatePack();
   }
 
 
@@ -151,8 +148,6 @@ public partial class Hud : Node2D
     {
       _controller.ClickFeet();
     }
-
-    UpdateStats();
   }
 
   // Alternate attack method, press F otherwise
@@ -179,7 +174,5 @@ public partial class Hud : Node2D
     {
       // Alternate attack method?
     }
-
-    UpdateAll();
   }
 }

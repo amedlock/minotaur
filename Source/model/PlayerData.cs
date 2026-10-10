@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -10,15 +11,78 @@ namespace minotaur.Source.model;
 // named PlayerData to avoid confusion with Player Node
 public class PlayerData
 {
-  public int Arrows;
-  public int Food;
+  // a number shown on the HUD has changed
+  public event Action StatsChanged;
 
-  public int Gold;
-  public int Health;
-  public int HealthMax;
+  // a hand or pack slot has changed
+  public event Action InventoryChanged;
 
-  public int Mind;
-  public int MindMax;
+  private int _arrows;
+  private int _food;
+  private int _gold;
+  private int _health;
+  private int _healthMax;
+  private int _mind;
+  private int _mindMax;
+  private int _warArmor;
+  private int _mindArmor;
+
+  private ItemInfo _leftHand;
+  private ItemInfo _rightHand;
+
+  public int Arrows
+  {
+    get => _arrows;
+    set => SetStat(ref _arrows, value);
+  }
+
+  public int Food
+  {
+    get => _food;
+    set => SetStat(ref _food, value);
+  }
+
+  public int Gold
+  {
+    get => _gold;
+    set => SetStat(ref _gold, value);
+  }
+
+  public int Health
+  {
+    get => _health;
+    set => SetStat(ref _health, value);
+  }
+
+  public int HealthMax
+  {
+    get => _healthMax;
+    set => SetStat(ref _healthMax, value);
+  }
+
+  public int Mind
+  {
+    get => _mind;
+    set => SetStat(ref _mind, value);
+  }
+
+  public int MindMax
+  {
+    get => _mindMax;
+    set => SetStat(ref _mindMax, value);
+  }
+
+  public int WarArmor
+  {
+    get => _warArmor;
+    set => SetStat(ref _warArmor, value);
+  }
+
+  public int MindArmor
+  {
+    get => _mindArmor;
+    set => SetStat(ref _mindArmor, value);
+  }
 
   public int WarExp;
   public int MagicExp;
@@ -27,14 +91,19 @@ public class PlayerData
 
   public bool IsDead => Health <= 0 || Mind <= 0;
 
-  public ItemInfo LeftHand { get; set; }
+  public ItemInfo LeftHand
+  {
+    get => _leftHand;
+    set => SetItem(ref _leftHand, value);
+  }
 
-  public ItemInfo RightHand { get; set; }
+  public ItemInfo RightHand
+  {
+    get => _rightHand;
+    set => SetItem(ref _rightHand, value);
+  }
 
   public bool NeedsRest;
-
-  public int WarArmor;
-  public int MindArmor;
 
   // damage of the weapon in the right hand
   public int WarDamage => RightHand is { IsWar: true } ? RightHand.Stat1 : 0;
@@ -42,17 +111,36 @@ public class PlayerData
 
   private List<ItemInfo> _slots = [null, null, null, null, null, null, null, null, null];
 
+  private void SetStat(ref int field, int value)
+  {
+    if (field == value) return;
+    field = value;
+    StatsChanged?.Invoke();
+  }
+
+  private void SetItem(ref ItemInfo field, ItemInfo value)
+  {
+    if (field == value) return;
+    field = value;
+    InventoryChanged?.Invoke();
+  }
+
   public void ClearSlots()
   {
     foreach (var n in GD.Range(_slots.Count))
     {
       _slots[n] = null;
     }
+
+    InventoryChanged?.Invoke();
   }
 
   public ItemInfo SetSlot(int slotNum, ItemInfo item)
   {
-    return _slots[slotNum - 1] = item;
+    if (_slots[slotNum - 1] == item) return item;
+    _slots[slotNum - 1] = item;
+    InventoryChanged?.Invoke();
+    return item;
   }
 
   public ItemInfo GetSlot(int slotNum)

@@ -26,10 +26,6 @@ public partial class Player : Node3D
       Visible = value;
       SetProcessInput(value);
       Hud.Visible = value;
-      if (value)
-      {
-        Hud.UpdateAll();
-      }
     }
   }
 

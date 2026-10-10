@@ -1,7 +1,6 @@
 ﻿#region
 
 using Godot;
-using minotaur.Source.control;
 using minotaur.Source.model;
 using minotaur.Source.views;
 
@@ -18,7 +17,6 @@ public partial class MainGame : Node3D
   [Export] private Dungeon _dungeon;
 
   [Export] private Player _player;
-  [Export] private PlayerController _playerController;
 
   [Export] private MapView _mapView;
 
@@ -73,8 +71,6 @@ public partial class MainGame : Node3D
     uint seedNum = 0xdeadbeef; // _random.Randi();
     _gameModel.Init(skill, seedNum);
     _gameModel.CreateLevel(1);
-    _dungeon.BuildLevel();
-    _playerController.Init();
     ShowGame();
     _help.Show();
   }

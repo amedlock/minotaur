@@ -3,7 +3,6 @@
 using System;
 using Godot;
 using minotaur.Source.model;
-using minotaur.Source.views;
 
 #endregion
 
@@ -19,10 +18,6 @@ public partial class CombatController : Node
   [Export] private GameModel _gameModel;
 
   [Export] private PlayerController _playerController;
-
-  [Export] private Hud _hud;
-
-  [Export] private Dungeon _dungeon;
 
   private PlayerData _playerData;
 
@@ -234,8 +229,6 @@ public partial class CombatController : Node
     {
       _broken = false;
     }
-
-    _hud.UpdatePack();
   }
 
 
@@ -252,14 +245,12 @@ public partial class CombatController : Node
     {
       GD.Print("Weapon broke");
       _playerData.RightHand = null;
-      _hud.UpdatePack();
     }
 
     if (_enemy.IsDead)
     {
       // combat ends in _Process once any weapon still in flight has landed
-      _enemyCell.Enemy = null;
-      _dungeon.KillEnemy(_enemyCell.Coord);
+      _gameModel.KillEnemy(_enemyCell);
     }
   }
 
@@ -268,7 +259,6 @@ public partial class CombatController : Node
     // a weapon already in flight still lands after the enemy has died
     if (_enemy == null || _enemyItem == null) return;
     _gameModel.DamagePlayer(_enemyItem);
-    _hud.UpdateStats();
   }
 
 

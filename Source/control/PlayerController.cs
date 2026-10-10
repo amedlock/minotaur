@@ -25,8 +25,6 @@ public partial class PlayerController : Node
 
   [Export] private Hud _hud;
 
-  [Export] private MapView _mapView;
-
   [Export] private Player _player;
 
   [Export] private MainGame _mainGame;
@@ -36,14 +34,6 @@ public partial class PlayerController : Node
   public override void _Ready()
   {
     _playerData = _gameModel.PlayerData;
-  }
-
-
-  // refresh the views after the model has been set up for a new game
-  public void Init()
-  {
-    _hud.UpdateAll();
-    _player.Update();
   }
 
   public void MoveForward()
@@ -74,8 +64,6 @@ public partial class PlayerController : Node
     {
       _gameModel.PlayerState = PlayerState.Idle;
       _gameModel.PlayerCoord = nextCell.Coord;
-      _player.Update();
-      _hud.UpdateAll();
     };
   }
 
@@ -101,8 +89,6 @@ public partial class PlayerController : Node
     {
       _gameModel.PlayerState = PlayerState.Idle;
       _gameModel.PlayerCoord = nextCell.Coord;
-      _player.Update();
-      _hud.UpdateAll();
     };
   }
 
@@ -118,7 +104,6 @@ public partial class PlayerController : Node
     tween.Finished += () =>
     {
       _gameModel.Facing = DirectionExtensions.FromDegrees(rot);
-      _player.Update();
       _gameModel.PlayerState = PlayerState.Idle;
     };
   }
@@ -149,7 +134,6 @@ public partial class PlayerController : Node
     {
       _gameModel.PlayerState = PlayerState.Idle;
       _glanceAmount = 0;
-      _player.Update();
     };
   }
 
@@ -194,7 +178,6 @@ public partial class PlayerController : Node
     _playerData.Mind = Mathf.Min(_playerData.Mind + Mathf.FloorToInt(_playerData.MindMax * 2.0 / 3.0),
       _playerData.MindMax);
     _playerData.Food -= 1;
-    _hud.UpdateAll();
   }
 
 
@@ -205,10 +188,6 @@ public partial class PlayerController : Node
       _player.Audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/descend.wav");
       _player.Audio.Play();
       _gameModel.NextLevel();
-      _dungeon.BuildLevel();
-      _mapView.UpdateMap(_gameModel.CurrentLevel);
-      _player.Update();
-      _hud.UpdateAll();
       _gameModel.PlayerState = PlayerState.Idle;
     }
   }
@@ -242,7 +221,7 @@ public partial class PlayerController : Node
       var rh = _playerData.RightHand;
       if (rh is { ItemType: ItemType.Key } && rh.Stat1 >= container.Stat1)
       {
-        cell.ItemInfo = _gameModel.ChooseTreasure(container);
+        _gameModel.SetItem(cell.Coord, _gameModel.ChooseTreasure(container));
       }
       else
       {
@@ -252,11 +231,8 @@ public partial class PlayerController : Node
     }
     else
     {
-      cell.ItemInfo = _gameModel.ChooseTreasure(container);
+      _gameModel.SetItem(cell.Coord, _gameModel.ChooseTreasure(container));
     }
-
-    _dungeon.UpdateItem(_gameModel.PlayerCoord);
-    _hud.UpdatePack();
   }
 
   public void ClickRightHand()
@@ -274,7 +250,6 @@ public partial class PlayerController : Node
   public void SwapHands()
   {
     (_playerData.LeftHand, _playerData.RightHand) = (_playerData.RightHand, _playerData.LeftHand);
-    _hud.UpdatePack();
   }
 
   public void SwapWithFeet()
@@ -286,15 +261,11 @@ public partial class PlayerController : Node
     }
 
     (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
-    _dungeon.UpdateItem(_gameModel.PlayerCoord);
-    _hud.UpdatePack();
   }
 
   private void RemoveItem()
   {
-    _gameModel.CurrentCell.ItemInfo = null;
-    _dungeon.UpdateItem(_gameModel.PlayerCoord);
-    _hud.UpdateAll();
+    _gameModel.ItemAtFeet = null;
   }
 
 
@@ -350,8 +321,6 @@ public partial class PlayerController : Node
 
       default:
         (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
-        _dungeon.UpdateItem(_gameModel.PlayerCoord);
-        _hud.UpdatePack();
         return;
     }
   }
@@ -369,7 +338,6 @@ public partial class PlayerController : Node
     Killed(enemy);
     _playerData.NeedsRest = true;
     _gameModel.PlayerState = PlayerState.Idle;
-    _hud.UpdateAll();
   }
 
   private void Killed(EnemyInfo enemy)

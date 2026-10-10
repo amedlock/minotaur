@@ -18,11 +18,35 @@ public partial class GameModel : Node
   public int Depth = 1;
   public int Skill = 1;
 
-  // player location
-  public int PlayerX;
-  public int PlayerY;
+  // the player has moved or turned
+  public event Action PlayerMoved;
 
-  public Direction Facing { get; set; } = Direction.East;
+  // the grid has been rebuilt for a level
+  public event Action LevelChanged;
+
+  // the item in a cell has changed during play
+  public event Action<Vector2I> ItemChanged;
+
+  // the enemy in a cell has been removed during play
+  public event Action<Vector2I> EnemyKilled;
+
+  // player location
+  private Vector2I _playerCoord;
+  private Direction _facing = Direction.East;
+
+  public int PlayerX => _playerCoord.X;
+  public int PlayerY => _playerCoord.Y;
+
+  public Direction Facing
+  {
+    get => _facing;
+    set
+    {
+      if (_facing == value) return;
+      _facing = value;
+      PlayerMoved?.Invoke();
+    }
+  }
 
   public LevelInfo CurrentLevel => LevelAt(Depth);
 
@@ -49,17 +73,33 @@ public partial class GameModel : Node
   public ItemInfo ItemAtFeet
   {
     get => CurrentCell.ItemInfo;
-    set => CurrentCell.ItemInfo = value;
+    set => SetItem(PlayerCoord, value);
   }
 
   public Vector2I PlayerCoord
   {
-    get => new(PlayerX, PlayerY);
+    get => _playerCoord;
     set
     {
-      PlayerX = value.X;
-      PlayerY = value.Y;
+      if (_playerCoord == value) return;
+      _playerCoord = value;
+      PlayerMoved?.Invoke();
     }
+  }
+
+  public void SetItem(Vector2I coord, ItemInfo item)
+  {
+    var cell = Grid.Cell(coord);
+    if (cell == null || cell.ItemInfo == item) return;
+    cell.ItemInfo = item;
+    ItemChanged?.Invoke(coord);
+  }
+
+  public void KillEnemy(MazeCell cell)
+  {
+    if (cell?.Enemy == null) return;
+    cell.Enemy = null;
+    EnemyKilled?.Invoke(cell.Coord);
   }
 
   // Levels is indexed from 0, depth starts at 1
@@ -98,7 +138,7 @@ public partial class GameModel : Node
     }
 
     Skill = skill;
-    Facing = Direction.East;
+    _facing = Direction.East;
     PlayerData.Gold = 0;
     PlayerData.WarExp = 0;
     PlayerData.MagicExp = 0;
@@ -145,6 +185,7 @@ public partial class GameModel : Node
     Depth = depth;
     var levelInfo = LevelAt(depth);
     Randomizer.BuildLevel(levelInfo);
+    LevelChanged?.Invoke();
   }
 
 
@@ -155,13 +196,14 @@ public partial class GameModel : Node
     var levelInfo = new LevelInfo(Skill, Depth, seed, levelType);
     Levels[Depth - 1] = levelInfo;
     Randomizer.BuildLevel(levelInfo);
+    LevelChanged?.Invoke();
   }
 
   // vary amount by +/- percent
   private int VaryAmount(int amount, int percent)
   {
     float variance = amount * (percent / 100f);
-    return (int)(amount - variance + GD.RandRange(0, 2 * variance));
+    return Mathf.RoundToInt(amount - variance + (float)GD.RandRange(0, 2 * variance));
   }
 
   // TEMP: scales enemy damage down for playtesting until the stats rework,
@@ -204,9 +246,9 @@ public partial class GameModel : Node
 
     Depth++;
     Randomizer.BuildLevel(LevelAt(Depth));
-    PlayerX = 0;
-    PlayerY = 0;
-    Facing = Direction.East;
+    _playerCoord = Vector2I.Zero;
+    _facing = Direction.East;
+    LevelChanged?.Invoke();
   }
 
   public ItemInfo ChooseTreasure(ItemInfo container)
