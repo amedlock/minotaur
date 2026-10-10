@@ -94,6 +94,7 @@ public partial class CombatController : Node
     _enemyCell = cell;
     _enemy = cell.Enemy;
     _enemyItem = _gameModel.FindWeapon(_enemy.Info);
+    _enemyTurn = 0;
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
     SetProcess(true);
@@ -116,6 +117,18 @@ public partial class CombatController : Node
     {
       _mainGame.GameOver();
       SetProcess(false);
+      return;
+    }
+
+    // enemy is dead, stay in combat until weapons in flight have landed
+    if (_enemy is { IsDead: true })
+    {
+      _playerAttack = false;
+      if (!_enemyAnim.IsPlaying() && !_playerAnim.IsPlaying())
+      {
+        _playerController.WonCombat(_enemy.Info);
+      }
+
       return;
     }
 
@@ -217,9 +230,8 @@ public partial class CombatController : Node
       _playerAudio.Play();
     }
 
-    if (_broken && _gameModel.CurrentLevel.Depth > 2) // don't break on first 2 levels
+    if (_gameModel.CurrentLevel.Depth <= 2) // don't break on first 2 levels
     {
-      _playerData.RightHand = null; //clear out of the players hand
       _broken = false;
     }
 
@@ -245,15 +257,16 @@ public partial class CombatController : Node
 
     if (_enemy.IsDead)
     {
+      // combat ends in _Process once any weapon still in flight has landed
       _enemyCell.Enemy = null;
       _dungeon.KillEnemy(_enemyCell.Coord);
-      _playerController.WonCombat(_enemy.Info);
     }
   }
 
   private void DamagePlayer()
   {
-    if (_enemy == null || _enemy.IsDead || _enemyItem == null) return;
+    // a weapon already in flight still lands after the enemy has died
+    if (_enemy == null || _enemyItem == null) return;
     _gameModel.DamagePlayer(_enemyItem);
     _hud.UpdateStats();
   }

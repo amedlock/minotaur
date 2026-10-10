@@ -164,14 +164,14 @@ public partial class GameModel : Node
     return (int)(amount - variance + GD.RandRange(0, 2 * variance));
   }
 
-  private float Percentage(int amount, int percent)
-  {
-    return amount * (100f - percent) / 100f;
-  }
+  // TEMP: scales enemy damage down for playtesting until the stats rework,
+  // the mirror of the x4 on player damage in EnemyState.Damage
+  private const int EnemyDamageDivisor = 4;
 
+  // armor blocks that percent of the damage
   private int ApplyArmor(int damage, int armor)
   {
-    var prot = (int)Percentage(damage, armor);
+    var prot = (int)(damage * armor / 100f);
     if (prot == 0) return damage;
     prot = VaryAmount(prot, 15);
     return Mathf.Max(damage - prot, 1);
@@ -180,7 +180,7 @@ public partial class GameModel : Node
 
   public void DamagePlayer(ItemInfo item)
   {
-    int maxDamage = item.Stat1;
+    int maxDamage = Mathf.Max(item.Stat1 / EnemyDamageDivisor, 1);
     int damage = Skill switch
     {
       1 => VaryAmount(maxDamage, 5),

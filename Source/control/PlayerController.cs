@@ -279,6 +279,12 @@ public partial class PlayerController : Node
 
   public void SwapWithFeet()
   {
+    // ladders, treasure and supplies can't be carried in a hand
+    if (_gameModel.ItemAtFeet is { ItemType: ItemType.Special })
+    {
+      return;
+    }
+
     (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
     _dungeon.UpdateItem(_gameModel.PlayerCoord);
     _hud.UpdatePack();
@@ -299,6 +305,8 @@ public partial class PlayerController : Node
     var itemInfo = cell.ItemInfo;
     if (itemInfo == null)
     {
+      // nothing to take, so drop what is in the right hand
+      SwapWithFeet();
       return;
     }
 

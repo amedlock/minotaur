@@ -35,8 +35,10 @@ public class PlayerData
 
   public int WarArmor;
   public int MindArmor;
-  public int WarDamage = 0;
-  public int MindDamage = 0;
+
+  // damage of the weapon in the right hand
+  public int WarDamage => RightHand is { IsWar: true } ? RightHand.Stat1 : 0;
+  public int MindDamage => RightHand is { IsMagic: true } ? RightHand.Stat1 : 0;
 
   private List<ItemInfo> _slots = [null, null, null, null, null, null, null, null, null];
 
