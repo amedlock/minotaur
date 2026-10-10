@@ -29,8 +29,6 @@ public partial class MapView : Node2D
 
   [Export] private MainGame _game;
 
-  [Export] private Player _player;
-
   [Export] private GameModel _gameModel;
 
   private PlayerData _playerData;
@@ -74,9 +72,9 @@ public partial class MapView : Node2D
     _mapCellPrefab = ResourceLoader.Load<PackedScene>("res://data/map/map_cell.tscn");
     _gateIcon = ResourceLoader.Load<PackedScene>("res://data/map/gate_icon.tscn");
 
-    foreach (var y in GD.Range(12))
+    foreach (var y in GD.Range(grid.Height))
     {
-      foreach (var x in GD.Range(12))
+      foreach (var x in GD.Range(grid.Width))
       {
         var col = _mapCellPrefab.Instantiate() as Sprite2D;
         AddChild(col);
@@ -114,7 +112,7 @@ public partial class MapView : Node2D
     {
       _marker.Modulate = Colors.Black;
       _marker.RegionRect = ArrowTile;
-      _marker.RotationDegrees = Mathf.PosMod(360 - _player.Dir, 360);
+      _marker.RotationDegrees = Mathf.PosMod(360 - _gameModel.Facing.Degrees(), 360);
     }
   }
 

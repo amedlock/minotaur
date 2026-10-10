@@ -1,6 +1,5 @@
 #region
 
-using System;
 using System.Collections.Generic;
 using Godot;
 using minotaur.Source.control;
@@ -73,8 +72,7 @@ public partial class Dungeon : Node3D
   {
     get
     {
-      var coord = gameModel.PlayerCoord;
-      return StartPosition + new Vector3(coord.X * 3, 0, coord.Y * -3);
+      return StartPosition + GridGeometry.CellOrigin(gameModel.PlayerCoord);
     }
   }
 
@@ -108,22 +106,15 @@ public partial class Dungeon : Node3D
 
   public DungeonCell GetCell(Vector2I pos, Direction dir)
   {
-    return dir switch
-    {
-      North => GetCell(pos.X, pos.Y + 1),
-      East => GetCell(pos.X + 1, pos.Y),
-      South => GetCell(pos.X, pos.Y - 1),
-      West => GetCell(pos.X - 1, pos.Y),
-      _ => throw new Exception("Illegal direction")
-    };
+    return GetCell(pos + dir.Offset());
   }
 
   public Node3D GetWall(Vector2I coord, Direction dir)
   {
     switch (dir)
     {
-      case West: return GetWall(coord + new Vector2I(-1, 0), East);
-      case South: return GetWall(coord + new Vector2I(0, -1), North);
+      case West: return GetWall(coord + West.Offset(), East);
+      case South: return GetWall(coord + South.Offset(), North);
     }
 
     var cell = GetCell(coord);

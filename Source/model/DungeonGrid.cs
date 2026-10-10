@@ -57,14 +57,7 @@ public class DungeonGrid
 
   public MazeCell Cell(Vector2I coord, Direction dir)
   {
-    return dir switch
-    {
-      Direction.North => Cell(coord.X, coord.Y - 1),
-      Direction.South => Cell(coord.X, coord.Y + 1),
-      Direction.East => Cell(coord.X + 1, coord.Y),
-      Direction.West => Cell(coord.X - 1, coord.Y),
-      _ => null
-    };
+    return Cell(coord + dir.Offset());
   }
 
 

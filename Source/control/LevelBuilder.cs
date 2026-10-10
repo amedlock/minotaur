@@ -13,18 +13,6 @@ namespace minotaur.Source.control;
 // then using that content, creates Godot Nodes for visuals
 public partial class LevelBuilder : Node
 {
-  // walls and corners
-  private readonly Vector3 _wallOffset = new(3f, 0, -3f);
-
-
-  private readonly Dictionary<WallPost, Vector3> _wallPostOffset = new()
-  {
-    [WallPost.NW] = new Vector3(0, 0f, 0),
-    [WallPost.NE] = new Vector3(3, 0f, 0),
-    [WallPost.SE] = new Vector3(3, 0f, 3),
-    [WallPost.SW] = new Vector3(0, 0f, 3)
-  };
-
   private readonly Dictionary<Direction, Vector3I> _wallRotation = new()
   {
     [Direction.North] = new Vector3I(0, 180, 0),
@@ -97,7 +85,7 @@ public partial class LevelBuilder : Node
       node.Init(enemy, _rng);
       dc.AddChild(node);
       dc.Enemy = node;
-      node.Position = new Vector3(1.5f, .7f, -1.5f);
+      node.Position = GridGeometry.CellCenter(.7f);
     }
   }
 
@@ -114,14 +102,14 @@ public partial class LevelBuilder : Node
     {
       var exit = (Node3D)_ladderPrefab.Instantiate();
       exit.Name = "Ladder";
-      exit.Position = new Vector3(1.5f, 0, -1.5f);
+      exit.Position = GridGeometry.CellCenter(0);
       cell.AddChild(exit);
     }
     else if (itemInfo != null)
     {
       var result = (Item)_itemPrefab.Instantiate();
       result.Info = itemInfo;
-      result.Position = new Vector3(1.5f, .35f, -1.5f);
+      result.Position = GridGeometry.CellCenter(.35f);
       cell.Item = result;
       cell.AddChild(result);
     }
@@ -149,7 +137,7 @@ public partial class LevelBuilder : Node
     {
       dungeonCell.AddChild(result);
       dungeonCell.Gate = result;
-      result.Position = new Vector3(1.5f, 0.25f, -1.5f);
+      result.Position = GridGeometry.CellCenter(0.25f);
     }
   }
 
@@ -165,7 +153,7 @@ public partial class LevelBuilder : Node
     };
     if (node == null) return;
 
-    node.Position = _wallOffset;
+    node.Position = GridGeometry.WallOffset;
     node.RotationDegrees = wallRot;
     node.Name = "Wall_" + wallType;
     dest.AddWall(node, wallType, direction);
@@ -176,6 +164,6 @@ public partial class LevelBuilder : Node
     var corner = (Node3D)_cornerPrefab.Instantiate();
     corner.Name = "corner_" + nameof(wallPost);
     dest.AddChild(corner);
-    corner.Position = _wallPostOffset[wallPost];
+    corner.Position = GridGeometry.WallPostOffset(wallPost);
   }
 }

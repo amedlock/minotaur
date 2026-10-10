@@ -37,52 +37,16 @@ public partial class Player : Node3D
   // update location and rotation based on gameModel
   public void Update()
   {
-    var rot = _gameModel.Facing;
-    RotationDegrees = new Vector3(0, rot, 0);
+    RotationDegrees = new Vector3(0, _gameModel.Facing.Degrees(), 0);
     Position = _dungeon.PlayerPosition;
   }
 
-  // player direction in degrees
-  // if glancing may not be in sync with Node RotationDegrees.Y
-  public int Dir
-  {
-    get => _gameModel.Facing;
-    set
-    {
-      _gameModel.Facing = Mathf.PosMod(value, 360);
-      RotationDegrees = new Vector3(0, _gameModel.Facing, 0);
-    }
-  }
+  // if glancing, the node rotation may not match the facing direction
+  public Direction Direction => _gameModel.Facing;
 
-  public Direction Direction
-  {
-    get
-    {
-      return Dir switch
-      {
-        0 => Direction.North,
-        90 => Direction.West,
-        180 => Direction.South,
-        _ => Direction.East
-      };
-    }
-  }
+  public Direction RearDirection => Direction.Opposite();
 
-  public Direction RearDirection
-  {
-    get
-    {
-      return Dir switch
-      {
-        0 => Direction.South,
-        90 => Direction.East,
-        180 => Direction.North,
-        _ => Direction.West
-      };
-    }
-  }
-
-  public Wall WallBehind => null;
+  public Node3D WallBehind => _dungeon.GetWall(_gameModel.PlayerCoord, RearDirection);
   public Node3D WallAhead => _dungeon.GetWall(_gameModel.PlayerCoord, Direction);
 
   public DungeonCell CurrentCell => _dungeon.GetCell(_gameModel.PlayerCoord);

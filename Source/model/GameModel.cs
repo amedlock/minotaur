@@ -23,7 +23,7 @@ public partial class GameModel : Node
   public int playerX;
   public int playerY;
 
-  public int Facing { get; set; } = 90;
+  public Direction Facing { get; set; } = Direction.East;
 
   public int GridIndex => Grid.Index(playerX, playerY);
 
@@ -61,7 +61,7 @@ public partial class GameModel : Node
   {
     PlayerData = new PlayerData();
     GameDb = new GameDb();
-    Grid = new DungeonGrid(12, 12);
+    Grid = new DungeonGrid(GridGeometry.GridWidth, GridGeometry.GridHeight);
     Randomizer = new LevelRandomizer(Grid, GameDb);
   }
 
@@ -87,7 +87,7 @@ public partial class GameModel : Node
     }
 
     Skill = skill;
-    Facing = 270;
+    Facing = Direction.East;
     PlayerData.Gold = 0;
     PlayerData.WarExp = 0;
     PlayerData.MagicExp = 0;
@@ -194,7 +194,7 @@ public partial class GameModel : Node
     Randomizer.BuildLevel(Levels[Depth]);
     playerX = 0;
     playerY = 0;
-    Facing = 270;
+    Facing = Direction.East;
   }
 
   public ItemInfo ChooseTreasure(ItemInfo container)

@@ -42,7 +42,7 @@ public partial class PlayerController : Node
   public void Init(int skill)
   {
     _gameModel.Skill = skill;
-    _gameModel.Facing = 270;
+    _gameModel.Facing = Direction.East;
     _playerData.Gold = 0;
     _playerData.WarExp = 0;
     _playerData.MagicExp = 0;
@@ -90,6 +90,11 @@ public partial class PlayerController : Node
     }
 
     var nextCell = _player.CellAhead;
+    if (nextCell == null)
+    {
+      return;
+    }
+
     if (nextCell is { Enemy: not null })
     {
       StartCombat(nextCell, true);
@@ -97,7 +102,7 @@ public partial class PlayerController : Node
     }
 
     var pos = _dungeon.PlayerPosition;
-    var delta = _player.Transform.Basis.Z * -3;
+    var delta = _player.Transform.Basis.Z * -GridGeometry.CellSize;
     _gameModel.PlayerState = PlayerState.Moving;
     var tween = CreateTween().TweenProperty(_player, "position", pos + delta, MoveTime);
     tween.Finished += () =>
@@ -112,12 +117,19 @@ public partial class PlayerController : Node
   public void MoveBackward()
   {
     var wall = _player.WallBehind;
-    if (wall != null && wall.Blocked) return;
+    if (wall is Wall or Door { Blocked: true })
+    {
+      return;
+    }
 
     var nextCell = _player.CellBehind;
+    if (nextCell == null)
+    {
+      return;
+    }
 
     var pos = _dungeon.PlayerPosition;
-    var delta = _player.Transform.Basis.Z * -3f;
+    var delta = _player.Transform.Basis.Z * -GridGeometry.CellSize;
     _gameModel.PlayerState = PlayerState.Moving;
     var tween = CreateTween().TweenProperty(_player, "position", pos - delta, MoveTime);
     tween.Finished += () =>
@@ -132,28 +144,28 @@ public partial class PlayerController : Node
   public void Turn(int amount)
   {
     _gameModel.PlayerState = PlayerState.Turning;
-    var rot = _player.Dir + amount;
-    var dir = Mathf.PosMod(rot, 360);
+    var start = _gameModel.Facing.Degrees();
+    var rot = start + amount;
     var compassRot = Mathf.PosMod(_hud.Compass.RotationDegrees - rot, 360);
     var tween = CreateTween();
-    tween.TweenProperty(_player, "Dir", rot, TurnTime);
+    tween.TweenProperty(_player, "rotation_degrees:y", rot, TurnTime).From(start);
     tween.Parallel().TweenProperty(_hud.Compass, "rotation_degrees", compassRot, TurnTime);
     tween.Finished += () =>
     {
-      _player.Dir = dir;
+      _gameModel.Facing = DirectionExtensions.FromDegrees(rot);
+      _player.Update();
       _gameModel.PlayerState = PlayerState.Idle;
     };
   }
 
   public void Glance(int amount)
   {
-    var rot = _player.Dir + amount;
+    var start = _gameModel.Facing.Degrees();
     _gameModel.PlayerState = PlayerState.Turning;
-    var tween = CreateTween().TweenProperty(_player, "rotation_degrees:y", rot, GlanceTime);
+    var tween = CreateTween().TweenProperty(_player, "rotation_degrees:y", start + amount, GlanceTime).From(start);
     tween.Finished += () =>
     {
       _gameModel.PlayerState = PlayerState.Glance;
-      _player.Dir = Mathf.PosMod(rot, 360);
       _glanceAmount += amount;
     };
   }
@@ -165,14 +177,14 @@ public partial class PlayerController : Node
       return;
     }
 
-    var rot = _player.Dir - _glanceAmount;
+    var rot = _gameModel.Facing.Degrees();
     _gameModel.PlayerState = PlayerState.Turning;
-    var tween = CreateTween().TweenProperty(_player, "rotation_degrees:y", rot, GlanceTime);
+    var tween = CreateTween().TweenProperty(_player, "rotation_degrees:y", rot, GlanceTime).From(rot + _glanceAmount);
     tween.Finished += () =>
     {
       _gameModel.PlayerState = PlayerState.Idle;
       _glanceAmount = 0;
-      _player.Dir = Mathf.PosMod(rot, 360);
+      _player.Update();
     };
   }
 
