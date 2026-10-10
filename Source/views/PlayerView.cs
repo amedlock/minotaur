@@ -15,6 +15,11 @@ public partial class PlayerView : Node
 
   public override void _Process(double delta)
   {
+    if (_gameModel.GameMode != GameMode.Dungeon)
+    {
+      return;
+    }
+
     switch (_gameModel.PlayerState)
     {
       case PlayerState.Idle:
@@ -30,20 +35,6 @@ public partial class PlayerView : Node
       case PlayerState.Glance:
       {
         HandleGlance();
-        break;
-      }
-      case PlayerState.ViewMap:
-      {
-        if (!Input.IsActionPressed("view map"))
-        {
-          _controller.ShowMap(false);
-        }
-
-        break;
-      }
-      case PlayerState.Won:
-      {
-        // todo
         break;
       }
     }
@@ -105,10 +96,6 @@ public partial class PlayerView : Node
     else if (Input.IsActionJustReleased("rest"))
     {
       _controller.Rest();
-    }
-    else if (Input.IsActionJustPressed("view map"))
-    {
-      _controller.ShowMap(true);
     }
   }
 

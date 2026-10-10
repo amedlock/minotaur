@@ -49,9 +49,6 @@ public partial class Player : Node3D
   public Node3D WallBehind => _dungeon.GetWall(_gameModel.PlayerCoord, RearDirection);
   public Node3D WallAhead => _dungeon.GetWall(_gameModel.PlayerCoord, Direction);
 
-  public DungeonCell CurrentCell => _dungeon.GetCell(_gameModel.PlayerCoord);
-  public DungeonCell CellAhead => _dungeon.GetCell(_gameModel.PlayerCoord, Direction);
-  public DungeonCell CellBehind => _dungeon.GetCell(_gameModel.PlayerCoord, RearDirection);
 
   public Hud Hud { get; private set; }
 

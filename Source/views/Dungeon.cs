@@ -63,6 +63,20 @@ public partial class Dungeon : Node3D
     Cells.ForEach(cell => cell.ClearAll());
   }
 
+  // redraw the item in a cell from the model
+  public void UpdateItem(Vector2I coord)
+  {
+    _builder.AddItem(GetCell(coord), Grid.Cell(coord).ItemInfo);
+  }
+
+  // play the death effect and remove the enemy node from a cell
+  public void KillEnemy(Vector2I coord)
+  {
+    var cell = GetCell(coord);
+    cell.Enemy?.Die();
+    cell.RemoveEnemy();
+  }
+
 
   public Vector3 StartPosition => _startPosition.Position;
 
@@ -92,7 +106,6 @@ public partial class Dungeon : Node3D
   }
 
   public List<DungeonCell> Cells { get; } = new();
-  public DungeonCell CurrentCell => Cells[gameModel.GridIndex];
 
   public DungeonCell GetCell(int x, int y)
   {

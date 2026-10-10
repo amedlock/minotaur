@@ -27,7 +27,6 @@ public partial class LevelBuilder : Node
   private PackedScene _greenGate;
   private PackedScene _itemPrefab;
   private PackedScene _ladderPrefab;
-  private RandomNumberGenerator _rng = new();
   private PackedScene _tanGate;
 
   // prefabs  
@@ -50,7 +49,6 @@ public partial class LevelBuilder : Node
   {
     dungeon.ClearAll();
 
-    _rng.Seed = currentLevel.SeedNumber;
     foreach (var cell in grid.Cells)
     {
       var dungeonCell = dungeon.GetCell(cell.X, cell.Y);
@@ -62,7 +60,7 @@ public partial class LevelBuilder : Node
       }
 
       AddItem(dungeonCell, cell.ItemInfo);
-      AddEnemy(dungeonCell, cell.EnemyInfo);
+      AddEnemy(dungeonCell, cell.Enemy?.Info);
       AddGate(dungeonCell, cell, currentLevel.LevelType);
     }
 
@@ -82,7 +80,7 @@ public partial class LevelBuilder : Node
     if (enemy != null)
     {
       var node = (Enemy)_enemyPrefab.Instantiate();
-      node.Init(enemy, _rng);
+      node.Init(enemy);
       dc.AddChild(node);
       dc.Enemy = node;
       node.Position = GridGeometry.CellCenter(.7f);

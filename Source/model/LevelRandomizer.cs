@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using minotaur.Source.model;
 
 #endregion
 
-namespace minotaur.Source.control;
+namespace minotaur.Source.model;
 
 public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
 {
@@ -236,7 +235,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
 
       var target = TakeRandom(cells);
       var monster = sorted[n % sorted.Count];
-      dungeonGrid.Cell(target.X, target.Y).EnemyInfo = monster;
+      dungeonGrid.Cell(target.X, target.Y).Enemy = new EnemyState(monster);
     }
   }
 
@@ -245,7 +244,8 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
     if (currentLevel.HasMinotaur)
     {
       var cell = TakeRandom(cells);
-      cell.EnemyInfo = db.FindEnemy("Minotaur");
+      var minotaur = db.FindEnemy("Minotaur");
+      cell.Enemy = minotaur == null ? null : new EnemyState(minotaur);
     }
   }
 

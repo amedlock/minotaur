@@ -32,7 +32,7 @@ public class DungeonGrid
   public int Count => Width * Height;
 
   public IEnumerable<MazeCell> Cells => _items;
-  public IEnumerable<MazeCell> EmptyCells => _items.Where(c => c.ItemInfo == null && c.EnemyInfo == null);
+  public IEnumerable<MazeCell> EmptyCells => _items.Where(c => c.ItemInfo == null && c.Enemy == null);
 
 
   public bool Valid(int x, int y)

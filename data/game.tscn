@@ -302,9 +302,8 @@ position = Vector2(673, 377)
 scale = Vector2(3, 3)
 texture = ExtResource("20")
 
-[node name="MapView" parent="Views" unique_id=1786923092 node_paths=PackedStringArray("_game", "_gameModel") instance=ExtResource("21")]
+[node name="MapView" parent="Views" unique_id=1786923092 node_paths=PackedStringArray("_gameModel") instance=ExtResource("21")]
 visible = false
-_game = NodePath("../..")
 _gameModel = NodePath("../../GameModel")
 
 [node name="Player" type="Node3D" parent="." unique_id=1784015304 node_paths=PackedStringArray("_dungeon", "_gameModel")]
@@ -319,11 +318,12 @@ script = ExtResource("5_n2e6y")
 _controller = NodePath("../../Controller/PlayerController")
 _gameModel = NodePath("../../GameModel")
 
-[node name="combat" type="Node" parent="Player" unique_id=76730813 node_paths=PackedStringArray("_gameModel", "_playerController", "_hud", "_mainGame")]
+[node name="combat" type="Node" parent="Player" unique_id=76730813 node_paths=PackedStringArray("_gameModel", "_playerController", "_hud", "_dungeon", "_mainGame")]
 script = ExtResource("6_6ut8u")
 _gameModel = NodePath("../../GameModel")
 _playerController = NodePath("../../Controller/PlayerController")
 _hud = NodePath("../Camera3D/HUD")
+_dungeon = NodePath("../../Dungeon")
 _mainGame = NodePath("../..")
 
 [node name="PlayerTimer" type="Timer" parent="Player/combat" unique_id=124561207]

@@ -39,44 +39,9 @@ public partial class PlayerController : Node
   }
 
 
-  public void Init(int skill)
+  // refresh the views after the model has been set up for a new game
+  public void Init()
   {
-    _gameModel.Skill = skill;
-    _gameModel.Facing = Direction.East;
-    _playerData.Gold = 0;
-    _playerData.WarExp = 0;
-    _playerData.MagicExp = 0;
-    _playerData.Food = 10 - skill;
-    _playerData.Arrows = 9 - skill;
-    _playerData.Resurrected = false;
-    _playerData.ClearSlots();
-
-    _playerData.RightHand = _gameModel.GameDb.FindItem("bow");
-    switch (skill)
-    {
-      case 1:
-        _playerData.Health = 18;
-        _playerData.Mind = 9;
-        _playerData.LeftHand = _gameModel.GameDb.FindItem("small_shield");
-        break;
-      case 2:
-        _playerData.Health = 16;
-        _playerData.Mind = 7;
-        break;
-      case 3:
-        _playerData.Health = 14;
-        _playerData.Mind = 7;
-        break;
-      case 4:
-        _playerData.Health = 12;
-        _playerData.Mind = 6;
-        break;
-      default:
-        throw new Exception("Invalid skill: " + skill);
-    }
-
-    _playerData.MindMax = _playerData.Mind;
-    _playerData.HealthMax = _playerData.Health;
     _hud.UpdateAll();
     _player.Update();
   }
@@ -89,13 +54,13 @@ public partial class PlayerController : Node
       return;
     }
 
-    var nextCell = _player.CellAhead;
+    var nextCell = _gameModel.CellAhead;
     if (nextCell == null)
     {
       return;
     }
 
-    if (nextCell is { Enemy: not null })
+    if (nextCell.Enemy != null)
     {
       StartCombat(nextCell, true);
       return;
@@ -122,7 +87,7 @@ public partial class PlayerController : Node
       return;
     }
 
-    var nextCell = _player.CellBehind;
+    var nextCell = _gameModel.CellBehind;
     if (nextCell == null)
     {
       return;
@@ -194,7 +159,7 @@ public partial class PlayerController : Node
     if (wall is Door door) door.Activate();
   }
 
-  public void StartCombat(DungeonCell cell, bool attack)
+  public void StartCombat(MazeCell cell, bool attack)
   {
     _combatController.Start(cell, attack);
   }
@@ -249,22 +214,6 @@ public partial class PlayerController : Node
   }
 
 
-  public void ShowMap(bool visible)
-  {
-    if (visible)
-    {
-      _mapView.Show();
-      _player.Hide();
-      _gameModel.PlayerState = PlayerState.ViewMap;
-    }
-    else
-    {
-      _mapView.Hide();
-      _player.Show();
-      _gameModel.PlayerState = PlayerState.Idle;
-    }
-  }
-
   public void ClickSlot(int slotNum, bool rightClick)
   {
     if (rightClick)
@@ -306,7 +255,7 @@ public partial class PlayerController : Node
       cell.ItemInfo = _gameModel.ChooseTreasure(container);
     }
 
-    _dungeon.CurrentCell.SetItem(cell.ItemInfo);
+    _dungeon.UpdateItem(_gameModel.PlayerCoord);
     _hud.UpdatePack();
   }
 
@@ -318,7 +267,7 @@ public partial class PlayerController : Node
     }
     else
     {
-      StartCombat(_player.CellAhead, true);
+      StartCombat(_gameModel.CellAhead, true);
     }
   }
 
@@ -331,14 +280,14 @@ public partial class PlayerController : Node
   public void SwapWithFeet()
   {
     (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
-    _dungeon.CurrentCell.SetItem(_gameModel.ItemAtFeet);
+    _dungeon.UpdateItem(_gameModel.PlayerCoord);
     _hud.UpdatePack();
   }
 
   private void RemoveItem()
   {
     _gameModel.CurrentCell.ItemInfo = null;
-    _dungeon.CurrentCell.RemoveItem();
+    _dungeon.UpdateItem(_gameModel.PlayerCoord);
     _hud.UpdateAll();
   }
 
@@ -393,7 +342,7 @@ public partial class PlayerController : Node
 
       default:
         (_playerData.RightHand, _gameModel.ItemAtFeet) = (_gameModel.ItemAtFeet, _playerData.RightHand);
-        _dungeon.CurrentCell.SetItem(_gameModel.ItemAtFeet);
+        _dungeon.UpdateItem(_gameModel.PlayerCoord);
         _hud.UpdatePack();
         return;
     }
@@ -403,7 +352,7 @@ public partial class PlayerController : Node
   public void EnterGate(DungeonGate dungeonGate)
   {
     _player.Audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/magic.wav");
-    _gameModel.LoadGateLevel(dungeonGate);
+    _gameModel.LoadGateLevel(dungeonGate.Type);
     _playerData.NeedsRest = true;
   }
 

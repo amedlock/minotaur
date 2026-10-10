@@ -27,8 +27,6 @@ public partial class MapView : Node2D
     ["door_door"] = MapTile(1, 1)
   };
 
-  [Export] private MainGame _game;
-
   [Export] private GameModel _gameModel;
 
   private PlayerData _playerData;
@@ -84,15 +82,6 @@ public partial class MapView : Node2D
         col.Name = $"map_{x}_{y}";
         _lookup[_index(x, y)] = col;
       }
-    }
-  }
-
-
-  public override void _Input(InputEvent @event)
-  {
-    if (Input.IsActionJustPressed("view map"))
-    {
-      _game.HideMap();
     }
   }
 

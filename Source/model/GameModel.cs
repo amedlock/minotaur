@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using minotaur.Source.control;
-using minotaur.Source.views;
 
 #endregion
 
@@ -16,20 +14,23 @@ public partial class GameModel : Node
 
   internal LevelRandomizer Randomizer;
 
+  // current dungeon level, the first level is depth 1
   public int Depth = 1;
   public int Skill = 1;
 
   // player location
-  public int playerX;
-  public int playerY;
+  public int PlayerX;
+  public int PlayerY;
 
   public Direction Facing { get; set; } = Direction.East;
 
-  public int GridIndex => Grid.Index(playerX, playerY);
+  public LevelInfo CurrentLevel => LevelAt(Depth);
 
-  public LevelInfo CurrentLevel => Depth >= 0 ? Levels[Depth] : null;
+  public MazeCell CurrentCell => Grid.Cell(PlayerX, PlayerY);
 
-  public MazeCell CurrentCell => Grid.Cell(playerX, playerY);
+  public MazeCell CellAhead => Grid.Cell(PlayerCoord, Facing);
+
+  public MazeCell CellBehind => Grid.Cell(PlayerCoord, Facing.Opposite());
 
   public List<LevelInfo> Levels = new();
 
@@ -37,6 +38,10 @@ public partial class GameModel : Node
 
   public PlayerData PlayerData { get; private set; }
 
+  // which screen is up
+  public GameMode GameMode { get; set; } = GameMode.Menu;
+
+  // what the player is doing while in the dungeon
   public PlayerState PlayerState { get; set; }
 
   public bool OverExit => ItemAtFeet is { Name: "ladder" };
@@ -49,12 +54,18 @@ public partial class GameModel : Node
 
   public Vector2I PlayerCoord
   {
-    get => new(playerX, playerY);
+    get => new(PlayerX, PlayerY);
     set
     {
-      playerX = value.X;
-      playerY = value.Y;
+      PlayerX = value.X;
+      PlayerY = value.Y;
     }
+  }
+
+  // Levels is indexed from 0, depth starts at 1
+  private LevelInfo LevelAt(int depth)
+  {
+    return depth >= 1 && depth <= Levels.Count ? Levels[depth - 1] : null;
   }
 
   public override void _Ready()
@@ -126,22 +137,23 @@ public partial class GameModel : Node
 
   public void CreateLevel(int depth)
   {
-    if (depth >= Levels.Count)
+    if (depth < 1 || depth > Levels.Count)
     {
       throw new ArgumentException("Invalid depth");
     }
 
-    var levelInfo = Levels[depth];
+    Depth = depth;
+    var levelInfo = LevelAt(depth);
     Randomizer.BuildLevel(levelInfo);
   }
 
 
-  public void LoadGateLevel(DungeonGate gate)
+  public void LoadGateLevel(LevelType levelType)
   {
     CurrentLevel.UsedGate = true;
     uint seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16;
-    var levelInfo = new LevelInfo(Skill, Depth, seed, gate.Type);
-    Levels[Depth] = levelInfo;
+    var levelInfo = new LevelInfo(Skill, Depth, seed, levelType);
+    Levels[Depth - 1] = levelInfo;
     Randomizer.BuildLevel(levelInfo);
   }
 
@@ -166,7 +178,7 @@ public partial class GameModel : Node
   }
 
 
-  public void DamagePlayer(Enemy enemy, ItemInfo item)
+  public void DamagePlayer(ItemInfo item)
   {
     int maxDamage = item.Stat1;
     int damage = Skill switch
@@ -185,15 +197,15 @@ public partial class GameModel : Node
 
   public void NextLevel()
   {
-    if (Depth >= 99)
+    if (Depth >= Levels.Count)
     {
       return;
     }
 
     Depth++;
-    Randomizer.BuildLevel(Levels[Depth]);
-    playerX = 0;
-    playerY = 0;
+    Randomizer.BuildLevel(LevelAt(Depth));
+    PlayerX = 0;
+    PlayerY = 0;
     Facing = Direction.East;
   }
 
@@ -202,9 +214,8 @@ public partial class GameModel : Node
     return GameDb.FindItem("coins");
   }
 
-  public ItemInfo FindWeapon(Enemy enemy)
+  public ItemInfo FindWeapon(EnemyInfo enemyInfo)
   {
-    var enemyInfo = enemy.Info;
     return GameDb.FindWeapon(enemyInfo.Weapon, enemyInfo.Power, Depth);
   }
 }

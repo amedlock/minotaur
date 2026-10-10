@@ -12,8 +12,6 @@ namespace minotaur.Source;
 // initial Controller for the game
 public partial class MainGame : Node3D
 {
-  private GameMode _gameMode;
-
   // views
   [Export] private MainMenu _menu;
 
@@ -40,15 +38,15 @@ public partial class MainGame : Node3D
 
   public override void _Input(InputEvent @event)
   {
-    switch (_gameMode)
+    switch (_gameModel.GameMode)
     {
       case GameMode.Dungeon:
-        if (Input.IsActionJustPressed("view map"))
+        // the map is shown while the key is held
+        if (@event.IsActionPressed("view map") && _gameModel.PlayerState == PlayerState.Idle)
         {
           ShowMap();
         }
-
-        if (Input.IsActionJustPressed("show help"))
+        else if (@event.IsActionPressed("show help"))
         {
           _help.Toggle();
         }
@@ -56,15 +54,15 @@ public partial class MainGame : Node3D
         break;
 
       case GameMode.Map:
-        if (Input.IsActionJustPressed("view map"))
+        if (@event.IsActionReleased("view map"))
         {
-          ShowGame();
+          HideMap();
         }
 
         break;
     }
 
-    if (Input.IsActionJustPressed("quit game"))
+    if (@event.IsActionPressed("quit game"))
     {
       GetTree().Quit();
     }
@@ -76,7 +74,7 @@ public partial class MainGame : Node3D
     _gameModel.Init(skill, seedNum);
     _gameModel.CreateLevel(1);
     _dungeon.BuildLevel();
-    _playerController.Init(skill);
+    _playerController.Init();
     ShowGame();
     _help.Show();
   }
@@ -85,7 +83,7 @@ public partial class MainGame : Node3D
   {
     ShowMap();
     _player.Disable();
-    _gameMode = GameMode.GameOver;
+    _gameModel.GameMode = GameMode.GameOver;
   }
 
   public void WonGame()
@@ -94,7 +92,7 @@ public partial class MainGame : Node3D
     _audio.Play();
     ShowMap();
     _player.Disable();
-    _gameMode = GameMode.GameWon;
+    _gameModel.GameMode = GameMode.GameWon;
   }
 
   public void ShowGame()
@@ -103,12 +101,12 @@ public partial class MainGame : Node3D
     _player.Enabled = true;
     _menu.Enabled = false;
     _mapView.Hide();
-    _gameMode = GameMode.Dungeon;
+    _gameModel.GameMode = GameMode.Dungeon;
   }
 
   public void ShowMenu()
   {
-    _gameMode = GameMode.Menu;
+    _gameModel.GameMode = GameMode.Menu;
     _mapView.Hide();
     _dungeon.Hide();
     _player.Hide();
@@ -119,13 +117,13 @@ public partial class MainGame : Node3D
   {
     _mapView.Show();
     _player.Hide();
-    _gameMode = GameMode.Map;
+    _gameModel.GameMode = GameMode.Map;
   }
 
   public void HideMap()
   {
     _mapView.Hide();
     _player.Show();
-    _gameMode = GameMode.Dungeon;
+    _gameModel.GameMode = GameMode.Dungeon;
   }
 }

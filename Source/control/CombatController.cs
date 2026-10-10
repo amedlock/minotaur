@@ -22,17 +22,18 @@ public partial class CombatController : Node
 
   [Export] private Hud _hud;
 
+  [Export] private Dungeon _dungeon;
+
   private PlayerData _playerData;
 
-  private Enemy _enemy;
+  private EnemyState _enemy;
 
   private AnimationPlayer _enemyAnim;
   private AnimationPlayer _playerAnim;
 
 
   private AudioStreamPlayer _enemyAudio;
-  private DungeonCell _enemyCell;
-  private EnemyInfo _enemyInfo;
+  private MazeCell _enemyCell;
   private ItemInfo _enemyItem;
   private double _enemyTurn;
   private Sprite2D _enemyWeapon;
@@ -81,19 +82,18 @@ public partial class CombatController : Node
     SetProcess(false);
   }
 
-  public void Start(DungeonCell dungeonCell, bool attack)
+  public void Start(MazeCell cell, bool attack)
   {
-    if (dungeonCell.Enemy is not { Info: not null })
+    if (cell?.Enemy == null)
     {
       return;
     }
 
     GD.Print("Starting Combat");
     _gameModel.PlayerState = PlayerState.Combat;
-    _enemyCell = dungeonCell;
-    _enemy = _enemyCell.Enemy;
-    _enemyInfo = _enemy.Info;
-    _enemyItem = _gameModel.FindWeapon(_enemy);
+    _enemyCell = cell;
+    _enemy = cell.Enemy;
+    _enemyItem = _gameModel.FindWeapon(_enemy.Info);
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
     SetProcess(true);
@@ -245,16 +245,16 @@ public partial class CombatController : Node
 
     if (_enemy.IsDead)
     {
-      _enemy.Die();
-      _playerController.WonCombat(_enemyInfo);
-      _enemyCell.RemoveEnemy();
+      _enemyCell.Enemy = null;
+      _dungeon.KillEnemy(_enemyCell.Coord);
+      _playerController.WonCombat(_enemy.Info);
     }
   }
 
   private void DamagePlayer()
   {
     if (_enemy == null || _enemy.IsDead || _enemyItem == null) return;
-    _gameModel.DamagePlayer(_enemy, _enemyItem);
+    _gameModel.DamagePlayer(_enemyItem);
     _hud.UpdateStats();
   }
 

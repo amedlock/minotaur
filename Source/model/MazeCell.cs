@@ -1,5 +1,6 @@
 ﻿#region
 
+using Godot;
 
 #endregion
 
@@ -16,7 +17,9 @@ public class MazeCell(int x, int y)
 
   public ItemInfo ItemInfo;
 
-  public EnemyInfo EnemyInfo;
+  public EnemyState Enemy;
+
+  public Vector2I Coord => new(X, Y);
 
   public bool Used; // means this cell has been used for building, or item/enemy placement
 
@@ -30,7 +33,7 @@ public class MazeCell(int x, int y)
     East = WallType.Wall;
 
     ItemInfo = null;
-    EnemyInfo = null;
+    Enemy = null;
     Gate = GateType.None;
   }
 

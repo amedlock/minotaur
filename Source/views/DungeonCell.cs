@@ -25,8 +25,6 @@ public partial class DungeonCell : Node3D
 
   public int Y { get; private set; }
 
-  public EnemyInfo EnemyInfo => Enemy == null ? null : Enemy.Info;
-
   public ItemInfo ItemInfo => Item == null ? null : Item.Info;
   public Vector2I Coord => new(X, Y);
 
@@ -78,23 +76,5 @@ public partial class DungeonCell : Node3D
       default:
         throw new Exception("Invalid wall direction");
     }
-  }
-
-  public void RemoveItem()
-  {
-    if (Item != null)
-    {
-      Item.Visible = false;
-      RemoveChild(Item);
-      Item.QueueFree();
-    }
-  }
-
-  public void SetItem(ItemInfo itemInfo)
-  {
-    RemoveItem();
-    Item = new Item();
-    Item.Info = itemInfo;
-    AddChild(Item);
   }
 }
