@@ -4,10 +4,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using minotaur.Source.control;
-using minotaur.Source.dungeon;
-using minotaur.Source.enemies;
-using minotaur.Source.items;
-using minotaur.Source.player;
+using minotaur.Source.views;
 
 #endregion
 

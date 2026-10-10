@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using minotaur.Source.dungeon;
-using minotaur.Source.items;
 using minotaur.Source.model;
 
 #endregion
@@ -47,18 +45,6 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
     var result = items[index];
     items.RemoveAt(index);
     return result;
-  }
-
-  private IEnumerable<MazeCell> AdjacentCells(MazeCell cell)
-  {
-    List<MazeCell> items =
-    [
-      dungeonGrid.Cell(cell.X, cell.Y + 1),
-      dungeonGrid.Cell(cell.X, cell.Y - 1),
-      dungeonGrid.Cell(cell.X + 1, cell.Y),
-      dungeonGrid.Cell(cell.X - 1, cell.Y)
-    ];
-    return items.Where(x => x != null);
   }
 
   private bool AdjacentToAny(MazeCell cell, List<MazeCell> other)

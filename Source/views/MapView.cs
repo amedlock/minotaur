@@ -2,9 +2,7 @@
 
 using Godot;
 using Godot.Collections;
-using minotaur.Source.dungeon;
 using minotaur.Source.model;
-using minotaur.Source.player;
 
 #endregion
 
@@ -30,9 +28,6 @@ public partial class MapView : Node2D
   };
 
   [Export] private MainGame _game;
-
-  // shouldn't need this
-  [Export] private Dungeon _dungeon;
 
   [Export] private Player _player;
 
@@ -153,8 +148,6 @@ public partial class MapView : Node2D
         var cell = grid.Cell(x, y);
         var spr = _lookup[_index(x, y)];
         spr.RegionRect = ChooseTile(cell);
-        // one of the walls is present, but not the other
-        if (cell.North == WallType.Empty || cell.East == WallType.Empty) FixUpCorner(cell);
         if (cell.Gate != GateType.None) AddGate(cell.Gate, x, y);
       }
     }
@@ -163,10 +156,6 @@ public partial class MapView : Node2D
   public static Rect2 ChooseTile(MazeCell cell)
   {
     return SpriteLookup["none_none"];
-    // StringName n1 = nameof(cell.North.WallType);
-    // StringName n2 = nameof(cell.East.WallType);
-    // var path = $"{n1}_{n2}";
-    // return _spriteLookup[path];
   }
 
   public void AddGate(GateType gate, int x, int y)
@@ -180,19 +169,5 @@ public partial class MapView : Node2D
     };
     _other.AddChild(icon);
     icon.Position = TilePosition(x, y);
-  }
-
-  private static void FixUpCorner(MazeCell cell)
-  {
-    if (cell is { East: WallType.Empty }) return;
-
-    if (cell is { North: WallType.Empty })
-    {
-    }
-    // var fix = _gateIcon.Instantiate() as Sprite2D;
-    // fix.Name = $"fix_{cell.X}_{cell.Y}";
-    // fix.RegionRect = MapTile(2, 2);
-    // fix.Position = TilePosition(cell.X, cell.Y);
-    // _other.AddChild(fix);
   }
 }

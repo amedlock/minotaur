@@ -1,17 +1,14 @@
 ﻿#region
 
 using Godot;
+using minotaur.Source.model;
 
 #endregion
 
-namespace minotaur.Source.dungeon;
+namespace minotaur.Source.views;
 
 public partial class DungeonGate : Node3D
 {
-  private float _maxSize = 0.03f;
-
-  private float _minSize = 0.02f;
-
   public Sprite3D Sprite;
   public LevelType Type = LevelType.None;
 

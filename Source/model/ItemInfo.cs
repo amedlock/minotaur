@@ -1,25 +1,21 @@
 ﻿#region
 
 using Godot;
-using minotaur.Source.dungeon;
 
 #endregion
 
-namespace minotaur.Source.items;
+namespace minotaur.Source.model;
 
 public class ItemInfo
 {
-  public Color color = Colors.White;
   public Color Color;
   public Rect2I Image;
   public ItemType ItemType;
   public int MinDepth = 1;
   public string Name;
   public bool NeedsKey = false;
-  public Vector3 Offset = Vector3.Zero; //   # Vector3 offset for items in maze
   public int Stat1;
   public int Stat2;
-  public int Uses = 10; // min uses before item could break
 
   public bool IsWeapon => ItemType is ItemType.WarWeapon or ItemType.MagicWeapon;
 

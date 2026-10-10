@@ -1,4 +1,4 @@
-﻿namespace minotaur.Source.items;
+﻿namespace minotaur.Source.model;
 
 public enum ItemType
 {

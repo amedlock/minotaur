@@ -2,11 +2,8 @@
 
 using System.Collections.Generic;
 using Godot;
-using minotaur.Source.dungeon;
-using minotaur.Source.enemies;
-using minotaur.Source.items;
 using minotaur.Source.model;
-using Dungeon = minotaur.Source.views.Dungeon;
+using minotaur.Source.views;
 
 #endregion
 

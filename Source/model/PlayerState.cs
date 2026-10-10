@@ -1,4 +1,4 @@
-﻿namespace minotaur.Source.player;
+﻿namespace minotaur.Source.model;
 
 public enum PlayerState
 {

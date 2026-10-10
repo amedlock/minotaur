@@ -4,7 +4,7 @@ using Godot;
 
 #endregion
 
-namespace minotaur.Source.dungeon;
+namespace minotaur.Source.views;
 
 public partial class OuterWall : Node3D
 {

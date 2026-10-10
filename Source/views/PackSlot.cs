@@ -1,11 +1,11 @@
 ﻿#region
 
 using Godot;
-using minotaur.Source.items;
+using minotaur.Source.model;
 
 #endregion
 
-namespace minotaur.Source.hud;
+namespace minotaur.Source.views;
 
 public partial class PackSlot : Area2D
 {

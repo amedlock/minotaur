@@ -3,21 +3,18 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using minotaur.Source.items;
+using minotaur.Source.control;
 using minotaur.Source.model;
-using minotaur.Source.player;
-using PlayerController = minotaur.Source.control.PlayerController;
 
 #endregion
 
-namespace minotaur.Source.hud;
+namespace minotaur.Source.views;
 
 public partial class Hud : Node2D
 {
   private readonly Dictionary<int, PackSlot> _packSlots = new();
   private Sprite2D _amuletSprite;
   private Label _armorDisplay;
-  private Sprite2D _armorSprite;
   private Label _arrowsDisplay;
   private Sprite2D _atFeetSprite;
   private Sprite2D _breastPlateSprite;
@@ -32,8 +29,6 @@ public partial class Hud : Node2D
   private Sprite2D _leftHandSprite;
   private Label _levelDisplay;
   private Label _mindDisplay;
-
-  [Export] private Control _pack;
 
   [Export] private GameModel _gameModel;
 
@@ -78,12 +73,6 @@ public partial class Hud : Node2D
   }
 
   private PlayerData PlayerData => _gameModel.PlayerData;
-
-
-  private Vector2 CalcSpriteScale(float sw, float sh, float dw, float dh)
-  {
-    return new Vector2(dw / sw, dh / sh);
-  }
 
   public void UpdateStats()
   {
@@ -135,17 +124,6 @@ public partial class Hud : Node2D
   {
     UpdatePack();
     UpdateStats();
-  }
-
-  private Sprite2D FindSlot(string slot)
-  {
-    return slot switch
-    {
-      "hand" => _rightHandSprite,
-      "feet" => _atFeetSprite,
-      "shield" => _leftHandSprite,
-      _ => throw new Exception("Invalid Inventory slot:" + slot)
-    };
   }
 
   // Event handlers

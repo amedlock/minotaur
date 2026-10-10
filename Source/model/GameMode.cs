@@ -1,4 +1,4 @@
-﻿namespace minotaur.Source;
+﻿namespace minotaur.Source.model;
 
 public enum GameMode
 {

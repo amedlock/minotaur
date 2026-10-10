@@ -2,12 +2,8 @@
 
 using System;
 using Godot;
-using minotaur.Source.dungeon;
-using minotaur.Source.enemies;
-using minotaur.Source.hud;
-using minotaur.Source.items;
 using minotaur.Source.model;
-using minotaur.Source.player;
+using minotaur.Source.views;
 
 #endregion
 
@@ -16,7 +12,6 @@ namespace minotaur.Source.control;
 public partial class CombatController : Node
 {
   private const float TurnTime = 2f;
-  private const float EnemyDelay = 0.75f;
 
   // player weapon broken?
   private bool _broken;
@@ -35,38 +30,6 @@ public partial class CombatController : Node
   private AnimationPlayer _playerAnim;
 
 
-  struct CombatState
-  {
-    public float timer;
-    public bool attack;
-    public bool animating;
-    public bool playerDead;
-    public bool enemyDead;
-    public bool gameOver;
-    public bool doAttack;
-    public bool doRetreat;
-    public bool endCombat;
-
-    public void Reset()
-    {
-      attack = false;
-      timer = 0f;
-      animating = false;
-      playerDead = false;
-      enemyDead = false;
-      gameOver = false;
-      doAttack = false;
-      doRetreat = false;
-      endCombat = false;
-    }
-  }
-
-
-  private CombatState _combatState;
-
-
-  //  enemy can only do one thing: attack
-  private bool _enemyAttack;
   private AudioStreamPlayer _enemyAudio;
   private DungeonCell _enemyCell;
   private EnemyInfo _enemyInfo;
@@ -90,9 +53,6 @@ public partial class CombatController : Node
   private bool _playerRetreat;
 
   private Sprite2D _playerWeapon;
-
-  // time in turn so far
-  private double _turnElapsed = 0.75f;
 
   public bool PlayerAttack
   {
@@ -136,22 +96,10 @@ public partial class CombatController : Node
     _enemyItem = _gameModel.FindWeapon(_enemy);
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
-    _combatState.Reset();
     SetProcess(true);
     if (attack)
     {
       AttackMonster();
-    }
-  }
-
-
-  public void EndCombat()
-  {
-    _gameModel.PlayerState = PlayerState.Idle;
-    SetProcess(false);
-    if (_playerData.IsDead)
-    {
-      _mainGame.GameOver();
     }
   }
 
@@ -171,25 +119,15 @@ public partial class CombatController : Node
       return;
     }
 
-    if (_combatState.timer > 0)
-    {
-      _combatState.timer = Math.Max(_combatState.timer - (float)delta, 0f);
-    }
-
     _enemyTurn += delta;
-    _combatState.attack = _combatState.attack || Input.IsActionJustPressed("attack");
 
-    if (_combatState.timer <= 0)
+    if (_playerAttack)
     {
-      if (_playerAttack)
-      {
-        AttackMonster();
-        _combatState.timer = 0;
-      }
-      else if (_playerRetreat)
-      {
-        Retreat();
-      }
+      AttackMonster();
+    }
+    else if (_playerRetreat)
+    {
+      Retreat();
     }
 
     if (_enemy == null || _enemy.IsDead)
@@ -302,7 +240,7 @@ public partial class CombatController : Node
     {
       GD.Print("Weapon broke");
       _playerData.RightHand = null;
-      _playerController.Hud.UpdatePack();
+      _hud.UpdatePack();
     }
 
     if (_enemy.IsDead)

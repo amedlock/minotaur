@@ -1,7 +1,5 @@
 ﻿#region
 
-using minotaur.Source.dungeon;
-using minotaur.Source.items;
 
 #endregion
 

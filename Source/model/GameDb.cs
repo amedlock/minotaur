@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using minotaur.Source.dungeon;
-using minotaur.Source.enemies;
-using minotaur.Source.items;
 using Array = Godot.Collections.Array;
 
 #endregion
@@ -19,7 +16,6 @@ public class GameDb
 {
   private static readonly List<string> WarColors = ["Tan", "Orange", "Blue", "Grey", "Yellow", "White"];
   private static readonly List<string> MagicColors = ["Blue", "Grey", "White", "Pink", "Red", "Purple"];
-  private static readonly List<string> MoneyColors = ["Orange", "Grey", "Yellow", "White"];
   private static readonly List<string> ContainerColors = ["Tan", "Orange", "Blue"];
 
   private readonly System.Collections.Generic.Dictionary<string, Color> _colors = new();
@@ -28,8 +24,6 @@ public class GameDb
   private readonly List<string> _magicWeapons = ["scroll", "book", "wand", "staff"];
 
   private readonly List<string> _warWeapons = ["axe", "spear", "dagger", "bow", "crossbow"];
-
-  private ItemInfo _finalTreasure;
 
 
   public GameDb()
@@ -110,7 +104,6 @@ public class GameDb
     LoadEnemies(enemies, "magic", EnemyType.Magic);
     LoadEnemies(enemies, "both", EnemyType.Both);
     LoadItems((Dictionary)data["items"]);
-    _finalTreasure = FindItem("treasure");
   }
 
   private void LoadColors(Variant data)

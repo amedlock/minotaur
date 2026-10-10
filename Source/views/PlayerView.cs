@@ -1,9 +1,8 @@
 ﻿#region
 
 using Godot;
+using minotaur.Source.control;
 using minotaur.Source.model;
-using minotaur.Source.player;
-using PlayerController = minotaur.Source.control.PlayerController;
 
 #endregion
 

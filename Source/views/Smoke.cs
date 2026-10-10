@@ -4,7 +4,7 @@ using Godot;
 
 #endregion
 
-namespace minotaur.Source.enemies;
+namespace minotaur.Source.views;
 
 public partial class Smoke : Sprite3D
 {

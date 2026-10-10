@@ -253,13 +253,12 @@ _data = {
 
 [sub_resource type="BoxMesh" id="BoxMesh_jtqey"]
 
-[node name="MainGame" type="Node3D" unique_id=2140664278 node_paths=PackedStringArray("_menu", "_dungeon", "_player", "_playerController", "_gameOver", "_mapView", "_help", "_gameModel")]
+[node name="MainGame" type="Node3D" unique_id=2140664278 node_paths=PackedStringArray("_menu", "_dungeon", "_player", "_playerController", "_mapView", "_help", "_gameModel")]
 script = ExtResource("1_tig81")
 _menu = NodePath("Views/MainMenu")
 _dungeon = NodePath("Dungeon")
 _player = NodePath("Player")
 _playerController = NodePath("Controller/PlayerController")
-_gameOver = NodePath("Views/GameOver")
 _mapView = NodePath("Views/MapView")
 _help = NodePath("Views/Help")
 _gameModel = NodePath("GameModel")
@@ -278,8 +277,6 @@ _hud = NodePath("../../Player/Camera3D/HUD")
 _mapView = NodePath("../../Views/MapView")
 _player = NodePath("../../Player")
 _mainGame = NodePath("../..")
-
-[node name="CombatController" type="Node" parent="Controller" unique_id=978942906]
 
 [node name="Views" type="Node" parent="." unique_id=1859714202]
 
@@ -305,18 +302,16 @@ position = Vector2(673, 377)
 scale = Vector2(3, 3)
 texture = ExtResource("20")
 
-[node name="MapView" parent="Views" unique_id=1786923092 node_paths=PackedStringArray("_game", "_dungeon", "_player", "_gameModel") instance=ExtResource("21")]
+[node name="MapView" parent="Views" unique_id=1786923092 node_paths=PackedStringArray("_game", "_player", "_gameModel") instance=ExtResource("21")]
 visible = false
 _game = NodePath("../..")
-_dungeon = NodePath("../../Dungeon")
 _player = NodePath("../../Player")
 _gameModel = NodePath("../../GameModel")
 
-[node name="Player" type="Node3D" parent="." unique_id=1784015304 node_paths=PackedStringArray("_startPosition", "_dungeon", "_gameModel")]
+[node name="Player" type="Node3D" parent="." unique_id=1784015304 node_paths=PackedStringArray("_dungeon", "_gameModel")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.25, 21)
 visible = false
 script = ExtResource("9_6ut8u")
-_startPosition = NodePath("../Dungeon/StartPos")
 _dungeon = NodePath("../Dungeon")
 _gameModel = NodePath("../GameModel")
 
@@ -389,13 +384,10 @@ visible = false
 [node name="Audio" type="AudioStreamPlayer" parent="Player" unique_id=12955241]
 stream = ExtResource("18")
 
-[node name="Dungeon" type="Node3D" parent="." unique_id=1918861418 node_paths=PackedStringArray("_builder", "_hud", "_mapView", "_player", "gameModel", "_startPosition")]
+[node name="Dungeon" type="Node3D" parent="." unique_id=1918861418 node_paths=PackedStringArray("_builder", "gameModel", "_startPosition")]
 visible = false
 script = ExtResource("3_jtqey")
 _builder = NodePath("Builder")
-_hud = NodePath("../Player/Camera3D/HUD")
-_mapView = NodePath("../Views/MapView")
-_player = NodePath("../Player")
 gameModel = NodePath("../GameModel")
 _startPosition = NodePath("StartPos")
 

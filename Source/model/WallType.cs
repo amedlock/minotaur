@@ -1,4 +1,4 @@
-﻿namespace minotaur.Source.dungeon;
+﻿namespace minotaur.Source.model;
 
 public enum WallType
 {

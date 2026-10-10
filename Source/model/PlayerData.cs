@@ -2,11 +2,10 @@
 
 using System.Collections.Generic;
 using Godot;
-using minotaur.Source.items;
 
 #endregion
 
-namespace minotaur.Source.player;
+namespace minotaur.Source.model;
 
 // named PlayerData to avoid confusion with Player Node
 public class PlayerData
@@ -28,18 +27,11 @@ public class PlayerData
 
   public bool IsDead => Health <= 0 || Mind <= 0;
 
-  private ItemInfo helmet;
-  private ItemInfo breastplate;
-  private ItemInfo hauberk;
-
-  private ItemInfo ring;
-
   public ItemInfo LeftHand { get; set; }
 
   public ItemInfo RightHand { get; set; }
 
   public bool NeedsRest;
-  private bool _resurrected;
 
   public int WarArmor;
   public int MindArmor;

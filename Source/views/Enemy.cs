@@ -1,17 +1,14 @@
 ﻿#region
 
 using Godot;
-using minotaur.Source.items;
+using minotaur.Source.model;
 
 #endregion
 
-namespace minotaur.Source.enemies;
+namespace minotaur.Source.views;
 
 public partial class Enemy : Sprite3D
 {
-  public int GridX = 0;
-  public int GridY = 0;
-
   public int Health;
   public int Mind;
 

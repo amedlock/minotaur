@@ -4,11 +4,10 @@ using Godot;
 
 #endregion
 
-namespace minotaur.Source.enemies;
+namespace minotaur.Source.model;
 
 public class EnemyInfo
 {
-  public int BaseDamage = 5;
   public Rect2I ImageRect;
   public int WarHp;
   public int MindHp;

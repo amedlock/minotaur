@@ -4,7 +4,7 @@ using Godot;
 
 #endregion
 
-namespace minotaur.Source.help;
+namespace minotaur.Source.views;
 
 public partial class Help : Node2D
 {

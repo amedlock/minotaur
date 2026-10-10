@@ -1,10 +1,11 @@
 ﻿#region
 
 using Godot;
+using minotaur.Source.model;
 
 #endregion
 
-namespace minotaur.Source.items;
+namespace minotaur.Source.views;
 
 public partial class Item : Sprite3D
 {

@@ -1,14 +1,9 @@
 ﻿#region
 
 using Godot;
-using minotaur.Source.help;
+using minotaur.Source.control;
 using minotaur.Source.model;
 using minotaur.Source.views;
-using Dungeon = minotaur.Source.views.Dungeon;
-using MainMenu = minotaur.Source.views.MainMenu;
-using MapView = minotaur.Source.views.MapView;
-using Player = minotaur.Source.views.Player;
-using PlayerController = minotaur.Source.control.PlayerController;
 
 #endregion
 
@@ -26,8 +21,6 @@ public partial class MainGame : Node3D
 
   [Export] private Player _player;
   [Export] private PlayerController _playerController;
-
-  [Export] private GameOver _gameOver;
 
   [Export] private MapView _mapView;
 

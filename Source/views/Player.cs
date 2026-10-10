@@ -1,10 +1,7 @@
 ﻿#region
 
 using Godot;
-using minotaur.Source.dungeon;
-using minotaur.Source.hud;
 using minotaur.Source.model;
-using minotaur.Source.player;
 
 #endregion
 
@@ -14,16 +11,9 @@ public partial class Player : Node3D
 {
   public AudioStreamPlayer Audio { get; private set; }
 
-  // facing direction in degrees
-  private PlayerState _playerState = PlayerState.Idle;
-
-  [Export] private Marker3D _startPosition;
-
   [Export] private Dungeon _dungeon;
 
   [Export] private GameModel _gameModel;
-
-  private PlayerData _playerData;
 
   private bool _enabled;
 
@@ -49,7 +39,6 @@ public partial class Player : Node3D
   {
     var rot = _gameModel.Facing;
     RotationDegrees = new Vector3(0, rot, 0);
-    var coord = _gameModel.PlayerCoord;
     Position = _dungeon.PlayerPosition;
   }
 
@@ -93,16 +82,6 @@ public partial class Player : Node3D
     }
   }
 
-
-  public Vector2I ForwardVector
-  {
-    get
-    {
-      var bz = Transform.Basis.Z;
-      return new Vector2I(Mathf.RoundToInt(bz.X), Mathf.RoundToInt(bz.Z));
-    }
-  }
-
   public Wall WallBehind => null;
   public Node3D WallAhead => _dungeon.GetWall(_gameModel.PlayerCoord, Direction);
 
@@ -115,21 +94,8 @@ public partial class Player : Node3D
 
   public override void _Ready()
   {
-    _playerData = _gameModel.PlayerData;
     Hud = GetNode<Hud>("Camera3D/HUD");
     Audio = GetNode<AudioStreamPlayer>("Audio");
-  }
-
-  public Vector3 CoordToWorld(Vector2I coord)
-  {
-    return _startPosition.Position + new Vector3(coord.X * 3f, 0, -coord.Y * 3);
-  }
-
-  public void Enable()
-  {
-    Visible = true;
-    Hud.Show();
-    Hud.UpdateAll();
   }
 
   public void Disable()

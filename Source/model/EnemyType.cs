@@ -1,4 +1,4 @@
-﻿namespace minotaur.Source.enemies;
+﻿namespace minotaur.Source.model;
 
 public enum EnemyType
 {

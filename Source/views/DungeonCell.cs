@@ -2,18 +2,14 @@
 
 using System;
 using Godot;
-using minotaur.Source.enemies;
-using minotaur.Source.items;
 using minotaur.Source.model;
-using minotaur.Source.views;
 
 #endregion
 
-namespace minotaur.Source.dungeon;
+namespace minotaur.Source.views;
 
 public partial class DungeonCell : Node3D
 {
-  private Dungeon _dungeon;
   public Enemy Enemy;
   public DungeonGate Gate;
 
@@ -29,35 +25,10 @@ public partial class DungeonCell : Node3D
 
   public int Y { get; private set; }
 
-  public Vector2I GridPos => new(X, Y);
-
   public EnemyInfo EnemyInfo => Enemy == null ? null : Enemy.Info;
 
   public ItemInfo ItemInfo => Item == null ? null : Item.Info;
   public Vector2I Coord => new(X, Y);
-
-  public override void _Ready()
-  {
-    _dungeon = GetParent() as Dungeon;
-  }
-
-  // returns wall between the two DungeonCells, if any
-  public Node3D CheckWall(DungeonCell other)
-  {
-    if (other == null) return null;
-
-    if (other.Y == Y)
-    {
-      if (other.X != X) return other.X > X ? East : other.East;
-    }
-    else if (other.X == X)
-    {
-      if (other.Y != Y) return other.Y > Y ? North : other.North;
-    }
-
-    return null;
-  }
-
 
   public void Init(int x, int y)
   {

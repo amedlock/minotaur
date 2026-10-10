@@ -2,14 +2,8 @@
 
 using System;
 using Godot;
-using minotaur.Source.dungeon;
-using minotaur.Source.enemies;
-using minotaur.Source.hud;
-using minotaur.Source.items;
 using minotaur.Source.model;
-using minotaur.Source.player;
 using minotaur.Source.views;
-using Dungeon = minotaur.Source.views.Dungeon;
 
 #endregion
 
@@ -38,7 +32,6 @@ public partial class PlayerController : Node
   [Export] private MainGame _mainGame;
 
   private PlayerData _playerData;
-  public Hud Hud => _hud;
 
   public override void _Ready()
   {
@@ -103,8 +96,6 @@ public partial class PlayerController : Node
       return;
     }
 
-    // _player.PrevCoord = _player.Coord;
-    // _player.CanRetreat = true;
     var pos = _dungeon.PlayerPosition;
     var delta = _player.Transform.Basis.Z * -3;
     _gameModel.PlayerState = PlayerState.Moving;
