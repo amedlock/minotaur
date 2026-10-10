@@ -290,15 +290,15 @@ public partial class PlayerController : Node
 
     if (itemInfo is { ItemType: ItemType.Special })
     {
-      switch (itemInfo.Name)
+      switch (itemInfo.Use)
       {
-        case "ladder":
+        case "exit":
           return;
-        case "treasure":
+        case "win":
           _mainGame.WonGame();
           return;
-        case "quiver" or "food":
-          _playerData.AddSpecial(itemInfo.Name, itemInfo.Stat1);
+        case "arrows" or "food":
+          _playerData.AddSpecial(itemInfo.Use, itemInfo.Stat1);
           RemoveItem();
           return;
       }

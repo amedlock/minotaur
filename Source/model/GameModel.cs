@@ -68,7 +68,7 @@ public partial class GameModel : Node
   // what the player is doing while in the dungeon
   public PlayerState PlayerState { get; set; }
 
-  public bool OverExit => ItemAtFeet is { Name: "ladder" };
+  public bool OverExit => ItemAtFeet is { Use: "exit" };
 
   public ItemInfo ItemAtFeet
   {

@@ -12,7 +12,7 @@ public class EnemyInfo
   public int WarHp;
   public int MindHp;
   public int Armor;
-  public int Damage;
+  public int WeaponLevel;
   public int MinDepth;
   public string Name;
   public string Weapon;

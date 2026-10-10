@@ -33,8 +33,8 @@ public partial class CombatController : Node
   private double _enemyTurn;
   private Sprite2D _enemyWeapon;
 
-  private AudioStream _fireballSound;
-  private AudioStream _lightningSound;
+  // weapon sounds by name
+  private readonly System.Collections.Generic.Dictionary<string, AudioStream> _sounds = new();
 
   [Export] private MainGame _mainGame;
 
@@ -69,8 +69,10 @@ public partial class CombatController : Node
     _enemyWeapon = GetNode<Sprite2D>("EnemyWeapon");
     _enemyAudio = GetNode<AudioStreamPlayer>("EnemyWeapon/Audio");
 
-    _fireballSound = ResourceLoader.Load<AudioStream>("res://data/sounds/fireball.wav");
-    _lightningSound = ResourceLoader.Load<AudioStream>("res://data/sounds/lightning.wav");
+    foreach (var pair in _gameModel.GameDb.Sounds)
+    {
+      _sounds[pair.Key] = ResourceLoader.Load<AudioStream>(pair.Value);
+    }
 
     _playerWeapon.Visible = false;
     _enemyWeapon.Visible = false;
@@ -164,22 +166,12 @@ public partial class CombatController : Node
 
   private AudioStream GetSoundFx(ItemInfo item)
   {
-    if (item == null)
+    if (item?.Sound == null)
     {
       return null;
     }
 
-    if (item.Name is "fireball" or "small_fireball")
-    {
-      return _fireballSound;
-    }
-
-    if (item.Name is "wand" or "staff" or "scroll" or "book")
-    {
-      return _lightningSound;
-    }
-
-    return null;
+    return _sounds.TryGetValue(item.Sound, out var stream) ? stream : null;
   }
 
 
@@ -188,46 +180,35 @@ public partial class CombatController : Node
     _playerItem = _playerData.RightHand;
     if (_playerItem is not { IsWeapon: true }) return;
 
-    _broken = false;
-    var fx = GetSoundFx(_playerItem);
-    if (_playerItem.IsBow)
+    if (_playerItem.Ammo == "arrows")
     {
       if (_playerData.Arrows < 1) return;
-      _playerWeapon.RegionRect = _gameModel.GameDb.FindIcon("arrow");
       _playerData.Arrows -= 1;
-      _broken = GD.Randi() % 30 == 29;
-    }
-    else if (_playerItem.IsScroll)
-    {
-      _playerWeapon.RegionRect = _gameModel.GameDb.FindIcon("fireball");
-      _broken = GD.Randi() % 25 == 24;
-    }
-    else if (_playerItem.IsBook)
-    {
-      _playerWeapon.RegionRect = _gameModel.GameDb.FindIcon("small_lightning");
-      _broken = GD.Randi() % 25 == 24;
-    }
-    else
-    {
-      _playerWeapon.RegionRect = _playerItem.Image;
-      _playerData.RightHand = null;
     }
 
+    _broken = _playerItem.BreakChance > 0 && GD.Randi() % _playerItem.BreakChance == 0;
+    if (_gameModel.CurrentLevel.Depth <= 2) // don't break on first 2 levels
+    {
+      _broken = false;
+    }
+
+    if (_playerItem.SingleUse)
+    {
+      _playerData.RightHand = null; //clear out of the players hand
+    }
+
+    _playerWeapon.RegionRect = _playerItem.Projectile;
     _playerWeapon.Modulate = _playerItem.Color;
-    if (_playerItem.Spins)
+    if (_playerItem.Spin)
       _playerAnim.Play("SpinFire");
     else
       _playerAnim.Play("Fire");
 
+    var fx = GetSoundFx(_playerItem);
     if (fx != null)
     {
       _playerAudio.Stream = fx;
       _playerAudio.Play();
-    }
-
-    if (_gameModel.CurrentLevel.Depth <= 2) // don't break on first 2 levels
-    {
-      _broken = false;
     }
   }
 
@@ -273,7 +254,7 @@ public partial class CombatController : Node
       _enemyAudio.Play();
     }
 
-    if (_enemyItem.Spins)
+    if (_enemyItem.Spin)
       _enemyAnim.Play("SpinFire");
     else
       _enemyAnim.Play("Fire");

@@ -96,7 +96,7 @@ public partial class LevelBuilder : Node
       cell.Item = null;
     }
 
-    if (cell.ItemInfo is { Name: "ladder" })
+    if (cell.ItemInfo is { Use: "exit" })
     {
       var exit = (Node3D)_ladderPrefab.Instantiate();
       exit.Name = "Ladder";

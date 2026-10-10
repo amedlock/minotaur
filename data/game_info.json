@@ -11,6 +11,10 @@
 		"Green": "00B300",
 		"Yellow": "F4FC58"
   },
+  "sounds":{
+		"lightning": "res://data/sounds/lightning.wav",
+		"fireball": "res://data/sounds/fireball.wav"
+  },
   "item_icons":{
 		"small_potion" : [0,0],
 		"arrow" : [1,0],
@@ -87,40 +91,39 @@
 		"minotaur":  [7,3]
   },
   "enemies":{
-		"comment": "name : min_level, war_hp, mind_hp, armor, weapon, weapon_level",
 		"war":{
-			"skeleton":[1, 6, 4, 0, "dagger", 1],
-			"cloaked_skel":[1, 8, 5, 1, "axe", 1],
-			"ghoul":[1, 7, 5, 1, "dagger", 2],
-			"skeleton_shield":[2, 9, 6, 2, "axe", 2],
-			"dwarf":[2, 15, 10, 5, "axe", 3],
-			"dwarf_shield":[3, 15, 12, 6, "bow", 3],
-			"giant":[3, 25, 10, 4, "axe", 3],
-			"giant_shield":[5, 35, 19, 7, "axe", 4],
-			"knight":[7, 30, 20, 9, "crossbow", 3]
+			"skeleton": { "min_level": 1, "war_hp": 6, "mind_hp": 4, "armor": 0, "weapon": "dagger", "weapon_level": 1 },
+			"cloaked_skel": { "min_level": 1, "war_hp": 8, "mind_hp": 5, "armor": 1, "weapon": "axe", "weapon_level": 1 },
+			"ghoul": { "min_level": 1, "war_hp": 7, "mind_hp": 5, "armor": 1, "weapon": "dagger", "weapon_level": 2 },
+			"skeleton_shield": { "min_level": 2, "war_hp": 9, "mind_hp": 6, "armor": 2, "weapon": "axe", "weapon_level": 2 },
+			"dwarf": { "min_level": 2, "war_hp": 15, "mind_hp": 10, "armor": 5, "weapon": "axe", "weapon_level": 3 },
+			"dwarf_shield": { "min_level": 3, "war_hp": 15, "mind_hp": 12, "armor": 6, "weapon": "bow", "weapon_level": 3 },
+			"giant": { "min_level": 3, "war_hp": 25, "mind_hp": 10, "armor": 4, "weapon": "axe", "weapon_level": 3 },
+			"giant_shield": { "min_level": 5, "war_hp": 35, "mind_hp": 19, "armor": 7, "weapon": "axe", "weapon_level": 4 },
+			"knight": { "min_level": 7, "war_hp": 30, "mind_hp": 20, "armor": 9, "weapon": "crossbow", "weapon_level": 3 }
 		},
 		"magic":{
-			"hornet":[1, 5, 8, 1, "scroll", 2],
-			"wasp":[1, 5, 10, 2, "wand", 1],
-			"spider":[1, 8, 12, 2, "book", 1],      
-			"scorpion":[2, 9, 13, 2, "wand", 2],          
-			"snake":[2, 9, 16, 3, "book", 2],
-			"dwarf_warrior":[3, 15, 15, 5, "book", 2],
-			"giant_frog": [3, 12, 16, 2, "wand", 3],
-			"drake":[4, 15, 17, 2, "staff", 1],
-			"enchantress":[6, 25, 30, 4, "book", 3],
-			"wizard":[8, 25, 35, 5, "staff", 2],
-			"lich":[10, 30, 50, 7, "staff", 3]
+			"hornet": { "min_level": 1, "war_hp": 5, "mind_hp": 8, "armor": 1, "weapon": "scroll", "weapon_level": 2 },
+			"wasp": { "min_level": 1, "war_hp": 5, "mind_hp": 10, "armor": 2, "weapon": "wand", "weapon_level": 1 },
+			"spider": { "min_level": 1, "war_hp": 8, "mind_hp": 12, "armor": 2, "weapon": "book", "weapon_level": 1 },
+			"scorpion": { "min_level": 2, "war_hp": 9, "mind_hp": 13, "armor": 2, "weapon": "wand", "weapon_level": 2 },
+			"snake": { "min_level": 2, "war_hp": 9, "mind_hp": 16, "armor": 3, "weapon": "book", "weapon_level": 2 },
+			"dwarf_warrior": { "min_level": 3, "war_hp": 15, "mind_hp": 15, "armor": 5, "weapon": "book", "weapon_level": 2 },
+			"giant_frog": { "min_level": 3, "war_hp": 12, "mind_hp": 16, "armor": 2, "weapon": "wand", "weapon_level": 3 },
+			"drake": { "min_level": 4, "war_hp": 15, "mind_hp": 17, "armor": 2, "weapon": "staff", "weapon_level": 1 },
+			"enchantress": { "min_level": 6, "war_hp": 25, "mind_hp": 30, "armor": 4, "weapon": "book", "weapon_level": 3 },
+			"wizard": { "min_level": 8, "war_hp": 25, "mind_hp": 35, "armor": 5, "weapon": "staff", "weapon_level": 2 },
+			"lich": { "min_level": 10, "war_hp": 30, "mind_hp": 50, "armor": 7, "weapon": "staff", "weapon_level": 3 }
 		},
 		"both":{
-			"wraith":[1, 14, 18, 6, "book", 2],
-			"wraith_shield":[2, 17, 22, 8, "wand", 2],
-			"golem":[3, 19, 24, 4, "book", 2],
-			"evil_eye":[4, 21, 26, 18, "book", 3],
-			"green_dragon":[5, 28, 30, 6, "staff", 1],
-			"red_dragon":[6, 34, 40, 7, "staff", 2],
-			"vampire":[7, 50, 45, 10, "staff", 3],
-			"undead_dragon":[10, 60, 60, 10, "staff", 3]
+			"wraith": { "min_level": 1, "war_hp": 14, "mind_hp": 18, "armor": 6, "weapon": "book", "weapon_level": 2 },
+			"wraith_shield": { "min_level": 2, "war_hp": 17, "mind_hp": 22, "armor": 8, "weapon": "wand", "weapon_level": 2 },
+			"golem": { "min_level": 3, "war_hp": 19, "mind_hp": 24, "armor": 4, "weapon": "book", "weapon_level": 2 },
+			"evil_eye": { "min_level": 4, "war_hp": 21, "mind_hp": 26, "armor": 18, "weapon": "book", "weapon_level": 3 },
+			"green_dragon": { "min_level": 5, "war_hp": 28, "mind_hp": 30, "armor": 6, "weapon": "staff", "weapon_level": 1 },
+			"red_dragon": { "min_level": 6, "war_hp": 34, "mind_hp": 40, "armor": 7, "weapon": "staff", "weapon_level": 2 },
+			"vampire": { "min_level": 7, "war_hp": 50, "mind_hp": 45, "armor": 10, "weapon": "staff", "weapon_level": 3 },
+			"undead_dragon": { "min_level": 10, "war_hp": 60, "mind_hp": 60, "armor": 10, "weapon": "staff", "weapon_level": 3 }
 		},
 		"special":{
 			"minotaur":["minotaur", 6, 40, 80, 40, 65]
@@ -128,19 +131,15 @@
   },
   "items":{
 		"weapons":{
-			"war":{
-				"bow": [6,9,15,21,27,33],
-				"crossbow": [18,24,30,36,42,99],
-				"dagger": [9,15,21,30,42,57],
-				"spear": [21,27,33,42,57,75],
-				"axe": [15,21,27,36,57,66]
-			},
-		"magic":{
-			"scroll" : [3,5,9,13,17,21],
-			"book" : [11,15,19,23,27,65],
-			"wand" :[9,13,17,23,33,43],
-			"staff" : [17,21,29,45,55,65]
-			}
+			"bow": { "type": "war", "power": [6,9,15,21,27,33], "ammo": "arrows", "projectile": "arrow", "break_chance": 30 },
+			"crossbow": { "type": "war", "power": [18,24,30,36,42,99], "ammo": "arrows", "projectile": "arrow", "break_chance": 30 },
+			"dagger": { "type": "war", "power": [9,15,21,30,42,57], "single_use": true, "spin": true },
+			"spear": { "type": "war", "power": [21,27,33,42,57,75], "single_use": true },
+			"axe": { "type": "war", "power": [15,21,27,36,57,66], "single_use": true, "spin": true },
+			"scroll": { "type": "magic", "power": [3,5,9,13,17,21], "projectile": "fireball", "sound": "lightning", "break_chance": 25 },
+			"book": { "type": "magic", "power": [11,15,19,23,27,65], "projectile": "small_lightning", "sound": "lightning", "break_chance": 25 },
+			"wand": { "type": "magic", "power": [9,13,17,23,33,43], "projectile": "fireball", "sound": "lightning", "break_chance": 25 },
+			"staff": { "type": "magic", "power": [17,21,29,45,55,65], "projectile": "small_lightning", "sound": "lightning", "break_chance": 25 }
 		},
 		"armor":{
 			"small_shield": [6,12,18,24,30,36] ,
@@ -149,12 +148,12 @@
 			"shield": [8,16,24,32,40,48]
 		},
 		"containers":{
-			"small_bag": 1,
-			"bag": 2,
-			"box": 3,
-			"pack": 4,
-			"chest": 6
-			},
+			"small_bag": { "value": 1, "needs_key": false },
+			"bag": { "value": 2, "needs_key": false },
+			"box": { "value": 3, "needs_key": false },
+			"pack": { "value": 4, "needs_key": false },
+			"chest": { "value": 6, "needs_key": false }
+		},
 		"money":{
 			"coins": [1, 10, 30, 170],
 			"necklace": [2, 20, 70, 200],
@@ -174,10 +173,10 @@
 			"Purple": 3
 		},    
 		"specials":{
-			"quiver": ["quiver", 1, "Tan", 6, 0],
-			"food": ["food", 1, "Tan", 3, 0],
-			"treasure": ["treasure", 1, "Yellow", 0, 0],
-			"ladder" : ["ladder", 1, "Tan", 0, 0]
+			"quiver": { "icon": "quiver", "min_level": 1, "color": "Tan", "use": "arrows", "amount": 6 },
+			"food": { "icon": "food", "min_level": 1, "color": "Tan", "use": "food", "amount": 3 },
+			"treasure": { "icon": "treasure", "min_level": 1, "color": "Yellow", "use": "win" },
+			"ladder": { "icon": "ladder", "min_level": 1, "color": "Tan", "use": "exit" }
 		}
   }
 }

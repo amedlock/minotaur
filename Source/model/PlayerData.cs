@@ -161,11 +161,12 @@ public class PlayerData
     }
   }
 
-  public void AddSpecial(string name, int amount)
+  // use is what the special item gives, "arrows" or "food"
+  public void AddSpecial(string use, int amount)
   {
-    switch (name)
+    switch (use)
     {
-      case "quiver":
+      case "arrows":
         Arrows += amount;
         return;
       case "food":
