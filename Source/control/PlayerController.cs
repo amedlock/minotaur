@@ -64,6 +64,7 @@ public partial class PlayerController : Node
     {
       _gameModel.PlayerState = PlayerState.Idle;
       _gameModel.PlayerCoord = nextCell.Coord;
+      EnterGate();
     };
   }
 
@@ -89,6 +90,7 @@ public partial class PlayerController : Node
     {
       _gameModel.PlayerState = PlayerState.Idle;
       _gameModel.PlayerCoord = nextCell.Coord;
+      EnterGate();
     };
   }
 
@@ -333,10 +335,13 @@ public partial class PlayerController : Node
   }
 
 
-  public void EnterGate(DungeonGate dungeonGate)
+  // stepping onto a gate takes the player to another dungeon at the same depth
+  private void EnterGate()
   {
+    if (!_gameModel.EnterGate()) return;
+
     _player.Audio.Stream = ResourceLoader.Load<AudioStream>("res://data/sounds/magic.wav");
-    _gameModel.LoadGateLevel(dungeonGate.Type);
+    _player.Audio.Play();
     _playerData.NeedsRest = true;
   }
 

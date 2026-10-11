@@ -189,11 +189,29 @@ public partial class GameModel : Node
   }
 
 
+  // the gate in the player's cell leads to another dungeon of the gate's type at the same depth
+  public bool EnterGate()
+  {
+    var levelType = CurrentCell.Gate switch
+    {
+      GateType.War => LevelType.War,
+      GateType.Magic => LevelType.Magic,
+      GateType.Both => LevelType.Both,
+      _ => LevelType.None
+    };
+    if (levelType == LevelType.None) return false;
+
+    PlayerData.ExchangeHp(CurrentCell.Gate);
+    LoadGateLevel(levelType);
+    return true;
+  }
+
+  // replaces the current level with a new one of the given type, the player stays where they are
   public void LoadGateLevel(LevelType levelType)
   {
-    CurrentLevel.UsedGate = true;
-    uint seed = CurrentLevel.SeedNumber >> 16 | (CurrentLevel.SeedNumber & 0xffff) << 16;
-    var levelInfo = new LevelInfo(Skill, Depth, seed, levelType);
+    // a new seed each time, so going through gates never returns to an earlier layout
+    uint seed = CurrentLevel.SeedNumber * 1664525 + 1013904223;
+    var levelInfo = new LevelInfo(Skill, Depth, seed, levelType) { UsedGate = true };
     Levels[Depth - 1] = levelInfo;
     Randomizer.BuildLevel(levelInfo);
     LevelChanged?.Invoke();

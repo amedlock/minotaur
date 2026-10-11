@@ -90,14 +90,15 @@ public partial class Dungeon : Node3D
     }
   }
 
-  public GateType MuralColor
+  // the murals show the type of the level
+  public LevelType MuralColor
   {
     set
     {
       var mat = value switch
       {
-        GateType.Magic => _muralColors["blue"],
-        GateType.War => _muralColors["green"],
+        LevelType.Magic => _muralColors["magic"],
+        LevelType.War => _muralColors["war"],
         _ => _muralColors["tan"]
       };
       foreach (var node in GetTree().GetNodesInGroup("murals"))

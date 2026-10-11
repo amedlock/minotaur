@@ -61,10 +61,10 @@ public partial class LevelBuilder : Node
 
       AddItem(dungeonCell, cell.ItemInfo);
       AddEnemy(dungeonCell, cell.Enemy?.Info);
-      AddGate(dungeonCell, cell, currentLevel.LevelType);
+      AddGate(dungeonCell, cell);
     }
 
-    dungeon.MuralColor = currentLevel.GateType;
+    dungeon.MuralColor = currentLevel.LevelType;
   }
 
 
@@ -113,7 +113,8 @@ public partial class LevelBuilder : Node
     }
   }
 
-  public void AddGate(DungeonCell dungeonCell, MazeCell cell, LevelType level)
+  // the gate is coloured for the type of dungeon it leads to
+  public void AddGate(DungeonCell dungeonCell, MazeCell cell)
   {
     if (dungeonCell.Gate != null)
     {
@@ -124,12 +125,12 @@ public partial class LevelBuilder : Node
 
     if (cell.Gate == GateType.None) return;
 
-    var result = level switch
+    var result = cell.Gate switch
     {
-      LevelType.War => (DungeonGate)_greenGate.Instantiate(),
-      LevelType.Magic => (DungeonGate)_blueGate.Instantiate(),
-      LevelType.Both => (DungeonGate)_tanGate.Instantiate(),
-      _ or LevelType.None => null
+      GateType.War => (DungeonGate)_greenGate.Instantiate(),
+      GateType.Magic => (DungeonGate)_blueGate.Instantiate(),
+      GateType.Both => (DungeonGate)_tanGate.Instantiate(),
+      _ => null
     };
     if (result != null)
     {

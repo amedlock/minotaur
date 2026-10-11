@@ -194,9 +194,10 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
   }
 
 
+  // gates are only on the first level, and are gone once the player has been through one
   private void AddGates(LevelInfo info)
   {
-    if (info.Depth > 2 || info.UsedGate)
+    if (info.Depth > 1 || info.UsedGate)
     {
       return;
     }

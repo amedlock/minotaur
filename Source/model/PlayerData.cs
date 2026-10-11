@@ -161,6 +161,31 @@ public class PlayerData
     }
   }
 
+  // a war gate halves mind and adds twice the loss to health, a magic gate halves health and adds
+  // half the loss to mind. Only the maximum is raised, resting fills it
+  public void ExchangeHp(GateType gate)
+  {
+    switch (gate)
+    {
+      case GateType.War:
+      {
+        int loss = MindMax / 2;
+        MindMax -= loss;
+        Mind = Mathf.Min(Mind, MindMax);
+        HealthMax += loss * 2;
+        return;
+      }
+      case GateType.Magic:
+      {
+        int loss = HealthMax / 2;
+        HealthMax -= loss;
+        Health = Mathf.Min(Health, HealthMax);
+        MindMax += loss / 2;
+        return;
+      }
+    }
+  }
+
   // use is what the special item gives, "arrows" or "food"
   public void AddSpecial(string use, int amount)
   {
