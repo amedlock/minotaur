@@ -68,15 +68,21 @@ public partial class PlayerController : Node
     };
   }
 
-  public void MoveBackward()
+  // the cell a backward step leads to, null when a wall, closed door or enemy is in the way
+  private MazeCell OpenCellBehind()
   {
-    var wall = _player.WallBehind;
-    if (wall is Wall or Door { Blocked: true })
+    if (_player.WallBehind is Wall or Door { Blocked: true })
     {
-      return;
+      return null;
     }
 
-    var nextCell = _gameModel.CellBehind;
+    var cell = _gameModel.CellBehind;
+    return cell?.Enemy == null ? cell : null;
+  }
+
+  public void MoveBackward()
+  {
+    var nextCell = OpenCellBehind();
     if (nextCell == null)
     {
       return;
@@ -152,10 +158,21 @@ public partial class PlayerController : Node
 
   public void Attack()
   {
+    _combatController.PlayerAttack = true;
   }
 
+  // asks to leave combat by stepping back a cell, there is no retreat with nowhere to step to
   public void Retreat()
   {
+    if (OpenCellBehind() == null) return;
+
+    _combatController.PlayerRetreat = true;
+  }
+
+  // combat has ended with the enemy still alive
+  public void Retreated()
+  {
+    MoveBackward();
   }
 
 
@@ -241,10 +258,11 @@ public partial class PlayerController : Node
   {
     if (_gameModel.PlayerState == PlayerState.Combat)
     {
-      _combatController.PlayerAttack = true;
+      Attack();
     }
-    else
+    else if (_player.WallAhead is not (Wall or Door { Blocked: true }))
     {
+      // no fighting through a wall or a closed door
       StartCombat(_gameModel.CellAhead, true);
     }
   }

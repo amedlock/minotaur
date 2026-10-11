@@ -45,14 +45,22 @@ public partial class CombatController : Node
 
   private ItemInfo _playerItem;
 
-  // has player retreated this turn
+  // the player has asked to retreat, it happens once the enemy has had a shot
   private bool _playerRetreat;
+
+  // an enemy shot has landed since this fight started
+  private bool _enemyHasFired;
 
   private Sprite2D _playerWeapon;
 
   public bool PlayerAttack
   {
     set => _playerAttack = value;
+  }
+
+  public bool PlayerRetreat
+  {
+    set => _playerRetreat = value;
   }
 
   public override void _Ready()
@@ -89,9 +97,16 @@ public partial class CombatController : Node
     GD.Print("Starting Combat");
     _gameModel.PlayerState = PlayerState.Combat;
     _enemyCell = cell;
+    // coming back to the enemy just retreated from does not restart its attack timer
+    if (_enemy != cell.Enemy)
+    {
+      _enemyTurn = 0;
+    }
+
     _enemy = cell.Enemy;
     _enemyItem = _gameModel.FindWeapon(_enemy.Info);
-    _enemyTurn = 0;
+    _playerRetreat = false;
+    _enemyHasFired = false;
     _enemyWeapon.Visible = false;
     _playerWeapon.Visible = false;
     SetProcess(true);
@@ -131,13 +146,23 @@ public partial class CombatController : Node
 
     _enemyTurn += delta;
 
-    if (_playerAttack)
+    if (_playerRetreat)
+    {
+      // no more attacks from either side, the retreat waits for the weapons in flight to land
+      _playerAttack = false;
+      if (_enemyHasFired)
+      {
+        if (!_enemyAnim.IsPlaying() && !_playerAnim.IsPlaying())
+        {
+          Retreat();
+        }
+
+        return;
+      }
+    }
+    else if (_playerAttack)
     {
       AttackMonster();
-    }
-    else if (_playerRetreat)
-    {
-      Retreat();
     }
 
     if (_enemy == null || _enemy.IsDead)
@@ -145,17 +170,20 @@ public partial class CombatController : Node
       return;
     }
 
-    if (_enemyTurn >= TurnTime)
+    if (_enemyTurn >= TurnTime && !_enemyAnim.IsPlaying())
     {
       EnemyFire();
       _enemyTurn = 0;
     }
   }
 
+  // ends combat with the enemy still alive, it keeps the damage it has taken
   private void Retreat()
   {
+    _playerRetreat = false;
     SetProcess(false);
     _gameModel.PlayerState = PlayerState.Idle;
+    _playerController.Retreated();
   }
 
   private void AttackMonster()
@@ -240,6 +268,7 @@ public partial class CombatController : Node
     // a weapon already in flight still lands after the enemy has died
     if (_enemy == null || _enemyItem == null) return;
     _gameModel.DamagePlayer(_enemyItem);
+    _enemyHasFired = true;
   }
 
 
