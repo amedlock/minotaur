@@ -11,11 +11,11 @@ namespace minotaur.Source.model;
 
 public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
 {
-  RandomNumberGenerator rng = new();
+  private RandomNumberGenerator _rng = new();
 
   public void BuildLevel(LevelInfo levelInfo)
   {
-    rng.Seed = levelInfo.SeedNumber;
+    _rng.Seed = levelInfo.SeedNumber;
     dungeonGrid.GateType = levelInfo.GateType;
     BuildMazePrim();
     AddMoreDoors();
@@ -30,7 +30,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
 
   private T ChooseRandom<T>(List<T> items)
   {
-    return items.Count == 0 ? default : items[rng.RandiRange(0, items.Count - 1)];
+    return items.Count == 0 ? default : items[_rng.RandiRange(0, items.Count - 1)];
   }
 
   private T TakeRandom<T>(List<T> items)
@@ -40,7 +40,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
       return default;
     }
 
-    var index = rng.RandiRange(0, items.Count - 1);
+    var index = _rng.RandiRange(0, items.Count - 1);
     var result = items[index];
     items.RemoveAt(index);
     return result;
@@ -58,7 +58,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
     AddOuterDoors();
 
     var notMaze = dungeonGrid.Cells.Where(cell => !IsOuterMaze(cell)).ToList();
-    List<MazeCell> inMaze = [];
+    List<MazeCell> inMaze = new();
     var start = TakeRandom(notMaze);
     start.Used = true;
     inMaze.Add(start);
@@ -225,9 +225,9 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
       return;
     }
 
-    var num = rng.RandiRange(0, 6) + 12;
+    var num = _rng.RandiRange(0, 6) + 12;
     var enemies = db.FindEnemies(info);
-    var sorted = enemies.OrderBy(_ => rng.Randi()).ToList();
+    var sorted = enemies.OrderBy(_ => _rng.Randi()).ToList();
     if (sorted.Count == 0) throw new Exception("No enemies allowed for placement");
 
     foreach (var n in GD.Range(num))
@@ -304,7 +304,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
   private void AddOther(List<MazeCell> cells)
   {
     var food = db.FindItem("food");
-    var foodCount = rng.RandiRange(1, 3);
+    var foodCount = _rng.RandiRange(1, 3);
     foreach (var unused in GD.Range(foodCount))
       if (cells.Count > 0)
       {
@@ -317,7 +317,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
       }
 
     var quiver = db.FindItem("quiver");
-    foreach (var unused in GD.Range(rng.RandiRange(1, 3)))
+    foreach (var unused in GD.Range(_rng.RandiRange(1, 3)))
     {
       if (cells.Count == 0) return;
 
@@ -349,7 +349,7 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
   private void AddAmulets(List<MazeCell> cells)
   {
     var amulets = db.Items.Where(i => i.ItemType == ItemType.Armor).ToList();
-    foreach (var n in GD.Range(rng.RandiRange(0, 3)))
+    foreach (var n in GD.Range(_rng.RandiRange(0, 3)))
     {
       if (cells.Count == 0 || amulets.Count == 0) break;
 
@@ -360,9 +360,9 @@ public class LevelRandomizer(DungeonGrid dungeonGrid, GameDb db)
 
   private void AddItems(LevelInfo info, List<MazeCell> cells)
   {
-    var bags = 7 + rng.RandiRange(0, 3);
-    var weapons = 7 + rng.RandiRange(1, 5);
-    var armor = rng.RandiRange(0, 2);
+    var bags = 7 + _rng.RandiRange(0, 3);
+    var weapons = 7 + _rng.RandiRange(1, 5);
+    var armor = _rng.RandiRange(0, 2);
     AddLoot(bags, info, cells);
     AddKey(info, cells);
     AddOther(cells);
